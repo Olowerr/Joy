@@ -11,27 +11,24 @@ struct  Backend
 class GameClass 
 {
 public:
-	static Backend& Get()
+	static GameClass& Get()
 	{
 		static GameClass instance;
-		return instance.system;
+		return instance;
 	}
 
 
 private:
 	GameClass();
-	Backend system;
 
 public:
 	GameClass(const GameClass& other) = delete;
-	GameClass& operator=(const GameClass& other) = delete;
-	GameClass(GameClass&& other) = delete;
+	GameClass operator=() = delete;
 
 };
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance, _In_ LPWSTR lpwstr, _In_ int showCmd)
 {
-	GameClass ägde;
-
+	ID3D11Device* qwe;
 	return 0;
 }
