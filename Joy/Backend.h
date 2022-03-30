@@ -13,7 +13,7 @@ public:
 		// DO THINGS
 	}
 
-	static ID3D11Device* Get()
+	static ID3D11Device* GetDevice()
 	{
 		return system.dev;
 	}
