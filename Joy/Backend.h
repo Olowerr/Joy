@@ -18,6 +18,16 @@ public:
 		return system.dev;
 	}
 
+	static ID3D11DeviceContext* GetDevContext()
+	{
+		return system.devCont;
+	}
+
+	static IDXGISwapChain* GetSwapChain()
+	{
+		return system.swapChain;
+	}
+
 private:
 
 	Backend();
@@ -25,6 +35,7 @@ private:
 	static Backend system;
 	ID3D11Device* dev;
 	ID3D11DeviceContext* devCont;
+	IDXGISwapChain* swapChain;
 
 public:
 
