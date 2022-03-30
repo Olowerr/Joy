@@ -55,8 +55,8 @@ void Backend::Shutdown()
     debugger->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     debugger->Release();
 #endif
-    device->Release();
 
+    device->Release();
 }
 
 ID3D11Device* Backend::GetDevice()

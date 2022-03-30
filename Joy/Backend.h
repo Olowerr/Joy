@@ -1,5 +1,4 @@
 #pragma once
-#include <Windows.h>
 #include <d3d11.h>
 #include <assert.h>
 
@@ -36,5 +35,5 @@ public:
 	Backend(const Backend& other) = delete;
 	Backend& operator=(const Backend& other) = delete;
 	Backend(Backend&& other) = delete;
-
+	~Backend() = default;
 };
