@@ -2,6 +2,9 @@
 
 bool Backend::initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 {
+    if (!system.window.Initiate(hInst, showCmd, width, height))
+        return false;
+
     UINT flags = 0;
 
 #ifdef _DEBUG
@@ -21,7 +24,7 @@ bool Backend::initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     swapDesc.SampleDesc.Quality = 0;
     swapDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapDesc.BufferCount = 1;
-    swapDesc.OutputWindow = window;
+    swapDesc.OutputWindow = system.window.GetHWND();
     swapDesc.Windowed = true;
     swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     swapDesc.Flags = 0;
@@ -30,9 +33,8 @@ bool Backend::initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
         &swapDesc, &system.swapChain, &system.dev, nullptr, &system.devCont);
 
     if (FAILED(hr))
-    {
         return false;
-    }
+    
 
     return true;
 }
