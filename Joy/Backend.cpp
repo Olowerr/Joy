@@ -1,8 +1,13 @@
 #include "Backend.h"
 
-bool Backend::initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
+Backend::Backend()
+    :device(nullptr), deviceContext(nullptr), swapChain(nullptr)
 {
-    if (!system.window.Initiate(hInst, showCmd, width, height))
+}
+
+bool Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
+{
+    if (!window.Initiate(hInst, showCmd, width, height))
         return false;
 
     UINT flags = 0;
@@ -24,13 +29,13 @@ bool Backend::initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     swapDesc.SampleDesc.Quality = 0;
     swapDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapDesc.BufferCount = 1;
-    swapDesc.OutputWindow = system.window.GetHWND();
+    swapDesc.OutputWindow = window.GetHWND();
     swapDesc.Windowed = true;
     swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     swapDesc.Flags = 0;
 
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
-        &swapDesc, &system.swapChain, &system.dev, nullptr, &system.devCont);
+        &swapDesc, &swapChain, &device, nullptr, &deviceContext);
 
     if (FAILED(hr))
         return false;
@@ -39,17 +44,37 @@ bool Backend::initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     return true;
 }
 
-ID3D11Device* Backend::GetDevice()
+void Backend::Shutdown()
 {
-    return system.dev;
+    swapChain->Release();
+    deviceContext->Release();
+
+#ifdef _DEBUG
+    ID3D11Debug* debugger = nullptr;
+    device->QueryInterface(__uuidof(ID3D11Debug), (void**)&debugger);
+    debugger->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    debugger->Release();
+#endif
+    device->Release();
+
 }
 
-ID3D11DeviceContext* Backend::GetDevContext()
+ID3D11Device* Backend::GetDevice()
 {
-    return system.devCont;
+    return device;
+}
+
+ID3D11DeviceContext* Backend::GetDeviceContext()
+{
+    return deviceContext;
 }
 
 IDXGISwapChain* Backend::GetSwapChain()
 {
-    return system.swapChain;
+    return swapChain;
+}
+
+Window& Backend::GetWindow()
+{
+    return window;
 }

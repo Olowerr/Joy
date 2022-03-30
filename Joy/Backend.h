@@ -1,34 +1,38 @@
 #pragma once
 #include <Windows.h>
 #include <d3d11.h>
+#include <assert.h>
 
 #include "Window.h"
-
-Backend Backend::system;
 
 class Backend
 {
 public:
+	static Backend& Get()
+	{
+		static Backend system;
+		return system;
+	}
 
-	static bool initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
+	bool Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
+	void Shutdown();
 
-	static ID3D11Device* GetDevice();
-	static ID3D11DeviceContext* GetDevContext();
-	static IDXGISwapChain* GetSwapChain();
+	ID3D11Device* GetDevice();
+	ID3D11DeviceContext* GetDeviceContext();
+	IDXGISwapChain* GetSwapChain();
+
+	Window& GetWindow();
 
 private:
-
 	Backend();
 
-	static Backend system;
 	Window window;
 	
-	ID3D11Device* dev;
-	ID3D11DeviceContext* devCont;
+	ID3D11Device* device;
+	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
 
 public:
-
 	Backend(const Backend& other) = delete;
 	Backend& operator=(const Backend& other) = delete;
 	Backend(Backend&& other) = delete;
