@@ -8,7 +8,7 @@ class Backend
 {
 public:
 
-	static bool initiate(HINSTANCE hInst, int showCmd);
+	static bool initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
 
 	static ID3D11Device* GetDevice();
 
