@@ -13,6 +13,7 @@ public:
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT mesasge, WPARAM wParam, LPARAM lParam);
 
 	bool IsActive() const;
+	bool IsOpen() const;
 
 private:
 	HWND hWnd;

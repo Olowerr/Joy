@@ -67,6 +67,11 @@ bool Window::IsActive() const
 	return hWnd == GetForegroundWindow();
 }
 
+bool Window::IsOpen() const
+{
+	return open;
+}
+
 HWND Window::GetHWND()
 {
 	return hWnd;
