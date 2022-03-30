@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="Backend.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h" />
