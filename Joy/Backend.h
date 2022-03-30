@@ -8,25 +8,13 @@ class Backend
 {
 public:
 
-	static bool initiate(HINSTANCE hInst, int showCmd)
-	{
-		// DO THINGS
-	}
+	static bool initiate(HINSTANCE hInst, int showCmd);
 
-	static ID3D11Device* GetDevice()
-	{
-		return system.dev;
-	}
+	static ID3D11Device* GetDevice();
 
-	static ID3D11DeviceContext* GetDevContext()
-	{
-		return system.devCont;
-	}
+	static ID3D11DeviceContext* GetDevContext();
 
-	static IDXGISwapChain* GetSwapChain()
-	{
-		return system.swapChain;
-	}
+	static IDXGISwapChain* GetSwapChain();
 
 private:
 
