@@ -62,6 +62,16 @@ void Backend::Shutdown()
     device->Release();
 }
 
+void Backend::Process()
+{
+    window.ProcessMessages();
+
+    mouse.ReadEvents(window.GetHWND());
+    // Keyboard
+
+    //delta time
+}
+
 ID3D11Device* Backend::GetDevice()
 {
     return device;
@@ -80,4 +90,9 @@ IDXGISwapChain* Backend::GetSwapChain()
 Window& Backend::GetWindow()
 {
     return window;
+}
+
+Mouse& Backend::GetMouse()
+{
+    return mouse;
 }

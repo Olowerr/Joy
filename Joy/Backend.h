@@ -17,11 +17,14 @@ public:
 	void Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
 	void Shutdown();
 
+	void Process();
+
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
 	IDXGISwapChain* GetSwapChain();
 
 	Window& GetWindow();
+	Mouse& GetMouse();
 
 private:
 	Backend();

@@ -17,7 +17,7 @@ void Game::Run()
 {
 	while (window.IsOpen())
 	{
-		window.ProcessMessages();
+		Backend::Get().Process();
 
 		// Game
 		
