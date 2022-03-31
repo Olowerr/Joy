@@ -28,6 +28,12 @@
     <Filter Include="Source Files\Temp Objekt &amp; Material">
       <UniqueIdentifier>{536c6928-00e0-4aae-a8ea-c94ee7039f66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\Shaders">
+      <UniqueIdentifier>{9bf0b20e-6557-4181-8615-d970074c9713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Object Renderer">
+      <UniqueIdentifier>{91705ca3-9428-47b2-8af8-15ebb13e6a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -57,6 +63,9 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectRender.cpp">
+      <Filter>System\Object Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
@@ -82,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Keyboard.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRender.h">
+      <Filter>System\Object Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

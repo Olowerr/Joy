@@ -16,7 +16,7 @@ bool ObjParser::LoadObj(std::vector<VertexHolder>& vertsHolder, std::vector<int>
 	int ObjectCounter = 0;
 	int idxS = 0;
 	int idxC = 0;
-	int ObjectIdx = objectVect.size() - 1;
+	int ObjectIdx = int(objectVect.size()) - 1;
 	bool skipFirstO = false;
 	bool skipFirstMtl = false;
 	int verticeCounter = 0;
@@ -136,7 +136,7 @@ bool ObjParser::LoadMtl(std::vector<Material>& material)
 	std::string mapKss;
 	std::string mapKas;
 	int ill;
-	int mtrlC = material.size() - 1;
+	int mtrlC = int(material.size()) - 1;
 	int amountMtrl = 0;
 
 	reader.open("LE_FILE_MAN");
