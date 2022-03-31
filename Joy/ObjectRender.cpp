@@ -18,40 +18,19 @@ void ObjectRender::initiate()
 
 bool ObjectRender::LoadShaders()
 {
-	std::string shaderData = "../Shaders/ObjVS.cso";
-	backend
-	std::ifstream reader;
-	reader.open("../Shaders/ObjVS.cso", std::ios::binary | std::ios::ate);
+	std::string shaderData;
 
-	if (!reader.is_open())
+	if (!backend.LoadShader("../Shaders/ObjVS.cso", &shaderData))
 		return false;
-
-	reader.seekg(0, std::ios::end);
-	shaderData.reserve(static_cast<unsigned int>(reader.tellg()));
-	reader.seekg(0, std::ios::beg);
-	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 
 	if (FAILED(backend.GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
 		return false;
 
-	vShaderByteCode = shaderData;
-	shaderData.clear();
-	reader.close();
-	reader.open("../Shaders/ObjPX.cso", std::ios::binary | std::ios::ate);
-
-	if (!reader.is_open())
+	if (!backend.LoadShader("../Shaders/ObjPX.cso", &shaderData))
 		return false;
-
-	reader.seekg(0, std::ios::end);
-	shaderData.reserve(static_cast<unsigned int>(reader.tellg()));
-	reader.seekg(0, std::ios::beg);
-	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 
 	if (FAILED(backend.GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
 		return false;
-
-	shaderData.clear();
-	reader.close();
 
 	return true;
 }
