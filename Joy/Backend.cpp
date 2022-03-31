@@ -10,7 +10,6 @@ void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     bool result = window.Initiate(hInst, showCmd, width, height);
     assert(result);
     
-
     UINT flags = 0;
 
 #ifdef _DEBUG
