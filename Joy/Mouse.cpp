@@ -1,17 +1,22 @@
 #include "Mouse.h"
 
-void Mouse::Initiate(LPDIRECTINPUT8 dInput, HWND hWnd)
+bool Mouse::Initiate(LPDIRECTINPUT8 dInput, HWND hWnd)
 {
 	HRESULT hr;
 
 	hr = dInput->CreateDevice(GUID_SysMouse, &DIMouse, NULL);
-	assert(!FAILED(hr));
+	if (FAILED(hr))
+		return false;
 
 	hr = DIMouse->SetDataFormat(&c_dfDIMouse);
-	assert(!FAILED(hr));
+	if (FAILED(hr))
+		return false;
 
 	hr = DIMouse->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
-	assert(!FAILED(hr));
+	if (FAILED(hr))
+		return false;
+
+	return true;
 }
 
 void Mouse::Shutdown()
@@ -21,48 +26,75 @@ void Mouse::Shutdown()
 
 void Mouse::ReadEvents(HWND hWnd /*, WPARAM wParam, LPARAM lParam */ )
 {
+	RECT rect;
+	GetWindowRect(hWnd, &rect);
+	if (locked)
+	{
+		SetCursorPos(rect.left + (rect.right - rect.left) * 0.5f, 
+			rect.top + (rect.bottom - rect.top) * 0.5f);
+	}
+	
+	CURSORINFO info = {};
+	GetCursorInfo(&info);
+	xPos = info.ptScreenPos.x - rect.left;
+	yPos = info.ptScreenPos.y - rect.top;
+
+
+	DIMOUSESTATE currentState;
+	DIMouse->Acquire();
+	DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &currentState);
+
+	leftReleased = !currentState.rgbButtons[0] && lastState.rgbButtons[0];
+	rightReleased = !currentState.rgbButtons[1] && lastState.rgbButtons[1];
+
+	lastState = currentState;
 }
 
 void Mouse::Lock(bool lock)
 {
+	locked = lock;
+	if (lock)
+		while (ShowCursor(FALSE) >= 0);
+	else
+		while (ShowCursor(TRUE) <= 0);
 }
 
 bool Mouse::LeftDown() const
 {
-	return false;
+	return lastState.rgbButtons[0];
 }
 
 bool Mouse::RightDown() const
 {
-	return false;
+	return lastState.rgbButtons[1];
 }
 
 bool Mouse::LeftReleased() const
 {
-	return false;
+	return leftReleased;
 }
 
 bool Mouse::RightReleased() const
 {
-	return false;
+	return rightReleased;
 }
 
 UINT Mouse::GetXPos() const
 {
-	return 0;
+	return xPos;
 }
 
 UINT Mouse::GetYPos() const
 {
-	return 0;
+	return yPos;
 }
 
 INT Mouse::GetDeltaX() const
 {
-	return 0;
+	return (INT)lastState.lX;
 }
 
 INT Mouse::GetDeltaY() const
 {
-	return 0;
+	return (INT)lastState.lY;
 }

@@ -11,7 +11,7 @@ class Mouse
 {
 public:
 	Mouse() = default;
-	void Initiate(LPDIRECTINPUT8 dInput, HWND hWnd);
+	bool Initiate(LPDIRECTINPUT8 dInput, HWND hWnd);
 	void Shutdown();
 
 	void ReadEvents(HWND hWnd /*, WPARAM wParam, LPARAM lParam */ );

@@ -16,7 +16,6 @@ public:
 
 private:
 	HWND hWnd;
-	RECT rect;
 
 	bool open;
 };

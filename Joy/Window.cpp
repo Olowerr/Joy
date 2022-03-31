@@ -1,7 +1,7 @@
 #include "Window.h"
 
 Window::Window()
-	:hWnd(nullptr), rect(), open(false)
+	:hWnd(nullptr), open(false)
 {
 }
 
@@ -18,6 +18,7 @@ bool Window::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 
 	RegisterClass(&winClass);
 
+	RECT rect;
 	rect.right = width;
 	rect.bottom = height;
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);

@@ -1,7 +1,7 @@
 #include "Backend.h"
 
 Backend::Backend()
-    :device(nullptr), deviceContext(nullptr), swapChain(nullptr)
+    :device(nullptr), deviceContext(nullptr), swapChain(nullptr), mouse()
 {
 }
 
@@ -38,6 +38,13 @@ void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
         &swapDesc, &swapChain, &device, nullptr, &deviceContext);
     assert(!FAILED(hr));
+
+    hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DInput, NULL);
+    assert(!FAILED(hr));
+
+
+    result = mouse.Initiate(DInput, window.GetHWND());
+    assert(result);
     
 }
 

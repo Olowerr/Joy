@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include "Window.h"
+#include "Mouse.h"
 
 class Backend
 {
@@ -25,8 +26,10 @@ public:
 private:
 	Backend();
 
+	LPDIRECTINPUT8 DInput;
 	Window window;
-	
+	Mouse mouse;
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
