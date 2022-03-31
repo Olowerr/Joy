@@ -96,4 +96,12 @@
       <Filter>System\Object Renderer</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ObjVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjPX.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

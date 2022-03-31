@@ -15,9 +15,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	reader.open("../Shaders/ObjVS.cso", std::ios::binary | std::ios::ate);
 
 	if (!reader.is_open())
-	{
 		return false;
-	}
 
 	reader.seekg(0, std::ios::end);
 	shaderData.reserve(static_cast<unsigned int>(reader.tellg()));
@@ -25,9 +23,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 
 	if (FAILED(device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
-	{
 		return false;
-	}
 
 	vShaderByteCode = shaderData;
 	shaderData.clear();
@@ -35,9 +31,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	reader.open("../Shaders/ObjPX.cso", std::ios::binary | std::ios::ate);
 
 	if (!reader.is_open())
-	{
 		return false;
-	}
 
 	reader.seekg(0, std::ios::end);
 	shaderData.reserve(static_cast<unsigned int>(reader.tellg()));
@@ -45,9 +39,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 
 	if (FAILED(device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
-	{
 		return false;
-	}
 
 	shaderData.clear();
 	reader.close();
