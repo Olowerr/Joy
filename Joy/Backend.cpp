@@ -48,6 +48,11 @@ void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     result = keyboard.Initiate(DInput, hInst);
     assert(result);
     
+#ifndef _DEBUG
+    swapChain->SetFullscreenState(TRUE, nullptr);
+#endif // _DEBUG
+
+
 }
 
 void Backend::Shutdown()
