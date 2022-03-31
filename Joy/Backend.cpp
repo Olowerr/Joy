@@ -72,6 +72,11 @@ void Backend::Process()
     mouse.ReadEvents();
     keyboard.ReadEvents();
 
+    if (!window.IsActive())
+        mouse.Lock(false);
+
+
+
     //delta time
 }
 
