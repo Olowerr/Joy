@@ -90,18 +90,14 @@ void Backend::Process()
 
     window.ProcessMessages();
 
-   
-
     mouse.ReadEvents();
     keyboard.ReadEvents();
-
 
     if (!window.IsActive())
         mouse.Lock(false);
 
     std::cout << 1.f / deltaTime.count()<<"\n";
 
-    //delta time
 }
 
 ID3D11Device* Backend::GetDevice()

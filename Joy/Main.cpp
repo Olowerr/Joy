@@ -7,7 +7,9 @@
 #include <fcntl.h>
 #include <iostream>
 
-//#ifdef _DEBUG
+#define CONSOLE_ENABLE
+
+#ifdef CONSOLE_ENABLE
 void RedirectIOToConsole() {
 
     //Create a console for this application
@@ -41,15 +43,14 @@ void RedirectIOToConsole() {
     std::cerr.clear();
 
 }
-
-//#endif
+#endif
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance, _In_ LPWSTR lpwstr, _In_ int showCmd)
 {
-
-//#ifdef _DEBUG
+    
+#ifdef CONSOLE_ENABLE
     RedirectIOToConsole();
-//#endif // _DEBUG
+#endif // CONSOLE_ENABLE
 
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
