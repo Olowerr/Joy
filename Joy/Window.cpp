@@ -30,11 +30,6 @@ bool Window::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 	
 	if (!hWnd)
 		return false;
-
-#ifdef _DEBUG
-	// Fullscreen
-#endif // _DEBUG
-
 	ShowWindow(hWnd, showCmd);
 	open = true;
 

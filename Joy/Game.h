@@ -1,6 +1,6 @@
 #pragma once
 #include "Backend.h"
-
+#include "ObjectRender.h"
 class Game
 {
 public:
@@ -14,5 +14,5 @@ public:
 
 private:
 	Window& window;
-
+	ObjectRender render;
 };

@@ -1,4 +1,11 @@
 #include "Backend.h"
+#include<iostream>
+
+#ifdef _DEBUG
+    const std::string Backend::ShaderPath = "../Debug/";
+#else
+    const std::string Backend::ShaderPath = "../Release/";
+#endif
 
 Backend::Backend()
     :mouse(window), keyboard(window), DInput(nullptr)
@@ -57,6 +64,7 @@ void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     swapChain->SetFullscreenState(TRUE, nullptr);
 #endif // _DEBUG
 
+    frameStart = std::chrono::system_clock::now();
 
 }
 
@@ -77,15 +85,21 @@ void Backend::Shutdown()
 
 void Backend::Process()
 {
+    deltaTime = std::chrono::system_clock::now() - frameStart;
+    frameStart = std::chrono::system_clock::now();
+
     window.ProcessMessages();
+
+   
 
     mouse.ReadEvents();
     keyboard.ReadEvents();
 
+
     if (!window.IsActive())
         mouse.Lock(false);
 
-
+    std::cout << 60.f / deltaTime.count()<<"\n";
 
     //delta time
 }

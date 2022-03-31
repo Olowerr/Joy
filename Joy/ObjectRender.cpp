@@ -16,9 +16,6 @@ void ObjectRender::initiate()
 	succeeded = LoadShaders();
 	assert(succeeded);
 
-	succeeded = CreateInputLayout();
-	assert(succeeded);
-
 	SetViewPort();
 }
 
@@ -26,13 +23,16 @@ bool ObjectRender::LoadShaders()
 {
 	std::string shaderData;
 
-	if (!backend.LoadShader("../Shaders/ObjVS.cso", &shaderData))
+	if (!backend.LoadShader(Backend::ShaderPath + "ObjVS.cso", &shaderData))
+		return false;
+
+	if (!CreateInputLayout(shaderData))
 		return false;
 
 	if (FAILED(backend.GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
 		return false;
 
-	if (!backend.LoadShader("../Shaders/ObjPS.cso", &shaderData))
+	if (!backend.LoadShader(Backend::ShaderPath + "ObjPS.cso", &shaderData))
 		return false;
 
 	if (FAILED(backend.GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
@@ -41,16 +41,16 @@ bool ObjectRender::LoadShaders()
 	return true;
 }
 
-bool ObjectRender::CreateInputLayout()
+bool ObjectRender::CreateInputLayout(const std::string& shaderData)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, 
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA}
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}, 
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	HRESULT hr = backend.GetDevice()->CreateInputLayout(inputDesc, 3, vShaderByteCode.c_str(), vShaderByteCode.length(), &inpLayout);
+	HRESULT hr = backend.GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &inpLayout);
 
 	return SUCCEEDED(hr);
 }

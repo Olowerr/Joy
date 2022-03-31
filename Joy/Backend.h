@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <string>
 #include <fstream>
-
+#include<chrono>
 #include "Window.h"
 #include "Mouse.h"
 #include "Keyboard.h"
@@ -35,6 +35,7 @@ public:
 
 	bool LoadShader(const std::string& path, std::string* const outData);
 
+	static const std::string ShaderPath;
 
 private:
 	Backend();
@@ -48,6 +49,9 @@ private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
+
+	std::chrono::time_point<std::chrono::system_clock> frameStart;
+	std::chrono::duration<float> deltaTime;
 
 public:
 	Backend(const Backend& other) = delete;

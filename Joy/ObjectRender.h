@@ -14,7 +14,7 @@ public:
 	void initiate();
 
 	bool LoadShaders();
-	bool CreateInputLayout();
+	bool CreateInputLayout(const std::string& shaderData);
 	void SetViewPort();
 
 private:

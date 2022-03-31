@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <iostream>
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 void RedirectIOToConsole() {
 
     //Create a console for this application
@@ -42,14 +42,14 @@ void RedirectIOToConsole() {
 
 }
 
-#endif
+//#endif
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance, _In_ LPWSTR lpwstr, _In_ int showCmd)
 {
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
     RedirectIOToConsole();
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

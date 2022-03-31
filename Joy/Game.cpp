@@ -4,7 +4,7 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 	:window(Backend::Get().GetWindow())
 {
 	Backend::Get().Initiate(hInstance, cmdShow, Win_Width, Win_Height);
-
+	render.initiate();
 
 }
 
@@ -23,6 +23,7 @@ void Game::Run()
 		if (Backend::Get().GetKeyboard().KeyDown(DIK_DELETE))
 			break;
 
+		
 
 	}
 }
