@@ -33,7 +33,7 @@ public:
 	UINT GetWindowWidth() const;
 	UINT GetWindowHeight() const;
 
-	bool LoadShader(std::string& inPathOutData);
+	bool LoadShader(const std::string& path, std::string* const outData);
 
 
 private:
