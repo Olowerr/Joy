@@ -137,18 +137,19 @@ UINT Backend::GetWindowHeight() const
     return height;
 }
 
-bool Backend::LoadShader(std::string& inPathOutData)
+bool Backend::LoadShader(const std::string& path, std::string* const outData)
 {
     std::ifstream reader;
-    reader.open(inPathOutData, std::ios::binary);
+    reader.open(path, std::ios::binary);
     if (!reader.is_open())
         return false;
 
     reader.seekg(0, std::ios::end);
-    inPathOutData.reserve((UINT)reader.tellg());
+    outData->reserve((UINT)reader.tellg());
     reader.seekg(0, std::ios::beg);
 
-    inPathOutData.assign(std::istreambuf_iterator<char>(reader), std::istreambuf_iterator<char>());
+    outData->assign(std::istreambuf_iterator<char>(reader), std::istreambuf_iterator<char>());
+    reader.close();
 
     return true;
 }
