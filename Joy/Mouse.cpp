@@ -35,8 +35,8 @@ void Mouse::ReadEvents()
 	{
 		RECT rect;
 		GetWindowRect(window.GetHWND(), &rect);
-		SetCursorPos(rect.left + (rect.right - rect.left) * 0.5f, 
-			rect.top + (rect.bottom - rect.top) * 0.5f);
+		SetCursorPos(rect.left + (rect.right - rect.left) / 2, 
+			rect.top + (rect.bottom - rect.top) / 2);
 	}
 
 	xPos = LOWORD(window.GetlParam());
