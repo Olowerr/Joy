@@ -99,7 +99,7 @@ void Backend::Process()
     if (!window.IsActive())
         mouse.Lock(false);
 
-    std::cout << 60.f / deltaTime.count()<<"\n";
+    std::cout << 1.f / deltaTime.count()<<"\n";
 
     //delta time
 }
