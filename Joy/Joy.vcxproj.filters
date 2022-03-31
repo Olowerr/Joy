@@ -103,7 +103,7 @@
     <FxCompile Include="ObjVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="ObjPX.hlsl">
+    <FxCompile Include="ObjPS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

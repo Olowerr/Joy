@@ -32,7 +32,7 @@ bool ObjectRender::LoadShaders()
 	if (FAILED(backend.GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
 		return false;
 
-	if (!backend.LoadShader("../Shaders/ObjPX.cso", &shaderData))
+	if (!backend.LoadShader("../Shaders/ObjPS.cso", &shaderData))
 		return false;
 
 	if (FAILED(backend.GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
