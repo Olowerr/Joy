@@ -118,13 +118,6 @@ Mouse& Backend::GetMouse()
 Keyboard& Backend::GetKeyboard()
 {
     return keyboard;
-
-    std::string data = "path";
-    if (!LoadShader(data))
-        return false;
-
-    data.c_str()
-
 }
 
 UINT Backend::GetWindowWidth() const
