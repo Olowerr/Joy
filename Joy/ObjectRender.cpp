@@ -11,8 +11,14 @@ ObjectRender::~ObjectRender()
 
 void ObjectRender::initiate()
 {
-	LoadShaders();
-	CreateInputLayout();
+	bool succeeded = false;
+
+	succeeded = LoadShaders();
+	assert(succeeded);
+
+	succeeded = CreateInputLayout();
+	assert(succeeded);
+
 	SetViewPort();
 }
 
@@ -53,8 +59,8 @@ void ObjectRender::SetViewPort()
 {
 	viewPort.TopLeftX = 0;
 	viewPort.TopLeftY = 0;
-	viewPort.Width = backend.GetWindowWidth();
-	viewPort.Height = backend.GetWindowHeight();
+	viewPort.Width = (float)backend.GetWindowWidth();
+	viewPort.Height = (float)backend.GetWindowHeight();
 	viewPort.MinDepth = 0;
 	viewPort.MaxDepth = 1;
 }
