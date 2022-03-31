@@ -118,6 +118,13 @@ Mouse& Backend::GetMouse()
 Keyboard& Backend::GetKeyboard()
 {
     return keyboard;
+
+    std::string data = "path";
+    if (!LoadShader(data))
+        return false;
+
+    data.c_str()
+
 }
 
 UINT Backend::GetWindowWidth() const
@@ -128,4 +135,20 @@ UINT Backend::GetWindowWidth() const
 UINT Backend::GetWindowHeight() const
 {
     return height;
+}
+
+bool Backend::LoadShader(std::string& inPathOutData)
+{
+    std::ifstream reader;
+    reader.open(inPathOutData, std::ios::binary);
+    if (!reader.is_open())
+        return false;
+
+    reader.seekg(0, std::ios::end);
+    inPathOutData.reserve((UINT)reader.tellg());
+    reader.seekg(0, std::ios::beg);
+
+    inPathOutData.assign(std::istreambuf_iterator<char>(reader), std::istreambuf_iterator<char>());
+
+    return true;
 }

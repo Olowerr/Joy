@@ -19,10 +19,10 @@ void Game::Run()
 	{
 		Backend::Get().Process();
 
-#ifdef _DEBUG
+		// temp
 		if (Backend::Get().GetKeyboard().KeyDown(DIK_DELETE))
 			break;
-#endif // _DEBUG
+
 
 	}
 }

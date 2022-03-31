@@ -1,6 +1,8 @@
 #pragma once
 #include <d3d11.h>
 #include <assert.h>
+#include <string>
+#include <fstream>
 
 #include "Window.h"
 #include "Mouse.h"
@@ -30,6 +32,9 @@ public:
 
 	UINT GetWindowWidth() const;
 	UINT GetWindowHeight() const;
+
+	bool LoadShader(std::string& inPathOutData);
+
 
 private:
 	Backend();

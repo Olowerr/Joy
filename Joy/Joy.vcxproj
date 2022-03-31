@@ -109,6 +109,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,6 +162,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectRender.h" />
     <ClInclude Include="ObjParser.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
