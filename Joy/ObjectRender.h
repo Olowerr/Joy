@@ -11,6 +11,8 @@ public:
 
 	~ObjectRender();
 
+	void initiate();
+
 	bool LoadShaders();
 	bool CreateInputLayout();
 	void SetViewPort();

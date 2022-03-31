@@ -1,12 +1,19 @@
 #include "ObjectRender.h"
 
 ObjectRender::ObjectRender()
-	:backend(Backend::Get())
+	:backend(Backend::Get()), objVS(nullptr), objPS(nullptr), inpLayout(nullptr), viewPort()
 {
 }
 
 ObjectRender::~ObjectRender()
 {
+}
+
+void ObjectRender::initiate()
+{
+	LoadShaders();
+	CreateInputLayout();
+	SetViewPort();
 }
 
 bool ObjectRender::LoadShaders()
@@ -66,4 +73,8 @@ void ObjectRender::SetViewPort()
 {
 	viewPort.TopLeftX = 0;
 	viewPort.TopLeftY = 0;
+	viewPort.Width = backend.GetWindowWidth();
+	viewPort.Height = backend.GetWindowHeight();
+	viewPort.MinDepth = 0;
+	viewPort.MaxDepth = 1;
 }
