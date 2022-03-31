@@ -22,6 +22,12 @@
     <Filter Include="Game">
       <UniqueIdentifier>{83fa01b3-1214-4fef-80a5-d747673a9691}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Temp Parser">
+      <UniqueIdentifier>{10d7b968-f034-4ef2-9126-5560013bb505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Temp Objekt &amp; Material">
+      <UniqueIdentifier>{536c6928-00e0-4aae-a8ea-c94ee7039f66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -39,6 +45,15 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjParser.cpp">
+      <Filter>Source Files\Temp Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
@@ -52,6 +67,15 @@
     </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjParser.h">
+      <Filter>Source Files\Temp Parser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
