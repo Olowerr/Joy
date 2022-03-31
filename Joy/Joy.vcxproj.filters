@@ -13,30 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{efa9caa1-17a4-4304-bcad-5e29946db26f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Window">
+      <UniqueIdentifier>{a25c0885-3f78-46f8-b456-0902ccf42502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{83fa01b3-1214-4fef-80a5-d747673a9691}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Backend.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>System\Window</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
-      <Filter>Header Files</Filter>
+      <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
+      <Filter>System\Window</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

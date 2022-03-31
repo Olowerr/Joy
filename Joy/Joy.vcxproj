@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Backend.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Mouse.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

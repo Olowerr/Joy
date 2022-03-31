@@ -13,7 +13,7 @@ public:
 		return system;
 	}
 
-	bool Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
+	void Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
 	void Shutdown();
 
 	ID3D11Device* GetDevice();

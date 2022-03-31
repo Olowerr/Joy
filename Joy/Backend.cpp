@@ -5,10 +5,11 @@ Backend::Backend()
 {
 }
 
-bool Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
+void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 {
-    if (!window.Initiate(hInst, showCmd, width, height))
-        return false;
+    bool result = window.Initiate(hInst, showCmd, width, height);
+    assert(result);
+    
 
     UINT flags = 0;
 
@@ -36,12 +37,8 @@ bool Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
         &swapDesc, &swapChain, &device, nullptr, &deviceContext);
-
-    if (FAILED(hr))
-        return false;
+    assert(!FAILED(hr));
     
-
-    return true;
 }
 
 void Backend::Shutdown()
