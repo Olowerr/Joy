@@ -26,6 +26,17 @@ public:
 
 	void releaseBuffer();
 
+	void Draw()
+	{
+		dc->set my vertexbuffer
+			set my indexBuffer
+
+
+		for each material
+			set my material
+			dc->DrawIndexed(start[i], count[i], 0)
+	}
+
 private:
 
 	std::vector<int> idxS;

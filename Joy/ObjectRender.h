@@ -17,7 +17,19 @@ public:
 	bool CreateInputLayout(const std::string& shaderData);
 	void SetViewPort();
 
+
+	void Add(Object* obs);
+	void DrawAll()
+	{
+		devCon->Bind pipeline
+
+			for each obj
+				obj->Draw();
+	}
+
 private:
+
+	std::vector<Object*> obs;
 
 	D3D11_VIEWPORT viewPort;
 
