@@ -13,7 +13,7 @@ bool Keyboard::Initiate(LPDIRECTINPUT8 dInput,HINSTANCE hInst)
 	if (FAILED(hr))
 		return false;
 
-	hr = DIKeyboard->SetDataFormat(&c_dfDIMouse);
+	hr = DIKeyboard->SetDataFormat(&c_dfDIKeyboard);
 	if (FAILED(hr))
 		return false;
 

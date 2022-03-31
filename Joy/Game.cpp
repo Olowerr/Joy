@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include<iostream>
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:window(Backend::Get().GetWindow())
 {
@@ -19,7 +19,5 @@ void Game::Run()
 	{
 		Backend::Get().Process();
 
-		// Game
-		
 	}
 }
