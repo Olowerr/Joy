@@ -1,5 +1,7 @@
 #include "Window.h"
 
+LPARAM Window::lParam;
+
 Window::Window()
 	:hWnd(nullptr), open(false)
 {
@@ -18,7 +20,7 @@ bool Window::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 
 	RegisterClass(&winClass);
 
-	RECT rect;
+	RECT rect = {};
 	rect.right = width;
 	rect.bottom = height;
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
@@ -53,6 +55,8 @@ void Window::ProcessMessages()
 
 LRESULT Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	Window::lParam = lParam;
+
 	switch (message)
 	{
 	case WM_DESTROY:
@@ -76,4 +80,9 @@ bool Window::IsOpen() const
 HWND Window::GetHWND()
 {
 	return hWnd;
+}
+
+LPARAM Window::GetlParam()
+{
+	return lParam;
 }

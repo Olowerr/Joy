@@ -54,6 +54,9 @@
     <ClCompile Include="ObjParser.cpp">
       <Filter>Source Files\Temp Parser</Filter>
     </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="ObjParser.h">
       <Filter>Source Files\Temp Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

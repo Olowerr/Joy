@@ -1,7 +1,7 @@
 #include "Backend.h"
 
 Backend::Backend()
-    :device(nullptr), deviceContext(nullptr), swapChain(nullptr), mouse()
+    :mouse(window), keyboard(window), device(nullptr), deviceContext(nullptr), swapChain(nullptr), DInput(nullptr)
 {
 }
 
@@ -38,11 +38,14 @@ void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
         &swapDesc, &swapChain, &device, nullptr, &deviceContext);
     assert(!FAILED(hr));
 
+
     hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DInput, NULL);
     assert(!FAILED(hr));
 
+    result = mouse.Initiate(DInput);
+    assert(result);
 
-    result = mouse.Initiate(DInput, window.GetHWND());
+    result = keyboard.Initiate(DInput, hInst);
     assert(result);
     
 }
@@ -66,8 +69,8 @@ void Backend::Process()
 {
     window.ProcessMessages();
 
-    mouse.ReadEvents(window.GetHWND());
-    // Keyboard
+    mouse.ReadEvents();
+    keyboard.ReadEvents();
 
     //delta time
 }
@@ -95,4 +98,9 @@ Window& Backend::GetWindow()
 Mouse& Backend::GetMouse()
 {
     return mouse;
+}
+
+Keyboard& Backend::GetKeyboard()
+{
+    return keyboard;
 }

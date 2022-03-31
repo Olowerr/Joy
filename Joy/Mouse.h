@@ -1,20 +1,14 @@
 #pragma once
-#include<Windows.h>
-#include<assert.h>
-
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-#pragma comment (lib, "dinput8.lib")
-#pragma comment (lib, "dxguid.lib")
+#include "Window.h"
 
 class Mouse
 {
 public:
-	Mouse() = default;
-	bool Initiate(LPDIRECTINPUT8 dInput, HWND hWnd);
+	Mouse(Window& window);
+	bool Initiate(LPDIRECTINPUT8 dInput);
 	void Shutdown();
 
-	void ReadEvents(HWND hWnd /*, WPARAM wParam, LPARAM lParam */ );
+	void ReadEvents();
 
 	void Lock(bool lock);
 
@@ -31,6 +25,8 @@ public:
 	INT GetDeltaY() const;
 
 private:
+	Window& window;
+
 	UINT xPos, yPos;
 	bool leftReleased, rightReleased;
 

@@ -1,6 +1,11 @@
 #include "Mouse.h"
 
-bool Mouse::Initiate(LPDIRECTINPUT8 dInput, HWND hWnd)
+Mouse::Mouse(Window& window)
+	:window(window), xPos(0), yPos(0), leftReleased(false), rightReleased(0), locked(0), DIMouse(nullptr), lastState()
+{
+}
+
+bool Mouse::Initiate(LPDIRECTINPUT8 dInput)
 {
 	HRESULT hr;
 
@@ -12,7 +17,7 @@ bool Mouse::Initiate(LPDIRECTINPUT8 dInput, HWND hWnd)
 	if (FAILED(hr))
 		return false;
 
-	hr = DIMouse->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
+	hr = DIMouse->SetCooperativeLevel(window.GetHWND(), DISCL_NONEXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
 	if (FAILED(hr))
 		return false;
 
@@ -24,21 +29,18 @@ void Mouse::Shutdown()
 	DIMouse->Unacquire();
 }
 
-void Mouse::ReadEvents(HWND hWnd /*, WPARAM wParam, LPARAM lParam */ )
+void Mouse::ReadEvents()
 {
-	RECT rect;
-	GetWindowRect(hWnd, &rect);
 	if (locked)
 	{
+		RECT rect;
+		GetWindowRect(window.GetHWND(), &rect);
 		SetCursorPos(rect.left + (rect.right - rect.left) * 0.5f, 
 			rect.top + (rect.bottom - rect.top) * 0.5f);
 	}
-	
-	CURSORINFO info = {};
-	GetCursorInfo(&info);
-	xPos = info.ptScreenPos.x - rect.left;
-	yPos = info.ptScreenPos.y - rect.top;
 
+	xPos = LOWORD(window.GetlParam());
+	yPos = HIWORD(window.GetlParam());
 
 	DIMOUSESTATE currentState;
 	DIMouse->Acquire();
@@ -48,6 +50,7 @@ void Mouse::ReadEvents(HWND hWnd /*, WPARAM wParam, LPARAM lParam */ )
 	rightReleased = !currentState.rgbButtons[1] && lastState.rgbButtons[1];
 
 	lastState = currentState;
+
 }
 
 void Mouse::Lock(bool lock)

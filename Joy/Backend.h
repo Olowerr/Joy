@@ -4,6 +4,7 @@
 
 #include "Window.h"
 #include "Mouse.h"
+#include "Keyboard.h"
 
 class Backend
 {
@@ -25,6 +26,7 @@ public:
 
 	Window& GetWindow();
 	Mouse& GetMouse();
+	Keyboard& GetKeyboard();
 
 private:
 	Backend();
@@ -32,6 +34,7 @@ private:
 	LPDIRECTINPUT8 DInput;
 	Window window;
 	Mouse mouse;
+	Keyboard keyboard;
 
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
