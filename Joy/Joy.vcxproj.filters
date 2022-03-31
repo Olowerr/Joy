@@ -95,6 +95,9 @@
     <ClInclude Include="ObjectRender.h">
       <Filter>System\Object Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ObjVS.hlsl">
