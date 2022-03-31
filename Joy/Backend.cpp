@@ -1,12 +1,17 @@
 #include "Backend.h"
 
 Backend::Backend()
-    :mouse(window), keyboard(window), device(nullptr), deviceContext(nullptr), swapChain(nullptr), DInput(nullptr)
+    :mouse(window), keyboard(window), DInput(nullptr)
+    , device(nullptr), deviceContext(nullptr), swapChain(nullptr)
+    , width(0), height(0)
 {
 }
 
 void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 {
+    this->width = width;
+    this->height = height;
+
     bool result = window.Initiate(hInst, showCmd, width, height);
     assert(result);
     
@@ -113,4 +118,14 @@ Mouse& Backend::GetMouse()
 Keyboard& Backend::GetKeyboard()
 {
     return keyboard;
+}
+
+UINT Backend::GetWindowWidth() const
+{
+    return width;
+}
+
+UINT Backend::GetWindowHeight() const
+{
+    return height;
 }

@@ -28,9 +28,13 @@ public:
 	Mouse& GetMouse();
 	Keyboard& GetKeyboard();
 
+	UINT GetWindowWidth() const;
+	UINT GetWindowHeight() const;
+
 private:
 	Backend();
 
+	UINT width, height;
 	LPDIRECTINPUT8 DInput;
 	Window window;
 	Mouse mouse;
