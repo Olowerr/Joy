@@ -1,7 +1,7 @@
 #pragma once
-#include <d3d11.h>
 #include <fstream>
 #include <iostream>
+#include "Backend.h"
 
 class ObjectRender
 {
@@ -11,8 +11,11 @@ public:
 
 	~ObjectRender();
 
-	bool LoadShaders(ID3D11Device* device);
-	bool CreateInputLayout(ID3D11Device* device);
+	void initiate();
+
+	bool LoadShaders();
+	bool CreateInputLayout();
+	void SetViewPort();
 
 private:
 
@@ -24,4 +27,6 @@ private:
 	ID3D11PixelShader* objPS;
 
 	std::string vShaderByteCode;
+
+	Backend& backend;
 };

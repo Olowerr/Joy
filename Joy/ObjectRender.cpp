@@ -1,6 +1,7 @@
 #include "ObjectRender.h"
 
 ObjectRender::ObjectRender()
+	:backend(Backend::Get()), objVS(nullptr), objPS(nullptr), inpLayout(nullptr), viewPort()
 {
 }
 
@@ -8,7 +9,14 @@ ObjectRender::~ObjectRender()
 {
 }
 
-bool ObjectRender::LoadShaders(ID3D11Device* device)
+void ObjectRender::initiate()
+{
+	LoadShaders();
+	CreateInputLayout();
+	SetViewPort();
+}
+
+bool ObjectRender::LoadShaders()
 {
 	std::string shaderData;
 	std::ifstream reader;
@@ -22,7 +30,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	reader.seekg(0, std::ios::beg);
 	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 
-	if (FAILED(device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
+	if (FAILED(backend.GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
 		return false;
 
 	vShaderByteCode = shaderData;
@@ -38,7 +46,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	reader.seekg(0, std::ios::beg);
 	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 
-	if (FAILED(device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
+	if (FAILED(backend.GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
 		return false;
 
 	shaderData.clear();
@@ -47,7 +55,7 @@ bool ObjectRender::LoadShaders(ID3D11Device* device)
 	return true;
 }
 
-bool ObjectRender::CreateInputLayout(ID3D11Device* device)
+bool ObjectRender::CreateInputLayout()
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
 	{
@@ -56,7 +64,17 @@ bool ObjectRender::CreateInputLayout(ID3D11Device* device)
 		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA}
 	};
 
-	HRESULT hr = device->CreateInputLayout(inputDesc, 3, vShaderByteCode.c_str(), vShaderByteCode.length(), &inpLayout);
+	HRESULT hr = backend.GetDevice()->CreateInputLayout(inputDesc, 3, vShaderByteCode.c_str(), vShaderByteCode.length(), &inpLayout);
 
 	return SUCCEEDED(hr);
+}
+
+void ObjectRender::SetViewPort()
+{
+	viewPort.TopLeftX = 0;
+	viewPort.TopLeftY = 0;
+	viewPort.Width = backend.GetWindowWidth();
+	viewPort.Height = backend.GetWindowHeight();
+	viewPort.MinDepth = 0;
+	viewPort.MaxDepth = 1;
 }
