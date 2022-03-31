@@ -18,7 +18,8 @@ void ObjectRender::initiate()
 
 bool ObjectRender::LoadShaders()
 {
-	std::string shaderData;
+	std::string shaderData = "../Shaders/ObjVS.cso";
+	backend
 	std::ifstream reader;
 	reader.open("../Shaders/ObjVS.cso", std::ios::binary | std::ios::ate);
 
