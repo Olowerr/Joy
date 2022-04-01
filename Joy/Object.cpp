@@ -1,80 +1,25 @@
 #include "Object.h"
-Object::Object()
-	:idxS(0), idxC(0), mtrlName()
+Object::Object(Mesh* mesh)
+	:mesh(mesh)
 {
-	DirectX::XMMATRIX tempMtrx = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	DirectX::XMStoreFloat4x4(&wrldMtrx, tempMtrx);
+
 }
 
-Object::~Object()
+Object::Object(DX::XMFLOAT3 pos, DX::XMFLOAT3 rot, FLOAT scale, Mesh* mesh)
+	:Transform(pos, rot, scale), mesh(mesh)
 {
 }
 
-bool Object::CreateWorldMtrxBuffer(ID3D11Device* device)
+void Object::Shutdown()
 {
-	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4);
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = &wrldMtrx;
-	data.SysMemPitch = 0;
-	data.SysMemSlicePitch = 0;
-
-	HRESULT hr = device->CreateBuffer(&bufferDesc, &data, &worldMtrxBuffer);
-	return SUCCEEDED(hr);
+	Transform::Shutdown();
 }
 
-void Object::setIdxS(int idxStart)
+void Object::Draw()
 {
-	idxS.push_back(idxStart);
-}
+	ID3D11DeviceContext* dc = Backend::Get().GetDeviceContext();
 
-void Object::setIdxC(int idxCount)
-{
-	idxC.push_back(idxCount);
-}
-
-void Object::setMtrlName(std::string mtrlNames)
-{
-	mtrlName.push_back(mtrlNames);
-}
-
-std::vector<int>& Object::getIdxS()
-{
-	return idxS;
-}
-
-std::vector<int>& Object::getIdxC()
-{
-	return idxC;
-}
-
-std::vector<std::string>& Object::getMtrlName()
-{
-	return mtrlName;
-}
-
-DirectX::XMFLOAT4X4& Object::getWorldMtrx()
-{
-	return wrldMtrx;
-}
-
-void Object::setWorldMtrx(DirectX::XMMATRIX& wrldMtrx)
-{
-	DirectX::XMStoreFloat4x4(&this->wrldMtrx, wrldMtrx);
-}
-
-ID3D11Buffer*& Object::getWorldMtrxBuffer()
-{
-	return worldMtrxBuffer;
-}
-
-void Object::releaseBuffer()
-{
-	worldMtrxBuffer->Release();
+	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
+	dc->Draw(mesh->vertexCount, 0);
 }

@@ -13,12 +13,11 @@ class Backend
 public:
 	static Backend& Get()
 	{
-		static Backend system;
 		return system;
 	}
 
-	void Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
-	void Shutdown();
+	static void Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
+	static void Shutdown();
 
 	void Process();
 
@@ -33,11 +32,17 @@ public:
 	UINT GetWindowWidth() const;
 	UINT GetWindowHeight() const;
 
-	bool LoadShader(const std::string& path, std::string* const outData);
+	FLOAT GetDeltaTime() const;
+
+	static bool LoadShader(const std::string& path, std::string* const outData);
+	static bool CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
+	static bool CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
+	static bool UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth);
 
 	static const std::string ShaderPath;
 
 private:
+	static Backend system;
 	Backend();
 
 	UINT width, height;

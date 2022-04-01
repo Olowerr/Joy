@@ -1,6 +1,6 @@
 #pragma once
-#include "Backend.h"
-#include "ObjectRender.h"
+#include "Scene.h"
+
 class Game
 {
 public:
@@ -13,6 +13,8 @@ public:
 	const UINT Win_Height = 512;
 
 private:
+
 	Window& window;
-	ObjectRender render;
+	
+	MainScene mainScene;
 };

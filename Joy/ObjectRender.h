@@ -2,34 +2,23 @@
 #include <fstream>
 #include <iostream>
 #include "Backend.h"
+#include "Object.h"
 
 class ObjectRender
 {
 public:
 
 	ObjectRender();
-
-	~ObjectRender();
+	void Shutdown();
 
 	void initiate();
 
-	bool LoadShaders();
-	bool CreateInputLayout(const std::string& shaderData);
-	void SetViewPort();
-
-
-	/*void Add(Object* obs);
-	void DrawAll()
-	{
-		devCon->Bind pipeline
-
-			for each obj
-				obj->Draw();
-	}*/
+	void Add(Object* obs);
+	void DrawAll();
 
 private:
 
-	//std::vector<Object*> obs;
+	std::vector<Object*> obs;
 
 	D3D11_VIEWPORT viewPort;
 
@@ -41,4 +30,12 @@ private:
 	std::string vShaderByteCode;
 
 	Backend& backend;
+
+	bool LoadShaders();
+	bool CreateInputLayout(const std::string& shaderData);
+	void SetViewPort();
+
+	// temp
+	ID3D11Buffer* cam;
+	ID3D11RenderTargetView* bbRTV;
 };

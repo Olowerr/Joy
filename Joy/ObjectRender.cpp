@@ -5,8 +5,14 @@ ObjectRender::ObjectRender()
 {
 }
 
-ObjectRender::~ObjectRender()
+void ObjectRender::Shutdown()
 {
+	inpLayout->Release();
+	objVS->Release();
+	objPS->Release();
+
+	cam->Release();
+	bbRTV->Release();
 }
 
 void ObjectRender::initiate()
@@ -16,14 +22,41 @@ void ObjectRender::initiate()
 	succeeded = LoadShaders();
 	assert(succeeded);
 
+	ID3D11Texture2D* bb;
+	Backend::Get().GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
+	Backend::Get().GetDevice()->CreateRenderTargetView(bb, nullptr, &bbRTV);
+	bb->Release();
+
+	using namespace DirectX;
+	XMFLOAT4X4 matri;
+	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(3.f, 3.f, 3.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(0.8f, 2.f, 0.1f, 100.f);
+	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
+
+	Backend::CreateConstCBuffer(&cam, &matri, 64);
+
 	SetViewPort();
+
+
+	ID3D11DeviceContext* dc = Backend::Get().GetDeviceContext();
+	dc->IASetInputLayout(inpLayout);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	dc->VSSetShader(objVS, nullptr, 0);
+	dc->VSSetConstantBuffers(1, 1, &cam);
+
+	dc->RSSetViewports(1, &viewPort);
+
+	dc->PSSetShader(objPS, nullptr, 0);
+	dc->OMSetRenderTargets(1, &bbRTV, nullptr);
+
 }
 
 bool ObjectRender::LoadShaders()
 {
 	std::string shaderData;
 
-	if (!backend.LoadShader(Backend::ShaderPath + "ObjVS.cso", &shaderData))
+	if (!Backend::LoadShader(Backend::ShaderPath + "ObjVS.cso", &shaderData))
 		return false;
 
 	if (!CreateInputLayout(shaderData))
@@ -32,7 +65,7 @@ bool ObjectRender::LoadShaders()
 	if (FAILED(backend.GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
 		return false;
 
-	if (!backend.LoadShader(Backend::ShaderPath + "ObjPS.cso", &shaderData))
+	if (!Backend::LoadShader(Backend::ShaderPath + "ObjPS.cso", &shaderData))
 		return false;
 
 	if (FAILED(backend.GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
@@ -64,4 +97,25 @@ void ObjectRender::SetViewPort()
 	viewPort.Height = (float)backend.GetWindowHeight();
 	viewPort.MinDepth = 0;
 	viewPort.MaxDepth = 1;
+}
+
+void ObjectRender::Add(Object* obj)
+{
+	obs.emplace_back(obj);
+}
+
+void ObjectRender::DrawAll()
+{
+	ID3D11DeviceContext* dc = Backend::Get().GetDeviceContext();
+
+	float colour[4] = { 0.2f, 0.2f,0.2f, 0.f };
+	dc->ClearRenderTargetView(bbRTV, colour);
+
+
+	for (Object* obj : obs)
+	{
+		obj->Draw();
+	}
+
+	Backend::Get().GetSwapChain()->Present(0, 0);
 }

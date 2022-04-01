@@ -51,7 +51,7 @@ public:
 	~ObjParser();
 
 	bool LoadObj(std::vector<VertexHolder>& vertsHolder, std::vector<int>& vertices, std::vector<Object>& objectVect);
-	bool LoadMtl(std::vector<Material>& material);
+
 
 private:
 

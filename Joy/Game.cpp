@@ -3,18 +3,20 @@
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:window(Backend::Get().GetWindow())
 {
-	Backend::Get().Initiate(hInstance, cmdShow, Win_Width, Win_Height);
-	render.initiate();
+	Backend::Initiate(hInstance, cmdShow, Win_Width, Win_Height);
 
 }
 
 void Game::Shutdown()
 {
-	Backend::Get().Shutdown();
+	mainScene.Shutdown();
+	Backend::Shutdown();
 }
 
 void Game::Run()
 {
+	mainScene.Load();
+
 	while (window.IsOpen())
 	{
 		Backend::Get().Process();
@@ -23,7 +25,10 @@ void Game::Run()
 		if (Backend::Get().GetKeyboard().KeyDown(DIK_DELETE))
 			break;
 
-		
+		mainScene.Update();
+
+		mainScene.Render();
 
 	}
+
 }
