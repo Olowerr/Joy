@@ -1,10 +1,11 @@
 #include "UIElement.h"
 
-UIElement::UIElement(DirectX::XMFLOAT2 pos, DirectX::XMFLOAT2 size)
+UIElement::UIElement(const std::string& imagePath, DirectX::XMFLOAT2 pos)
 	:pos(pos), size(size)
 {
 	DirectX::XMFLOAT2 data[2] = { pos,size };
-	Backend::CreateConstCBuffer(&transformBuffer, data, 16);
+	Backend::CreateConstCBuffer(&transformBuffer, data, 16); 
+
 }
 
 bool UIElement::Hovered()
@@ -24,5 +25,5 @@ void UIElement::Draw()
 	Backend::GetDeviceContext()->VSSetConstantBuffers(0, 1, &transformBuffer);
 	BindResource();
 
-	Backend::GetDeviceContext()->Draw()
+	Backend::GetDeviceContext()->Draw(4, 0);
 }
