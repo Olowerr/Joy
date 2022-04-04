@@ -17,7 +17,7 @@ public:
 	virtual void Render() = 0;
 
 private:
-	SceneState state;
+	const SceneState state;
 };
 
 class MainScene : public Scene

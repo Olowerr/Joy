@@ -36,7 +36,7 @@ void MainScene::Shutdown()
 
 void MainScene::Update()
 {
-	objects[0].Rotate(0.f, 2.f * Backend::Get().GetDeltaTime(), 0.f);
+	objects[0].Rotate(0.f, 2.f * Backend::GetDeltaTime(), 0.f);
 }
 
 void MainScene::Render()

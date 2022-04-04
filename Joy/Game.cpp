@@ -1,7 +1,7 @@
 #include "Game.h"
 #include<iostream>
 Game::Game(HINSTANCE hInstance, int cmdShow)
-	:window(Backend::Get().GetWindow())
+	:window(Backend::GetWindow())
 {
 	Backend::Initiate(hInstance, cmdShow, Win_Width, Win_Height);
 
@@ -19,10 +19,10 @@ void Game::Run()
 
 	while (window.IsOpen())
 	{
-		Backend::Get().Process();
+		Backend::Process();
 
 		// temp
-		if (Backend::Get().GetKeyboard().KeyDown(DIK_DELETE))
+		if (Backend::GetKeyboard().KeyDown(DIK_DELETE))
 			break;
 
 		mainScene.Update();

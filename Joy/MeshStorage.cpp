@@ -135,5 +135,5 @@ void MeshStorage::Load(UINT index)
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = verts.data();
 	data.SysMemPitch = data.SysMemSlicePitch = 0;
-	Backend::Get().GetDevice()->CreateBuffer(&desc, &data, &meshes.back()->vertexBuffer);
+	Backend::GetDevice()->CreateBuffer(&desc, &data, &meshes.back()->vertexBuffer);
 }

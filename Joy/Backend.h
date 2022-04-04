@@ -11,28 +11,23 @@
 class Backend
 {
 public:
-	static Backend& Get()
-	{
-		return system;
-	}
-
 	static void Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
 	static void Shutdown();
 
-	void Process();
+	static void Process();
+	
+	static ID3D11Device* GetDevice();
+	static ID3D11DeviceContext* GetDeviceContext();
+	static IDXGISwapChain* GetSwapChain();
+	
+	static Window& GetWindow();
+	static Mouse& GetMouse();
+	static Keyboard& GetKeyboard();
+	
+	static UINT GetWindowWidth();
+	static UINT GetWindowHeight();
 
-	ID3D11Device* GetDevice();
-	ID3D11DeviceContext* GetDeviceContext();
-	IDXGISwapChain* GetSwapChain();
-
-	Window& GetWindow();
-	Mouse& GetMouse();
-	Keyboard& GetKeyboard();
-
-	UINT GetWindowWidth() const;
-	UINT GetWindowHeight() const;
-
-	FLOAT GetDeltaTime() const;
+	static FLOAT GetDeltaTime();
 
 	static bool LoadShader(const std::string& path, std::string* const outData);
 	static bool CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);

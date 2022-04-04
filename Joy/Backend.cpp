@@ -93,61 +93,61 @@ void Backend::Shutdown()
 
 void Backend::Process()
 {
-    deltaTime = std::chrono::system_clock::now() - frameStart;
-    frameStart = std::chrono::system_clock::now();
+    system.deltaTime = std::chrono::system_clock::now() - system.frameStart;
+    system.frameStart = std::chrono::system_clock::now();
 
-    window.ProcessMessages();
+    system.window.ProcessMessages();
 
-    mouse.ReadEvents();
-    keyboard.ReadEvents();
+    system.mouse.ReadEvents();
+    system.keyboard.ReadEvents();
 
-    if (!window.IsActive())
-        mouse.Lock(false);
+    if (!system.window.IsActive())
+        system.mouse.Lock(false);
 }
 
 ID3D11Device* Backend::GetDevice()
 {
-    return device;
+    return system.device;
 }
 
 ID3D11DeviceContext* Backend::GetDeviceContext()
 {
-    return deviceContext;
+    return system.deviceContext;
 }
 
 IDXGISwapChain* Backend::GetSwapChain()
 {
-    return swapChain;
+    return system.swapChain;
 }
 
 Window& Backend::GetWindow()
 {
-    return window;
+    return system.window;
 }
 
 Mouse& Backend::GetMouse()
 {
-    return mouse;
+    return system.mouse;
 }
 
 Keyboard& Backend::GetKeyboard()
 {
-    return keyboard;
+    return system.keyboard;
 }
 
-UINT Backend::GetWindowWidth() const
+UINT Backend::GetWindowWidth()
 {
-    return width;
+    return system.width;
 }
 
-UINT Backend::GetWindowHeight() const
+UINT Backend::GetWindowHeight()
 {
-    return height;
+    return system.height;
 }
 
-FLOAT Backend::GetDeltaTime() const
+FLOAT Backend::GetDeltaTime()
 {
-    return deltaTime.count();
+    return system.deltaTime.count();
 }
 
 bool Backend::LoadShader(const std::string& path, std::string* const outData)
@@ -169,42 +169,42 @@ bool Backend::LoadShader(const std::string& path, std::string* const outData)
 
 bool Backend::CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth)
 {
-    D3D11_BUFFER_DESC desc;
+    D3D11_BUFFER_DESC desc{};
     desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     desc.ByteWidth = byteWidth;
     desc.Usage = D3D11_USAGE_IMMUTABLE;
     desc.CPUAccessFlags = 0;
     desc.StructureByteStride = 0;
     desc.MiscFlags = 0;
-    D3D11_SUBRESOURCE_DATA inData;
+    D3D11_SUBRESOURCE_DATA inData{};
     inData.pSysMem = Data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
-    return SUCCEEDED(Get().device->CreateBuffer(&desc, &inData, buffer));
+    return SUCCEEDED(system.device->CreateBuffer(&desc, &inData, buffer));
 }
 
 bool Backend::CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth)
 {
-    D3D11_BUFFER_DESC desc;
+    D3D11_BUFFER_DESC desc{};
     desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     desc.ByteWidth = byteWidth;
     desc.Usage = D3D11_USAGE_DYNAMIC;
     desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     desc.StructureByteStride = 0;
     desc.MiscFlags = 0;
-    D3D11_SUBRESOURCE_DATA inData;
+    D3D11_SUBRESOURCE_DATA inData{};
     inData.pSysMem = Data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
-    return SUCCEEDED(Get().device->CreateBuffer(&desc, &inData, buffer));
+    return SUCCEEDED(system.device->CreateBuffer(&desc, &inData, buffer));
 }
 
 bool Backend::UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth)
 {
     D3D11_MAPPED_SUBRESOURCE sub;
-    if (FAILED(Get().deviceContext->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub)))
+    if (FAILED(system.deviceContext->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub)))
         return false;
 
     memcpy(sub.pData, Data, byteWidth);
-    Get().deviceContext->Unmap(buffer, 0);
+    system.deviceContext->Unmap(buffer, 0);
 
     return true;
 }

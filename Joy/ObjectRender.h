@@ -29,8 +29,6 @@ private:
 
 	std::string vShaderByteCode;
 
-	Backend& backend;
-
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
 	void SetViewPort();

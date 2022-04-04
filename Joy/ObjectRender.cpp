@@ -1,7 +1,7 @@
 #include "ObjectRender.h"
 
 ObjectRender::ObjectRender()
-	:backend(Backend::Get()), objVS(nullptr), objPS(nullptr), inpLayout(nullptr), viewPort()
+	:objVS(nullptr), objPS(nullptr), inpLayout(nullptr), viewPort()
 {
 }
 
@@ -23,8 +23,8 @@ void ObjectRender::initiate()
 	assert(succeeded);
 
 	ID3D11Texture2D* bb;
-	Backend::Get().GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
-	Backend::Get().GetDevice()->CreateRenderTargetView(bb, nullptr, &bbRTV);
+	Backend::GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
+	Backend::GetDevice()->CreateRenderTargetView(bb, nullptr, &bbRTV);
 	bb->Release();
 
 	using namespace DirectX;
@@ -38,7 +38,7 @@ void ObjectRender::initiate()
 	SetViewPort();
 
 
-	ID3D11DeviceContext* dc = Backend::Get().GetDeviceContext();
+	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 	dc->IASetInputLayout(inpLayout);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -62,13 +62,13 @@ bool ObjectRender::LoadShaders()
 	if (!CreateInputLayout(shaderData))
 		return false;
 
-	if (FAILED(backend.GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
+	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
 		return false;
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "ObjPS.cso", &shaderData))
 		return false;
 
-	if (FAILED(backend.GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
+	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
 		return false;
 
 	return true;
@@ -84,7 +84,7 @@ bool ObjectRender::CreateInputLayout(const std::string& shaderData)
 		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	HRESULT hr = backend.GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &inpLayout);
+	HRESULT hr = Backend::GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &inpLayout);
 
 	return SUCCEEDED(hr);
 }
@@ -93,8 +93,8 @@ void ObjectRender::SetViewPort()
 {
 	viewPort.TopLeftX = 0;
 	viewPort.TopLeftY = 0;
-	viewPort.Width = (float)backend.GetWindowWidth();
-	viewPort.Height = (float)backend.GetWindowHeight();
+	viewPort.Width = (float)Backend::GetWindowWidth();
+	viewPort.Height = (float)Backend::GetWindowHeight();
 	viewPort.MinDepth = 0;
 	viewPort.MaxDepth = 1;
 }
@@ -106,7 +106,7 @@ void ObjectRender::Add(Object* obj)
 
 void ObjectRender::DrawAll()
 {
-	ID3D11DeviceContext* dc = Backend::Get().GetDeviceContext();
+	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
 	float colour[4] = { 0.2f, 0.2f,0.2f, 0.f };
 	dc->ClearRenderTargetView(bbRTV, colour);
@@ -117,5 +117,5 @@ void ObjectRender::DrawAll()
 		obj->Draw();
 	}
 
-	Backend::Get().GetSwapChain()->Present(0, 0);
+	Backend::GetSwapChain()->Present(0, 0);
 }
