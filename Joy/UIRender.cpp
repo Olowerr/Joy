@@ -54,6 +54,11 @@ void UIRender::Shutdown()
 	UI_PS->Release();
 }
 
+void UIRender::Clear()
+{
+	elements.clear();
+}
+
 void UIRender::Add(UIElement* element)
 {
 	elements.emplace_back(element);
@@ -72,4 +77,9 @@ void UIRender::Draw()
 
 	devContext->PSSetShader(UI_PS, nullptr, 0);
 
+	for (UIElement* element : elements)
+		element->Draw();
+
+
+	devContext->RSSetState(nullptr);
 }

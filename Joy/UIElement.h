@@ -6,13 +6,12 @@
 class UIElement abstract
 {
 public:
-	UIElement(DirectX::XMFLOAT2 pos, DirectX::XMFLOAT2 size);
+	UIElement(const std::string& imagePath, DirectX::XMFLOAT2 pos);
 
 	bool Hovered();
 	bool Clicked();
 
 	void Draw();
-
 
 private:
 	const DirectX::XMFLOAT2 pos;

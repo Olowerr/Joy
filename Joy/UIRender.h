@@ -1,7 +1,7 @@
 #pragma once
-#include "UIElement.h" // sprite
-
 #include<vector>
+
+#include "UIElement.h" // sprite
 
 class UIRender
 {
@@ -10,13 +10,17 @@ public:
 	void Initiate();
 	void Shutdown();
 
+	void Clear();
 	void Add(UIElement* element);
 	void Draw();
 
+	static const UINT NumVertices = 4;
+	
 private:
 	std::vector<UIElement*> elements;
 
 	ID3D11Buffer* quadBuffer;
+
 
 	ID3D11InputLayout* UI_IL;
 	ID3D11VertexShader* UI_VS;
