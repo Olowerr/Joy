@@ -19,7 +19,8 @@ public:
 	static ID3D11Device* GetDevice();
 	static ID3D11DeviceContext* GetDeviceContext();
 	static IDXGISwapChain* GetSwapChain();
-	
+	static ID3D11RenderTargetView* const* GetBackBufferRTV();
+
 	static Window& GetWindow();
 	static Mouse& GetMouse();
 	static Keyboard& GetKeyboard();
@@ -49,6 +50,7 @@ private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
+	ID3D11RenderTargetView* bbRTV;
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
 	std::chrono::duration<float> deltaTime;

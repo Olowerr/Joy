@@ -18,10 +18,6 @@ Backend::Backend()
 
 void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 {
-    //if (system)
-    //    return
-    //system = new Backend;
-
     system.width = width;
     system.height = height;
 
@@ -55,6 +51,19 @@ void Backend::Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
         &swapDesc, &system.swapChain, &system.device, nullptr, &system.deviceContext);
     assert(!FAILED(hr));
+
+
+    ID3D11Texture2D* backBuffer;
+    hr = system.swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+    if (FAILED(hr))
+    {
+        assert(SUCCEEDED(hr));
+        return;
+    }
+
+    hr = system.device->CreateRenderTargetView(backBuffer, nullptr, &system.bbRTV);
+    backBuffer->Release();
+    assert(SUCCEEDED(hr));
 
 
     hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&system.DInput, NULL);
@@ -118,6 +127,11 @@ ID3D11DeviceContext* Backend::GetDeviceContext()
 IDXGISwapChain* Backend::GetSwapChain()
 {
     return system.swapChain;
+}
+
+ID3D11RenderTargetView* const* Backend::GetBackBufferRTV()
+{
+    return &system.bbRTV;
 }
 
 Window& Backend::GetWindow()

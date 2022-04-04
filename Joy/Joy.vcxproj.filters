@@ -34,6 +34,12 @@
     <Filter Include="System\Object Renderer">
       <UniqueIdentifier>{91705ca3-9428-47b2-8af8-15ebb13e6a04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene">
+      <UniqueIdentifier>{e4854ccf-d890-4b9d-9b3d-3b2997671cb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\UI">
+      <UniqueIdentifier>{e325052b-dbc4-4b4e-8f97-479875bd4f02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -69,11 +75,20 @@
     <ClCompile Include="MeshStorage.cpp">
       <Filter>Source Files\Temp Parser</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>System\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRender.cpp">
+      <Filter>System\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,9 +116,6 @@
     <ClInclude Include="ObjectRender.h">
       <Filter>System\Object Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -112,6 +124,21 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGame.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>System\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRender.h">
+      <Filter>System\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

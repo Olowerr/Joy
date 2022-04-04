@@ -1,10 +1,4 @@
-#include "Scene.h"
-
-
-Scene::Scene(SceneState state)
-	:state(state)
-{
-}
+#include "MainGame.h"
 
 MainScene::MainScene()
 	:Scene(SceneState::MainMenu)
@@ -13,7 +7,7 @@ MainScene::MainScene()
 
 void MainScene::Load()
 {
-	storage.Load();
+	storage.LoadAll();
 
 	render.initiate();
 

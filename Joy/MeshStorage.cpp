@@ -5,20 +5,21 @@ MeshStorage::MeshStorage()
 
 }
 
-void MeshStorage::Load()
-{
-	for (UINT i = 0; i < MeshCount; i++)
-	{
-		Load(i);
-	}
-}
-
 void MeshStorage::Shutdown()
 {
 	for (Mesh* mesh : meshes)
 	{
 		mesh->vertexBuffer->Release();
 		delete mesh;
+	}
+}
+
+
+void MeshStorage::LoadAll()
+{
+	for (UINT i = 0; i < MeshCount; i++)
+	{
+		import(i);
 	}
 }
 
@@ -41,7 +42,7 @@ Mesh* MeshStorage::GetMesh(UINT index)
 	return meshes[index];
 }
 
-void MeshStorage::Load(UINT index)
+void MeshStorage::import(UINT index)
 {
 	std::vector<DirectX::XMFLOAT3> pos;
 	std::vector<DirectX::XMFLOAT2> uv;

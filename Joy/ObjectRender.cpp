@@ -18,12 +18,19 @@ void ObjectRender::Shutdown()
 void ObjectRender::initiate()
 {
 	bool succeeded = false;
+	HRESULT hr;
 
 	succeeded = LoadShaders();
 	assert(succeeded);
 
 	ID3D11Texture2D* bb;
-	Backend::GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
+	hr = Backend::GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
+	if (FAILED(hr))
+	{
+		assert(SUCCEEDED(hr));
+		return;
+	}
+
 	Backend::GetDevice()->CreateRenderTargetView(bb, nullptr, &bbRTV);
 	bb->Release();
 

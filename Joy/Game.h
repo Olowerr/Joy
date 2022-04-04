@@ -9,8 +9,8 @@ public:
 
 	void Run();
 
-	const UINT Win_Width = 1024;
-	const UINT Win_Height = 512;
+	const UINT Win_Width = 16 * 10;
+	const UINT Win_Height = 9 * 10;
 
 private:
 

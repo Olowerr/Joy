@@ -30,8 +30,9 @@ class MeshStorage
 {
 public:
 	MeshStorage();
-	void Load();
 	void Shutdown();
+	
+	void LoadAll();
 
 	Mesh* GetMesh(const std::string& name);
 	Mesh* GetMesh(UINT index);
@@ -44,9 +45,9 @@ private:
 	static const UINT MeshCount = 1;
 	const std::string meshNames[MeshCount] =
 	{
-		"cube2.obj"
+		"weow.obj"
 	};
 
 
-	void Load(UINT index);
+	void import(UINT index);
 };
