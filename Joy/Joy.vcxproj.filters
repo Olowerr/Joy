@@ -40,6 +40,9 @@
     <Filter Include="System\UI">
       <UniqueIdentifier>{e325052b-dbc4-4b4e-8f97-479875bd4f02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{a4db5131-0b2a-4024-8b1a-295702eccbc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -57,9 +60,6 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
-    </ClCompile>
     <ClCompile Include="ObjParser.cpp">
       <Filter>Source Files\Temp Parser</Filter>
     </ClCompile>
@@ -68,9 +68,6 @@
     </ClCompile>
     <ClCompile Include="ObjectRender.cpp">
       <Filter>System\Object Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshStorage.cpp">
       <Filter>Source Files\Temp Parser</Filter>
@@ -93,6 +90,12 @@
     <ClCompile Include="CharacterCamera.cpp">
       <Filter>Game\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
@@ -104,9 +107,6 @@
     <ClInclude Include="Game.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
-    </ClInclude>
     <ClInclude Include="ObjParser.h">
       <Filter>Source Files\Temp Parser</Filter>
     </ClInclude>
@@ -115,9 +115,6 @@
     </ClInclude>
     <ClInclude Include="ObjectRender.h">
       <Filter>System\Object Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshStorage.h">
       <Filter>Source Files\Temp Parser</Filter>
@@ -148,6 +145,12 @@
     </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
