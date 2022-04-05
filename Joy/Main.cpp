@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include<crtdbg.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "Game.h"
 
 #include <io.h>

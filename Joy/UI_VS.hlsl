@@ -1,7 +1,7 @@
 struct VS_OUT
 {
 	float4 pos : SV_POSITION;
-	float2 uv : UV;
+	float2 uv : TEXTURECOORD;
 };
 
 cbuffer transform : register(b0)
@@ -21,5 +21,5 @@ VS_OUT main( float2 inPos : POSITION )
 	output.uv = inPos;
 	output.pos = mul(float4(inPos, 0.1f, 1.f), projection);
 
-	return pos;
+	return output;
 }

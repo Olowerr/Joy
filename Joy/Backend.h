@@ -11,7 +11,8 @@
 class Backend
 {
 public:
-	static void Initiate(HINSTANCE hInst, int showCmd, UINT width, UINT height);
+	static Backend& Create(HINSTANCE hInst, int showCmd, UINT width, UINT height);
+
 	static void Shutdown();
 
 	static void Process();
@@ -20,6 +21,8 @@ public:
 	static ID3D11DeviceContext* GetDeviceContext();
 	static IDXGISwapChain* GetSwapChain();
 	static ID3D11RenderTargetView* const* GetBackBufferRTV();
+	static void Clear();
+	static void Display();
 
 	static Window& GetWindow();
 	static Mouse& GetMouse();
@@ -28,17 +31,27 @@ public:
 	static UINT GetWindowWidth();
 	static UINT GetWindowHeight();
 
+	static const D3D11_VIEWPORT& GetStdViewport();
+
 	static FLOAT GetDeltaTime();
 
-	static bool LoadShader(const std::string& path, std::string* const outData);
-	static bool CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
-	static bool CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
-	static bool UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth);
-
+	// --- Create Functions ---
 	static const std::string ShaderPath;
+	static bool LoadShader(const std::string& path, std::string* const outData);
+
+	// Buffers
+	static HRESULT CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
+	static HRESULT CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
+	static HRESULT UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth);
+	static HRESULT CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
+
+	// Textures
+	static HRESULT CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, UINT Width, UINT Height);
+
+
 
 private:
-	static Backend system;
+	static Backend* systemPtr;
 	Backend();
 
 	UINT width, height;
@@ -51,6 +64,7 @@ private:
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
 	ID3D11RenderTargetView* bbRTV;
+	D3D11_VIEWPORT stdViewport;
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
 	std::chrono::duration<float> deltaTime;
