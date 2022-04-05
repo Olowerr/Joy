@@ -1,7 +1,7 @@
 #include "Sprite.h"
 
 Sprite::Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale)
-	:pos(xPos, yPos), size(), imageSRV(nullptr), initialSize()
+	:pos(xPos, yPos), size(), imageSRV(nullptr), initialSize(), immutable(true)
 {
 	bool succeeded = false;
 	HRESULT hr;
@@ -9,13 +9,14 @@ Sprite::Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScal
 	succeeded = Load(imagePath);
 	assert(succeeded);
 
-	float gpuVariables[4] = {xPos, yPos, size.x, size.y };
+	float gpuVariables[4] = {xPos, -yPos, size.x, size.y };
 	hr = Backend::CreateConstCBuffer(&transformBuffer, gpuVariables, 16);
 	assert(SUCCEEDED(hr));
 	
 }
 
 Sprite::Sprite(const std::string& imagePath)
+	:immutable(false)
 {
 	bool succeeded = false;
 	HRESULT hr;
@@ -23,7 +24,7 @@ Sprite::Sprite(const std::string& imagePath)
 	succeeded = Load(imagePath);
 	assert(succeeded);
 
-	float gpuVariables[4] = { pos.x, pos.y, size.x, size.y };
+	float gpuVariables[4] = { pos.x, -pos.y, size.x, size.y };
 	hr = Backend::CreateDynamicCBuffer(&transformBuffer, gpuVariables, 16);
 	assert(SUCCEEDED(hr));
 }
@@ -36,12 +37,18 @@ void Sprite::Shutdown()
 
 void Sprite::SetPosition(FLOAT x, FLOAT y)
 {
+	if (immutable)
+		return;
+
 	pos.x = x;
 	pos.y = y;
 }
 
 void Sprite::SetScale(FLOAT x, FLOAT y)
 {
+	if (immutable)
+		return;
+
 	size.x = initialSize.x * x;
 	size.y = initialSize.y * y;
 }
@@ -61,6 +68,12 @@ bool Sprite::Clicked()
 void Sprite::Draw()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+	
+	if (!immutable)
+	{
+		float gpuVariables[4] = { pos.x, -pos.y, size.x, size.y };
+		Backend::UpdateBuffer(transformBuffer, gpuVariables, 16);
+	}
 
 	devContext->VSSetConstantBuffers(0, 1, &transformBuffer);
 	devContext->PSSetShaderResources(0, 1, &imageSRV);

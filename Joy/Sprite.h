@@ -20,6 +20,8 @@ public:
 	void Draw();
 
 private:
+	const bool immutable;
+
 	DirectX::XMINT2 initialSize;
 	DirectX::XMFLOAT2 pos;
 	DirectX::XMFLOAT2 size;
