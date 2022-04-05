@@ -13,7 +13,7 @@ class Backend
 public:
 	static Backend& Create(HINSTANCE hInst, int showCmd, UINT width, UINT height);
 
-	static void Shutdown();
+	static void Destroy();
 
 	static void Process();
 	
@@ -31,7 +31,7 @@ public:
 	static UINT GetWindowWidth();
 	static UINT GetWindowHeight();
 
-	static const D3D11_VIEWPORT& GetStdViewport();
+	static const D3D11_VIEWPORT& GetDefaultViewport();
 
 	static FLOAT GetDeltaTime();
 
@@ -51,7 +51,7 @@ public:
 
 
 private:
-	static Backend* systemPtr;
+	static Backend* system;
 	Backend();
 
 	UINT width, height;
@@ -64,7 +64,7 @@ private:
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
 	ID3D11RenderTargetView* bbRTV;
-	D3D11_VIEWPORT stdViewport;
+	D3D11_VIEWPORT defaultViewport;
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
 	std::chrono::duration<float> deltaTime;

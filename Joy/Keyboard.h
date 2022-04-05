@@ -10,7 +10,10 @@ public:
 
 	void ReadEvents();
 
+	// DIK_key
 	bool KeyDown(int key) const;
+
+	// DIK_key
 	bool KeyReleased(int key) const;
 
 private:

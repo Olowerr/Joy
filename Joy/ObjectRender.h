@@ -11,8 +11,6 @@ public:
 	ObjectRender();
 	void Shutdown();
 
-	void Initiate();
-
 	void Add(Object* obs);
 	void DrawAll();
 

@@ -18,8 +18,8 @@ cbuffer matrices : register(b1)
 VS_OUT main( float2 inPos : POSITION )
 {
 	VS_OUT output;
-	output.uv = inPos;
-	output.pos = mul(float4(inPos, 0.1f, 1.f), projection);
+	output.uv = inPos * float2(1.f, -1.f);
+	output.pos = mul(float4(pos + inPos * size, 0.1f, 1.f), projection);
 
 	return output;
 }

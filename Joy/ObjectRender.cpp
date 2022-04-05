@@ -1,20 +1,7 @@
 #include "ObjectRender.h"
 
 ObjectRender::ObjectRender()
-	:objVS(nullptr), objPS(nullptr), inpLayout(nullptr), viewPort(), bbRTV(nullptr)
-{
-}
-
-void ObjectRender::Shutdown()
-{
-	inpLayout->Release();
-	objVS->Release();
-	objPS->Release();
-
-	cam->Release();
-}
-
-void ObjectRender::Initiate()
+	:objVS(nullptr), objPS(nullptr), inpLayout(nullptr), bbRTV(nullptr)
 {
 	bool succeeded = false;
 
@@ -31,17 +18,15 @@ void ObjectRender::Initiate()
 
 	bbRTV = Backend::GetBackBufferRTV();
 
-	//temp
-	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
-	dc->IASetInputLayout(inpLayout);
-	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
 
-	dc->VSSetShader(objVS, nullptr, 0);
-	dc->VSSetConstantBuffers(1, 1, &cam);
+void ObjectRender::Shutdown()
+{
+	inpLayout->Release();
+	objVS->Release();
+	objPS->Release();
 
-	dc->PSSetShader(objPS, nullptr, 0);
-	dc->OMSetRenderTargets(1, bbRTV, nullptr);
-
+	cam->Release();
 }
 
 bool ObjectRender::LoadShaders()
@@ -88,14 +73,21 @@ void ObjectRender::Add(Object* obj)
 
 void ObjectRender::DrawAll()
 {
-	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
-	float colour[4] = { 0.2f, 0.2f,0.2f, 0.f };
-	dc->ClearRenderTargetView(*bbRTV, colour);
+	//temp
+	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
+	dc->IASetInputLayout(inpLayout);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	dc->VSSetShader(objVS, nullptr, 0);
+	dc->VSSetConstantBuffers(1, 1, &cam);
+
+	dc->PSSetShader(objPS, nullptr, 0);
+	dc->OMSetRenderTargets(1, bbRTV, nullptr);
+
 
 	for (Object* obj : obs)
 		obj->Draw();
 	
 
-	Backend::GetSwapChain()->Present(0, 0);
 }

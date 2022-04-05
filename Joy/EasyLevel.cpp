@@ -7,9 +7,6 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage&
 
 void EasyLevel::Load()
 {
-	meshStorage.LoadAll();
-
-	objRender.Initiate();
 
 	objects.reserve(66);
 	objects.emplace_back(meshStorage.GetMesh(0));

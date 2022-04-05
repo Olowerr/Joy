@@ -1,7 +1,7 @@
 #include "Backend.h"
 #include<iostream>
 
-Backend* Backend::systemPtr = nullptr;
+Backend* Backend::system = nullptr;
 
 #ifdef _DEBUG
     const std::string Backend::ShaderPath = "../Debug/";
@@ -12,23 +12,21 @@ Backend* Backend::systemPtr = nullptr;
 Backend::Backend()
     :mouse(window), keyboard(window), DInput(nullptr)
     , device(nullptr), deviceContext(nullptr), swapChain(nullptr), bbRTV(nullptr)
-    , width(0), height(0), deltaTime(0.f)
+    , width(0), height(0), deltaTime(0.f), defaultViewport()
 {
 }
 
 Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 {
-    static Backend system;
+    if (system) // Check if already created
+        return *system;
 
-    if (systemPtr) // Check if already created
-        return system;
+    system = new Backend;
 
-    systemPtr = &system;
+    system->width = width;
+    system->height = height;
 
-    system.width = width;
-    system.height = height;
-
-    bool result = system.window.Initiate(hInst, showCmd, width, height);
+    bool result = system->window.Initiate(hInst, showCmd, width, height);
     assert(result);
 
     UINT flags = 0;
@@ -50,149 +48,159 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     swapDesc.SampleDesc.Quality = 0;
     swapDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapDesc.BufferCount = 1;
-    swapDesc.OutputWindow = system.window.GetHWND();
+    swapDesc.OutputWindow = system->window.GetHWND();
     swapDesc.Windowed = true;
     swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     swapDesc.Flags = 0;
 
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
-        &swapDesc, &system.swapChain, &system.device, nullptr, &system.deviceContext);
+        &swapDesc, &system->swapChain, &system->device, nullptr, &system->deviceContext);
     assert(!FAILED(hr));
 
 
     ID3D11Texture2D* backBuffer;
-    hr = system.swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+    hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
     if (FAILED(hr)) //fixes warning on create RTV
     {
         assert(SUCCEEDED(hr));
-        return system;
+        return *system;
     }
 
-    hr = system.device->CreateRenderTargetView(backBuffer, nullptr, &system.bbRTV);
+    hr = system->device->CreateRenderTargetView(backBuffer, nullptr, &system->bbRTV);
     backBuffer->Release();
     assert(SUCCEEDED(hr));
 
 
-    hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&system.DInput, NULL);
+    hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&system->DInput, NULL);
     assert(!FAILED(hr));
 
-    result = system.mouse.Initiate(system.DInput);
+    result = system->mouse.Initiate(system->DInput);
     assert(result);
 
-    result = system.keyboard.Initiate(system.DInput, hInst);
+    result = system->keyboard.Initiate(system->DInput, hInst);
     assert(result);
 
 #ifndef _DEBUG
-    system.swapChain->SetFullscreenState(TRUE, nullptr);
+    system->swapChain->SetFullscreenState(TRUE, nullptr);
 #endif // _DEBUG
 
-    system.stdViewport.TopLeftX = 0;
-    system.stdViewport.TopLeftY = 0;
-    system.stdViewport.Width = (float)width;
-    system.stdViewport.Height = (float)height;
-    system.stdViewport.MinDepth = 0;
-    system.stdViewport.MaxDepth = 1;
+    
 
-    system.frameStart = std::chrono::system_clock::now();
+    system->defaultViewport.TopLeftX = 0;
+    system->defaultViewport.TopLeftY = 0;
+    system->defaultViewport.Width = (float)width;
+    system->defaultViewport.Height = (float)height;
+    system->defaultViewport.MinDepth = 0;
+    system->defaultViewport.MaxDepth = 1;
 
-    return system;
+    system->frameStart = std::chrono::system_clock::now();
+
+    return *system;
 }
 
-void Backend::Shutdown()
+void Backend::Destroy()
 {
-    systemPtr->swapChain->Release();
-    systemPtr->deviceContext->Release();
-    systemPtr->bbRTV->Release();
+    if (!system)
+        return;
+
+    system->swapChain->Release();
+    system->deviceContext->Release();
+    system->bbRTV->Release();
 
 #ifdef _DEBUG
     ID3D11Debug* debugger = nullptr;
-    systemPtr->device->QueryInterface(__uuidof(ID3D11Debug), (void**)&debugger);
+    system->device->QueryInterface(__uuidof(ID3D11Debug), (void**)&debugger);
     debugger->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     debugger->Release();
 #endif
 
-    systemPtr->device->Release();
+    system->device->Release();
 
+    delete system;
+    system = nullptr;
 }
 
 void Backend::Process()
 {
-    systemPtr->deltaTime = std::chrono::system_clock::now() - systemPtr->frameStart;
-    systemPtr->frameStart = std::chrono::system_clock::now();
+    system->deltaTime = std::chrono::system_clock::now() - system->frameStart;
+    system->frameStart = std::chrono::system_clock::now();
 
-    systemPtr->window.ProcessMessages();
+    system->window.ProcessMessages();
 
-    systemPtr->mouse.ReadEvents();
-    systemPtr->keyboard.ReadEvents();
+    system->mouse.ReadEvents();
+    system->keyboard.ReadEvents();
 
-    if (!systemPtr->window.IsActive())
-        systemPtr->mouse.Lock(false);
+    if (!system->window.IsActive())
+    {
+        system->mouse.Lock(false);
+        ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
+    }
 }
 
 ID3D11Device* Backend::GetDevice()
 {
-    return systemPtr->device;
+    return system->device;
 }
 
 ID3D11DeviceContext* Backend::GetDeviceContext()
 {
-    return systemPtr->deviceContext;
+    return system->deviceContext;
 }
 
 IDXGISwapChain* Backend::GetSwapChain()
 {
-    return systemPtr->swapChain;
+    return system->swapChain;
 }
 
 ID3D11RenderTargetView* const* Backend::GetBackBufferRTV()
 {
-    return &systemPtr->bbRTV;
+    return &system->bbRTV;
 }
 
 void Backend::Clear()
 {
     static const float clearColour[4] = { 0.2f, 0.2f, 0.2f, 0.f };
-    systemPtr->deviceContext->ClearRenderTargetView(systemPtr->bbRTV, clearColour);
+    system->deviceContext->ClearRenderTargetView(system->bbRTV, clearColour);
 }
 
 void Backend::Display()
 {
-    systemPtr->swapChain->Present(0, 0);
+    system->swapChain->Present(0, 0);
 }
 
 Window& Backend::GetWindow()
 {
-    return systemPtr->window;
+    return system->window;
 }
 
 Mouse& Backend::GetMouse()
 {
-    return systemPtr->mouse;
+    return system->mouse;
 }
 
 Keyboard& Backend::GetKeyboard()
 {
-    return systemPtr->keyboard;
+    return system->keyboard;
 }
 
 UINT Backend::GetWindowWidth()
 {
-    return systemPtr->width;
+    return system->width;
 }
 
 UINT Backend::GetWindowHeight()
 {
-    return systemPtr->height;
+    return system->height;
 }
 
-const D3D11_VIEWPORT& Backend::GetStdViewport()
+const D3D11_VIEWPORT& Backend::GetDefaultViewport()
 {
-    return systemPtr->stdViewport;
+    return system->defaultViewport;
 }
 
 FLOAT Backend::GetDeltaTime()
 {
-    return systemPtr->deltaTime.count();
+    return system->deltaTime.count();
 }
 
 bool Backend::LoadShader(const std::string& path, std::string* const outData)
@@ -224,7 +232,7 @@ HRESULT Backend::CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byte
     D3D11_SUBRESOURCE_DATA inData{};
     inData.pSysMem = Data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
-    return SUCCEEDED(systemPtr->device->CreateBuffer(&desc, &inData, buffer));
+    return system->device->CreateBuffer(&desc, &inData, buffer);
 }
 
 HRESULT Backend::CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth)
@@ -240,19 +248,19 @@ HRESULT Backend::CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT by
     inData.pSysMem = Data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
 
-    return systemPtr->device->CreateBuffer(&desc, &inData, buffer);
+    return system->device->CreateBuffer(&desc, &inData, buffer);
 }
 
 HRESULT Backend::UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth)
 {
     D3D11_MAPPED_SUBRESOURCE sub;
     HRESULT hr;
-    hr = systemPtr->deviceContext->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub);
+    hr = system->deviceContext->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub);
     if (FAILED(hr))
         return hr;
 
     memcpy(sub.pData, Data, byteWidth);
-    systemPtr->deviceContext->Unmap(buffer, 0);
+    system->deviceContext->Unmap(buffer, 0);
 
     return hr;
 }
@@ -270,7 +278,7 @@ HRESULT Backend::CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byte
     inData.pSysMem = Data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
 
-    return systemPtr->device->CreateBuffer(&desc, &inData, buffer);
+    return system->device->CreateBuffer(&desc, &inData, buffer);
 }
 
 HRESULT Backend::CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, UINT Width, UINT Height)
@@ -293,5 +301,5 @@ HRESULT Backend::CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, 
     inData.SysMemPitch = Width * 4;
     inData.SysMemSlicePitch = 0;
 
-    return systemPtr->device->CreateTexture2D(&desc, &inData, texture);
+    return system->device->CreateTexture2D(&desc, &inData, texture);
 }

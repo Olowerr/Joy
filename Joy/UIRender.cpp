@@ -4,10 +4,6 @@ UIRenderer::UIRenderer()
 	:UI_IL(nullptr), UI_VS(nullptr), UI_RS(nullptr), UI_PS(nullptr), quadBuffer(nullptr)
 	, projection(nullptr)
 {
-}
-
-void UIRenderer::Initiate()
-{
 	HRESULT hr;
 	bool succeeded = false;
 	std::string shaderData;
@@ -53,20 +49,22 @@ void UIRenderer::Initiate()
 	XMFLOAT4X4 matrix;
 	float width = (float)Backend::GetWindowWidth();
 	float height = (float)Backend::GetWindowHeight();
-	XMStoreFloat4x4(&matrix, XMMatrixTranspose(XMMatrixOrthographicOffCenterLH(0.f, width, -height + 1.f, -1.f, 0.1f, 1.f)));
+	XMStoreFloat4x4(&matrix, XMMatrixTranspose(XMMatrixOrthographicOffCenterLH(0.f, width, -height + 1.f, 1.f, 0.1f, 1.f)));
 	hr = Backend::CreateConstCBuffer(&projection, &matrix, sizeof(XMFLOAT4X4));
 	assert(SUCCEEDED(hr));
 
 
 	DirectX::XMFLOAT2 quadPos[4] =
 	{
-		{0.0f, 1.0f},
-		{1.0f, 1.0f},
 		{0.0f, 0.0f},
-		{1.0f, 0.0f}
+		{1.0f, 0.0f},
+		{0.0f, -1.0f},
+		{1.0f, -1.0f}
 	};
 	hr = Backend::CreateVertexBuffer(&quadBuffer, quadPos, sizeof(quadPos));
 	assert(SUCCEEDED(hr));
+
+	bbRTV = Backend::GetBackBufferRTV();
 }
 
 void UIRenderer::Shutdown()
@@ -106,6 +104,8 @@ void UIRenderer::Draw()
 	devContext->RSSetState(UI_RS);
 
 	devContext->PSSetShader(UI_PS, nullptr, 0);
+
+	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
 
 	for (Sprite* element : elements)
 		element->Draw();

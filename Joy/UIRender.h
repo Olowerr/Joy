@@ -7,7 +7,6 @@ class UIRenderer
 {
 public:
 	UIRenderer();
-	void Initiate();
 	void Shutdown();
 
 	void Clear();
@@ -28,6 +27,7 @@ private:
 	ID3D11RasterizerState* UI_RS;
 	ID3D11PixelShader* UI_PS;
 
+	ID3D11RenderTargetView* const* bbRTV;
 
 
 };

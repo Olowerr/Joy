@@ -6,8 +6,7 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 	, menu(uiRender, objRender, meshStorage)
 	, easy(uiRender, objRender, meshStorage)
 {
-	uiRender.Initiate();
-	objRender.Initiate();
+
 
 }
 
@@ -20,7 +19,7 @@ void Game::Shutdown()
 	objRender.Shutdown();
 	meshStorage.Shutdown();
 
-	Backend::Shutdown();
+	Backend::Destroy();
 }
 
 void Game::Run()
