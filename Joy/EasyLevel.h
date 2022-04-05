@@ -17,7 +17,7 @@ public:
 private:
 	std::vector<Object> objects;
 
-
+	//temp
 	MeshStorage storage;
 	ObjectRender render;
 };

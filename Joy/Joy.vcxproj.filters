@@ -154,5 +154,8 @@
     <FxCompile Include="ObjPS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="UI_VS.hlsl">
+      <Filter>System\UI</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

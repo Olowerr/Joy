@@ -1,5 +1,6 @@
 #pragma once
-#include "Scene.h"
+#include "EasyLevel.h"
+#include "UIRender.h"
 
 class Game
 {
@@ -13,8 +14,9 @@ public:
 	const UINT Win_Height = 9 * 10;
 
 private:
-
 	Window& window;
-	
-	MainScene mainScene;
+	UIRenderer uiRender;
+
+
+	EasyLevel easy;
 };

@@ -9,13 +9,14 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 
 void Game::Shutdown()
 {
-	mainScene.Shutdown();
+	easy.Shutdown();
 	Backend::Shutdown();
 }
 
 void Game::Run()
 {
-	mainScene.Load();
+	//temp
+	easy.Load();
 
 	while (window.IsOpen())
 	{
@@ -25,9 +26,9 @@ void Game::Run()
 		if (Backend::GetKeyboard().KeyDown(DIK_DELETE))
 			break;
 
-		mainScene.Update();
+		easy.Update();
 
-		mainScene.Render();
+		easy.Render();
 
 	}
 

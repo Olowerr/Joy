@@ -3,15 +3,16 @@
 
 #include "UIElement.h" // sprite
 
-class UIRender
+class UIRenderer
 {
 public:
-	UIRender() = default;
+	UIRenderer() = default;
 	void Initiate();
 	void Shutdown();
 
 	void Clear();
 	void Add(UIElement* element);
+	//void Finalize();
 	void Draw();
 
 	static const UINT NumVertices = 4;

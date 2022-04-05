@@ -1,6 +1,6 @@
 #include "UIRender.h"
 
-void UIRender::Initiate()
+void UIRenderer::Initiate()
 {
 	HRESULT hr;
 	bool succeeded = false;
@@ -39,13 +39,12 @@ void UIRender::Initiate()
 	succeeded = Backend::LoadShader(Backend::ShaderPath + "UI_PS.cso", &shaderData);
 	assert(succeeded);
 
+
 	hr = device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &UI_PS);
 	assert(SUCCEEDED(hr));
-
-
 }
 
-void UIRender::Shutdown()
+void UIRenderer::Shutdown()
 {
 	quadBuffer->Release();
 	UI_IL->Release();
@@ -54,17 +53,17 @@ void UIRender::Shutdown()
 	UI_PS->Release();
 }
 
-void UIRender::Clear()
+void UIRenderer::Clear()
 {
 	elements.clear();
 }
 
-void UIRender::Add(UIElement* element)
+void UIRenderer::Add(UIElement* element)
 {
 	elements.emplace_back(element);
 }
 
-void UIRender::Draw()
+void UIRenderer::Draw()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 

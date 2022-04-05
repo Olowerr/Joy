@@ -25,7 +25,7 @@ void ObjectRender::initiate()
 
 	ID3D11Texture2D* bb;
 	hr = Backend::GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
-	if (FAILED(hr))
+	if (FAILED(hr)) // fixes warning on CreateRTV()
 	{
 		assert(SUCCEEDED(hr));
 		return;

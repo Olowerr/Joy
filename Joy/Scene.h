@@ -1,8 +1,6 @@
 #pragma once
 #include "ObjectRender.h"
 
-#include<vector>
-
 enum struct SceneState { Unchanged, MainMenu, Easy, Medium, Hard };
 
 class Scene
