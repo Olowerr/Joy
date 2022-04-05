@@ -81,7 +81,7 @@
     <ClCompile Include="MainMenu.cpp">
       <Filter>Game\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="MainGame.cpp">
+    <ClCompile Include="EasyLevel.cpp">
       <Filter>Game\Scene</Filter>
     </ClCompile>
     <ClCompile Include="UIElement.cpp">
@@ -131,7 +131,7 @@
     <ClInclude Include="MainMenu.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="MainGame.h">
+    <ClInclude Include="EasyLevel.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="UIElement.h">

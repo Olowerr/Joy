@@ -3,7 +3,7 @@
 
 #include<vector>
 
-enum struct SceneState { Unchanged, MainMenu, MainGame };
+enum struct SceneState { Unchanged, MainMenu, Easy, Medium, Hard };
 
 class Scene
 {

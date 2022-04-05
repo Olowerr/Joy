@@ -1,11 +1,11 @@
-#include "MainGame.h"
+#include "EasyLevel.h"
 
-MainScene::MainScene()
-	:Scene(SceneState::MainMenu)
+EasyLevel::EasyLevel()
+	:Scene(SceneState::Easy)
 {
 }
 
-void MainScene::Load()
+void EasyLevel::Load()
 {
 	storage.LoadAll();
 
@@ -17,7 +17,7 @@ void MainScene::Load()
 	render.Add(&objects[0]);
 }
 
-void MainScene::Shutdown()
+void EasyLevel::Shutdown()
 {
 	render.Shutdown();
 	storage.Shutdown();
@@ -28,12 +28,12 @@ void MainScene::Shutdown()
 	}
 }
 
-void MainScene::Update()
+void EasyLevel::Update()
 {
 	objects[0].Rotate(0.f, 2.f * Backend::GetDeltaTime(), 0.f);
 }
 
-void MainScene::Render()
+void EasyLevel::Render()
 {
 	render.DrawAll();
 }

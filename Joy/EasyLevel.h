@@ -1,10 +1,10 @@
 #pragma once
 #include "Scene.h"
 
-class MainScene : public Scene
+class EasyLevel : public Scene
 {
 public:
-	MainScene();
+	EasyLevel();
 
 	// Inherited via Scene
 	virtual void Load() override;

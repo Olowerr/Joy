@@ -147,7 +147,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="EasyLevel.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Material.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -170,7 +170,7 @@
     <ClInclude Include="Backend.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="MainGame.h" />
+    <ClInclude Include="EasyLevel.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Material.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
