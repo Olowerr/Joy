@@ -1,39 +1,35 @@
 #include "EasyLevel.h"
 
-EasyLevel::EasyLevel()
-	:Scene(SceneState::Easy)
+EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
+	:Scene(uiRender, objRender, meshStorage)
 {
 }
 
 void EasyLevel::Load()
 {
-	storage.LoadAll();
-
-	render.initiate();
 
 	objects.reserve(66);
-	objects.emplace_back(storage.GetMesh(0));
+	objects.emplace_back(meshStorage.GetMesh(0));
 
-	render.Add(&objects[0]);
+	objRender.Add(&objects[0]);
 }
 
 void EasyLevel::Shutdown()
 {
-	render.Shutdown();
-	storage.Shutdown();
-
 	for (Object& obj : objects)
 	{
 		obj.Shutdown();
 	}
 }
 
-void EasyLevel::Update()
+SceneState EasyLevel::Update()
 {
 	objects[0].Rotate(0.f, 2.f * Backend::GetDeltaTime(), 0.f);
+
+	return SceneState::Unchanged;
 }
 
 void EasyLevel::Render()
 {
-	render.DrawAll();
+	objRender.DrawAll();
 }

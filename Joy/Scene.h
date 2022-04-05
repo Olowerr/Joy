@@ -1,13 +1,14 @@
 #pragma once
 #include "ObjectRender.h"
+#include "UIRender.h"
 
-enum struct SceneState { Unchanged, MainMenu, Easy, Medium, Hard };
+enum struct SceneState { Unchanged, MainMenu, Easy/*, Medium, Hard*/ };
 
 class Scene
 {
 public:
-	Scene(SceneState state)
-		:state(state)
+	Scene(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
+		:uiRender(uiRender), objRender(objRender), meshStorage(meshStorage)
 	{
 
 	}
@@ -15,10 +16,12 @@ public:
 	virtual void Load() = 0;
 	virtual void Shutdown() = 0;
 
-	virtual void Update() = 0;
+	virtual SceneState Update() = 0;
 	virtual void Render() = 0;
 
-private:
-	const SceneState state;
+protected:
+	UIRenderer& uiRender;
+	ObjectRender& objRender;
+	MeshStorage& meshStorage;
 };
 

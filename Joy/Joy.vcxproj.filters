@@ -84,7 +84,7 @@
     <ClCompile Include="EasyLevel.cpp">
       <Filter>Game\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement.cpp">
+    <ClCompile Include="Sprite.cpp">
       <Filter>System\UI</Filter>
     </ClCompile>
     <ClCompile Include="UIRender.cpp">
@@ -103,9 +103,6 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Source Files\Temp Objekt &amp; Material</Filter>
@@ -137,7 +134,7 @@
     <ClInclude Include="EasyLevel.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement.h">
+    <ClInclude Include="Sprite.h">
       <Filter>System\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIRender.h">
@@ -145,6 +142,12 @@
     </ClInclude>
     <ClInclude Include="CharacterCamera.h">
       <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +158,9 @@
       <Filter>System\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="UI_VS.hlsl">
+      <Filter>System\UI</Filter>
+    </FxCompile>
+    <FxCompile Include="UI_PS.hlsl">
       <Filter>System\UI</Filter>
     </FxCompile>
   </ItemGroup>

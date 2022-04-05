@@ -21,6 +21,7 @@ public:
 	UINT GetXPos() const;
 	UINT GetYPos() const;
 
+	// prolly not needed
 	INT GetDeltaX() const;
 	INT GetDeltaY() const;
 

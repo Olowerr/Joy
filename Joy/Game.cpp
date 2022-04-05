@@ -1,34 +1,77 @@
 #include "Game.h"
 #include<iostream>
 Game::Game(HINSTANCE hInstance, int cmdShow)
-	:window(Backend::GetWindow())
+	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
+	, window(Backend::GetWindow()) 
+	, menu(uiRender, objRender, meshStorage)
+	, easy(uiRender, objRender, meshStorage)
 {
-	Backend::Initiate(hInstance, cmdShow, Win_Width, Win_Height);
+
 
 }
 
 void Game::Shutdown()
 {
+	menu.Shutdown();
 	easy.Shutdown();
-	Backend::Shutdown();
+
+	uiRender.Shutdown();
+	objRender.Shutdown();
+	meshStorage.Shutdown();
+
+	Backend::Destroy();
 }
 
 void Game::Run()
 {
-	//temp
-	easy.Load();
+	SceneState activeState = SceneState::Unchanged;
+	Scene* activeScene = &menu;
+	activeScene->Load();
 
 	while (window.IsOpen())
 	{
+		switch (activeState)
+		{
+		default:
+			break;
+		case SceneState::MainMenu:
+			activeScene->Shutdown();
+			activeScene = &menu;
+			activeScene->Load();
+			break;
+
+		case SceneState::Easy:
+			activeScene->Shutdown();
+			activeScene = &easy;
+			activeScene->Load();
+			break;
+
+		/*case SceneState::Medium:
+			activeScene->Shutdown();
+			activeScene = &medium;
+			activeScene->Load();
+			break;*/
+
+		/*case SceneState::Hard:
+			activeScene->Shutdown();
+			activeScene = &hard;
+			activeScene->Load();
+			break;*/
+
+		}
+		
 		Backend::Process();
 
 		// temp
 		if (Backend::GetKeyboard().KeyDown(DIK_DELETE))
 			break;
 
-		easy.Update();
+		Backend::Clear();
 
-		easy.Render();
+		activeState = activeScene->Update();
+		activeScene->Render();
+
+		Backend::Display();
 
 	}
 
