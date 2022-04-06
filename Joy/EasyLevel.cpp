@@ -20,10 +20,7 @@ void EasyLevel::Load()
 		{meshStorage.GetMesh(0), F3(0.f, 0.f, 5.f), F3(0.f, 0.f, 0.f), 1.f},
 		{meshStorage.GetMesh(0), F3(0.f, 0.f, -5.f), F3(0.f, 0.f, 0.f), 1.f}
 	};
-	objRender.AddInstancedObjects(test, 2);
-
-	test[0].Shutdown();
-	test[1].Shutdown();
+	objRender.GiveInstancedObjects(test, 2);
 }
 
 void EasyLevel::Shutdown()

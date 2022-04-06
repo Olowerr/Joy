@@ -32,7 +32,7 @@ public:
 	void DrawAll();
 
 	// Add Instanced Objects
-	bool AddInstancedObjects(Object* objArr, UINT amount);
+	bool GiveInstancedObjects(Object* objArr, UINT amount);
 
 
 private:

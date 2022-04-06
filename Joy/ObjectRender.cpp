@@ -133,14 +133,19 @@ void ObjectRender::DrawAll()
 
 }
 
-bool ObjectRender::AddInstancedObjects(Object* obj, const UINT amount)
+bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 {
 	HRESULT hr;
 
 	DirectX::XMFLOAT4X4* matrices = new DirectX::XMFLOAT4X4[amount];
 
 	for (UINT i = 0; i < amount; i++)
+	{
 		matrices[i] = obj[i].GetWorldMatrix();
+
+		// might get moved with lightmaps
+		obj[i].Shutdown(); 
+	}
 
 
 	D3D11_BUFFER_DESC desc{};
@@ -174,6 +179,7 @@ bool ObjectRender::AddInstancedObjects(Object* obj, const UINT amount)
 
 	if (FAILED(hr))
 		return false;
+
 
 
 	instances.emplace_back();
