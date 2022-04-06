@@ -14,5 +14,6 @@ public:
 
 private:
 	Sprite startButton;
+	Sprite giveSaft;
 
 };

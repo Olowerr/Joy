@@ -87,6 +87,11 @@ void UIRenderer::Add(Sprite* element)
 	elements.emplace_back(element);
 }
 
+void UIRenderer::Finalize()
+{
+
+}
+
 void UIRenderer::Draw()
 {
 	static const UINT stride = sizeof(DirectX::XMFLOAT2);
