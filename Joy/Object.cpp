@@ -23,3 +23,8 @@ void Object::Draw()
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->Draw(mesh->vertexCount, 0);
 }
+
+Mesh* Object::GetMesh()
+{
+	return mesh;
+}

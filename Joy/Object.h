@@ -12,6 +12,8 @@ public:
 
 	void Draw();
 
+	Mesh* GetMesh();
+
 private:
 	Mesh* mesh;
 	//hej

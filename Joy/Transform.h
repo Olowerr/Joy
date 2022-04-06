@@ -28,6 +28,7 @@ public:
 	FLOAT GetScale() const;
 
 	ID3D11Buffer* const* GetTransformBuffer() const;
+	const DX::XMFLOAT4X4& GetWorldMatrix() const;
 
 private:
 	const bool immutable;

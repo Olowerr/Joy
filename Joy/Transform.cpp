@@ -121,9 +121,20 @@ ID3D11Buffer* const* Transform::GetTransformBuffer() const
     if (update)
         UpdateMatrix();
     
-    update = !Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DX::XMFLOAT4X4));
+    update = FAILED(Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DX::XMFLOAT4X4)));
 
     return &worldMatrixBuffer;
+}
+
+const DX::XMFLOAT4X4& Transform::GetWorldMatrix() const
+{
+    if (immutable)
+        return matrix4x4;
+
+    if (update)
+        UpdateMatrix();
+
+    return matrix4x4;
 }
 
 void Transform::UpdateMatrix() const
