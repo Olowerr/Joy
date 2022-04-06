@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include <iostream>
 
 Sprite::Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale)
 	:pos(xPos, yPos), size(), imageSRV(nullptr), initialSize(), immutable(true)
@@ -55,9 +56,9 @@ void Sprite::SetScale(FLOAT x, FLOAT y)
 
 bool Sprite::Hovered()
 {
-	const DirectX::XMINT2 mPos(Backend::GetMouse().GetXPos(), Backend::GetMouse().GetYPos());
+	const DirectX::XMFLOAT2 mPos((float)Backend::GetMouse().GetXPos(), (float)Backend::GetMouse().GetYPos());
 	return mPos.x > pos.x && mPos.x < pos.x + size.x
-		&& mPos.y > pos.x && mPos.y < pos.y + size.y;
+		&& mPos.y > pos.y && mPos.y < pos.y + size.y;
 }
 
 bool Sprite::Clicked()
