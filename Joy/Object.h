@@ -14,5 +14,6 @@ public:
 
 private:
 	Mesh* mesh;
+	//hej
 
 };

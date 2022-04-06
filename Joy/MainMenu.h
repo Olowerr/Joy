@@ -14,5 +14,9 @@ public:
 
 private:
 	Sprite startButton;
+<<<<<<< HEAD
+=======
+	Sprite giveSaft;
+>>>>>>> master
 
 };

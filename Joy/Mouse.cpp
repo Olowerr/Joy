@@ -39,8 +39,9 @@ void Mouse::ReadEvents()
 			rect.top + (rect.bottom - rect.top) / 2);
 	}
 
-	xPos = LOWORD(window.GetlParam());
-	yPos = HIWORD(window.GetlParam());
+	LPARAM lp = window.GetlParam();
+	xPos = LOWORD(lp);
+	yPos = HIWORD(lp);
 
 	DIMOUSESTATE currentState;
 	DIMouse->Acquire();

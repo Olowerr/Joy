@@ -3,6 +3,10 @@
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage)
 	, startButton("../Resources/Images/cat.png", (float)Backend::GetWindowWidth() * 0.5f, (float)Backend::GetWindowHeight() * 0.5f, 1.f, 1.f)
+<<<<<<< HEAD
+=======
+	, giveSaft("../Resources/Images/cat.png", (float)Backend::GetWindowWidth() * 0.5f, (float)Backend::GetWindowHeight() * 0.5f, 1.f, 1.f)
+>>>>>>> master
 {
 
 }
@@ -11,6 +15,11 @@ void MainMenu::Load()
 {
 	uiRender.Clear();
 	uiRender.Add(&startButton);
+<<<<<<< HEAD
+=======
+	uiRender.Add(&giveSaft);
+	uiRender.Finalize();
+>>>>>>> master
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 }
