@@ -91,22 +91,33 @@ void ObjectRender::AddStatic(Object* obj)
 
 void ObjectRender::DrawAll()
 {
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
-	//temp
-	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
-	dc->IASetInputLayout(inpLayout);
-	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	devContext->IASetInputLayout(inpLayout);
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	dc->VSSetShader(objVS, nullptr, 0);
-	dc->VSSetConstantBuffers(1, 1, &cam);
+	devContext->VSSetShader(objVS, nullptr, 0);
+	devContext->VSSetConstantBuffers(1, 1, &cam);
 
-	dc->PSSetShader(objPS, nullptr, 0);
-	dc->OMSetRenderTargets(1, bbRTV, nullptr);
-
+	devContext->PSSetShader(objPS, nullptr, 0);
+	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
 
 	for (Object* obj : objects)
 		obj->Draw();
 	
+	devContext->VSSetShader(objInstanceVS, nullptr, 0);
+	devContext->PSSetShader(objInstancePS, nullptr, 0);
+
+	for (InstanceResource& inst : instances)
+	{
+		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
+		//devContext->PSSetShaderResources(0, 1, &inst.lightMapsSRV);
+
+		// DrawIndexedInstanced();
+		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
+
+	}
 
 }
 
