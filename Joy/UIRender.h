@@ -11,7 +11,6 @@ public:
 
 	void Clear();
 	void Add(Sprite* element);
-	void Finalize();
 	void Draw();
 
 	static const UINT NumVertices = 4;
