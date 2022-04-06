@@ -11,7 +11,7 @@ void EasyLevel::Load()
 	objects.reserve(66);
 	objects.emplace_back(meshStorage.GetMesh(0));
 
-	objRender.Add(&objects[0]);
+	objRender.AddStatic(&objects[0]);
 }
 
 void EasyLevel::Shutdown()
