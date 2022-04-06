@@ -8,7 +8,7 @@ Transform::Transform()
 
 }
 
-Transform::Transform(DX::XMFLOAT3 pos, DX::XMFLOAT3 rot, FLOAT scale)
+Transform::Transform(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
     :immutable(true), position(pos), rotation(rot), scale(scale), update(false)
 {
     UpdateMatrix();
@@ -20,9 +20,12 @@ void Transform::Shutdown()
     worldMatrixBuffer->Release();
 }
 
-void Transform::Translate(const DX::XMVECTOR& movement)
+void Transform::Translate(const DirectX::XMVECTOR& movement)
 {
-    DX::XMStoreFloat3(&position, DX::XMVectorAdd(DX::XMLoadFloat3(&position), movement));
+    if (immutable)
+        return;
+
+    DirectX::XMStoreFloat3(&position, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), movement));
     update = true;
 }
 
@@ -37,12 +40,12 @@ void Transform::Translate(FLOAT X, FLOAT Y, FLOAT Z)
     update = true;
 }
 
-void Transform::SetPosition(const DX::XMVECTOR& Position)
+void Transform::SetPosition(const DirectX::XMVECTOR& Position)
 {
     if (immutable)
         return;
 
-    DX::XMStoreFloat3(&position, Position);
+    DirectX::XMStoreFloat3(&position, Position);
     update = true;
 }
 
@@ -97,13 +100,12 @@ void Transform::SetScale(FLOAT Scale)
     update = true;
 }
 
-const DX::XMFLOAT3& Transform::GetPosition() const
+const DirectX::XMFLOAT3& Transform::GetPosition() const
 {
     return position;
-
 }
 
-const DX::XMFLOAT3& Transform::GetRotation() const
+const DirectX::XMFLOAT3& Transform::GetRotation() const
 {
     return rotation;
 }
@@ -119,29 +121,34 @@ ID3D11Buffer* const* Transform::GetTransformBuffer() const
         return &worldMatrixBuffer;
 
     if (update)
+    {
         UpdateMatrix();
+        update = FAILED(Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DirectX::XMFLOAT4X4)));
+    }
     
-    update = FAILED(Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DX::XMFLOAT4X4)));
 
     return &worldMatrixBuffer;
 }
 
-const DX::XMFLOAT4X4& Transform::GetWorldMatrix() const
+const DirectX::XMFLOAT4X4& Transform::GetWorldMatrix() const
 {
     if (immutable)
         return matrix4x4;
 
     if (update)
+    {
         UpdateMatrix();
+        update = FAILED(Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DirectX::XMFLOAT4X4)));
+    }
 
     return matrix4x4;
 }
 
 void Transform::UpdateMatrix() const
 {
-    DX::XMStoreFloat4x4(&matrix4x4, DX::XMMatrixTranspose(
-        DX::XMMatrixScaling(scale, scale, scale) *
-        DX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
-        DX::XMMatrixTranslation(position.x, position.y, position.z)
+    DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixTranspose(
+        DirectX::XMMatrixScaling(scale, scale, scale) *
+        DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
+        DirectX::XMMatrixTranslation(position.x, position.y, position.z)
     ));
 }

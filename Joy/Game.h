@@ -15,11 +15,12 @@ public:
 	const UINT Win_Height = 9 * 100;
 
 private:
+
 	// Don't change order 
 	Backend& system;
 	UIRenderer uiRender;
-	ObjectRender objRender;
 	MeshStorage meshStorage;
+	ObjectRender objRender;
 	Window& window;
 
 	MainMenu menu;

@@ -7,7 +7,7 @@ class Object : public Transform
 public:
 
 	Object(Mesh* mesh);
-	Object(DX::XMFLOAT3 pos, DX::XMFLOAT3 rot, FLOAT scale, Mesh* mesh);
+	Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale);
 	virtual void Shutdown() override;
 
 	void Draw();

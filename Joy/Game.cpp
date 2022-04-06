@@ -25,7 +25,7 @@ void Game::Shutdown()
 void Game::Run()
 {
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = &menu;
+	Scene* activeScene = &easy;
 	activeScene->Load();
 
 	while (window.IsOpen())

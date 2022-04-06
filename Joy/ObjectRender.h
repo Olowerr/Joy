@@ -16,7 +16,7 @@ struct InstanceResource
 	void Shutdown()
 	{
 		transformSRV->Release();
-		//Don't release vertexBuffer, MeshStorage does that
+		//Don't release vertexBuffer, meshStorage owns it
 	}
 
 };
@@ -24,24 +24,20 @@ struct InstanceResource
 class ObjectRender
 {
 public:
-public:
 	ObjectRender();
 	void Shutdown();
+	void Clear();
 
-	void AddDynamic(Object* obj);
+	void AddObject(Object* obj);
 	void DrawAll();
 
-	// Add Static Objects
-	void AddStatic(Object* obj);
-
-	// Finalize the current Static Objects
-	bool FinalizeCurrentStatic();
+	// Add Instanced Objects
+	bool AddInstancedObjects(Object* objArr, UINT amount);
 
 
 private:
 
 	std::vector<Object*> objects;
-	std::vector<Object*> staticObjects;
 
 	ID3D11InputLayout* inpLayout;
 	ID3D11RenderTargetView* const* bbRTV;
@@ -55,8 +51,10 @@ private:
 	ID3D11VertexShader* objVS;
 	ID3D11PixelShader* objPS;
 
-	ID3D11Buffer* cam;
-
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
+
+
+	//temp
+	ID3D11Buffer* cam; 
 };

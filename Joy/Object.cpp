@@ -5,7 +5,7 @@ Object::Object(Mesh* mesh)
 
 }
 
-Object::Object(DX::XMFLOAT3 pos, DX::XMFLOAT3 rot, FLOAT scale, Mesh* mesh)
+Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
 	:Transform(pos, rot, scale), mesh(mesh)
 {
 }
