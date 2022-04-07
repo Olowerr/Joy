@@ -30,6 +30,16 @@ Sprite::Sprite(const std::string& imagePath)
 	assert(SUCCEEDED(hr));
 }
 
+Sprite* Sprite::Create(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale)
+{
+	return new Sprite(imagePath, xPos, yPos, xScale, yScale);
+}
+
+Sprite* Sprite::Create(const std::string& imagePath)
+{
+	return new Sprite(imagePath);
+}
+
 void Sprite::Shutdown()
 {
 	transformBuffer->Release();

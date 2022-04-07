@@ -13,6 +13,6 @@ public:
 	virtual void Render() override;
 
 private:
-	Sprite startButton;//*
+	PtrSprite startButton;//*
 
 };

@@ -4,11 +4,16 @@
 
 #include<DirectXMath.h>
 
-class Sprite
+typedef class Sprite
 {
 public:
-	Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
-	Sprite(const std::string& imagePath);
+	static Sprite* Create(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
+	static Sprite* Create(const std::string& imagePath);
+
+	Sprite(const Sprite&) = delete;
+	Sprite(Sprite&&) = delete;
+	Sprite& operator= (const Sprite&) = delete;
+
 	void Shutdown();
 
 	void SetPosition(FLOAT x, FLOAT y);
@@ -20,6 +25,9 @@ public:
 	void Draw();
 
 private:
+	Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
+	Sprite(const std::string& imagePath);
+
 	const bool immutable;
 
 	DirectX::XMINT2 initialSize;
@@ -30,4 +38,4 @@ private:
 	ID3D11Buffer* transformBuffer;
 
 	bool Load(const std::string& imagePath);
-};
+}*PtrSprite;
