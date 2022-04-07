@@ -40,10 +40,11 @@ Sprite* Sprite::Create(const std::string& imagePath)
 	return new Sprite(imagePath);
 }
 
-void Sprite::Shutdown()
+void Sprite::Destroy(Sprite* sprite)
 {
-	transformBuffer->Release();
-	imageSRV->Release();
+	sprite->transformBuffer->Release();
+	sprite->imageSRV->Release();
+	delete sprite;
 }
 
 void Sprite::SetPosition(FLOAT x, FLOAT y)

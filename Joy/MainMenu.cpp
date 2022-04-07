@@ -1,13 +1,14 @@
 #include "MainMenu.h"
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
-	:Scene(uiRender, objRender, meshStorage)
+	:Scene(uiRender, objRender, meshStorage), startButton(nullptr)
 {
 }
 
 void MainMenu::Load()
 {
 	startButton = Sprite::Create("../Resources/Images/cat.png", (float)Backend::GetWindowWidth() * 0.5f, (float)Backend::GetWindowHeight() * 0.5f, 1.f, 1.f);
+
 	uiRender.Clear();
 	uiRender.Add(startButton);
 
@@ -16,7 +17,7 @@ void MainMenu::Load()
 
 void MainMenu::Shutdown()
 {
-	startButton->Shutdown();
+	Sprite::Destroy(startButton);
 }
 
 SceneState MainMenu::Update()

@@ -3,6 +3,12 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage)
 {
+	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
+	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
+	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
+	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
+	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
+	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
 }
 
 void EasyLevel::Load()
