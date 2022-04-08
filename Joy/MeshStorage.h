@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
-#include "Backend.h"
 #include <DirectXMath.h>
+
+#include "Backend.h"
+
 
 struct Vertex
 {
@@ -22,6 +24,7 @@ struct Mesh
 	static const UINT Stirde = sizeof(Vertex);
 	static const UINT Offset = 0;
 
+	ID3D11ShaderResourceView* diffuseTextureSRV;
 	ID3D11Buffer* vertexBuffer;
 	UINT vertexCount;
 };
@@ -45,7 +48,7 @@ private:
 	static const UINT MeshCount = 1;
 	const std::string meshNames[MeshCount] =
 	{
-		"weow.obj"
+		"cat.obj"
 	};
 
 
