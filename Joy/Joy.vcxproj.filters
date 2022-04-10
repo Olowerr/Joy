@@ -169,8 +169,5 @@
     <FxCompile Include="ObjInstanceVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="ObjInstancePS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

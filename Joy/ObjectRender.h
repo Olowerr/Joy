@@ -46,7 +46,6 @@ private:
 
 	// Instanced
 	ID3D11VertexShader* objInstanceVS;
-	ID3D11PixelShader* objInstancePS;
 	std::vector<InstancedObjects> instances;
 
 	// Normal

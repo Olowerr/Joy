@@ -27,7 +27,6 @@ void ObjectRender::Shutdown()
 	objVS->Release();
 	objPS->Release();
 	objInstanceVS->Release();
-	objInstancePS->Release();
 
 	cam->Release();
 }
@@ -70,9 +69,6 @@ bool ObjectRender::LoadShaders()
 		return false;
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "ObjInstancePS.cso", &shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstancePS)))
 		return false;
 
 	return true;
@@ -118,7 +114,6 @@ void ObjectRender::DrawAll()
 	
 
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
-	devContext->PSSetShader(objInstancePS, nullptr, 0);
 
 	for (InstancedObjects& inst : instances)
 	{
