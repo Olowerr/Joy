@@ -1,6 +1,6 @@
 #include "MainMenu.h"
 
-MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
+MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage), startButton(nullptr)
 {
 }
@@ -23,7 +23,10 @@ void MainMenu::Shutdown()
 SceneState MainMenu::Update()
 {
 	if (startButton->Clicked())
+	{
 		std::cout << "Clicked\n";
+		return SceneState::Easy;
+	}
 
 
 

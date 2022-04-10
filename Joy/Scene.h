@@ -7,7 +7,7 @@ enum struct SceneState { Unchanged, MainMenu, Easy/*, Medium, Hard*/ };
 class Scene
 {
 public:
-	Scene(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
+	Scene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
 		:uiRender(uiRender), objRender(objRender), meshStorage(meshStorage)
 	{
 
@@ -22,6 +22,6 @@ public:
 protected:
 	UIRenderer& uiRender;
 	ObjectRender& objRender;
-	MeshStorage& meshStorage;
+	TempMeshStorage& meshStorage;
 };
 
