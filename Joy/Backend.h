@@ -8,6 +8,8 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 
+#include "stb_image.h" // "shouldn't" be here but solves lnk problems
+
 class Backend
 {
 public:
