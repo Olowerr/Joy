@@ -24,9 +24,12 @@ struct Mesh
 	static const UINT Stirde = sizeof(Vertex);
 	static const UINT Offset = 0;
 
+	// temp, should maybe be in Object
 	ID3D11ShaderResourceView* diffuseTextureSRV;
+
 	ID3D11Buffer* vertexBuffer;
-	UINT vertexCount;
+	//ID3D11Buffer* indexBuffer;
+	UINT vertexCount; // index count
 };
 
 class MeshStorage
@@ -37,15 +40,16 @@ public:
 	
 	void LoadAll();
 
+	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(const std::string& name);
 	Mesh* GetMesh(UINT index);
 
 private:
 
-	std::vector<Mesh*> meshes;
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 1;
+	static const UINT MeshCount = 2;
+	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
 		"cat.obj"

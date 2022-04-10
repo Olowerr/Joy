@@ -12,9 +12,6 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 
 void Game::Shutdown()
 {
-	menu.Shutdown();
-	easy.Shutdown();
-
 	uiRender.Shutdown();
 	objRender.Shutdown();
 	meshStorage.Shutdown();
@@ -25,7 +22,7 @@ void Game::Shutdown()
 void Game::Run()
 {
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = &easy;
+	Scene* activeScene = &menu;
 	activeScene->Load();
 
 	while (window.IsOpen())
@@ -74,5 +71,7 @@ void Game::Run()
 		Backend::Display();
 
 	}
+
+	activeScene->Shutdown();
 
 }

@@ -11,10 +11,11 @@ ObjectRender::ObjectRender()
 	bbRTV = Backend::GetBackBufferRTV();
 
 	// temp
+	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
 	using namespace DirectX;
 	XMFLOAT4X4 matri;
 	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(6.f, 3.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(0.8f, 2.f, 0.1f, 100.f);
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
 	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
 
 	Backend::CreateConstCBuffer(&cam, &matri, 64);
@@ -27,8 +28,6 @@ void ObjectRender::Shutdown()
 	objPS->Release();
 	objInstanceVS->Release();
 	objInstancePS->Release();
-
-
 
 	cam->Release();
 }

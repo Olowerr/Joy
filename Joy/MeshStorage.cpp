@@ -1,17 +1,20 @@
 #include "MeshStorage.h"
 
 MeshStorage::MeshStorage()
+	:meshes{}
 {
 
 }
 
 void MeshStorage::Shutdown()
 {
-	for (Mesh* mesh : meshes)
+	for (Mesh& mesh : meshes)
 	{
-		mesh->vertexBuffer->Release();
-		mesh->diffuseTextureSRV->Release();
-		delete mesh;
+		if (mesh.vertexBuffer) // temp so doesn't crash when no models loaded
+		{
+			mesh.vertexBuffer->Release();
+			mesh.diffuseTextureSRV->Release();
+		}
 	}
 }
 
@@ -26,10 +29,10 @@ void MeshStorage::LoadAll()
 
 Mesh* MeshStorage::GetMesh(const std::string& name)
 {
-	for (UINT i = 0; i < MeshCount; i++)
+	for (UINT i = 0; i < 1; i++)
 	{
 		if (name == meshNames[i])
-			return meshes[i];
+			return &meshes[i];
 	}
 
 	return nullptr;
@@ -37,10 +40,10 @@ Mesh* MeshStorage::GetMesh(const std::string& name)
 
 Mesh* MeshStorage::GetMesh(UINT index)
 {
-	if (index >= meshes.size())
+	if (index >= MeshCount)
 		return nullptr;
 
-	return meshes[index];
+	return &meshes[index];
 }
 
 void MeshStorage::import(UINT index)
@@ -157,9 +160,7 @@ void MeshStorage::import(UINT index)
 	}
 	reader.close();
 
-	meshes.emplace_back(new Mesh);
-	
-	meshes.back()->vertexCount = verts.size();
+	meshes[index].vertexCount = verts.size();
 	D3D11_BUFFER_DESC desc;
 	desc.ByteWidth = sizeof(Vertex) * verts.size();
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -170,19 +171,17 @@ void MeshStorage::import(UINT index)
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = verts.data();
 	data.SysMemPitch = data.SysMemSlicePitch = 0;
-	Backend::GetDevice()->CreateBuffer(&desc, &data, &meshes.back()->vertexBuffer);
+	Backend::GetDevice()->CreateBuffer(&desc, &data, &meshes[index].vertexBuffer);
 
 
 
 	if (!mtlFound)
 		return;
 
-	// #include "stb_image.h" gave lnk errors
-
 	mtlInfo = meshPath + mtlInfo;
 	int x, y, c;
 	unsigned char* imgData = stbi_load(mtlInfo.c_str(), &x, &y, &c, 4);
-	if (imgData)
+	if (!imgData)
 		return;
 	
 	ID3D11Texture2D* texture{};
@@ -191,7 +190,7 @@ void MeshStorage::import(UINT index)
 	if (FAILED(hr))
 		return;
 
-	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &meshes.back()->diffuseTextureSRV);
+	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &meshes[index].diffuseTextureSRV);
 	texture->Release();
 
 }
