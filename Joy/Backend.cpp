@@ -58,7 +58,7 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     assert(!FAILED(hr));
 
 
-    ID3D11Texture2D* backBuffer;
+    ID3D11Texture2D* backBuffer{};
     hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
     if (FAILED(hr)) //fixes warning on create RTV
     {
