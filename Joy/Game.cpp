@@ -14,7 +14,6 @@ void Game::Shutdown()
 {
 	uiRender.Shutdown();
 	objRender.Shutdown();
-	meshStorage.Shutdown();
 
 	Backend::Destroy();
 }
@@ -59,10 +58,6 @@ void Game::Run()
 		
 		Backend::Process();
 
-		// temp
-		if (Backend::GetKeyboard().KeyDown(DIK_DELETE))
-			break;
-
 		Backend::Clear();
 
 		activeState = activeScene->Update();
@@ -70,6 +65,20 @@ void Game::Run()
 
 		Backend::Display();
 
+
+		// temp --
+		if (Backend::GetKeyboard().KeyReleased(DIK_DELETE))
+			break;
+
+		else if (Backend::GetKeyboard().KeyReleased(DIK_F))
+			Backend::GetSwapChain()->SetFullscreenState(TRUE, nullptr);
+
+		else if (Backend::GetKeyboard().KeyReleased(DIK_1) && activeScene != &menu)
+			activeState = SceneState::MainMenu;
+
+		else if (Backend::GetKeyboard().KeyReleased(DIK_2) && activeScene != &easy)
+			activeState = SceneState::Easy;
+		// --
 	}
 
 	activeScene->Shutdown();

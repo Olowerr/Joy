@@ -6,10 +6,10 @@ struct PS_IN
 	uint ID : InstanceID;
 };
 
-Texture2DArray textures : register(t1);
+Texture2D image : register(t0);
 SamplerState defaultSampler : register(s0);
 
 float4 main(PS_IN input) : SV_TARGET
 {
-	return textures.Sample(defaultSampler, float3(input.uv, input.ID));
+	return image.Sample(defaultSampler, input.uv);
 }

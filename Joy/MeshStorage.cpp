@@ -1,25 +1,12 @@
 #include "MeshStorage.h"
 
-MeshStorage::MeshStorage()
+TempMeshStorage::TempMeshStorage()
 	:meshes{}
 {
 
 }
 
-void MeshStorage::Shutdown()
-{
-	for (Mesh& mesh : meshes)
-	{
-		if (mesh.vertexBuffer) // temp so doesn't crash when no models loaded
-		{
-			mesh.vertexBuffer->Release();
-			mesh.diffuseTextureSRV->Release();
-		}
-	}
-}
-
-
-void MeshStorage::LoadAll()
+void TempMeshStorage::LoadAll()
 {
 	for (UINT i = 0; i < MeshCount; i++)
 	{
@@ -27,9 +14,18 @@ void MeshStorage::LoadAll()
 	}
 }
 
-Mesh* MeshStorage::GetMesh(const std::string& name)
+void TempMeshStorage::UnLoadAll()
 {
-	for (UINT i = 0; i < 1; i++)
+	for (Mesh& mesh : meshes)
+	{
+		mesh.vertexBuffer->Release();
+		mesh.diffuseTextureSRV->Release();
+	}
+}
+
+Mesh* TempMeshStorage::GetMesh(const std::string& name)
+{
+	for (UINT i = 0; i < MeshCount; i++)
 	{
 		if (name == meshNames[i])
 			return &meshes[i];
@@ -38,7 +34,7 @@ Mesh* MeshStorage::GetMesh(const std::string& name)
 	return nullptr;
 }
 
-Mesh* MeshStorage::GetMesh(UINT index)
+Mesh* TempMeshStorage::GetMesh(UINT index)
 {
 	if (index >= MeshCount)
 		return nullptr;
@@ -46,7 +42,7 @@ Mesh* MeshStorage::GetMesh(UINT index)
 	return &meshes[index];
 }
 
-void MeshStorage::import(UINT index)
+void TempMeshStorage::import(UINT index)
 {
 	std::vector<DirectX::XMFLOAT3> pos;
 	std::vector<DirectX::XMFLOAT2> uv;
@@ -85,7 +81,7 @@ void MeshStorage::import(UINT index)
 		{
 			reader >> vtxInfo[0];
 			reader >> vtxInfo[1];
-			vtxInfo[1] = 1 - vtxInfo[1];
+			vtxInfo[1] = 1.f - vtxInfo[1];
 			uv.emplace_back(vtxInfo);
 		}
 
@@ -107,7 +103,7 @@ void MeshStorage::import(UINT index)
 				reader.ignore(1);
 				reader >> faceN;
 
-				verts.emplace_back(pos[faceP - 1], uv[faceT - 1], norm[faceN - 1]);
+				verts.emplace_back(pos[faceP - 1], norm[faceN - 1], uv[faceT - 1]);
 			}
 
 			reader >> fileInfo;

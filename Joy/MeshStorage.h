@@ -7,22 +7,28 @@
 
 struct Vertex
 {
-	Vertex(float* Pos, float* Uv, float* Norm)
-		:pos(Pos), uv(Uv), normal(Norm)
+	Vertex(float* Pos, float* Norm, float* Uv)
+		:pos(Pos), normal(Norm), uv(Uv)
 	{ }
-	Vertex(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 norm)
-		:pos(pos), uv(uv), normal(norm)
+	Vertex(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 norm, DirectX::XMFLOAT2 uv)
+		:pos(pos), normal(norm), uv(uv)
 	{ }
 	
 	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 uv;
 };
 
 struct Mesh
 {
 	static const UINT Stirde = sizeof(Vertex);
 	static const UINT Offset = 0;
+
+	void Shutdown()
+	{
+		diffuseTextureSRV->Release();
+		vertexBuffer->Release();
+	}
 
 	// temp, should maybe be in Object
 	ID3D11ShaderResourceView* diffuseTextureSRV;
@@ -32,13 +38,24 @@ struct Mesh
 	UINT vertexCount; // index count
 };
 
-class MeshStorage
+/*
+
+	Most of this file is temporary, will change with .JOY lib
+	Most of this file is temporary, will change with .JOY lib
+	Most of this file is temporary, will change with .JOY lib
+	Most of this file is temporary, will change with .JOY lib
+	Most of this file is temporary, will change with .JOY lib
+	Most of this file is temporary, will change with .JOY lib
+
+*/
+
+class TempMeshStorage
 {
 public:
-	MeshStorage();
-	void Shutdown();
-	
+	TempMeshStorage();
+
 	void LoadAll();
+	void UnLoadAll();
 
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(const std::string& name);
@@ -48,7 +65,7 @@ private:
 
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 2;
+	static const UINT MeshCount = 1;
 	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{

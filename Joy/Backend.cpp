@@ -130,11 +130,11 @@ void Backend::Process()
     system->mouse.ReadEvents();
     system->keyboard.ReadEvents();
 
-    if (!system->window.IsActive())
+    /*if (!system->window.IsActive())
     {
         system->mouse.Lock(false);
         ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
-    }
+    }*/
 }
 
 ID3D11Device* Backend::GetDevice()

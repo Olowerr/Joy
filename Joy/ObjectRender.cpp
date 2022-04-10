@@ -34,8 +34,9 @@ void ObjectRender::Shutdown()
 
 void ObjectRender::Clear()
 {
-	for (InstanceResource& inst : instances)
+	for (InstancedObjects& inst : instances)
 		inst.Shutdown();
+	instances.clear();
 
 	objects.clear();
 }
@@ -119,7 +120,7 @@ void ObjectRender::DrawAll()
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
 	devContext->PSSetShader(objInstancePS, nullptr, 0);
 
-	for (InstanceResource& inst : instances)
+	for (InstancedObjects& inst : instances)
 	{
 		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
@@ -188,6 +189,7 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
 	//instances.back().indexBuffer = obj[0].GetMesh()->indexBuffer;
 	instances.back().transformSRV = tempSRV;
+	instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
 	//instances.back().lightMapsSRV = get tha lightmaps srv
 
 	return true;
