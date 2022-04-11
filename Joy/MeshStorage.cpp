@@ -1,21 +1,12 @@
 #include "MeshStorage.h"
 
-MeshStorage::MeshStorage()
+TempMeshStorage::TempMeshStorage()
+	:meshes{}
 {
 
 }
 
-void MeshStorage::Shutdown()
-{
-	for (Mesh* mesh : meshes)
-	{
-		mesh->vertexBuffer->Release();
-		delete mesh;
-	}
-}
-
-
-void MeshStorage::LoadAll()
+void TempMeshStorage::LoadAll()
 {
 	for (UINT i = 0; i < MeshCount; i++)
 	{
@@ -23,26 +14,35 @@ void MeshStorage::LoadAll()
 	}
 }
 
-Mesh* MeshStorage::GetMesh(const std::string& name)
+void TempMeshStorage::UnLoadAll()
+{
+	for (Mesh& mesh : meshes)
+	{
+		mesh.vertexBuffer->Release();
+		mesh.diffuseTextureSRV->Release();
+	}
+}
+
+Mesh* TempMeshStorage::GetMesh(const std::string& name)
 {
 	for (UINT i = 0; i < MeshCount; i++)
 	{
 		if (name == meshNames[i])
-			return meshes[i];
+			return &meshes[i];
 	}
 
 	return nullptr;
 }
 
-Mesh* MeshStorage::GetMesh(UINT index)
+Mesh* TempMeshStorage::GetMesh(UINT index)
 {
-	if (index >= meshes.size())
+	if (index >= MeshCount)
 		return nullptr;
 
-	return meshes[index];
+	return &meshes[index];
 }
 
-void MeshStorage::import(UINT index)
+void TempMeshStorage::import(UINT index)
 {
 	std::vector<DirectX::XMFLOAT3> pos;
 	std::vector<DirectX::XMFLOAT2> uv;
@@ -53,58 +53,47 @@ void MeshStorage::import(UINT index)
 	std::string fileInfo;
 	std::ifstream reader;
 
-	float vtx[3];
-	float vtxUV[2];
-	float vtxN[3];
+	float vtxInfo[3]{};
 
 	int faceP;
 	int faceT;
 	int faceN;
 
+	bool mtlFound = false;
+	std::string mtlInfo = "";
+
 	reader.open(meshPath + meshNames[index]);
 	if (!reader.is_open())
 		return;
 
-	reader.clear();
-	reader.seekg(0);
 	while (reader >> fileInfo)
 	{
 
 		if (fileInfo == "v")
 		{
-			reader >> vtx[0];
-			reader >> vtx[1];
-			reader >> vtx[2];
-			pos.emplace_back(vtx);
+			reader >> vtxInfo[0];
+			reader >> vtxInfo[1];
+			reader >> vtxInfo[2];
+			pos.emplace_back(vtxInfo);
 		}
-		if (fileInfo == "vt")
+
+		else if (fileInfo == "vt")
 		{
-			reader >> vtxUV[0];
-			reader >> vtxUV[1];
-			vtxUV[1] = 1 - vtxUV[1];
-			uv.emplace_back(vtxUV);
+			reader >> vtxInfo[0];
+			reader >> vtxInfo[1];
+			vtxInfo[1] = 1.f - vtxInfo[1];
+			uv.emplace_back(vtxInfo);
 		}
-		if (fileInfo == "vn")
+
+		else if (fileInfo == "vn")
 		{
-			reader >> vtxN[0];
-			reader >> vtxN[1];
-			reader >> vtxN[2];
-			norm.emplace_back(vtxN);
+			reader >> vtxInfo[0];
+			reader >> vtxInfo[1];
+			reader >> vtxInfo[2];
+			norm.emplace_back(vtxInfo);
 		}
-		//if (fileInfo == "usemtl")
-		//{
-		//	idxS += idxC;
-		//	objectVect[ObjectIdx].setIdxS(idxS);
-		//	reader >> fileInfo;
-		//	objectVect[ObjectIdx].setMtrlName(fileInfo);
-		//	if (skipFirstMtl)
-		//	{
-		//		objectVect[ObjectIdx].setIdxC(idxC);
-		//	}
-		//	idxC = 0;
-		//	skipFirstMtl = true;
-		//}
-		if (fileInfo == "f")
+
+		else if (fileInfo == "f")
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -114,18 +103,60 @@ void MeshStorage::import(UINT index)
 				reader.ignore(1);
 				reader >> faceN;
 
-				verts.emplace_back(	pos[faceP - 1],
-									uv[faceT - 1],
-									norm[faceN - 1]);
-
+				verts.emplace_back(pos[faceP - 1], norm[faceN - 1], uv[faceT - 1]);
 			}
+
+			reader >> fileInfo;
+			if (fileInfo[0] != 'f')
+				break;
+			else
+				reader.putback('f');
+		}
+
+		else if (fileInfo == "mtllib")
+			reader >> mtlInfo;
+
+		else if (fileInfo == "usemtl")
+		{
+			if (mtlFound)
+				continue;
+
+			if (mtlInfo == "")
+				continue;
+
+			std::ifstream mtlReader;
+			mtlReader.open(meshPath + mtlInfo); // open .mtl file
+			if (!reader.is_open())
+				continue;
+
+			reader >> fileInfo; // mtl name
+
+			bool found = false;
+			while (mtlReader >> mtlInfo && mtlReader.is_open()) // go through .mtl 
+			{
+				if (mtlInfo == "newmtl")
+				{
+					mtlReader >> mtlInfo;
+					if (mtlInfo == fileInfo) // look for the mtl
+						found = true;
+				}
+
+				if (found)
+				{
+					if (mtlInfo == "map_Kd")
+					{
+						mtlFound = true;
+						mtlReader >> mtlInfo;
+						mtlReader.close(); // close .mtl
+					}
+				}
+			}
+			mtlReader.close();
 		}
 	}
 	reader.close();
 
-	meshes.emplace_back(new Mesh);
-	
-	meshes.back()->vertexCount = verts.size();
+	meshes[index].vertexCount = verts.size();
 	D3D11_BUFFER_DESC desc;
 	desc.ByteWidth = sizeof(Vertex) * verts.size();
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -136,5 +167,26 @@ void MeshStorage::import(UINT index)
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = verts.data();
 	data.SysMemPitch = data.SysMemSlicePitch = 0;
-	Backend::GetDevice()->CreateBuffer(&desc, &data, &meshes.back()->vertexBuffer);
+	Backend::GetDevice()->CreateBuffer(&desc, &data, &meshes[index].vertexBuffer);
+
+
+
+	if (!mtlFound)
+		return;
+
+	mtlInfo = meshPath + mtlInfo;
+	int x, y, c;
+	unsigned char* imgData = stbi_load(mtlInfo.c_str(), &x, &y, &c, 4);
+	if (!imgData)
+		return;
+	
+	ID3D11Texture2D* texture{};
+	HRESULT hr = Backend::CreateConstSRVTexture2D(&texture, imgData, x, y);
+	stbi_image_free(imgData);
+	if (FAILED(hr))
+		return;
+
+	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &meshes[index].diffuseTextureSRV);
+	texture->Release();
+
 }

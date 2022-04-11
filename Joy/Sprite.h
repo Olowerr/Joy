@@ -1,6 +1,5 @@
 #pragma once
 #include "Backend.h"
-#include "stb_image.h"
 
 #include<DirectXMath.h>
 

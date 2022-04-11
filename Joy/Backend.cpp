@@ -58,8 +58,8 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     assert(!FAILED(hr));
 
 
-    ID3D11Texture2D* backBuffer;
-    hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+    ID3D11Texture2D* backBuffer{};
+    hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
     if (FAILED(hr)) //fixes warning on create RTV
     {
         assert(SUCCEEDED(hr));
@@ -71,7 +71,7 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     assert(SUCCEEDED(hr));
 
 
-    hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&system->DInput, NULL);
+    hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&system->DInput), NULL);
     assert(!FAILED(hr));
 
     result = system->mouse.Initiate(system->DInput);
@@ -109,7 +109,7 @@ void Backend::Destroy()
 
 #ifdef _DEBUG
     ID3D11Debug* debugger = nullptr;
-    system->device->QueryInterface(__uuidof(ID3D11Debug), (void**)&debugger);
+    system->device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugger));
     debugger->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     debugger->Release();
 #endif
@@ -130,11 +130,11 @@ void Backend::Process()
     system->mouse.ReadEvents();
     system->keyboard.ReadEvents();
 
-    if (!system->window.IsActive())
+    /*if (!system->window.IsActive())
     {
         system->mouse.Lock(false);
         ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
-    }
+    }*/
 }
 
 ID3D11Device* Backend::GetDevice()

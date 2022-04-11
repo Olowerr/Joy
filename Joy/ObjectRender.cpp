@@ -11,10 +11,11 @@ ObjectRender::ObjectRender()
 	bbRTV = Backend::GetBackBufferRTV();
 
 	// temp
+	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
 	using namespace DirectX;
 	XMFLOAT4X4 matri;
 	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(6.f, 3.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(0.8f, 2.f, 0.1f, 100.f);
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
 	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
 
 	Backend::CreateConstCBuffer(&cam, &matri, 64);
@@ -26,17 +27,15 @@ void ObjectRender::Shutdown()
 	objVS->Release();
 	objPS->Release();
 	objInstanceVS->Release();
-	objInstancePS->Release();
-
-
 
 	cam->Release();
 }
 
 void ObjectRender::Clear()
 {
-	for (InstanceResource& inst : instances)
+	for (InstancedObjects& inst : instances)
 		inst.Shutdown();
+	instances.clear();
 
 	objects.clear();
 }
@@ -70,9 +69,6 @@ bool ObjectRender::LoadShaders()
 		return false;
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "ObjInstancePS.cso", &shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstancePS)))
 		return false;
 
 	return true;
@@ -118,9 +114,8 @@ void ObjectRender::DrawAll()
 	
 
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
-	devContext->PSSetShader(objInstancePS, nullptr, 0);
 
-	for (InstanceResource& inst : instances)
+	for (InstancedObjects& inst : instances)
 	{
 		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
@@ -189,6 +184,7 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
 	//instances.back().indexBuffer = obj[0].GetMesh()->indexBuffer;
 	instances.back().transformSRV = tempSRV;
+	instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
 	//instances.back().lightMapsSRV = get tha lightmaps srv
 
 	return true;

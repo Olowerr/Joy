@@ -1,7 +1,6 @@
 #pragma once
 #include "MainMenu.h"
 #include "EasyLevel.h"
-#include "UIRender.h"
 
 class Game
 {
@@ -11,15 +10,21 @@ public:
 
 	void Run();
 
+#ifdef _DEBUG
 	const UINT Win_Width = 16 * 100;
 	const UINT Win_Height = 9 * 100;
+#else
+	const UINT Win_Width = 1920;
+	const UINT Win_Height = 1080;
+#endif
+
 
 private:
 
 	// Don't change order 
 	Backend& system;
 	UIRenderer uiRender;
-	MeshStorage meshStorage;
+	TempMeshStorage meshStorage;
 	ObjectRender objRender;
 	Window& window;
 

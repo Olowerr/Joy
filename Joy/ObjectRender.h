@@ -4,11 +4,12 @@
 #include "Backend.h"
 #include "Object.h"
 
-struct InstanceResource
+struct InstancedObjects
 {
 	ID3D11Buffer* vertexBuffer;
 	//ID3D11Buffer* indexBuffer; 
 	ID3D11ShaderResourceView* transformSRV;
+	ID3D11ShaderResourceView* mtl;
 	//ID3D11ShaderResourceView* lightMapsSRV;
 	UINT instanceCount;
 	UINT indexCount;
@@ -16,7 +17,8 @@ struct InstanceResource
 	void Shutdown()
 	{
 		transformSRV->Release();
-		//Don't release vertexBuffer, meshStorage owns it
+		// Don't release vertexBuffer, meshStorage owns it
+		// Don't release mtl, meshStorage owns it
 	}
 
 };
@@ -44,8 +46,7 @@ private:
 
 	// Instanced
 	ID3D11VertexShader* objInstanceVS;
-	ID3D11PixelShader* objInstancePS;
-	std::vector<InstanceResource> instances;
+	std::vector<InstancedObjects> instances;
 
 	// Normal
 	ID3D11VertexShader* objVS;

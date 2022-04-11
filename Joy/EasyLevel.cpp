@@ -1,6 +1,6 @@
 #include "EasyLevel.h"
 
-EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, MeshStorage& meshStorage)
+EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage)
 {
 	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
@@ -31,10 +31,13 @@ void EasyLevel::Load()
 
 void EasyLevel::Shutdown()
 {
+	meshStorage.UnLoadAll();
+
+	objRender.Clear();
+
 	for (Object& obj : objects)
 		obj.Shutdown();
-	
-	objRender.Clear();
+	objects.clear();
 }
 
 SceneState EasyLevel::Update()
