@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Backend.cpp" />
     <ClCompile Include="CharacterCamera.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -171,6 +172,7 @@
   <ItemGroup>
     <ClInclude Include="Backend.h" />
     <ClInclude Include="CharacterCamera.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="EasyLevel.h" />
