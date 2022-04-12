@@ -12,6 +12,7 @@ public:
 	bool isHit();
 private:
 	int points;
+	bool isRendered;
 	Mesh pickupMeshes;
 	DirectX::BoundingBox charBB;
 	DirectX::BoundingBox itemBB;
