@@ -12,6 +12,7 @@ bool Pickup::isHit()
 	if (this->hitItem(charBB, itemBB))
 	{
 		this->isRendered = false;
+		//hi
 	}
 	return false;
 }
