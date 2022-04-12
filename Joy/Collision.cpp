@@ -71,3 +71,8 @@ void Collision::distToComp(DX::XMVECTOR distToMove)
     dBox.Center.z += distToMove.m128_f32[2];
 
 }
+
+bool Collision::hitItem(const DX::BoundingBox& charbBox, const DX::BoundingBox& itemBbox)
+{
+    return charbBox.Intersects(itemBbox);
+}

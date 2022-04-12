@@ -10,6 +10,7 @@ public:
 	Collision();
 	void collided(const DX::BoundingBox& charBbox, const DX::BoundingBox& targetBbox);
 	void distToComp(DX::XMVECTOR distToMove);
+	bool hitItem(const DX::BoundingBox& charbBox, const DX::BoundingBox& itemBbox);
 private:
 	DX::BoundingBox bBox;
 	DX::BoundingBox dBox;

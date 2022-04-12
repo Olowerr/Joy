@@ -99,6 +99,9 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
@@ -153,6 +156,12 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Collision.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
       <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>

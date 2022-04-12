@@ -18,6 +18,7 @@ void Object::Shutdown()
 void Object::Draw()
 {
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
+	
 
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());

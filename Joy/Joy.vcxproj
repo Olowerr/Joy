@@ -156,6 +156,7 @@
     </ClCompile>
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectRender.cpp" />
     <ClCompile Include="ObjParser.cpp">
@@ -182,6 +183,7 @@
     </ClInclude>
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectRender.h" />
     <ClInclude Include="ObjParser.h">
