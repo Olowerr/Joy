@@ -14,7 +14,7 @@ ObjectRender::ObjectRender()
 	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
 	using namespace DirectX;
 	XMFLOAT4X4 matri;
-	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(6.f, 3.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.f, 0.f, -6.f, 0.f), XMVectorSet(0.f, 0.f, 1.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
 	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
 

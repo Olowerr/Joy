@@ -19,7 +19,8 @@ void TempMeshStorage::UnLoadAll()
 	for (Mesh& mesh : meshes)
 	{
 		mesh.vertexBuffer->Release();
-		mesh.diffuseTextureSRV->Release();
+		if (mesh.diffuseTextureSRV)
+			mesh.diffuseTextureSRV->Release();
 	}
 }
 
@@ -105,12 +106,6 @@ void TempMeshStorage::import(UINT index)
 
 				verts.emplace_back(pos[faceP - 1], norm[faceN - 1], uv[faceT - 1]);
 			}
-
-			reader >> fileInfo;
-			if (fileInfo[0] != 'f')
-				break;
-			else
-				reader.putback('f');
 		}
 
 		else if (fileInfo == "mtllib")

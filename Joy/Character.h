@@ -3,6 +3,7 @@
 #include "Mouse.h"
 #include "Object.h"
 #include "Transform.h"
+#include <iostream>
 
 namespace DX = DirectX;
 class Character: public Object
