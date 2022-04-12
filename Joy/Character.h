@@ -11,9 +11,11 @@ public:
 	Character(Mesh* mesh);
 	void move();
 private:
-	
+	Keyboard& key;
 	float speed;
-	int xDir;
-	int yDir;
-	int zDir;
+	float maxSpeed;
+	float minSpeed;
+	float maxDiagSpeed;
+	bool increaseSpeed;
+	bool decreaseSpeed;
 };
