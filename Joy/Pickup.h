@@ -10,7 +10,7 @@ class Pickup : public Collision
 {
 public:
 	Pickup(std::vector<Mesh> pickupMeshes_in, std::vector<bool> isRendered, int points_in);
-	bool isHit();
+	bool isHit(); // Is a bool to be able to see.
 private:
 	int points;
 	std::vector<Mesh> pickupMeshes;

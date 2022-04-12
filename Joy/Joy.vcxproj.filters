@@ -43,6 +43,9 @@
     <Filter Include="Object">
       <UniqueIdentifier>{a4db5131-0b2a-4024-8b1a-295702eccbc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Pickups">
+      <UniqueIdentifier>{3841b299-5c9f-4099-886a-eb3f39d5157c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -101,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Object\Pickups</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Object\Pickups</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
