@@ -1,10 +1,10 @@
 #include "Pickup.h"
 
-Pickup::Pickup(Mesh mesh_in, int points_in)
+Pickup::Pickup(std::vector<Mesh> pickupMeshes_in, std::vector<bool> isRendered, int points_in)
 {
-	this->pickupMeshes = mesh_in;
 	this->points = points_in;
-	this->isRendered = true;
+	this->isRendered = isRendered_in;
+	this->pickupMeshes = pickupMeshes_in;
 }
 
 bool Pickup::isHit()
@@ -12,7 +12,11 @@ bool Pickup::isHit()
 	if (this->hitItem(charBB, itemBB))
 	{
 		this->isRendered = false;
-		//hi
 	}
 	return false;
+}
+
+void setRendered(int pickupElement)
+{
+	this->pickupMeshes.erase(pickupElement);
 }

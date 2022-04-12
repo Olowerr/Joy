@@ -1,4 +1,5 @@
 #include "EasyLevel.h"
+#include "Pickup.h"
 
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage)
@@ -27,6 +28,8 @@ void EasyLevel::Load()
 		{meshStorage.GetMesh(0), F3(0.f, 0.f, -5.f), F3(0.f, 0.f, 0.f), 1.f}
 	};
 	objRender.GiveInstancedObjects(test, 2);
+
+
 }
 
 void EasyLevel::Shutdown()

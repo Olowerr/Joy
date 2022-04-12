@@ -111,6 +111,7 @@ void ObjectRender::DrawAll()
 
 	for (Object* obj : objects)
 		obj->Draw();
+		
 	
 
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
