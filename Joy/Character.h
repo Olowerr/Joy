@@ -14,9 +14,12 @@ public:
 private:
 	Keyboard& key;
 	float speed;
+	float speed2;
+	bool diagMove;
 	float maxSpeed;
 	float minSpeed;
 	float maxDiagSpeed;
-	bool increaseSpeed;
 	bool decreaseSpeed;
+	bool decreaseSpeed2;
+
 };

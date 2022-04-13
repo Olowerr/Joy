@@ -6,22 +6,118 @@ Character::Character(Mesh* mesh)
 	maxSpeed = 10.0f;
 	maxDiagSpeed = 5.0f;
 	minSpeed = 0.0f;
-	speed = 0.00005f;
-	Character::decreaseSpeed = true;
-	Character::increaseSpeed = false;
+	speed = 0.0f;
+	speed2 = 0.0f;
+	decreaseSpeed = false;
+	decreaseSpeed2 = false;
+	diagMove = false;
 }
 
 void Character::move()
 {
+	//Känner av knapptryck och rör karaktären i den rikting man trycker
 	if (key.KeyDown(DIK_W))
 	{
-		speed = 0.00005f;
+		decreaseSpeed = false;
+		speed = 0.1f;
+		speed += 0.01f * Backend::GetDeltaTime();
+	}
+	if (key.KeyReleased(DIK_W))
+	{
+		decreaseSpeed = true;
+	}
+
+
+	if (key.KeyDown(DIK_A))
+	{
+		decreaseSpeed2 = false;
+		speed2 = -0.1f;
+		speed2 -= 0.01f * Backend::GetDeltaTime();
+	}
+	if (key.KeyReleased(DIK_A))
+	{
+		decreaseSpeed2 = true;
+	}
+
+
+	if (key.KeyDown(DIK_S))
+	{
+		decreaseSpeed = false;
+		speed = -0.1f;
+		speed -= 0.01f * Backend::GetDeltaTime();
+	}
+	if (key.KeyReleased(DIK_S))
+	{
+		decreaseSpeed = true;
+	}
+
+
+	if (key.KeyDown(DIK_D))
+	{
+		decreaseSpeed2 = false;
+		speed2 = 0.1f;
+		speed2 += 0.01f * Backend::GetDeltaTime();
+	}
+	if (key.KeyReleased(DIK_D))
+	{
+		decreaseSpeed2 = true;
+	}
+
+
+	//Flyttar karaktären och ser till att diagonal rörelse inte är snabbare än rakt fram/bak
+	if(diagMove == false)
+		Translate(speed2, 0.0f, speed);
+	if (speed != 0.0f && speed2 != 0.0f)
+	{
+		diagMove = true;
+		Translate(speed2 / 2, 0.0f, speed / 2);
+	}
+	else
+		diagMove = false;
+		
+
+	//Minskar speed exponentiellt tills hastigheten är nära 0, då sätts den till 0.
+	if (decreaseSpeed == true)
+	{
+		speed *= 0.985f;
+		if (speed < 0.0001f&&speed> 0.0f)
+		{
+			decreaseSpeed = false;
+			speed = 0.0f;
+		}
+		else if (speed > -0.0001f && speed < 0.0f)
+		{
+			decreaseSpeed = false;
+			speed = 0.0f;
+		}
+	}
+	if (decreaseSpeed2 == true)
+	{
+		speed2 *= 0.985f;
+		if (speed2 < 0.0001f && speed2> 0.0f)
+		{
+			decreaseSpeed2 = false;
+			speed2 = 0.0f;
+		}
+		else if (speed2 > -0.0001f && speed2 < 0.0f)
+		{
+			decreaseSpeed2 = false;
+			speed2 = 0.0f;
+		}
+	}
+
+
+
+
+	/*if (key.KeyDown(DIK_W))
+	{
+		speed = 1.0f;
 		increaseSpeed = true;
 		decreaseSpeed = false;
-		while (speed <= maxSpeed)
+		if (speed <= maxSpeed)
 		{
-			(speed *= 1.05)*Backend::GetDeltaTime();
-			Translate(0.0f, 0.0f,speed );
+			speed *= 1.05*Backend::GetDeltaTime();
+			Translate(0.0f, 0.0f, speed);
 		}
 		
 		if (key.KeyDown(DIK_A))
@@ -30,9 +126,9 @@ void Character::move()
 			{
 				speed = maxDiagSpeed/2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(-speed / 2, 0.0f, speed / 2);
 			}
 		}
@@ -42,21 +138,21 @@ void Character::move()
 			{
 				speed = maxDiagSpeed/2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05f;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(speed / 2, 0.0f, speed / 2);
 			}
 		}
 	}
 	else if (key.KeyDown(DIK_A))
 	{
-		speed = 0.00005f;
+		speed = 1.0f;
 		increaseSpeed = true;
 		decreaseSpeed = false;
-		while (speed <= maxSpeed)
+		if (speed <= maxSpeed)
 		{
-			(speed *= 1.05) * Backend::GetDeltaTime();
+			speed *= 1.05f * Backend::GetDeltaTime();;
 			Translate(-speed, 0.0f, 0.0f);
 		}
 		if (key.KeyDown(DIK_W))
@@ -65,9 +161,9 @@ void Character::move()
 			{
 				speed = maxDiagSpeed / 2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(-speed / 2, 0.0f, speed / 2);
 			}
 		}
@@ -77,21 +173,21 @@ void Character::move()
 			{
 				speed = maxDiagSpeed / 2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(-speed / 2, 0.0f, -speed / 2);
 			}
 		}
 	}
 	else if (key.KeyDown(DIK_S))
 	{
-		speed = 0.00005f;
+		speed = 1.0f;
 		increaseSpeed = true;
 		decreaseSpeed = false;
-		while (speed <= maxSpeed)
+		if (speed <= maxSpeed)
 		{
-			(speed *= 1.05) * Backend::GetDeltaTime();
+			speed *= 1.05f * Backend::GetDeltaTime();;
 			Translate(0.0f, 0.0f, -speed);
 		}
 		if (key.KeyDown(DIK_A))
@@ -100,9 +196,9 @@ void Character::move()
 			{
 				speed = maxDiagSpeed / 2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(-speed / 2, 0.0f, -speed / 2);
 			}
 		}
@@ -112,21 +208,21 @@ void Character::move()
 			{
 				speed = maxDiagSpeed / 2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(speed / 2, 0.0f, -speed / 2);
 			}
 		}
 	}
 	else if (key.KeyDown(DIK_D))
 	{
-		speed = 0.00005f;
+		speed = 1.0f;
 		increaseSpeed = true;
 		decreaseSpeed = false;
-		while (speed <= maxSpeed)
+		if (speed <= maxSpeed)
 		{
-			(speed *= 1.05) * Backend::GetDeltaTime();
+			speed *= 1.05f * Backend::GetDeltaTime();;
 			Translate(speed, 0.0f, 0.0f);
 		}
 		if (key.KeyDown(DIK_S))
@@ -135,9 +231,9 @@ void Character::move()
 			{
 				speed = maxDiagSpeed / 2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(speed / 2, 0.0f, -speed / 2);
 			}
 		}
@@ -147,14 +243,15 @@ void Character::move()
 			{
 				speed = maxDiagSpeed / 2;
 			}
-			while (speed <= maxDiagSpeed)
+			if (speed <= maxDiagSpeed)
 			{
-				speed *= 1.05;
+				speed *= 1.05f * Backend::GetDeltaTime();;
 				Translate(speed / 2, 0.0f, speed / 2);
 			}
 		}
 	}
-	else
+	*/
+	/*else
 	{
 		increaseSpeed = false;
 		decreaseSpeed = true;
@@ -167,4 +264,5 @@ void Character::move()
 			speed = 0;
 		}
 	}
+	*/
 }
