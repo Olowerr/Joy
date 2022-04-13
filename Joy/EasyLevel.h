@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "Pickup.h"
 
 class EasyLevel : public Scene
 {
@@ -16,5 +17,6 @@ public:
 
 private:
 	std::vector<Object> objects;
+	Pickup pickups;
 
 };

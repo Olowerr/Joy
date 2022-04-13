@@ -1,5 +1,5 @@
 #include "EasyLevel.h"
-#include "Pickup.h"
+
 
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage)
@@ -20,6 +20,8 @@ void EasyLevel::Load()
 	objects.emplace_back(meshStorage.GetMesh(0));
 
 	objRender.AddObject(&objects[0]);
+
+	// TODO: Look here for inspiration of how to fetch the pickup objects.
 
 	typedef DirectX::XMFLOAT3 F3;
 	Object test[2] =

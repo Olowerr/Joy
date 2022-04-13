@@ -22,7 +22,5 @@ private:
 	std::vector<Object> pickupObjs;
 	std::vector<bool> isRendered;
 
-	
-
 };
 
