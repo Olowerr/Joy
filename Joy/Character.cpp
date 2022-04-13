@@ -4,7 +4,6 @@ Character::Character(Mesh* mesh)
 	:Object(mesh), key(Backend::GetKeyboard())
 {
 	maxSpeed = 10.0f;
-	maxDiagSpeed = 5.0f;
 	minSpeed = 0.0f;
 	speed = 0.0f;
 	speed2 = 0.0f;
@@ -16,11 +15,10 @@ Character::Character(Mesh* mesh)
 void Character::move()
 {
 	//Känner av knapptryck och rör karaktären i den rikting man trycker
-	if (key.KeyDown(DIK_W))
+	if (key.KeyDown(DIK_W)&& speed >= -0.001f)
 	{
 		decreaseSpeed = false;
-		speed = 0.1f;
-		speed += 0.01f * Backend::GetDeltaTime();
+		speed += 0.04f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_W))
 	{
@@ -28,11 +26,10 @@ void Character::move()
 	}
 
 
-	if (key.KeyDown(DIK_A))
+	if (key.KeyDown(DIK_A)&& speed2 <= 0.001f)
 	{
 		decreaseSpeed2 = false;
-		speed2 = -0.1f;
-		speed2 -= 0.01f * Backend::GetDeltaTime();
+		speed2 -= 0.04f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_A))
 	{
@@ -40,11 +37,10 @@ void Character::move()
 	}
 
 
-	if (key.KeyDown(DIK_S))
+	if (key.KeyDown(DIK_S)&& speed <= 0.001f)
 	{
 		decreaseSpeed = false;
-		speed = -0.1f;
-		speed -= 0.01f * Backend::GetDeltaTime();
+		speed -= 0.04f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_S))
 	{
@@ -52,11 +48,10 @@ void Character::move()
 	}
 
 
-	if (key.KeyDown(DIK_D))
+	if (key.KeyDown(DIK_D)&& speed2 >= -0.001f)
 	{
 		decreaseSpeed2 = false;
-		speed2 = 0.1f;
-		speed2 += 0.01f * Backend::GetDeltaTime();
+		speed2 += 0.04f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_D))
 	{
@@ -79,7 +74,7 @@ void Character::move()
 	//Minskar speed exponentiellt tills hastigheten är nära 0, då sätts den till 0.
 	if (decreaseSpeed == true)
 	{
-		speed *= 0.985f;
+		speed *= 0.98f;
 		if (speed < 0.0001f&&speed> 0.0f)
 		{
 			decreaseSpeed = false;
@@ -93,7 +88,7 @@ void Character::move()
 	}
 	if (decreaseSpeed2 == true)
 	{
-		speed2 *= 0.985f;
+		speed2 *= 0.98f;
 		if (speed2 < 0.0001f && speed2> 0.0f)
 		{
 			decreaseSpeed2 = false;

@@ -18,7 +18,6 @@ private:
 	bool diagMove;
 	float maxSpeed;
 	float minSpeed;
-	float maxDiagSpeed;
 	bool decreaseSpeed;
 	bool decreaseSpeed2;
 
