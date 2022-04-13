@@ -44,7 +44,7 @@
       <UniqueIdentifier>{a4db5131-0b2a-4024-8b1a-295702eccbc6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object\Pickups">
-      <UniqueIdentifier>{3841b299-5c9f-4099-886a-eb3f39d5157c}</UniqueIdentifier>
+      <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

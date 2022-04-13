@@ -6,17 +6,23 @@
 #include <vector>
 
 
-class Pickup : public Collision
+class Pickup : public Object, public Collision
 {
 public:
-	Pickup(std::vector<Mesh> pickupMeshes_in, std::vector<bool> isRendered, int points_in);
-	bool isHit(); // Is a bool to be able to see.
+	Pickup(std::vector<Mesh*> mesh_in, int points_in, const int itemsInScene_in);
+	void isHit();
+
+	bool get_IsElementRendered( int itemElement_in );
 private:
 	int points;
-	std::vector<Mesh> pickupMeshes;
-	std::vector<bool> isRendered;
 
 	DirectX::BoundingBox charBB;
-	DirectX::BoundingBox itemBB;
+	std::vector<DirectX::BoundingBox> itemsBB;
+
+	std::vector<Object> pickupObjs;
+	std::vector<bool> isRendered;
+
+	
+
 };
 
