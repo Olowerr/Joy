@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Character.h"
+#include "Collision.h"
 class testScene : public Scene
 {
 public:
@@ -18,5 +19,6 @@ public:
 
 
 	Character* test;
+	Character* collTest;
 
 };

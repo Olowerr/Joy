@@ -3,6 +3,7 @@
 Character::Character(Mesh* mesh)
 	:Object(mesh), key(Backend::GetKeyboard())
 {
+	//Basic movement variable initiation
 	maxSpeed = 0.1f;
 	minSpeed = -0.1f;
 	zSpeed = 0.0f;
@@ -10,8 +11,20 @@ Character::Character(Mesh* mesh)
 	decreaseZSpeed = false;
 	decreaseXSpeed = false;
 	diagMove = false;
+
+	//Jump/Boost variable initiation
 	fuel = 10.0f;
 	jumpDecc = 0.0f;
+	boostAcc = 0.0f;
+	canBoost = false;
+	doJump = false;
+	gravity = 0.0f;
+	isAtMaxHeight = false;
+	isGrounded = false;
+	jumpForce = 0.0f;
+	jumpStartPos = 0.0f;
+	minHegihtBeforeBoost = 0.0f;
+	yPos = 0.0f;
 }
 
 void Character::move()
@@ -22,7 +35,7 @@ void Character::move()
 	{
 		decreaseZSpeed = false;
 		if(zSpeed <maxSpeed)
-			zSpeed += 0.05f * Backend::GetDeltaTime();
+			zSpeed += 0.06f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_W))
 	{
@@ -34,7 +47,7 @@ void Character::move()
 	{
 		decreaseXSpeed = false;
 		if (xSpeed > minSpeed)
-			xSpeed -= 0.05f * Backend::GetDeltaTime();
+			xSpeed -= 0.06f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_A))
 	{
@@ -46,7 +59,7 @@ void Character::move()
 	{
 		decreaseZSpeed = false;
 		if (zSpeed > minSpeed)
-			zSpeed -= 0.05f * Backend::GetDeltaTime();
+			zSpeed -= 0.06f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_S))
 	{
@@ -58,7 +71,7 @@ void Character::move()
 	{
 		decreaseXSpeed = false;
 		if (xSpeed < maxSpeed)
-			xSpeed += 0.05f * Backend::GetDeltaTime();
+			xSpeed += 0.06f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_D))
 	{
@@ -66,7 +79,7 @@ void Character::move()
 	}
 
 
-	//Flyttar karaktären och ser till att diagonal rörelse inte är snabbare än rakt fram/bak
+	//Moves the character and makes sure the diagonal speen can't exceed forward or sideways speed
 	if(diagMove == false)
 		Translate(xSpeed, 0.0f, zSpeed);
 	if (zSpeed != 0.0f && xSpeed != 0.0f)
@@ -78,7 +91,8 @@ void Character::move()
 		diagMove = false;
 		
 
-	//Minskar speed exponentiellt tills hastigheten är nära 0, då sätts den till 0.
+	//Decreases the speed until the speed has almost reached 0 
+	//which results in the speed being set to 0 to properly stop it
 	if (decreaseZSpeed == true)
 	{
 		if (zSpeed > 0.0f)
@@ -132,7 +146,6 @@ void Character::JumpAndBoost()
 	if (yPos > 0)
 	{
 		jumpForce -= jumpDecc;
-
 	}
 	else if (yPos <= 0) // change later to check if colided with ground ( now assumes ground is Ypos 0 )
 	{
@@ -156,7 +169,6 @@ void Character::JumpAndBoost()
 		{
 			jumpDecc += 0.05;
 			jumpForce -= jumpDecc;     //acts as gravity, but the value cahnges over time, so i called it something else
-
 		}
 	}
 
@@ -167,13 +179,10 @@ void Character::JumpAndBoost()
 		fuel -= 0.001;
 		jumpForce += boostAcc;
 		boostAcc += 0.1;
-
-
 	}
 
 	if (key.KeyReleased(DIK_SPACE)) //reset decceleration and boost when space is released
 	{
-
 		jumpDecc = 0;
 		boostAcc = 0;
 	}
@@ -182,6 +191,17 @@ void Character::JumpAndBoost()
 	Translate(0, jumpForce, 0);
 
 
+}
+
+void Character::respawn()
+{
+	//temp
+	if(key.KeyDown(DIK_G))
+		Translate(0.0f, -0.01f, 0.0f);
+
+	//Checks if the player has fallen too far off the map and sets the position back to start
+	if (GetPosition().y < -4.0f)
+		SetPosition(0.0f, 0.0f, 0.0f);
 }
 
 

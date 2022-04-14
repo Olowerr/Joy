@@ -11,8 +11,6 @@ Collision::Collision()
 
 void Collision::collided(const DX::BoundingBox& charBbox, const DX::BoundingBox& targetBbox)
 {
-    
-
     if (charBbox.Intersects(targetBbox))
     {
         xIntDist = targetBbox.Center.x - charBbox.Center.x;

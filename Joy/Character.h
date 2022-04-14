@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "Transform.h"
 #include <iostream>
+#include "Collision.h"
 
 namespace DX = DirectX;
 class Character: public Object
@@ -12,6 +13,7 @@ public:
 	Character(Mesh* mesh);
 	void move();
 	void JumpAndBoost();
+	void respawn();
 private:
 	Keyboard& key;
 	float zSpeed;

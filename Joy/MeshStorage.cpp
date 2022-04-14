@@ -151,6 +151,28 @@ void TempMeshStorage::import(UINT index)
 	}
 	reader.close();
 
+	float tempXmax = -INFINITY;
+	float tempXmin = INFINITY;
+	float tempYmax = -INFINITY;
+	float tempYmin = INFINITY;
+	float tempZmax = -INFINITY;
+	float tempZmin = INFINITY;
+	for (size_t i = 0; i < pos.size(); i++)
+	{
+		if (pos[i].x > tempXmax)
+			tempXmax = pos[i].x;
+		if (pos[i].x < tempXmin)
+			tempXmin = pos[i].x;
+		if (pos[i].y > tempYmax)
+			tempYmax = pos[i].y;
+		if (pos[i].y < tempYmin)
+			tempYmin = pos[i].y;
+		if (pos[i].z > tempZmax)
+			tempZmax = pos[i].z;
+		if (pos[i].z < tempZmin)
+			tempZmin = pos[i].z;
+	}
+
 	meshes[index].vertexCount = verts.size();
 	D3D11_BUFFER_DESC desc;
 	desc.ByteWidth = sizeof(Vertex) * verts.size();
