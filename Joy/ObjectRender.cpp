@@ -10,15 +10,17 @@ ObjectRender::ObjectRender()
 
 	bbRTV = Backend::GetBackBufferRTV();
 
-	// temp
-	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
-	using namespace DirectX;
-	XMFLOAT4X4 matri;
-	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.f, 0.f, -6.f, 0.f), XMVectorSet(0.f, 0.f, 1.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
-	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
+	camera = new CharacterCamera();
 
-	Backend::CreateConstCBuffer(&cam, &matri, 64);
+	//// temp
+	//float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
+	//using namespace DirectX;
+	DirectX::XMFLOAT4X4 temp = camera->GetViewAndProj();
+	//XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.f, 0.f, -6.f, 0.f), XMVectorSet(0.f, 0.f, 1.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	//XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
+	//XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
+
+	Backend::CreateConstCBuffer(&camCb, &temp, 64);
 }
 
 void ObjectRender::Shutdown()
@@ -27,8 +29,7 @@ void ObjectRender::Shutdown()
 	objVS->Release();
 	objPS->Release();
 	objInstanceVS->Release();
-
-	cam->Release();
+	camCb->Release();
 }
 
 void ObjectRender::Clear()
@@ -68,8 +69,7 @@ bool ObjectRender::LoadShaders()
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstanceVS)))
 		return false;
 
-	if (!Backend::LoadShader(Backend::ShaderPath + "ObjInstancePS.cso", &shaderData))
-		return false;
+
 
 	return true;
 }
@@ -98,11 +98,18 @@ void ObjectRender::DrawAll()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
+
+	camera->UpdateCam();
+	camera->SetView();
+
+	viewAndProj = camera->GetViewAndProj();
+
+	Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+
 	devContext->IASetInputLayout(inpLayout);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	devContext->VSSetShader(objVS, nullptr, 0);
-	devContext->VSSetConstantBuffers(1, 1, &cam);
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport()); // temp
 
