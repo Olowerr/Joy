@@ -3,261 +3,113 @@
 Character::Character(Mesh* mesh)
 	:Object(mesh), key(Backend::GetKeyboard())
 {
-	maxSpeed = 10.0f;
-	minSpeed = 0.0f;
-	speed = 0.0f;
-	speed2 = 0.0f;
-	decreaseSpeed = false;
-	decreaseSpeed2 = false;
+	maxSpeed = 0.1f;
+	minSpeed = -0.1f;
+	zSpeed = 0.0f;
+	xSpeed = 0.0f;
+	decreaseZSpeed = false;
+	decreaseXSpeed = false;
 	diagMove = false;
 }
 
 void Character::move()
 {
-	//Känner av knapptryck och rör karaktären i den rikting man trycker
-	if (key.KeyDown(DIK_W)&& speed >= -0.001f)
+	//After a movement key is pressed the speed in each respective direction is increased.
+	//On release a bool is triggered which starts to slow down the player
+	if (key.KeyDown(DIK_W)&& zSpeed >= -0.001f)
 	{
-		decreaseSpeed = false;
-		speed += 0.04f * Backend::GetDeltaTime();
+		decreaseZSpeed = false;
+		if(zSpeed <maxSpeed)
+			zSpeed += 0.05f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_W))
 	{
-		decreaseSpeed = true;
+		decreaseZSpeed = true;
 	}
 
 
-	if (key.KeyDown(DIK_A)&& speed2 <= 0.001f)
+	if (key.KeyDown(DIK_A)&& xSpeed <= 0.001f)
 	{
-		decreaseSpeed2 = false;
-		speed2 -= 0.04f * Backend::GetDeltaTime();
+		decreaseXSpeed = false;
+		if (xSpeed > minSpeed)
+			xSpeed -= 0.05f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_A))
 	{
-		decreaseSpeed2 = true;
+		decreaseXSpeed = true;
 	}
 
 
-	if (key.KeyDown(DIK_S)&& speed <= 0.001f)
+	if (key.KeyDown(DIK_S)&& zSpeed <= 0.001f)
 	{
-		decreaseSpeed = false;
-		speed -= 0.04f * Backend::GetDeltaTime();
+		decreaseZSpeed = false;
+		if (zSpeed > minSpeed)
+			zSpeed -= 0.05f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_S))
 	{
-		decreaseSpeed = true;
+		decreaseZSpeed = true;
 	}
 
 
-	if (key.KeyDown(DIK_D)&& speed2 >= -0.001f)
+	if (key.KeyDown(DIK_D)&& xSpeed >= -0.001f)
 	{
-		decreaseSpeed2 = false;
-		speed2 += 0.04f * Backend::GetDeltaTime();
+		decreaseXSpeed = false;
+		if (xSpeed < maxSpeed)
+			xSpeed += 0.05f * Backend::GetDeltaTime();
 	}
 	if (key.KeyReleased(DIK_D))
 	{
-		decreaseSpeed2 = true;
+		decreaseXSpeed = true;
 	}
 
 
 	//Flyttar karaktären och ser till att diagonal rörelse inte är snabbare än rakt fram/bak
 	if(diagMove == false)
-		Translate(speed2, 0.0f, speed);
-	if (speed != 0.0f && speed2 != 0.0f)
+		Translate(xSpeed, 0.0f, zSpeed);
+	if (zSpeed != 0.0f && xSpeed != 0.0f)
 	{
 		diagMove = true;
-		Translate(speed2 / 2, 0.0f, speed / 2);
+		Translate(xSpeed / 2, 0.0f, zSpeed / 2);
 	}
 	else
 		diagMove = false;
 		
 
 	//Minskar speed exponentiellt tills hastigheten är nära 0, då sätts den till 0.
-	if (decreaseSpeed == true)
+	if (decreaseZSpeed == true)
 	{
-		speed *= 0.98f;
-		if (speed < 0.0001f&&speed> 0.0f)
+		if (zSpeed > 0.0f)
+			zSpeed -= 0.1f * Backend::GetDeltaTime();
+		if(zSpeed < 0.0f)
+			zSpeed += 0.1f * Backend::GetDeltaTime();
+		if (zSpeed < 0.001f&& zSpeed> 0.0f)
 		{
-			decreaseSpeed = false;
-			speed = 0.0f;
+			decreaseZSpeed = false;
+			zSpeed = 0.0f;
 		}
-		else if (speed > -0.0001f && speed < 0.0f)
+		else if (zSpeed > -0.001f && zSpeed < 0.0f)
 		{
-			decreaseSpeed = false;
-			speed = 0.0f;
+			decreaseZSpeed = false;
+			zSpeed = 0.0f;
 		}
 	}
-	if (decreaseSpeed2 == true)
+	if (decreaseXSpeed == true)
 	{
-		speed2 *= 0.98f;
-		if (speed2 < 0.0001f && speed2> 0.0f)
-		{
-			decreaseSpeed2 = false;
-			speed2 = 0.0f;
-		}
-		else if (speed2 > -0.0001f && speed2 < 0.0f)
-		{
-			decreaseSpeed2 = false;
-			speed2 = 0.0f;
-		}
-	}
+		if (xSpeed > 0.0f)
+			xSpeed -= 0.1f * Backend::GetDeltaTime();
+		if (xSpeed < 0.0f)
+			xSpeed += 0.1f * Backend::GetDeltaTime();
 
-
-
-
-	/*if (key.KeyDown(DIK_W))
-	{
-		speed = 1.0f;
-		increaseSpeed = true;
-		decreaseSpeed = false;
-		if (speed <= maxSpeed)
+		if (xSpeed < 0.001f && xSpeed> 0.0f)
 		{
-			speed *= 1.05*Backend::GetDeltaTime();
-			Translate(0.0f, 0.0f, speed);
+			decreaseXSpeed = false;
+			xSpeed = 0.0f;
 		}
-		
-		if (key.KeyDown(DIK_A))
+		else if (xSpeed > -0.001f && xSpeed < 0.0f)
 		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed/2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(-speed / 2, 0.0f, speed / 2);
-			}
-		}
-		if (key.KeyDown(DIK_D))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed/2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(speed / 2, 0.0f, speed / 2);
-			}
+			decreaseXSpeed = false;
+			xSpeed = 0.0f;
 		}
 	}
-	else if (key.KeyDown(DIK_A))
-	{
-		speed = 1.0f;
-		increaseSpeed = true;
-		decreaseSpeed = false;
-		if (speed <= maxSpeed)
-		{
-			speed *= 1.05f * Backend::GetDeltaTime();;
-			Translate(-speed, 0.0f, 0.0f);
-		}
-		if (key.KeyDown(DIK_W))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed / 2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(-speed / 2, 0.0f, speed / 2);
-			}
-		}
-		if (key.KeyDown(DIK_S))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed / 2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(-speed / 2, 0.0f, -speed / 2);
-			}
-		}
-	}
-	else if (key.KeyDown(DIK_S))
-	{
-		speed = 1.0f;
-		increaseSpeed = true;
-		decreaseSpeed = false;
-		if (speed <= maxSpeed)
-		{
-			speed *= 1.05f * Backend::GetDeltaTime();;
-			Translate(0.0f, 0.0f, -speed);
-		}
-		if (key.KeyDown(DIK_A))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed / 2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(-speed / 2, 0.0f, -speed / 2);
-			}
-		}
-		if (key.KeyDown(DIK_D))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed / 2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(speed / 2, 0.0f, -speed / 2);
-			}
-		}
-	}
-	else if (key.KeyDown(DIK_D))
-	{
-		speed = 1.0f;
-		increaseSpeed = true;
-		decreaseSpeed = false;
-		if (speed <= maxSpeed)
-		{
-			speed *= 1.05f * Backend::GetDeltaTime();;
-			Translate(speed, 0.0f, 0.0f);
-		}
-		if (key.KeyDown(DIK_S))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed / 2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(speed / 2, 0.0f, -speed / 2);
-			}
-		}
-		if (key.KeyDown(DIK_W))
-		{
-			if (speed > maxDiagSpeed)
-			{
-				speed = maxDiagSpeed / 2;
-			}
-			if (speed <= maxDiagSpeed)
-			{
-				speed *= 1.05f * Backend::GetDeltaTime();;
-				Translate(speed / 2, 0.0f, speed / 2);
-			}
-		}
-	}
-	*/
-	/*else
-	{
-		increaseSpeed = false;
-		decreaseSpeed = true;
-		if (speed > 0.1f&&decreaseSpeed==true)
-		{
-			speed *= 0.5f;
-		}
-		else
-		{
-			speed = 0;
-		}
-	}
-	*/
 }

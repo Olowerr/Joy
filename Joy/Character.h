@@ -13,12 +13,11 @@ public:
 	void move();
 private:
 	Keyboard& key;
-	float speed;
-	float speed2;
+	float zSpeed;
+	float xSpeed;
 	bool diagMove;
 	float maxSpeed;
 	float minSpeed;
-	bool decreaseSpeed;
-	bool decreaseSpeed2;
-
+	bool decreaseZSpeed;
+	bool decreaseXSpeed;
 };
