@@ -2,7 +2,7 @@
 
 Pickup::Pickup(Mesh* mesh_in, int points_in, const int itemsInScene_in)
 	: Object(mesh_in), pickupObj(mesh_in), itemsInScene(itemsInScene_in),
-	pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupRTV(nullptr)
+	pickupVS(nullptr), pickupIVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupRTV(nullptr)
 {
 /* ========================================================= */
 	// == DX SPECIFICS ==
@@ -13,15 +13,15 @@ Pickup::Pickup(Mesh* mesh_in, int points_in, const int itemsInScene_in)
 
 	pickupRTV = Backend::GetBackBufferRTV();
 
-	// == TEMP CAM SPECIFICS ==
-		//float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
-		//using namespace DirectX;
-		//XMFLOAT4X4 matri;
-		//XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(6.f, 3.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		//XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
-		//XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
+		// TEMP: Camera will be fed from Camera Class.
+		/*float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
+		using namespace DirectX;
+		XMFLOAT4X4 matri;
+		XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(6.f, 3.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
+		XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
 
-		//Backend::CreateConstCBuffer(&pickupCam, &matri, 64);
+		Backend::CreateConstCBuffer(&pickupCam, &matri, 64);*/
 
 /* ========================================================= */
 
@@ -56,6 +56,23 @@ bool Pickup::get_IsElementRendered(int itemElement_in)
 	return this->isRendered[itemElement_in];
 }
 
+bool Pickup::CreateInputLayout(const std::string& shaderData)
+{
+	D3D11_INPUT_ELEMENT_DESC iLayout[] =
+	{
+		// Vertex Data.
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+		// Instance Data.
+		{"INSTANCEPOS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1}
+	};
+	HRESULT hr = Backend::GetDevice()->CreateInputLayout(iLayout, 3, shaderData.c_str(), shaderData.length(), &pickupIL);
+
+	return SUCCEEDED(hr);
+}
+
 
 bool Pickup::LoadPickupShader()
 {
@@ -81,7 +98,7 @@ bool Pickup::LoadPickupShader()
 	return true;
 }
 
-bool Pickup::GiveInstancedObjects(Object* obj, const UINT amount)
+/*bool Pickup::GiveInstancedObjects(Object* obj, const UINT amount)
 {
 	HRESULT hr;
 
@@ -136,9 +153,9 @@ bool Pickup::GiveInstancedObjects(Object* obj, const UINT amount)
 	instanceVec.back().mtlPickup = obj[0].GetMesh()->diffuseTextureSRV;
 
 	return true;
-}
+}*/
 
-bool Pickup::CreateInputLayout(const std::string &shaderData)
+/*bool Pickup::CreateInputLayout(const std::string &shaderData)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
 	{
@@ -150,38 +167,63 @@ bool Pickup::CreateInputLayout(const std::string &shaderData)
 	HRESULT hr = Backend::GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &pickupIL);
 
 	return false;
-}
+}*/
 
-void Pickup::Clear()
+/*void Pickup::Clear()
 {
 	for (InstancedPickups& inst : this->instanceVec)
 		inst.Shutdown();
 	this->instanceVec.clear();
-}
+}*/
 
-void Pickup::ShutDown()
+/*void Pickup::ShutDown()
 {
 	matrixCBuffer->Release();
 	pickupIL->Release();
 	pickupVS->Release();
 	pickupPS->Release();
 
-	// temp
+	// TEMP: Camera will be fed from Camera Class.
 	pickupCam->Release();
-}
+}*/
 
-void Pickup::drawInstanced()
+/*void Pickup::drawInstanced()
 {
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->IASetInputLayout(inpLayout);
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	devContext->VSSetShader(objVS, nullptr, 0);
+	devContext->VSSetConstantBuffers(1, 1, &cam);
+
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport()); // temp
+
+	devContext->PSSetShader(objPS, nullptr, 0);
+	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
+
+	for (Object* obj : objects)
+		obj->Draw();
 
 
-}
+	devContext->VSSetShader(objInstanceVS, nullptr, 0);
 
-void Pickup::updatePositions()
+	for (InstancedPickups& inst : instances)
+	{
+		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
+	}
+}*/
+
+/*void Pickup::updatePositions()
 {
-	// TODO: Update Buffer
+	// TODO: Update Buffer w/ matrices.
+
+
+
 
 	Backend::UpdateBuffer(matrixCBuffer, nullptr, 2);
 
-}
+}*/
 
 

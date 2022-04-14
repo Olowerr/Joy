@@ -7,6 +7,43 @@
 #include <vector>
 
 
+/*
+
+	AddPick(Object obj, float3 pos)
+	{
+	objects.emplace_back (obj)
+	objects.back().translate(pos)
+	}
+
+	finialize()
+	{
+		matrices = new float4x4[objects.size()]
+
+		for each object
+			matrices[i] = object.getWorldMatrix()
+
+		// create dynamic buffer (Backend::createDynamicBuffer)
+		// create SRV 
+		
+	}
+
+	update()
+	{
+
+		for each object
+			object.rotate()
+			matrices[i] = object.getWorldMatrix()
+
+		Backend::UpdateBuffer(worldMatrixBuffer, matrices, sizeof(float4x4) * objects.size())
+
+	}
+
+	class Pickup
+	private:
+		float4x4 *matrices <- lika stor som objects.size()
+
+*/
+
 struct InstancedPickups
 {
 	ID3D11Buffer* instancedPickupVB;
@@ -23,22 +60,22 @@ struct InstancedPickups
 	}
 };
 
-class Pickup : public Object, public Collision
+class Pickup : public Collision
 {
 public:
-	Pickup(Mesh* mesh_in, int points_in, const int itemsInScene_in);
+	Pickup(int points_in, const int itemsInScene_in);
 	void isHit();
 
 	bool get_IsElementRendered( int itemElement_in );
 
 	// == DX Render Specifics ==
+	bool CreateInputLayout(const std::string& shaderData);
 	bool LoadPickupShader();
-	bool GiveInstancedObjects(Object* obj, const UINT amount);
-	bool CreateInputLayout(const std::string &shaderData);
+	/*bool GiveInstancedObjects(Object* obj, const UINT amount);
 	void Clear();
 	void ShutDown();
 	void drawInstanced();
-	void updatePositions();
+	void updatePositions();*/
 
 private:
 /* ========================================================= */
@@ -47,10 +84,11 @@ private:
 	ID3D11Buffer* matrixCBuffer;
 	ID3D11InputLayout* pickupIL;
 	ID3D11VertexShader* pickupVS;
+	ID3D11VertexShader* pickupIVS;
 	ID3D11PixelShader* pickupPS;
 	ID3D11RenderTargetView* const* pickupRTV;
 	
-	// temp
+	// TEMP : Camera will be fed from Camera Class.
 	ID3D11Buffer* pickupCam;
 
 /* ========================================================= */
@@ -62,7 +100,7 @@ private:
 	DirectX::BoundingBox charBB;
 	std::vector<DirectX::BoundingBox> itemsBB;
 
-	Object pickupObj;
+	std::vector<Object> pickupObj;
 	std::vector<bool> isRendered;
 	std::vector<InstancedPickups> instanceVec;
 
