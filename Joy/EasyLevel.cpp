@@ -2,7 +2,7 @@
 
 
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, meshStorage)
+	:Scene(uiRender, objRender, meshStorage), pickups(nullptr)
 {
 	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
 	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
@@ -21,7 +21,12 @@ void EasyLevel::Load()
 
 	objRender.AddObject(&objects[0]);
 
-	// TODO: Look here for inspiration of how to fetch the pickup objects.
+	// TODO: DoubleCheck
+	pickups = new Pickup(meshStorage.GetMesh(0), 2, 2);
+
+	// TODO: Add instance vector/Array.
+	pickups->addObjectToVector(meshStorage.GetMesh(0));
+
 
 	typedef DirectX::XMFLOAT3 F3;
 	Object test[2] =
@@ -36,6 +41,9 @@ void EasyLevel::Load()
 
 void EasyLevel::Shutdown()
 {
+	// TODO: Check this
+	delete this->pickups;
+
 	meshStorage.UnLoadAll();
 
 	objRender.Clear();

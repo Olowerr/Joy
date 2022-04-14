@@ -190,5 +190,11 @@
     <FxCompile Include="ObjInstanceVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PickupPS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PickupVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

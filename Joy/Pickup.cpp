@@ -1,29 +1,14 @@
 #include "Pickup.h"
 
-Pickup::Pickup(std::vector<Mesh*> mesh_in, int points_in, const int itemsInScene_in)
-	: Object(mesh_in) // TODO: Fix, but how?
+Pickup::Pickup(Mesh* mesh_in, int points_in, const int itemsInScene_in)
+	: Object(mesh_in), pickupObj(mesh_in), itemsInScene(itemsInScene_in)
 {
 	this->points = points_in;
 
-	this->pickupObjs.reserve(itemsInScene_in);
-	this->isRendered.reserve(itemsInScene_in);
-	this->itemsBB.reserve(itemsInScene_in);
+	this->isRendered.reserve(itemsInScene);
+	this->itemsBB.reserve(itemsInScene);
+	this->instanceVec.reserve(itemsInScene);
 
-	for (unsigned int i = 0; i < pickupObjs.size(); i++)
-	{
-		/*
-		* How do I iniitialize Objects from meshes?
-		* Should I? Or just take in an object vector?
-		*/
-	}
-		
-	for (unsigned int i = 0; i < pickupObjs.size(); i++)
-	{
-		/* 
-		* Fetch BB of this specific object.Something that needs constant updating ?
-		* Is collision handling the constant update of the BB?
-		*/
-	}
 
 	for (unsigned int i = 0; i < isRendered.size(); i++)
 		this->isRendered[i] = true;
@@ -45,3 +30,13 @@ bool Pickup::get_IsElementRendered(int itemElement_in)
 {
 	return this->isRendered[itemElement_in];
 }
+
+void Pickup::addObjectToVector()
+{
+	for (unsigned int i = 0; i < this->instanceVec.size(); i++)
+	{
+		this->instanceVec[i] = this->pickupObj;
+	}
+}
+
+
