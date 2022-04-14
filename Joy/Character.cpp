@@ -113,3 +113,75 @@ void Character::move()
 		}
 	}
 }
+
+void Character::JumpAndBoost()
+{
+
+	minHegihtBeforeBoost = 1;  // how high should you be able to jump before being able to boost (from where joy jumped)
+	jumpForce = 0;  // reset jumpforce when not pressed
+	yPos = this->GetPosition().y;
+
+
+	if ((this->GetPosition().y - jumpStartPos) >= minHegihtBeforeBoost) //check if reached height where boost becomes available
+	{
+		canBoost = true;
+	}
+
+	if (yPos > 0)
+	{
+		jumpForce -= jumpDecc;
+
+	}
+	else if (yPos <= 0) // change later to check if colided with ground ( now assumes ground is Ypos 0 )
+	{
+		canBoost = false;
+		isGrounded = true;
+	}
+	if (key.KeyDown(DIK_SPACE) && isGrounded) // when space is pressed and joy is grounded
+	{
+		jumpStartPos = this->GetPosition().y;
+		doJump = true;
+		isGrounded = false;
+		jumpDecc = 0;
+		jumpForce = 10;
+		boostAcc = 0;
+	}
+	if (doJump && !isGrounded)
+	{
+		jumpForce = 12;
+
+		if (jumpForce > 0)
+		{
+			jumpDecc += 0.05;
+			jumpForce -= jumpDecc;     //acts as gravity, but the value cahnges over time, so i called it something else
+
+		}
+	}
+
+	if (key.KeyDown(DIK_SPACE) && !isGrounded && fuel > 0) // boost ( pressed after reaching min limit)
+	{
+
+		jumpForce += 1.f;
+		fuel -= 0.001;
+		jumpForce += boostAcc;
+		boostAcc += 0.1;
+
+
+	}
+
+	if (key.KeyReleased(DIK_SPACE)) //reset decceleration and boost when space is released
+	{
+
+		jumpDecc = 0;
+		boostAcc = 0;
+	}
+	float dt = Backend::GetDeltaTime();
+	jumpForce *= dt;
+	Translate(0, jumpForce, 0);
+
+
+}
+
+
+
+

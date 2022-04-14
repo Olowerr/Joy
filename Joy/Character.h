@@ -11,6 +11,7 @@ class Character: public Object
 public:
 	Character(Mesh* mesh);
 	void move();
+	void JumpAndBoost();
 private:
 	Keyboard& key;
 	float zSpeed;
@@ -20,4 +21,10 @@ private:
 	float minSpeed;
 	bool decreaseZSpeed;
 	bool decreaseXSpeed;
+
+
+
+
+	float jumpForce, fuel, yPos, gravity, jumpStartPos, minHegihtBeforeBoost, boostAcc, jumpDecc;
+	bool isAtMaxHeight, isGrounded, doJump, canBoost;
 };
