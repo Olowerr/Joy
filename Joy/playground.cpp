@@ -24,6 +24,7 @@ void testScene::Shutdown()
 SceneState testScene::Update()
 {
     test->move();
+    test->JumpAndBoost();
     return SceneState::Unchanged;
 }
 

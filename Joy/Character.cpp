@@ -10,6 +10,8 @@ Character::Character(Mesh* mesh)
 	decreaseZSpeed = false;
 	decreaseXSpeed = false;
 	diagMove = false;
+	fuel = 10.0f;
+	jumpDecc = 0.0f;
 }
 
 void Character::move()
