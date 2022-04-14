@@ -25,7 +25,6 @@ void EasyLevel::Load()
 	pickups = new Pickup(meshStorage.GetMesh(0), 2, 2);
 
 	// TODO: Add instance vector/Array.
-	pickups->addObjectToVector(meshStorage.GetMesh(0));
 
 
 	typedef DirectX::XMFLOAT3 F3;
@@ -51,6 +50,8 @@ void EasyLevel::Shutdown()
 	for (Object& obj : objects)
 		obj.Shutdown();
 	objects.clear();
+
+
 }
 
 SceneState EasyLevel::Update()
