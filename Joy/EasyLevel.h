@@ -17,6 +17,6 @@ public:
 
 private:
 	std::vector<Object> objects;
-	Pickup *pickups;
+	Pickup* pickups;
 
 };

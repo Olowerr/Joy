@@ -22,7 +22,7 @@ void EasyLevel::Load()
 	objRender.AddObject(&objects[0]);
 
 	// TODO: DoubleCheck
-	pickups = new Pickup(meshStorage.GetMesh(0), 2, 2);
+	pickups = new Pickup(meshStorage, 2, 2);
 
 	// TODO: Add instance vector/Array.
 
@@ -33,18 +33,13 @@ void EasyLevel::Load()
 		{meshStorage.GetMesh(0), F3(0.f, 0.f, 5.f), F3(0.f, 0.f, 0.f), 1.f},
 		{meshStorage.GetMesh(0), F3(0.f, 0.f, -5.f), F3(0.f, 0.f, 0.f), 1.f}
 	};
-
-	pickups->GiveInstancedObjects(test, 2);
-	//objRender.GiveInstancedObjects(test, 2);
-
+	objRender.GiveInstancedObjects(test, 2);
 
 }
 
 void EasyLevel::Shutdown()
 {
 	// TODO: Check this
-
-	this->pickups->Clear();
 	delete this->pickups;
 
 	meshStorage.UnLoadAll();
@@ -63,6 +58,7 @@ SceneState EasyLevel::Update()
 	objects[0].Rotate(0.f, 2.f * Backend::GetDeltaTime(), 0.f);
 
 	// TODO : Update main objects.
+	pickups->UpdateMatrices();
 
 	return SceneState::Unchanged;
 }
@@ -71,5 +67,4 @@ void EasyLevel::Render()
 {
 	objRender.DrawAll();
 	// TODO : Enable it to draw all pickups.
-	pickups->drawInstanced();
 }
