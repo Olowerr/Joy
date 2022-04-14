@@ -16,7 +16,7 @@ public:
 	void SetView();
 
 private:
-	const Object& object;
+	const Character& object;
 
 	DirectX::XMVECTOR camPos;
 	DirectX::XMVECTOR camFront;
