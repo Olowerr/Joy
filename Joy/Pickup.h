@@ -2,6 +2,7 @@
 #include "MeshStorage.h"
 #include "Object.h"
 #include "Collision.h"
+#include "dxgidebug.h"
 
 #include <DirectXCollision.h>
 #include <vector>
@@ -69,6 +70,7 @@ private:
 /* ==DXSPECIFIC_MEMBERS======================================================= */
 	DirectX::XMFLOAT4X4 *matrices;
 	ID3D11Buffer* matrixCBuffer;
+	ID3D11Buffer* instanceBuffer;
 
 	ID3D11InputLayout* pickupIL;
 
