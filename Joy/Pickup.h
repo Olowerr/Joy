@@ -2,7 +2,6 @@
 #include "MeshStorage.h"
 #include "Object.h"
 #include "Collision.h"
-#include "dxgidebug.h"
 
 #include <DirectXCollision.h>
 #include <vector>
