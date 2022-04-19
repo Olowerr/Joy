@@ -1,7 +1,7 @@
 #include "playground.h"
 
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), test(nullptr), bg(nullptr), collTest(nullptr)
+    :Scene(uiRender, objRender, meshStorage), test(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
 
 {
 }
@@ -13,14 +13,16 @@ void testScene::Load()
     meshStorage.LoadAll();
     test = new Character(meshStorage.GetMesh(1));
     collTest = new Character(meshStorage.GetMesh(2));
-    test->SetPosition(3.0f, 0.0f, 3.0f);
-    bg = new Object(meshStorage.GetMesh(3));
+    test->SetPosition(0.0f, 0.2f, .0f);
+    bg = new Object(meshStorage.GetMesh(2));
+    ground = new Object(meshStorage.GetMesh(3));
     camera = new CharacterCamera(*test);
-
+    objRender.AddObject(ground);
     objRender.AddObject(test);
     objRender.AddObject(bg);
+    
     test->Translate(1.f, 0, 0);
-
+    ground->SetPosition(0.0f, 0.5f, 0.0f);
     bg->SetPosition(-1.f, 1, -5);
     //bg->SetScale(1.f / 23.f);
 
@@ -40,6 +42,8 @@ void testScene::Shutdown()
     meshStorage.UnLoadAll();
     test->Shutdown();
     bg->Shutdown();
+    ground->Shutdown();
+    delete ground;
     delete camera;
     collTest->Shutdown();
     delete collTest;
@@ -63,6 +67,8 @@ SceneState testScene::Update()
     test->respawn();
     if (coll.hitItem(test, collTest))
         test->setSpeedZero();
+    if (coll.hitItem(test, ground))
+        test->charGrounded();
     coll.collided(test, collTest);
 
     return SceneState::Unchanged;

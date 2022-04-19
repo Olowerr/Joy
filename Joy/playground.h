@@ -20,6 +20,7 @@ public:
 
 
 	Character* test;
+	Object* ground;
 	Object* bg;
 	//CharacterCamera* camera;
 

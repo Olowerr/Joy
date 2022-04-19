@@ -66,13 +66,14 @@ private:
 
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 3;
+	static const UINT MeshCount = 4;
 	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
 		"cat.obj",
 		"Kub.obj",
-		"Kub.obj"
+		"Kub.obj",
+		"Ground.obj"
 	};
 
 

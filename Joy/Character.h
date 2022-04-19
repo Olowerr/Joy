@@ -15,6 +15,7 @@ public:
 	void JumpAndBoost();
 	void respawn();
 	void setSpeedZero();
+	void charGrounded();
 private:
 	Keyboard& key;
 	Mesh joy;
@@ -29,6 +30,7 @@ private:
 
 
 
-	float jumpForce, fuel, yPos, gravity, jumpStartPos, minHegihtBeforeBoost, boostAcc, jumpDecc;
+
+	float jumpForce, fuel, yPos, groundYPos, gravity, jumpStartPos, minHegihtBeforeBoost, boostAcc, jumpDecc;
 	bool isAtMaxHeight, isGrounded, doJump, canBoost;
 };

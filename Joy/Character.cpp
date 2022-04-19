@@ -151,14 +151,16 @@ void Character::JumpAndBoost()
 		canBoost = true;
 	}
 
-	if (yPos > 0)
+	//if (yPos > 0 || )
+	
+	if(!isGrounded)
 	{
+  		groundYPos = this->GetPosition().y;
 		jumpForce -= jumpDecc;
 	}
-	else if (yPos <= 0) // change later to check if colided with ground ( now assumes ground is Ypos 0 )
+	else // change later to check if colided with ground ( now assumes ground is Ypos 0 )
 	{
 		canBoost = false;
-		isGrounded = true;
 	}
 	if (key.KeyDown(DIK_SPACE) && isGrounded) // when space is pressed and joy is grounded
 	{
@@ -166,12 +168,12 @@ void Character::JumpAndBoost()
 		doJump = true;
 		isGrounded = false;
 		jumpDecc = 0;
-		jumpForce = 10;
+		jumpForce = 6;
 		boostAcc = 0;
 	}
 	if (doJump && !isGrounded)
 	{
-		jumpForce = 12;
+		jumpForce = 6;
 
 		if (jumpForce > 0)
 		{
@@ -197,7 +199,7 @@ void Character::JumpAndBoost()
 	float dt = Backend::GetDeltaTime();
 	jumpForce *= dt;
 	Translate(0, jumpForce, 0);
-
+	
 
 }
 
@@ -227,6 +229,12 @@ void Character::setSpeedZero()
 	if (xSpeed != 0.0f && zSpeed == 0.0f)
 		this->xSpeed = 0.0f;
 }
+
+void Character::charGrounded()
+{
+	isGrounded = true;
+}
+
 
 
 
