@@ -48,20 +48,22 @@ class Pickup : public Collision
 {
 public:
 /* ==CONSTRUCTORS======================================================= */
-	Pickup(TempMeshStorage& meshStorage, int points_in, const int itemsInScene_in);
+	Pickup(TempMeshStorage& meshStorage, int points_in);
 
 /* ==PICKUPSPECIFIC_FUNCTIONS======================================================= */
 	void isHit();
 	bool Get_IsElementRendered( int itemElement_in );
 
-	void AddObject(Object obj_in, float position_in[3]);
-	void RotateMatrices();
+	void AddObject(float pX_in, float pY_in, float pZ_in);
+	void UpdateMatrices();
 
 /* ==DXSPECIFIC_FUNCTIONS======================================================= */
 	bool CreateInputLayout(const std::string& shaderData);
+	bool CreateSRV_CreateMatrixCB();
 	bool LoadPickupShader();
 	bool ShutDown();
 
+	void DrawPickupInstances();
 
 private:
 /* ==DXSPECIFIC_MEMBERS======================================================= */
@@ -74,13 +76,13 @@ private:
 	ID3D11PixelShader* pickupPS;
 
 	ID3D11RenderTargetView* const* pickupRTV;
+	ID3D11ShaderResourceView* pickupSRV;
 	
 	// TEMP : Camera will be fed from Camera Class.
 	ID3D11Buffer* pickupCam;
 
 /* ==PICKUPSPECIFIC_MEMBER======================================================= */
 	int points;
-	const int itemsInScene;
 
 	Mesh* pickupMesh;
 
