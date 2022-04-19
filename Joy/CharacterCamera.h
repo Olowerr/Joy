@@ -29,6 +29,7 @@ private:
 
 	DirectX::XMFLOAT4 rotation;
  	DirectX::XMFLOAT3 position;
-	float direction, stillZone, acceleration, slowStopping;
-	bool isMovingRight, isMovingLeft;
+	float direction;
+	//float direction, stillZone, acceleration, slowStopping;
+	//bool isMovingRight, isMovingLeft;
 };
