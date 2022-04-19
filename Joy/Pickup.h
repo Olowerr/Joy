@@ -52,23 +52,27 @@ public:
 
 /* ==PICKUPSPECIFIC_FUNCTIONS======================================================= */
 	void isHit();
-	bool get_IsElementRendered( int itemElement_in );
+	bool Get_IsElementRendered( int itemElement_in );
 
-	void AddPickupObjects(Object * obj, float position[3]);
-	void UpdateMatrices();
+	void AddObject(Object obj_in, float position_in[3]);
+	void RotateMatrices();
 
 /* ==DXSPECIFIC_FUNCTIONS======================================================= */
 	bool CreateInputLayout(const std::string& shaderData);
 	bool LoadPickupShader();
-	bool GiveInstancedObjects(std::vector<Object> obj, const UINT amount);
+	bool ShutDown();
 
 
 private:
 /* ==DXSPECIFIC_MEMBERS======================================================= */
+	DirectX::XMFLOAT4X4 *matrices;
 	ID3D11Buffer* matrixCBuffer;
+
 	ID3D11InputLayout* pickupIL;
+
 	ID3D11VertexShader* pickupVS;
 	ID3D11PixelShader* pickupPS;
+
 	ID3D11RenderTargetView* const* pickupRTV;
 	
 	// TEMP : Camera will be fed from Camera Class.
@@ -77,17 +81,14 @@ private:
 /* ==PICKUPSPECIFIC_MEMBER======================================================= */
 	int points;
 	const int itemsInScene;
+
+	Mesh* pickupMesh;
+
 	std::vector<Object> pickupObjs;
 	std::vector<bool> isRendered;
 
-
-
-
-
 	DirectX::BoundingBox charBB;
-	std::vector<DirectX::BoundingBox> itemsBB;
-
-	
+	std::vector<DirectX::BoundingBox> itemsBB; // NOTE: Will be replaced entirely by the mesh Bounding Box and the collision hitbox function.
 
 };
 

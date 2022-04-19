@@ -58,7 +58,7 @@ SceneState EasyLevel::Update()
 	objects[0].Rotate(0.f, 2.f * Backend::GetDeltaTime(), 0.f);
 
 	// TODO : Update main objects.
-	pickups->UpdateMatrices();
+	pickups->RotateMatrices();
 
 	return SceneState::Unchanged;
 }
