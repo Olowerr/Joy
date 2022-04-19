@@ -10,6 +10,7 @@ void testScene::Load()
     meshStorage.LoadAll();
     test = new Character(meshStorage.GetMesh(1));
     collTest = new Character(meshStorage.GetMesh(2));
+    test->SetPosition(3.0f, 0.0f, 3.0f);
     objRender.AddObject(test);
     objRender.AddObject(collTest);
 }
@@ -30,6 +31,10 @@ SceneState testScene::Update()
     test->move();
     test->JumpAndBoost();
     test->respawn();
+    if (coll.hitItem(test, collTest))
+        test->setSpeedZero();
+    coll.collided(test, collTest);
+
     return SceneState::Unchanged;
 }
 

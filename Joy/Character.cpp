@@ -25,6 +25,11 @@ Character::Character(Mesh* mesh)
 	jumpStartPos = 0.0f;
 	minHegihtBeforeBoost = 0.0f;
 	yPos = 0.0f;
+	
+
+
+	joy.bBox = mesh->bBox;
+
 }
 
 void Character::move()
@@ -128,6 +133,9 @@ void Character::move()
 			xSpeed = 0.0f;
 		}
 	}
+
+	
+
 }
 
 void Character::JumpAndBoost()
@@ -202,6 +210,22 @@ void Character::respawn()
 	//Checks if the player has fallen too far off the map and sets the position back to start
 	if (GetPosition().y < -4.0f)
 		SetPosition(0.0f, 0.0f, 0.0f);
+}
+
+void Character::setSpeedZero()
+{
+	if (xSpeed > 0.001 && zSpeed > 0.001f && xSpeed > zSpeed)
+		this->xSpeed = 0.0f;
+	if (zSpeed > 0.001 && xSpeed > 0.001f && zSpeed > xSpeed)
+		this->zSpeed = 0.0f;
+	if (xSpeed < -0.001 && zSpeed < -0.001f && xSpeed < zSpeed)
+		this->xSpeed = 0.0f;
+	if (zSpeed < -0.001 && xSpeed < -0.001f && zSpeed < xSpeed)
+		this->zSpeed = 0.0f;
+	if (xSpeed == 0.0f && zSpeed != 0.0f)
+		this->zSpeed = 0.0f;
+	if (xSpeed != 0.0f && zSpeed == 0.0f)
+		this->xSpeed = 0.0f;
 }
 
 

@@ -14,8 +14,10 @@ public:
 	void move();
 	void JumpAndBoost();
 	void respawn();
+	void setSpeedZero();
 private:
 	Keyboard& key;
+	Mesh joy;
 	float zSpeed;
 	float xSpeed;
 	bool diagMove;

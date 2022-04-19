@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 
 #include "Backend.h"
 
@@ -23,7 +24,7 @@ struct Mesh
 {
 	static const UINT Stirde = sizeof(Vertex);
 	static const UINT Offset = 0;
-
+	DirectX::BoundingBox bBox;
 	void Shutdown()
 	{
 		diffuseTextureSRV->Release();

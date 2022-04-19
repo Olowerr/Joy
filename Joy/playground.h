@@ -20,5 +20,6 @@ public:
 
 	Character* test;
 	Character* collTest;
+	Collision coll;
 
 };

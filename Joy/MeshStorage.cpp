@@ -172,6 +172,14 @@ void TempMeshStorage::import(UINT index)
 		if (pos[i].z < tempZmin)
 			tempZmin = pos[i].z;
 	}
+	
+	meshes[index].bBox.Center.x = (tempXmax + tempXmin) / 2;
+	meshes[index].bBox.Center.y = (tempYmax + tempYmin) / 2;
+	meshes[index].bBox.Center.z = (tempZmax + tempZmin) / 2;
+
+	meshes[index].bBox.Extents.x = (tempXmax - tempXmin)/2;
+	meshes[index].bBox.Extents.y = (tempYmax - tempYmin)/2;
+	meshes[index].bBox.Extents.z = (tempZmax - tempZmin)/2;
 
 	meshes[index].vertexCount = verts.size();
 	D3D11_BUFFER_DESC desc;
