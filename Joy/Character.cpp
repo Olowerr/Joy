@@ -114,6 +114,8 @@ void Character::move()
 			xSpeed = 0.0f;
 		}
 	}
+
+	
 }
 
 void Character::JumpAndBoost()
@@ -150,7 +152,7 @@ void Character::JumpAndBoost()
 	}
 	if (doJump && !isGrounded)
 	{
-		jumpForce = 12;
+		jumpForce = 6;
 
 		if (jumpForce > 0)
 		{

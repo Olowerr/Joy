@@ -58,7 +58,7 @@ private:
 
 
 	//temp
-	CharacterCamera* camera;
-	ID3D11Buffer* camCb;
-	DirectX::XMFLOAT4X4 viewAndProj;
+//	CharacterCamera* camera;
+//	ID3D11Buffer* camCb;
+//	DirectX::XMFLOAT4X4 viewAndProj;
 };

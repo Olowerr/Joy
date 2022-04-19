@@ -1,45 +1,41 @@
 #include "CharacterCamera.h"
 
 CharacterCamera::CharacterCamera(const Character& object) //const Character& object?
-	:object(object)
+	:object(object), rotation()
 {
 
 
-	camPos = { 0.0f, 5.0f, 20.0f, 0.0f };
-	camFront = { 0.0f, 0.0f, -1.0f, 1.0f };
+	camPos = { 0.0f, 10.0f, -20.0f, 0.0f };
+	DirectX::XMStoreFloat3(&position, camPos);
+	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
 	camUpDir = { 0.0f, 1.0f, 0.0f, 1.0f };
-	camTarget = { DirectX::XMVectorAdd(camPos, camFront) };
+	//camTarget = { DirectX::XMVectorAdd(camPos, camFront) };
 	rotation = { 0,0,0,0 };
-	DirectX::XMMATRIX temp = DirectX::XMMatrixLookToLH(camPos, camTarget, camUpDir) * // Byt ut camPos mot Objects pos
+	//DirectX::XMMATRIX temp = DirectX::XMMatrixLookToLH(camPos, camFront, camUpDir) * // Byt ut camPos mot Objects pos
+	DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
 	DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
-
+	camHeight = 10;
 	DirectX::XMStoreFloat4x4(&viewProjMtrx, temp);
 }
 
 CharacterCamera::~CharacterCamera()
 {
-	this->camCb->Release();
+
 }
 
 void CharacterCamera::UpdateCam()
 {
+//	float dt = Backend::GetDeltaTime();
+	float dt = 1;
 	float x = object.GetPosition().x;
-//	float x = 1;
-	if (x < 0 - stillZone)
+
+	if (x > position.x +1)
 	{
-		direction += acceleration;
-		if (direction > 10)
-		{
-			direction = 10;
-		}
+		position.x += 0.009 *dt;
 	}
-	if (x > 0 + stillZone)
+	if (x < position.x -1)
 	{
-		direction -= acceleration;
-		if (direction < 10)
-		{
-			direction = 10;
-		}
+		position.x -= 0.009 *dt;
 	}
 
 	
@@ -49,9 +45,14 @@ void CharacterCamera::UpdateCam()
 
 void CharacterCamera::SetView()
 {
+
+//	camFront = DirectX::XMVectorSet( object.GetPosition().x, object.GetPosition().y, object.GetPosition().z, 1);
+	position.y = object.GetPosition().y * -1 * 0.01 + camHeight;
+	camFront = DirectX::XMVectorSet(position.x, object.GetPosition().y, 1, 1);
+
 	
-	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
-	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookToLH(XMLoadFloat3(&position), direction, DirectX::XMVectorSet(0, 1, 0, 0)) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
+//	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
+	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookAtLH(XMLoadFloat3(&position), camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
 	XMStoreFloat4x4(&viewProjMtrx, XMMatrixTranspose(viewAndProj));
 
 }

@@ -19,6 +19,12 @@ public:
 
 
 	Character* test;
+	Object* bg;
 	//CharacterCamera* camera;
+
+	CharacterCamera* camera;
+	ID3D11Buffer* camCb;
+	DirectX::XMFLOAT4X4 viewAndProj;
+
 
 };

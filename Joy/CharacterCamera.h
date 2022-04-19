@@ -22,12 +22,13 @@ private:
 	DirectX::XMVECTOR camFront;
 	DirectX::XMVECTOR camUpDir;
 	DirectX::XMVECTOR camTarget;
+	float camHeight;
 	DirectX::XMFLOAT4X4 viewProjMtrx;
 	ID3D11Buffer* camCb;
 
 
 	DirectX::XMFLOAT4 rotation;
-	DirectX::XMFLOAT3 position;
+ 	DirectX::XMFLOAT3 position;
 	float direction, stillZone, acceleration, slowStopping;
 	bool isMovingRight, isMovingLeft;
 };

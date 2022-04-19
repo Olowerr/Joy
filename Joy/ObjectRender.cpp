@@ -10,17 +10,17 @@ ObjectRender::ObjectRender()
 
 	bbRTV = Backend::GetBackBufferRTV();
 
-	camera = new CharacterCamera();
+	//camera = new CharacterCamera()
 
 	//// temp
 	//float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
 	//using namespace DirectX;
-	DirectX::XMFLOAT4X4 temp = camera->GetViewAndProj();
+	//DirectX::XMFLOAT4X4 temp = camera->GetViewAndProj();
 	//XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.f, 0.f, -6.f, 0.f), XMVectorSet(0.f, 0.f, 1.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	//XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
 	//XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
 
-	Backend::CreateConstCBuffer(&camCb, &temp, 64);
+	//Backend::CreateConstCBuffer(&camCb, &temp, 64);
 }
 
 void ObjectRender::Shutdown()
@@ -29,7 +29,6 @@ void ObjectRender::Shutdown()
 	objVS->Release();
 	objPS->Release();
 	objInstanceVS->Release();
-	camCb->Release();
 }
 
 void ObjectRender::Clear()
@@ -80,7 +79,7 @@ bool ObjectRender::CreateInputLayout(const std::string& shaderData)
 	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}, 
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0f, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
@@ -98,14 +97,6 @@ void ObjectRender::DrawAll()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
-
-	camera->UpdateCam();
-	camera->SetView();
-
-	viewAndProj = camera->GetViewAndProj();
-
-	Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-
 	devContext->IASetInputLayout(inpLayout);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -118,8 +109,7 @@ void ObjectRender::DrawAll()
 
 	for (Object* obj : objects)
 		obj->Draw();
-	
-	devContext->VSSetConstantBuffers(1, 1, &cam); // kom åt devcontx från backend
+
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
 
 	for (InstancedObjects& inst : instances)
