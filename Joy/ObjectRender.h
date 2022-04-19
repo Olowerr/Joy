@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Backend.h"
 #include "Object.h"
+#include "CharacterCamera.h"
 
 struct InstancedObjects
 {
@@ -57,5 +58,7 @@ private:
 
 
 	//temp
-	ID3D11Buffer* cam; 
+//	CharacterCamera* camera;
+//	ID3D11Buffer* camCb;
+//	DirectX::XMFLOAT4X4 viewAndProj;
 };

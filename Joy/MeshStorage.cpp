@@ -18,7 +18,8 @@ void TempMeshStorage::UnLoadAll()
 {
 	for (Mesh& mesh : meshes)
 	{
-		mesh.vertexBuffer->Release();
+		if (mesh.vertexBuffer)
+			mesh.vertexBuffer->Release();
 		if (mesh.diffuseTextureSRV)
 			mesh.diffuseTextureSRV->Release();
 	}

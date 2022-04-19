@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Character.h"
+#include "CharacterCamera.h"
 #include "Collision.h"
 class testScene : public Scene
 {
@@ -19,6 +20,13 @@ public:
 
 
 	Character* test;
+	Object* bg;
+	//CharacterCamera* camera;
+
+	CharacterCamera* camera;
+	ID3D11Buffer* camCb;
+	DirectX::XMFLOAT4X4 viewAndProj;
+
 	Character* collTest;
 	Collision coll;
 
