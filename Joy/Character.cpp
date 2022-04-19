@@ -12,20 +12,28 @@ Character::Character(Mesh* mesh)
 	decreaseXSpeed = false;
 	diagMove = false;
 
-	//Jump/Boost variable initiation
-	fuel = 10.0f;
-	jumpDecc = 0.0f;
-	boostAcc = 0.0f;
-	canBoost = false;
-	doJump = false;
-	gravity = 0.0f;
-	isAtMaxHeight = false;
-	isGrounded = false;
-	jumpForce = 0.0f;
-	jumpStartPos = 0.0f;
-	minHegihtBeforeBoost = 0.0f;
-	yPos = 0.0f;
+	//Basic jump variable initiation
+	jumpVelocity = 0;
+	gravity;
+	jumpHeight = 15;
+	canJump = false;
+
 	
+
+	//Jump/Boost variable initiation
+	//fuel = 10.0f;
+	//jumpDecc = 0.0f;
+	//boostAcc = 0.0f;
+	//canBoost = false;
+	//doJump = false;
+	//gravity = 0.0f;
+	//isAtMaxHeight = false;
+	//isGrounded = false;
+	//jumpForce = 0.0f;
+	//jumpStartPos = 0.0f;
+	//minHegihtBeforeBoost = 0.0f;
+	//yPos = 0.0f;
+	//
 
 
 	joy.bBox = mesh->bBox;
@@ -137,71 +145,36 @@ void Character::move()
 	
 
 }
-
-void Character::JumpAndBoost()
+void Character::Jump()
 {
-
-	minHegihtBeforeBoost = 1;  // how high should you be able to jump before being able to boost (from where joy jumped)
-	jumpForce = 0;  // reset jumpforce when not pressed
-	yPos = this->GetPosition().y;
-
-
-	if ((this->GetPosition().y - jumpStartPos) >= minHegihtBeforeBoost) //check if reached height where boost becomes available
-	{
-		canBoost = true;
-	}
-
-	//if (yPos > 0 || )
-	
-	if(!isGrounded)
-	{
-  		groundYPos = this->GetPosition().y;
-		jumpForce -= jumpDecc;
-	}
-	else // change later to check if colided with ground ( now assumes ground is Ypos 0 )
-	{
-		canBoost = false;
-	}
-	if (key.KeyDown(DIK_SPACE) && isGrounded) // when space is pressed and joy is grounded
-	{
-		jumpStartPos = this->GetPosition().y;
-		doJump = true;
-		isGrounded = false;
-		jumpDecc = 0;
-		jumpForce = 6;
-		boostAcc = 0;
-	}
-	if (doJump && !isGrounded)
-	{
-		jumpForce = 6;
-
-		if (jumpForce > 0)
-		{
-			jumpDecc += 0.05;
-			jumpForce -= jumpDecc;     //acts as gravity, but the value cahnges over time, so i called it something else
-		}
-	}
-
-	if (key.KeyDown(DIK_SPACE) && !isGrounded && fuel > 0) // boost ( pressed after reaching min limit)
-	{
-
-		jumpForce += 1.f;
-		fuel -= 0.001;
-		jumpForce += boostAcc;
-		boostAcc += 0.1;
-	}
-
-	if (key.KeyReleased(DIK_SPACE)) //reset decceleration and boost when space is released
-	{
-		jumpDecc = 0;
-		boostAcc = 0;
-	}
 	float dt = Backend::GetDeltaTime();
-	jumpForce *= dt;
-	Translate(0, jumpForce, 0);
-	
+	std::cout << this->GetPosition().y;
 
+
+	gravity = 200;
+
+	if (this->GetPosition().y <= -0.3)
+	{
+		jumpVelocity = 0;
+		canJump = true;
+	}
+	if (key.KeyDown(DIK_SPACE)&& canJump)
+	{
+		canJump = false;
+		jumpVelocity += std::sqrtf(2.0f * gravity * jumpHeight);
+	}
+	if (canJump = false)
+	{
+	
+	}
+	//jumpVelocity *= 0.9;
+	jumpVelocity -= gravity * dt;
+
+
+
+	this->Translate(0, jumpVelocity * dt, 0);
 }
+
 
 void Character::respawn()
 {
@@ -232,7 +205,8 @@ void Character::setSpeedZero()
 
 void Character::charGrounded()
 {
-	isGrounded = true;
+	//canJump = true;
+	//jumpVelocity = 0.0f;
 }
 
 

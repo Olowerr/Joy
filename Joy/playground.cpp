@@ -60,11 +60,17 @@ SceneState testScene::Update()
     devContext->VSSetConstantBuffers(1, 1, &camCb);
     Backend::UpdateBuffer(camCb, &viewAndProj, 64);
 
+    ground->SetPosition(0, -2, 0);
+    //Camera
     camera->UpdateCam();
     camera->SetView();
+
+    //Test Character(cube)
+    test->Jump();
     test->move();
-    test->JumpAndBoost();
     test->respawn();
+
+    //Collision
     if (coll.hitItem(test, collTest))
         test->setSpeedZero();
     if (coll.hitItem(test, ground))

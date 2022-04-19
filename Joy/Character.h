@@ -12,6 +12,7 @@ class Character: public Object
 public:
 	Character(Mesh* mesh);
 	void move();
+	void Jump();
 	void JumpAndBoost();
 	void respawn();
 	void setSpeedZero();
@@ -28,9 +29,18 @@ private:
 	bool decreaseXSpeed;
 
 
+	float jumpVelocity;
+	float jumpDecc;
+	float gravity;
+	float jumpHeight;
+	float currentYPos;
+	float maxJumpHeight;
+	float jumpStartHeight;
+	bool canJump;
+	bool isJumping;
+	bool isFalling;
 
 
-
-	float jumpForce, fuel, yPos, groundYPos, gravity, jumpStartPos, minHegihtBeforeBoost, boostAcc, jumpDecc;
-	bool isAtMaxHeight, isGrounded, doJump, canBoost;
+	//float jumpForce, fuel, yPos, groundYPos, gravity, jumpStartPos, minHegihtBeforeBoost, boostAcc, jumpDecc;
+	//bool isAtMaxHeight, isGrounded, doJump, canBoost;
 };

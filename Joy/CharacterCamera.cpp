@@ -9,12 +9,10 @@ CharacterCamera::CharacterCamera(const Character& object) //const Character& obj
 	DirectX::XMStoreFloat3(&position, camPos);
 	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
 	camUpDir = { 0.0f, 1.0f, 0.0f, 1.0f };
-	//camTarget = { DirectX::XMVectorAdd(camPos, camFront) };
 	rotation = { 0,0,0,0 };
-	//DirectX::XMMATRIX temp = DirectX::XMMatrixLookToLH(camPos, camFront, camUpDir) * // Byt ut camPos mot Objects pos
 	DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
 	DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
-	camHeight = 10;
+	camHeight = 0;
 	DirectX::XMStoreFloat4x4(&viewProjMtrx, temp);
 }
 

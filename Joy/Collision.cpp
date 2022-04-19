@@ -72,6 +72,6 @@ bool Collision::hitItem(Object* charBbox, Object* targetBbox)
 {
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
-    std::cout << dBox.Intersects(bBox) << "\n";
+   // std::cout << dBox.Intersects(bBox) << "\n";
     return dBox.Intersects(bBox);
 }
