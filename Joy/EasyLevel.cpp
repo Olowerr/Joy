@@ -42,8 +42,9 @@ void EasyLevel::Load()
 void EasyLevel::Shutdown()
 {
 	// TODO: Check this
-	delete this->pickups;
 	pickups->ShutDown();
+	delete this->pickups;
+	
 
 	meshStorage.UnLoadAll();
 

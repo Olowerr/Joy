@@ -2,7 +2,7 @@
 
 Pickup::Pickup(TempMeshStorage& meshStorage, int points_in)
 	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr),
-	pickupRTV(nullptr), pickupSRV(nullptr)
+	pickupRTV(nullptr), pickupTransSRV(nullptr)
 {
 
 	// TODO : Check if the pipeline is fine, clear vectors, bind buffers, make draw functions-
@@ -70,9 +70,9 @@ bool Pickup::CreateInputLayout(const std::string& shaderData)
 {
 	D3D11_INPUT_ELEMENT_DESC iLayout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{"UV", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"UV", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	HRESULT hr = Backend::GetDevice()->CreateInputLayout(iLayout, 3, shaderData.c_str(), shaderData.length(), &pickupIL);
@@ -110,7 +110,7 @@ bool Pickup::CreateSRV_CreateMatrixCB()
 	srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.NumElements = pickupObjs.size();
 
-	hr = Backend::GetDevice()->CreateShaderResourceView(matrixCBuffer, &srvDesc, &pickupSRV);
+	hr = Backend::GetDevice()->CreateShaderResourceView(matrixCBuffer, &srvDesc, &pickupTransSRV);
 
 	if (FAILED(hr))
 		return false;
@@ -147,10 +147,13 @@ bool Pickup::LoadPickupShader()
 
 bool Pickup::ShutDown()
 {
+
 	delete[] this->matrices;
 	pickupIL->Release();
 	pickupVS->Release();
 	pickupPS->Release();
+
+	matrixCBuffer->Release();
 	
 	pickupObjs.clear();
 	isRendered.clear();
@@ -162,14 +165,22 @@ bool Pickup::ShutDown()
 void Pickup::DrawPickupInstances()
 {
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
+	dc->IASetInputLayout(pickupIL);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	dc->IASetVertexBuffers(0, 1, &pickupMesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	
+	dc->VSSetShader(pickupVS, nullptr, 0);
+	dc->VSSetConstantBuffers(0, 1, &pickupCam);
+
+	dc->OMSetRenderTargets(1, pickupRTV, nullptr);
 
 	for (unsigned int i = 0; i < pickupObjs.size(); i++)
 	{
-		dc->VSSetConstantBuffers(0, 1, &matrixCBuffer);
-		dc->PSGetShaderResources(0, 1, &pickupSRV); // NOTE : Do I actually need a shader Resource for PS?
+		dc->VSSetShaderResources(0, 1, &pickupTransSRV); 
 		dc->DrawInstanced(pickupObjs[0].GetMesh()->vertexCount, pickupObjs.size(), 0, 0);
 	}
+	
 	
 }
 

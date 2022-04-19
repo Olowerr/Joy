@@ -76,7 +76,7 @@ private:
 	ID3D11PixelShader* pickupPS;
 
 	ID3D11RenderTargetView* const* pickupRTV;
-	ID3D11ShaderResourceView* pickupSRV;
+	ID3D11ShaderResourceView* pickupTransSRV;
 	
 	// TEMP : Camera will be fed from Camera Class.
 	ID3D11Buffer* pickupCam;
