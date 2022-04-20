@@ -15,7 +15,7 @@ Character::Character(Mesh* mesh)
 	//Basic jump variable initiation
 	jumpVelocity = 0;
 	gravity;
-	jumpHeight = 15;
+	jumpHeight = 13;
 	canJump = false;
 
 	
@@ -148,29 +148,41 @@ void Character::move()
 void Character::Jump()
 {
 	float dt = Backend::GetDeltaTime();
-	std::cout << this->GetPosition().y;
+	fuel = 10;
+	bool startClock = false;
 
+	gravity = 300;
 
-	gravity = 200;
-
+	//this should check for collision with ground. Is now just checking y pos for 0
 	if (this->GetPosition().y <= -0.3)
 	{
 		jumpVelocity = 0;
 		canJump = true;
+		canBoost = false;
 	}
+
+	//Jump
 	if (key.KeyDown(DIK_SPACE)&& canJump)
 	{
 		canJump = false;
 		jumpVelocity += std::sqrtf(2.0f * gravity * jumpHeight);
+		jumpStartHeight = this->GetPosition().y;
 	}
-	if (canJump = false)
+
+	if (jumpVelocity < 0 && canBoost == false && fuel > 0)
 	{
-	
+		canBoost = true;
 	}
+
+//add fuel system
+	//Boost
+	if (canBoost && key.KeyDown(DIK_SPACE))
+	{
+		jumpVelocity += 0.19;
+	}
+
 	jumpVelocity *= 0.9995;
 	jumpVelocity -= gravity * dt;
-
-
 
 	this->Translate(0, jumpVelocity * dt, 0);
 }

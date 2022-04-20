@@ -6,6 +6,7 @@
 #include <iostream>
 #include "Collision.h"
 
+
 namespace DX = DirectX;
 class Character: public Object
 {
@@ -13,11 +14,12 @@ public:
 	Character(Mesh* mesh);
 	void move();
 	void Jump();
-	void JumpAndBoost();
 	void respawn();
 	void setSpeedZero();
 	void charGrounded();
 private:
+
+	//movement
 	Keyboard& key;
 	Mesh joy;
 	float zSpeed;
@@ -28,7 +30,7 @@ private:
 	bool decreaseZSpeed;
 	bool decreaseXSpeed;
 
-
+	//jump
 	float jumpVelocity;
 	float jumpDecc;
 	float gravity;
@@ -40,7 +42,9 @@ private:
 	bool isJumping;
 	bool isFalling;
 
+	//boost
+	float boost;
+	bool canBoost;
+	float fuel;
 
-	//float jumpForce, fuel, yPos, groundYPos, gravity, jumpStartPos, minHegihtBeforeBoost, boostAcc, jumpDecc;
-	//bool isAtMaxHeight, isGrounded, doJump, canBoost;
 };
