@@ -167,7 +167,7 @@ void Character::Jump()
 	{
 	
 	}
-	//jumpVelocity *= 0.9;
+	jumpVelocity *= 0.9995;
 	jumpVelocity -= gravity * dt;
 
 

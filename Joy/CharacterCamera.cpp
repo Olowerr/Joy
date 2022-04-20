@@ -3,8 +3,6 @@
 CharacterCamera::CharacterCamera(const Character& object) //const Character& object?
 	:object(object), rotation()
 {
-
-
 	camPos = { 0.0f, 10.0f, -20.0f, 0.0f };
 	DirectX::XMStoreFloat3(&position, camPos);
 	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
