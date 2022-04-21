@@ -23,11 +23,9 @@ void EasyLevel::Load()
 
 	// TODO: DoubleCheck
 	pickups = new Pickup(meshStorage, 2);
-	pickups->AddObject(0.0f, 0.0f, 0.0f);
+	pickups->AddObject(1.0f, 0.0f, 0.0f);
+	pickups->AddObject(1.5f, 0.0f, 2.0f);
 	pickups->CreateSRV_CreateMatrixCB();
-
-	// TODO: Add instance vector/Array.
-
 
 	typedef DirectX::XMFLOAT3 F3;
 	Object test[2] =

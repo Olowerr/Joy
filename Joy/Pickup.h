@@ -44,6 +44,11 @@
 
 */
 
+struct Instances
+{
+
+};
+
 class Pickup : public Collision
 {
 public:
@@ -51,7 +56,7 @@ public:
 	Pickup(TempMeshStorage& meshStorage, int points_in);
 
 /* ==PICKUPSPECIFIC_FUNCTIONS======================================================= */
-	void isHit();
+	void isHit(); // Collission Checks
 	bool Get_IsElementRendered( int itemElement_in );
 
 	void AddObject(float pX_in, float pY_in, float pZ_in);
@@ -69,20 +74,23 @@ private:
 /* ==DXSPECIFIC_MEMBERS======================================================= */
 	DirectX::XMFLOAT4X4 *matrices;
 	ID3D11Buffer* matrixCBuffer;
-	ID3D11Buffer* instanceBuffer;
 
 	ID3D11InputLayout* pickupIL;
 
 	ID3D11VertexShader* pickupVS;
 	ID3D11PixelShader* pickupPS;
 
-	ID3D11RenderTargetView* const* pickupRTV;
+
 	ID3D11ShaderResourceView* pickupTransSRV;
 	
 	// TEMP : Camera will be fed from Camera Class.
 	ID3D11Buffer* pickupCam;
 
 /* ==PICKUPSPECIFIC_MEMBER======================================================= */
+	
+	//TODO: Swap to back when hit, dont use bools.
+	// Get a "amount" variable that you change after swapping.
+	
 	int points;
 
 	Mesh* pickupMesh;

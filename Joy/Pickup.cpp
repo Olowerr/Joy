@@ -1,8 +1,7 @@
 #include "Pickup.h"
 
 Pickup::Pickup(TempMeshStorage& meshStorage, int points_in)
-	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr),
-	pickupRTV(nullptr), pickupTransSRV(nullptr)
+	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupTransSRV(nullptr)
 {
 
 	// TODO : Check if the pipeline is fine, clear vectors, bind buffers, make draw functions-
@@ -15,9 +14,6 @@ Pickup::Pickup(TempMeshStorage& meshStorage, int points_in)
 	isRendered.reserve(66);
 	pickupObjs.reserve(66);
 	itemsBB.reserve(66);  // NOTE: To replace.
-
-	// Backbuffer RTV.
-	pickupRTV = Backend::GetBackBufferRTV();
 
 	// Loads VS & PS, Sets IA.
 	bool hasShaders = false;
@@ -44,11 +40,7 @@ void Pickup::isHit()
 	}
 }
 
-bool Pickup::Get_IsElementRendered(int itemElement_in)
-{
-	return this->isRendered[itemElement_in];
-}
-
+// TODO : Optimize by making the Objects in the vector dynamic with pointers.
 void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 {
 	pickupObjs.emplace_back(pickupMesh);
@@ -57,22 +49,23 @@ void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 
 void Pickup::UpdateMatrices()
 {
+
 	for (unsigned int i = 0; i < pickupObjs.size(); i++)
 	{ 
-		pickupObjs[i].Rotate(0.0f, 2.0f, 0.0f);
+		pickupObjs[i].Rotate(0.0f, 2.0f * Backend::GetDeltaTime(), 0.0f);
 		matrices[i] = pickupObjs[i].GetWorldMatrix();
 	}
 
-	Backend::UpdateBuffer(matrixCBuffer, &matrices, sizeof(matrices));
+	Backend::UpdateBuffer(matrixCBuffer, matrices, sizeof(DirectX::XMFLOAT4X4)*pickupObjs.size());
 }
 
 bool Pickup::CreateInputLayout(const std::string& shaderData)
 {
 	D3D11_INPUT_ELEMENT_DESC iLayout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 1},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 1},
-		{"UV", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 1},
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"UV", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	HRESULT hr = Backend::GetDevice()->CreateInputLayout(iLayout, 3, shaderData.c_str(), shaderData.length(), &pickupIL);
@@ -153,11 +146,11 @@ bool Pickup::ShutDown()
 	pickupVS->Release();
 	pickupPS->Release();
 
-	pickupTransSRV->Release();
-
 	pickupCam->Release();
 	matrixCBuffer->Release();
 	
+	pickupTransSRV->Release();
+
 	pickupObjs.clear();
 	isRendered.clear();
 	itemsBB.clear(); // NOTE: To replace.
@@ -169,6 +162,7 @@ bool Pickup::ShutDown()
 void Pickup::DrawPickupInstances()
 {
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
+	
 	dc->IASetInputLayout(pickupIL);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -177,14 +171,14 @@ void Pickup::DrawPickupInstances()
 	dc->VSSetShader(pickupVS, nullptr, 0);
 	dc->VSSetConstantBuffers(0, 1, &pickupCam);
 
-	dc->OMSetRenderTargets(1, pickupRTV, nullptr);
+	dc->PSSetShader(pickupPS, nullptr, 0);
 
-	for (unsigned int i = 0; i < pickupObjs.size(); i++)
-	{
-		dc->VSSetShaderResources(0, 1, &pickupTransSRV); 
-		dc->DrawInstanced(pickupObjs[0].GetMesh()->vertexCount, pickupObjs.size(), 0, 0);
-	}
-	
+	dc->RSSetViewports(1, &Backend::GetDefaultViewport());
+	dc->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), nullptr);
+
+	dc->VSSetShaderResources(0, 1, &pickupTransSRV);
+
+	dc->DrawInstanced(pickupObjs[0].GetMesh()->vertexCount, pickupObjs.size(), 0, 0);	
 	
 }
 
