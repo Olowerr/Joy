@@ -1,6 +1,7 @@
 #pragma once
 #include "Transform.h"
 #include "MeshStorage.h"
+#include <DirectXCollision.h>
 
 class Object : public Transform
 {
@@ -12,10 +13,21 @@ public:
 
 	void Draw();
 
+	void Translate(const DirectX::XMVECTOR& movement) override;
+	void Translate(FLOAT X, FLOAT Y, FLOAT Z) override;
+	void SetPosition(const DirectX::XMVECTOR& position) override;
+	void SetPosition(FLOAT X, FLOAT Y, FLOAT Z) override;
+
+	void Scale(FLOAT amount) override;
+	void SetScale(FLOAT Scale) override;
+
+	const DirectX::BoundingBox& GetBoundingBox() const;
+
 	Mesh* GetMesh();
 
 private:
 	Mesh* mesh;
+	DirectX::BoundingBox bBox;
 	//hej
 
 };

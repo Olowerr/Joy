@@ -10,16 +10,16 @@ public:
 	Transform(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale);
 	virtual void Shutdown();
 
-	void Translate(const DirectX::XMVECTOR& movement);
-	void Translate(FLOAT X, FLOAT Y, FLOAT Z);
-	void SetPosition(const DirectX::XMVECTOR& position);
-	void SetPosition(FLOAT X, FLOAT Y, FLOAT Z);
+	virtual void Translate(const DirectX::XMVECTOR& movement);
+	virtual void Translate(FLOAT X, FLOAT Y, FLOAT Z);
+	virtual void SetPosition(const DirectX::XMVECTOR& position);
+	virtual void SetPosition(FLOAT X, FLOAT Y, FLOAT Z);
 
 	void Rotate(FLOAT X, FLOAT Y, FLOAT Z);
 	void SetRotation(FLOAT X, FLOAT Y, FLOAT Z);
 
-	void Scale(FLOAT amount);
-	void SetScale(FLOAT Scale);
+	virtual void Scale(FLOAT amount);
+	virtual void SetScale(FLOAT Scale);
 
 	const DirectX::XMFLOAT3& GetPosition() const;
 	const DirectX::XMFLOAT3& GetRotation() const;

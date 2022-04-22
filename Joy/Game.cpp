@@ -20,8 +20,10 @@ void Game::Shutdown()
 
 void Game::Run()
 {
+	testScene test(uiRender, objRender, meshStorage);
+
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = &menu;
+	Scene* activeScene = &test;
 	activeScene->Load();
 
 	while (window.IsOpen())
@@ -72,6 +74,9 @@ void Game::Run()
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_F))
 			Backend::GetSwapChain()->SetFullscreenState(TRUE, nullptr);
+
+		else if (Backend::GetKeyboard().KeyReleased(DIK_G))
+			Backend::GetSwapChain()->SetFullscreenState(FALSE, nullptr);
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_1) && activeScene != &menu)
 			activeState = SceneState::MainMenu;

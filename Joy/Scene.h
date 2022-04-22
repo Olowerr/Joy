@@ -2,7 +2,7 @@
 #include "ObjectRender.h"
 #include "UIRender.h"
 
-enum struct SceneState { Unchanged, MainMenu, Easy/*, Medium, Hard*/ };
+enum struct SceneState { Unchanged, MainMenu, Easy, Test/*, Medium, Hard*/ };
 
 class Scene
 {
