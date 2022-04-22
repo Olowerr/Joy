@@ -73,6 +73,9 @@ void Game::Run()
 		else if (Backend::GetKeyboard().KeyReleased(DIK_F))
 			Backend::GetSwapChain()->SetFullscreenState(TRUE, nullptr);
 
+		else if (Backend::GetKeyboard().KeyReleased(DIK_G))
+			Backend::GetSwapChain()->SetFullscreenState(FALSE, nullptr);
+
 		else if (Backend::GetKeyboard().KeyReleased(DIK_1) && activeScene != &menu)
 			activeState = SceneState::MainMenu;
 
