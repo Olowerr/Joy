@@ -8,7 +8,7 @@ struct PS_IN
 Texture2D image : register(t0);
 SamplerState defaultSampler : register(s0);
 
-float4 main(PS_IN input) : SV_TARGET
+float4 main(PS_IN input) : SV_TARGET 
 {
     return image.Sample(defaultSampler, input.uv);
 }

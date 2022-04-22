@@ -61,13 +61,15 @@ SceneState EasyLevel::Update()
 
 	// TODO : Update main objects.
 	pickups->UpdateMatrices();
+	pickups->isHit();
 
 	return SceneState::Unchanged;
 }
 
 void EasyLevel::Render()
 {
-	objRender.DrawAll();
 	pickups->DrawPickupInstances();
+	objRender.DrawAll();
+	
 	// TODO : Enable it to draw all pickups.
 }

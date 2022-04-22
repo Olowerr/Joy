@@ -1,17 +1,14 @@
 #include "Pickup.h"
 
-Pickup::Pickup(TempMeshStorage& meshStorage, int points_in)
-	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupTransSRV(nullptr)
+Pickup::Pickup(TempMeshStorage& meshStorage, UINT points_in)
+	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupTransSRV(nullptr),
+		pickupsRendered(0), charBB(DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))
 {
-
-	// TODO : Check if the pipeline is fine, clear vectors, bind buffers, make draw functions-
- 
 	// Catch the pickup mesh and store it.
 	meshStorage.LoadAll();
 	pickupMesh = meshStorage.GetMesh(0);
 	
 	// Reserve space.
-	isRendered.reserve(66);
 	pickupObjs.reserve(66);
 	itemsBB.reserve(66);  // NOTE: To replace.
 
@@ -33,27 +30,36 @@ Pickup::Pickup(TempMeshStorage& meshStorage, int points_in)
 
 void Pickup::isHit()
 {
-	for (unsigned int i = 0; i < isRendered.size(); i++)
+	for (unsigned int i = 0; i < pickupsRendered; i++)
 	{
 		if (hitItem(charBB, itemsBB[i]))
-			this->isRendered[i] = false;
+		{
+			std::swap(pickupObjs.at(i), pickupObjs.at(pickupsRendered - 1));
+			pickupsRendered--;
+		}	
 	}
 }
 
-// TODO : Optimize by making the Objects in the vector dynamic with pointers.
+UINT Pickup::getPoints()
+{
+	return points;
+}
+
 void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 {
-	pickupObjs.emplace_back(pickupMesh);
-	pickupObjs.back().Translate(pX_in, pY_in, pZ_in);
+	pickupObjs.emplace_back(new Object(pickupMesh));
+	pickupObjs.back()->Translate(pX_in, pY_in, pZ_in);
+	itemsBB.emplace_back(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	pickupsRendered++;
 }
 
 void Pickup::UpdateMatrices()
 {
 
-	for (unsigned int i = 0; i < pickupObjs.size(); i++)
+	for (unsigned int i = 0; i < pickupsRendered; i++)
 	{ 
-		pickupObjs[i].Rotate(0.0f, 2.0f * Backend::GetDeltaTime(), 0.0f);
-		matrices[i] = pickupObjs[i].GetWorldMatrix();
+		pickupObjs.at(i)->Rotate(0.0f, 2.0f * Backend::GetDeltaTime(), 0.0f);
+		matrices[i] = pickupObjs[i]->GetWorldMatrix();
 	}
 
 	Backend::UpdateBuffer(matrixCBuffer, matrices, sizeof(DirectX::XMFLOAT4X4)*pickupObjs.size());
@@ -63,9 +69,9 @@ bool Pickup::CreateInputLayout(const std::string& shaderData)
 {
 	D3D11_INPUT_ELEMENT_DESC iLayout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	HRESULT hr = Backend::GetDevice()->CreateInputLayout(iLayout, 3, shaderData.c_str(), shaderData.length(), &pickupIL);
@@ -129,18 +135,14 @@ bool Pickup::LoadPickupShader()
 	if (!Backend::LoadShader(Backend::ShaderPath + "PickupPS.cso", &shaderData))
 		return false;
 
-	/*if (!CreateInputLayout(shaderData))
-		return false;*/
-
 	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &pickupPS)))
 		return false;
 	
 	return true;
 }
 
-bool Pickup::ShutDown()
+void Pickup::ShutDown()
 {
-
 	delete[] this->matrices;
 	pickupIL->Release();
 	pickupVS->Release();
@@ -151,12 +153,16 @@ bool Pickup::ShutDown()
 	
 	pickupTransSRV->Release();
 
+
+	
+	for (unsigned int i = 0; i < pickupObjs.size(); i++)
+	{
+		pickupObjs.at(i)->Shutdown();
+		delete pickupObjs.at(i);
+	}
+
 	pickupObjs.clear();
-	isRendered.clear();
-	itemsBB.clear(); // NOTE: To replace.
-
-
-	return false;
+	itemsBB.clear();
 }
 
 void Pickup::DrawPickupInstances()
@@ -170,15 +176,17 @@ void Pickup::DrawPickupInstances()
 	
 	dc->VSSetShader(pickupVS, nullptr, 0);
 	dc->VSSetConstantBuffers(0, 1, &pickupCam);
+	dc->VSSetShaderResources(0, 1, &pickupTransSRV);
 
 	dc->PSSetShader(pickupPS, nullptr, 0);
 
 	dc->RSSetViewports(1, &Backend::GetDefaultViewport());
 	dc->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), nullptr);
 
-	dc->VSSetShaderResources(0, 1, &pickupTransSRV);
 
-	dc->DrawInstanced(pickupObjs[0].GetMesh()->vertexCount, pickupObjs.size(), 0, 0);	
+
+	dc->DrawInstanced(pickupObjs[0]->GetMesh()->vertexCount, pickupsRendered, 0, 0);	
 	
+	dc = nullptr;
 }
 

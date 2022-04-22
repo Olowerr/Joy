@@ -5,70 +5,24 @@
 
 #include <DirectXCollision.h>
 #include <vector>
-
-
-/*
-
-	AddPick(Object obj, float3 pos)
-	{
-	objects.emplace_back (obj)
-	objects.back().translate(pos)
-	}
-
-	finialize()
-	{
-		matrices = new float4x4[objects.size()]
-
-		for each object
-			matrices[i] = object.getWorldMatrix()
-
-		// create dynamic buffer (Backend::createDynamicBuffer)
-		// create SRV 
-		
-	}
-
-	update()
-	{
-
-		for each object
-			object.rotate()
-			matrices[i] = object.getWorldMatrix()
-
-		Backend::UpdateBuffer(worldMatrixBuffer, matrices, sizeof(float4x4) * objects.size())
-
-	}
-
-	class Pickup
-	private:
-		float4x4 *matrices <- lika stor som objects.size()
-
-*/
-
-struct Instances
-{
-
-};
+#include <algorithm>
 
 class Pickup : public Collision
 {
 public:
 /* ==CONSTRUCTORS======================================================= */
-	Pickup(TempMeshStorage& meshStorage, int points_in);
+	Pickup(TempMeshStorage& meshStorage, UINT points_in);
 
 /* ==PICKUPSPECIFIC_FUNCTIONS======================================================= */
-	void isHit(); // Collission Checks
-	bool Get_IsElementRendered( int itemElement_in );
-
 	void AddObject(float pX_in, float pY_in, float pZ_in);
-	void UpdateMatrices();
-
+	void isHit(); // Collission Checks
+	UINT getPoints();
+	
 /* ==DXSPECIFIC_FUNCTIONS======================================================= */
-	bool CreateInputLayout(const std::string& shaderData);
 	bool CreateSRV_CreateMatrixCB();
-	bool LoadPickupShader();
-	bool ShutDown();
-
 	void DrawPickupInstances();
+	void UpdateMatrices();
+	void ShutDown();
 
 private:
 /* ==DXSPECIFIC_MEMBERS======================================================= */
@@ -80,26 +34,25 @@ private:
 	ID3D11VertexShader* pickupVS;
 	ID3D11PixelShader* pickupPS;
 
-
 	ID3D11ShaderResourceView* pickupTransSRV;
 	
 	// TEMP : Camera will be fed from Camera Class.
 	ID3D11Buffer* pickupCam;
 
-/* ==PICKUPSPECIFIC_MEMBER======================================================= */
-	
-	//TODO: Swap to back when hit, dont use bools.
-	// Get a "amount" variable that you change after swapping.
-	
-	int points;
+/* ==PICKUPSPECIFIC_MEMBER======================================================= */	
+	UINT pickupsRendered;
+	UINT points;
 
 	Mesh* pickupMesh;
 
-	std::vector<Object> pickupObjs;
-	std::vector<bool> isRendered;
+	std::vector<Object*> pickupObjs;
 
 	DirectX::BoundingBox charBB;
-	std::vector<DirectX::BoundingBox> itemsBB; // NOTE: Will be replaced entirely by the mesh Bounding Box and the collision hitbox function.
+	std::vector<DirectX::BoundingBox> itemsBB; // TODO : Connect with the new Boundign boxes from the importer.
+
+/* ==DXSPECIFIC_FUNCTIONS======================================================= */
+	bool CreateInputLayout(const std::string& shaderData);
+	bool LoadPickupShader();
 
 };
 
