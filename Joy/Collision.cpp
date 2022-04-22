@@ -73,7 +73,7 @@ void Collision::distToComp(DX::XMVECTOR distToMove, Object& charBbox)
     charBbox.Translate(distToMove);
 }
 
-bool Collision::hitItem(Object* charBbox, Object* targetBbox)
+bool Collision::hitObject(Object* charBbox, Object* targetBbox)
 {
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
@@ -82,6 +82,11 @@ bool Collision::hitItem(Object* charBbox, Object* targetBbox)
     dontStopMovement = true;
     return dBox.Intersects(bBox);
     
+}
+
+bool Collision::hitItem(const DX::BoundingBox& charbBox, const DX::BoundingBox& itemBbox)
+{
+    return charbBox.Intersects(itemBbox);
 }
 
 bool Collision::GetStopFall()

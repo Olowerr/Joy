@@ -67,11 +67,11 @@ SceneState testScene::Update()
     //test->SetStopMovement(coll.GetDontStopMovement());
     test->SetCanJump(false);
     test->setCollidedY(coll.getCollidedY());
-    if (coll.hitItem(test, collTest))
+    if (coll.hitObject(test, collTest))
         test->setSpeedZero();
-    if (coll.hitItem(test, ground))
+    if (coll.hitObject(test, ground))
         test->SetCanJump(coll.GetStopFall());
-    if (coll.hitItem(test, collTest))
+    if (coll.hitObject(test, collTest))
         test->SetCanJump(coll.GetStopFall());
     
     coll.collided(test, collTest);
