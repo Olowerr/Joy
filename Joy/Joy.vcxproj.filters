@@ -108,6 +108,9 @@
     <ClCompile Include="Pickup.cpp">
       <Filter>Object\Pickups</Filter>
     </ClCompile>
+    <ClCompile Include="Playground.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h">
@@ -172,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="Pickup.h">
       <Filter>Object\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Playground.h">
+      <Filter>Game\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
