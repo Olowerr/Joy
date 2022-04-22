@@ -13,6 +13,10 @@ public:
 	void collided(Object* charBbox, Object* targetBbox);
 	void distToComp(DX::XMVECTOR distToMove, Object& charBbox);
 	bool hitItem(Object* charBbox, Object* targetBbox);
+	bool GetStopFall();
+	bool GetDontStopMovement();
+	bool getCollidedY();
+
 private:
 	DX::BoundingBox bBox;
 	DX::BoundingBox dBox;
@@ -22,4 +26,7 @@ private:
 	float xIntDist;
 	float yIntDist;
 	float zIntDist;
+	bool stopFall;
+	bool dontStopMovement;
+	bool collidedY;
 };

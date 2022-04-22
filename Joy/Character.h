@@ -17,6 +17,10 @@ public:
 	void respawn();
 	void setSpeedZero();
 	void charGrounded();
+	bool SetCanJump(bool canJump);
+	bool SetStopMovement(bool stopSpeed);
+	bool setCollidedY(bool verticalCollision);
+	
 private:
 
 	//movement
@@ -29,6 +33,8 @@ private:
 	float minSpeed;
 	bool decreaseZSpeed;
 	bool decreaseXSpeed;
+	bool stopMovement;
+	bool collidedY;
 
 	//jump
 	float jumpVelocity;
@@ -41,6 +47,7 @@ private:
 	bool canJump;
 	bool isJumping;
 	bool isFalling;
+	bool stopJumpVelocity;
 
 	//boost
 	float boost;

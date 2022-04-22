@@ -13,7 +13,7 @@ void testScene::Load()
     meshStorage.LoadAll();
     test = new Character(meshStorage.GetMesh(1));
     collTest = new Character(meshStorage.GetMesh(2));
-    test->SetPosition(0.0f, 0.2f, .0f);
+    //test->SetPosition(0.0f, 0.2f, .0f);
     bg = new Object(meshStorage.GetMesh(2));
     ground = new Object(meshStorage.GetMesh(3));
     camera = new CharacterCamera(*test);
@@ -21,8 +21,8 @@ void testScene::Load()
     objRender.AddObject(test);
     objRender.AddObject(bg);
     
-    test->Translate(1.f, 0, 0);
-    ground->SetPosition(0.0f, 0.5f, 0.0f);
+    test->Translate(0, 0.5f, 0);
+    ground->SetPosition(0.0f, -2.0f, 0.0f);
     bg->SetPosition(-1.f, 1, -5);
     //bg->SetScale(1.f / 23.f);
 
@@ -60,22 +60,29 @@ SceneState testScene::Update()
     devContext->VSSetConstantBuffers(1, 1, &camCb);
     Backend::UpdateBuffer(camCb, &viewAndProj, 64);
 
-    ground->SetPosition(0, -2, 0);
+    //ground->SetPosition(0, -2, 0);
     //Camera
     camera->UpdateCam();
     camera->SetView();
-
+    //test->SetStopMovement(coll.GetDontStopMovement());
+    test->SetCanJump(false);
+    test->setCollidedY(coll.getCollidedY());
+    if (coll.hitItem(test, collTest))
+        test->setSpeedZero();
+    if (coll.hitItem(test, ground))
+        test->SetCanJump(coll.GetStopFall());
+    if (coll.hitItem(test, collTest))
+        test->SetCanJump(coll.GetStopFall());
+    
+    coll.collided(test, collTest);
+    //coll.collided(test, ground);
     //Test Character(cube)
     test->Jump();
     test->move();
     test->respawn();
 
     //Collision
-    if (coll.hitItem(test, collTest))
-        test->setSpeedZero();
-    if (coll.hitItem(test, ground))
-        test->charGrounded();
-    coll.collided(test, collTest);
+    
 
     return SceneState::Unchanged;
 }

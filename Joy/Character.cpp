@@ -15,7 +15,7 @@ Character::Character(Mesh* mesh)
 	//Basic jump variable initiation
 	jumpVelocity = 0;
 	gravity;
-	jumpHeight = 13;
+	jumpHeight = 2;
 	canJump = false;
 
 	
@@ -148,13 +148,12 @@ void Character::move()
 void Character::Jump()
 {
 	float dt = Backend::GetDeltaTime();
-	fuel = 10;
-	bool startClock = false;
-
 	gravity = 300;
+	jumpVelocity *= 0.9995;
+	jumpVelocity -= gravity * dt;
 
 	//this should check for collision with ground. Is now just checking y pos for 0
-	if (this->GetPosition().y <= -0.3)
+	if (stopJumpVelocity)
 	{
 		jumpVelocity = 0;
 		canJump = true;
@@ -181,9 +180,6 @@ void Character::Jump()
 		jumpVelocity += 0.19;
 	}
 
-	jumpVelocity *= 0.9995;
-	jumpVelocity -= gravity * dt;
-
 	this->Translate(0, jumpVelocity * dt, 0);
 }
 
@@ -195,30 +191,59 @@ void Character::respawn()
 		Translate(0.0f, -0.01f, 0.0f);
 
 	//Checks if the player has fallen too far off the map and sets the position back to start
-	if (GetPosition().y < -4.0f)
+	if (GetPosition().y < -10.0f)
 		SetPosition(0.0f, 0.0f, 0.0f);
 }
 
 void Character::setSpeedZero()
 {
-	if (xSpeed > 0.001 && zSpeed > 0.001f && xSpeed > zSpeed)
-		this->xSpeed = 0.0f;
-	if (zSpeed > 0.001 && xSpeed > 0.001f && zSpeed > xSpeed)
-		this->zSpeed = 0.0f;
-	if (xSpeed < -0.001 && zSpeed < -0.001f && xSpeed < zSpeed)
-		this->xSpeed = 0.0f;
-	if (zSpeed < -0.001 && xSpeed < -0.001f && zSpeed < xSpeed)
-		this->zSpeed = 0.0f;
-	if (xSpeed == 0.0f && zSpeed != 0.0f)
-		this->zSpeed = 0.0f;
-	if (xSpeed != 0.0f && zSpeed == 0.0f)
-		this->xSpeed = 0.0f;
+	if (collidedY)
+	{
+		if (canJump == true)
+			this->jumpVelocity = 0.0f;
+	}
+	else
+	{
+		if (xSpeed > 0.001 && zSpeed > 0.001f && xSpeed > zSpeed)
+			this->xSpeed = 0.0f;
+		if (zSpeed > 0.001 && xSpeed > 0.001f && zSpeed > xSpeed)
+			this->zSpeed = 0.0f;
+		if (xSpeed < -0.001 && zSpeed < -0.001f && xSpeed < zSpeed)
+			this->xSpeed = 0.0f;
+		if (zSpeed < -0.001 && xSpeed < -0.001f && zSpeed < xSpeed)
+			this->zSpeed = 0.0f;
+		if (xSpeed == 0.0f && zSpeed != 0.0f)
+			this->zSpeed = 0.0f;
+		if (xSpeed != 0.0f && zSpeed == 0.0f)
+			this->xSpeed = 0.0f;
+
+	}
+
 }
 
 void Character::charGrounded()
 {
 	//canJump = true;
 	//jumpVelocity = 0.0f;
+}
+
+bool Character::SetCanJump(bool canJump)
+{
+	stopJumpVelocity = canJump;
+	return stopJumpVelocity;
+	
+}
+
+bool Character::SetStopMovement(bool stopSpeed)
+{
+	stopMovement = stopSpeed;
+	return stopMovement;
+}
+
+bool Character::setCollidedY(bool verticalCollision)
+{
+	collidedY = verticalCollision;
+	return collidedY;
 }
 
 
