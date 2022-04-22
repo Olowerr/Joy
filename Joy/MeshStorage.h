@@ -73,7 +73,7 @@ private:
 		"cat.obj",
 		"Kub.obj",
 		"Kub.obj",
-		"Ground.obj"
+		"gGround.obj"
 	};
 
 
