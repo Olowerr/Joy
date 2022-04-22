@@ -170,6 +170,9 @@
     <ClInclude Include="Character.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="playground.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ObjVS.hlsl">

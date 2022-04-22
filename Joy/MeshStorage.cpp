@@ -18,8 +18,10 @@ void TempMeshStorage::UnLoadAll()
 {
 	for (Mesh& mesh : meshes)
 	{
-		mesh.vertexBuffer->Release();
-		mesh.diffuseTextureSRV->Release();
+		if (mesh.vertexBuffer)
+			mesh.vertexBuffer->Release();
+		if (mesh.diffuseTextureSRV)
+			mesh.diffuseTextureSRV->Release();
 	}
 }
 
@@ -105,12 +107,6 @@ void TempMeshStorage::import(UINT index)
 
 				verts.emplace_back(pos[faceP - 1], norm[faceN - 1], uv[faceT - 1]);
 			}
-
-			reader >> fileInfo;
-			if (fileInfo[0] != 'f')
-				break;
-			else
-				reader.putback('f');
 		}
 
 		else if (fileInfo == "mtllib")
@@ -155,6 +151,36 @@ void TempMeshStorage::import(UINT index)
 		}
 	}
 	reader.close();
+
+	float tempXmax = -INFINITY;
+	float tempXmin = INFINITY;
+	float tempYmax = -INFINITY;
+	float tempYmin = INFINITY;
+	float tempZmax = -INFINITY;
+	float tempZmin = INFINITY;
+	for (size_t i = 0; i < pos.size(); i++)
+	{
+		if (pos[i].x > tempXmax)
+			tempXmax = pos[i].x;
+		if (pos[i].x < tempXmin)
+			tempXmin = pos[i].x;
+		if (pos[i].y > tempYmax)
+			tempYmax = pos[i].y;
+		if (pos[i].y < tempYmin)
+			tempYmin = pos[i].y;
+		if (pos[i].z > tempZmax)
+			tempZmax = pos[i].z;
+		if (pos[i].z < tempZmin)
+			tempZmin = pos[i].z;
+	}
+	
+	meshes[index].bBox.Center.x = (tempXmax + tempXmin) / 2;
+	meshes[index].bBox.Center.y = (tempYmax + tempYmin) / 2;
+	meshes[index].bBox.Center.z = (tempZmax + tempZmin) / 2;
+
+	meshes[index].bBox.Extents.x = (tempXmax - tempXmin)/2;
+	meshes[index].bBox.Extents.y = (tempYmax - tempYmin)/2;
+	meshes[index].bBox.Extents.z = (tempZmax - tempZmin)/2;
 
 	meshes[index].vertexCount = verts.size();
 	D3D11_BUFFER_DESC desc;
