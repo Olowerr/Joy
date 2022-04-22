@@ -102,11 +102,11 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Pickup.cpp">
       <Filter>Object\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,11 +167,11 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Object</Filter>
+    <ClInclude Include="Pickup.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="playground.h">
-      <Filter>Game\Scene</Filter>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
