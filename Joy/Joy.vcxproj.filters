@@ -105,8 +105,8 @@
     <ClCompile Include="Pickup.cpp">
       <Filter>Object\Pickups</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Playground.cpp">
+      <Filter>Game\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Playground.h">
+      <Filter>Game\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

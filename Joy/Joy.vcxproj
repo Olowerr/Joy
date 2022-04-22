@@ -166,6 +166,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Pickup.cpp" />
+    <ClCompile Include="Playground.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="UIRender.cpp" />
@@ -194,6 +195,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Pickup.h" />
+    <ClInclude Include="Playground.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Transform.h" />
