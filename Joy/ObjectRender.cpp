@@ -108,6 +108,7 @@ void ObjectRender::DrawAll()
 
 	for (Object* obj : objects)
 		obj->Draw();
+		
 	
 
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
@@ -116,11 +117,8 @@ void ObjectRender::DrawAll()
 	{
 		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
-		//devContext->PSSetShaderResources(0, 1, &inst.lightMapsSRV);
 
-		// DrawIndexedInstanced();
 		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-
 	}
 
 }

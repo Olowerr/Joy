@@ -43,6 +43,9 @@
     <Filter Include="Object">
       <UniqueIdentifier>{a4db5131-0b2a-4024-8b1a-295702eccbc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Pickups">
+      <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -101,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Object\Pickups</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +170,9 @@
     <ClInclude Include="Character.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Object\Pickups</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ObjVS.hlsl">
@@ -179,6 +188,12 @@
       <Filter>System\UI</Filter>
     </FxCompile>
     <FxCompile Include="ObjInstanceVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PickupPS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PickupVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

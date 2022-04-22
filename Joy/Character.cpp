@@ -7,5 +7,5 @@ Character::Character(Mesh* mesh)
 
 void Character::move()
 {
-	Translat
+	//Translat
 }
