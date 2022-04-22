@@ -68,7 +68,6 @@ bool ObjectRender::LoadShaders()
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstanceVS)))
 		return false;
 
-
 	return true;
 }
 
