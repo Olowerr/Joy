@@ -12,19 +12,20 @@ ObjectRender::ObjectRender()
 
 	//camera = new CharacterCamera()
 
-	//// temp
-	//float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
-	//using namespace DirectX;
-	//DirectX::XMFLOAT4X4 temp = camera->GetViewAndProj();
-	//XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.f, 0.f, -6.f, 0.f), XMVectorSet(0.f, 0.f, 1.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	//XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
-	//XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
+	// temp
+	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
+	using namespace DirectX;
+	XMFLOAT4X4 matri;
+	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(8.f, 3.f, -8.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
+	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
 
-	//Backend::CreateConstCBuffer(&camCb, &temp, 64);
+	Backend::CreateConstCBuffer(&camCb, &matri, 64);
 }
 
 void ObjectRender::Shutdown()
 {
+	camCb->Release();
 	inpLayout->Release();
 	objVS->Release();
 	objPS->Release();
@@ -100,6 +101,7 @@ void ObjectRender::DrawAll()
 	devContext->IASetInputLayout(inpLayout);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	devContext->VSSetConstantBuffers(1, 1, &camCb);
 	devContext->VSSetShader(objVS, nullptr, 0);
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport()); // temp
@@ -182,4 +184,14 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	//instances.back().lightMapsSRV = get tha lightmaps srv
 
 	return true;
+}
+
+ID3D11InputLayout* ObjectRender::GetObjectInputLayout()
+{
+	return inpLayout;
+}
+
+ID3D11VertexShader* ObjectRender::GetObjectVS()
+{
+	return objVS;
 }

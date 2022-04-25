@@ -12,6 +12,7 @@ public:
 	virtual void Shutdown() override;
 
 	void Draw();
+	void DrawGeometry();
 
 	void Translate(const DirectX::XMVECTOR& movement) override;
 	void Translate(FLOAT X, FLOAT Y, FLOAT Z) override;
@@ -24,7 +25,7 @@ public:
 	const DirectX::BoundingBox& GetBoundingBox() const;
 
 	Mesh* GetMesh();
-	ID3D11ShaderResourceView** GetLightMap();
+	ID3D11ShaderResourceView** GetLightMapSRV();
 
 private:
 	Mesh* mesh;

@@ -30,22 +30,30 @@ void testScene::Load()
 
     viewAndProj = camera->GetViewAndProj();
 
-    Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-    devContext->VSSetConstantBuffers(1, 1, &camCb); 
+    //Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
+    //Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+    //devContext->VSSetConstantBuffers(1, 1, &camCb); 
     objRender.AddObject(collTest);
+
+    HLight hLight(objRender);
+    Object* test[2] = { ground, bg };
+    hLight.GenerateLightMaps(test, 2);
+    hLight.Shutdown();
 }
 
 void testScene::Shutdown()
 {
     objRender.Clear();
     meshStorage.UnLoadAll();
+
     test->Shutdown();
     bg->Shutdown();
     ground->Shutdown();
+
     delete ground;
     delete camera;
     collTest->Shutdown();
+
     delete collTest;
     delete test;
     delete bg;
@@ -56,14 +64,14 @@ SceneState testScene::Update()
 
 
     ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-    viewAndProj = camera->GetViewAndProj();
-    devContext->VSSetConstantBuffers(1, 1, &camCb);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+    //viewAndProj = camera->GetViewAndProj();
+    //devContext->VSSetConstantBuffers(1, 1, &camCb);
+    //Backend::UpdateBuffer(camCb, &viewAndProj, 64);
 
     //ground->SetPosition(0, -2, 0);
     //Camera
-    camera->UpdateCam();
-    camera->SetView();
+    //camera->UpdateCam();
+    //camera->SetView();
     //test->SetStopMovement(coll.GetDontStopMovement());
     test->SetCanJump(false);
     test->setCollidedY(coll.getCollidedY());

@@ -1,105 +1,139 @@
 #include "LightHandler.h"
 
-HLight::HLight()
+HLight::HLight(ObjectRender& objRender)
+	:objRender(objRender)
 {
-	ID3D11Device* device = Backend::GetDevice();
-	
-	std::string shaderData;
+
 	bool succeeded = false;
-	HRESULT hr;
 
-	using namespace DirectX;
-	XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, -20.f, 0.f);
-	XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f);
+	succeeded = InitiateBuffers();
+	assert(succeeded);
 
-	SUN.strength = 1.f;
-	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
-	XMStoreFloat4x4(&SUN.viewProject, 
-		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f));
+	succeeded = InitiateShaders();
+	assert(succeeded);
 
-	hr = Backend::CreateConstCBuffer(&lightPSBuffer, &SUN, sizeof(DirectionalLight));
-	assert(FAILED(hr));
+	succeeded = InitiateRasterizerStates();
+	assert(succeeded);
 
-	XMFLOAT4X4 lightViewProject;
-	XMStoreFloat4x4(&lightViewProject, XMMatrixTranspose(XMLoadFloat4x4(&SUN.viewProject)));
-	hr = Backend::CreateConstCBuffer(&lightVSBuffer, &lightViewProject, sizeof(XMFLOAT4X4));
-	assert(FAILED(hr));
-	
 	succeeded = InitiateShadowMap();
 	assert(succeeded);
 
-	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapVS.cso", &shaderData);
-	assert(succeeded);
-	hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &lightVS);
-	assert(FAILED(hr));
-
-	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapPS.cso", &shaderData);
-	assert(succeeded);
-	hr = device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &lightPS);
-	assert(FAILED(hr));
-
-
+	lightViewPort.TopLeftX = 0.f;
+	lightViewPort.TopLeftY = 0.f;
+	lightViewPort.MaxDepth = 1.f;
+	lightViewPort.MinDepth = 0.f;
 }
 
 void HLight::Shutdown()
 {
+	lightVS->Release();
+	noCullingRS->Release();
+	lightPS->Release();
+	lightDataBuffer->Release();
+
+	shadowMapDSV->Release();
+	shadowMapSRV->Release();
+	lightViewProjectBuffer->Release();
+	frontFaceCullingRS->Release();
 }
 
 HLight::~HLight()
 {
 }
 
-void HLight::CreateLightMaps(Object** objects, UINT amount)
+void HLight::GenerateLightMaps(Object** objects, UINT amount)
 {
+	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
+	HRESULT hr;
+
+	deviceContext->IASetInputLayout(objRender.GetObjectInputLayout());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	DrawShadowMaps(objects, amount);
+	//DrawShadowMap(objects, amount);
+
+	lightViewPort.Width = (float)LightMapWidth;
+	lightViewPort.Height = (float)LightMapHeight;
+	deviceContext->RSSetViewports(1, &lightViewPort);
 
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &lightVSBuffer);
-	
+	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
+
+	deviceContext->RSSetState(noCullingRS);
+
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
-	deviceContext->PSSetConstantBuffers(0, 1, &lightPSBuffer);
+	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
 
-	//deviceContext->OMSetRenderTargets();
 
-	Mesh* tempMesh = nullptr;
+	D3D11_TEXTURE2D_DESC texDesc =
+	{
+		LightMapWidth,
+		LightMapHeight,
+		1,
+		1,
+		DXGI_FORMAT_R8_UNORM,
+		{1, 0},
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET,
+		0,
+		0
+	};
+
+	ID3D11Texture2D* resource{};
+	ID3D11RenderTargetView* tempRTV{};
 
 	for (UINT i = 0; i < amount; i++)
 	{
-		tempMesh = objects[i]->GetMesh();
+		hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+		if (FAILED(hr))
+			continue;
 
-		deviceContext->IASetVertexBuffers(0, 1, &tempMesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-		//deviceContext->IASetIndexBuffer(tempMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		//deviceContext->IASetInputLayout();
+		hr = device->CreateShaderResourceView(resource, nullptr, objects[i]->GetLightMapSRV());
+		if (FAILED(hr))
+		{
+			resource->Release();
+			continue;
+		}
+
+		hr = device->CreateRenderTargetView(resource, nullptr, &tempRTV);
+		if (FAILED(hr))
+		{
+			resource->Release();
+			(*objects[i]->GetLightMapSRV())->Release();
+			continue;
+		}
+
+		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
+		objects[i]->DrawGeometry();
+
+		resource->Release();
+		tempRTV->Release();
+
 	}
 
+	deviceContext->RSSetState(nullptr);
 }
 
 void HLight::DrawShadowMap(Object** objects, UINT amount)
 {
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
-	ID3D11RenderTargetView* nullRTV = nullptr;
+	ID3D11RenderTargetView* nullRTV{};
 
-	//deviceContext->IASetInputLayout();
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	lightViewPort.Width = (float)ShadowMapWidth;
+	lightViewPort.Height = (float)ShadowMapHeight;
+	deviceContext->RSSetViewports(1, &lightViewPort);
 
-	//deviceContext->VSSetShader(standardVS, nullptr, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &lightVSBuffer);
+	deviceContext->VSSetShader(objRender.GetObjectVS(), nullptr, 0);
+	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
+
+	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
 	deviceContext->OMSetRenderTargets(0, &nullRTV, shadowMapDSV);
 
-	Mesh* tempMesh = nullptr;
 	for (UINT i = 0; i < amount; i++)
-	{
-		tempMesh = objects[i]->GetMesh();
-
-		deviceContext->IASetVertexBuffers(0, 1, &tempMesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-		//deviceContext->IASetIndexBuffer(tempMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	}
-
+		objects[i]->DrawGeometry();
+	
 }
 
 bool HLight::InitiateShadowMap()
@@ -107,7 +141,7 @@ bool HLight::InitiateShadowMap()
 	ID3D11Device* device = Backend::GetDevice();
 	HRESULT hr;
 
-	D3D11_TEXTURE2D_DESC texDesc;
+	D3D11_TEXTURE2D_DESC texDesc{};
 	texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 	texDesc.ArraySize = 1;
 	texDesc.MipLevels = 1;
@@ -125,7 +159,7 @@ bool HLight::InitiateShadowMap()
 	if (FAILED(hr))
 		return false;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
@@ -137,18 +171,100 @@ bool HLight::InitiateShadowMap()
 		return false;
 	}
 
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
+	dsvDesc.Flags = 0;
 	hr = device->CreateDepthStencilView(resource, &dsvDesc, &shadowMapDSV);
 	if (FAILED(hr))
 	{
+		shadowMapSRV->Release();
 		resource->Release();
 		return false;
 	}
 
 	resource->Release();
+
+	return true;
+}
+
+bool HLight::InitiateShaders()
+{
+	std::string shaderData;
+	bool succeeded = false;
+	HRESULT hr;
+
+	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapVS.cso", &shaderData);
+	if (!succeeded)
+		return false;
+
+	hr = Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &lightVS);
+	if (FAILED(hr))
+		return false;
+
+	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapPS.cso", &shaderData);
+	if (!succeeded)
+		return false;
+	
+	hr = Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &lightPS);
+	if (FAILED(hr))
+		return false;
+
+	return true;
+}
+
+bool HLight::InitiateBuffers()
+{
+	bool succeeded = false;
+	HRESULT hr;
+
+	using namespace DirectX;
+	XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, 0.f, 0.f);
+	XMVECTOR SUNDIR = XMVectorSet(-1.f, -2.f, 0.f, 0.f);
+
+	SUN.strength = 1.f;
+	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
+	XMStoreFloat4x4(&SUN.viewProject,
+		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f));
+
+	hr = Backend::CreateConstCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
+	if (FAILED(hr))
+		return false;
+
+	XMFLOAT4X4 matrix4x4;
+	XMStoreFloat4x4(&matrix4x4, XMMatrixTranspose(XMLoadFloat4x4(&SUN.viewProject)));
+	hr = Backend::CreateConstCBuffer(&lightViewProjectBuffer, &matrix4x4, sizeof(XMFLOAT4X4));
+	if (FAILED(hr))
+		return false;
+
+	return true;
+}
+
+bool HLight::InitiateRasterizerStates()
+{
+	HRESULT hr;
+	
+	D3D11_RASTERIZER_DESC rsDesc{};
+	rsDesc.FillMode = D3D11_FILL_SOLID;
+	rsDesc.CullMode = D3D11_CULL_FRONT;
+	rsDesc.FrontCounterClockwise = false;
+	rsDesc.DepthBias = 0;
+	rsDesc.SlopeScaledDepthBias = 0.f;
+	rsDesc.DepthBiasClamp = 0.f;
+	rsDesc.DepthClipEnable = true; // why not false in shadowMapping..?
+	rsDesc.ScissorEnable = false;
+	rsDesc.MultisampleEnable = false;
+	rsDesc.AntialiasedLineEnable = false;
+
+	hr = Backend::GetDevice()->CreateRasterizerState(&rsDesc, &frontFaceCullingRS);
+	if (FAILED(hr))
+		return false;
+	
+	rsDesc.CullMode = D3D11_CULL_NONE;
+	hr = Backend::GetDevice()->CreateRasterizerState(&rsDesc, &noCullingRS);
+	if (FAILED(hr))
+		return false;
 
 	return true;
 }

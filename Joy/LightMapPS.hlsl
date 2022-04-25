@@ -13,7 +13,8 @@ cbuffer light : register(b0)
 	float4x4 viewProject;
 }
 
-float main(PS_IN input) : SV_TARGET
+float4 main(PS_IN input) : SV_TARGET
 {
-	return dot(-direction, input.normal);
+	float dotty = dot(direction, input.normal);
+	return float4(dotty, 0.f, 0.f, 0.f);
 }

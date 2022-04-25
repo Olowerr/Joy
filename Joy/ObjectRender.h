@@ -37,6 +37,8 @@ public:
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
 
+	ID3D11InputLayout* GetObjectInputLayout();
+	ID3D11VertexShader* GetObjectVS();
 
 private:
 
@@ -58,7 +60,7 @@ private:
 
 
 	//temp
-//	CharacterCamera* camera;
-//	ID3D11Buffer* camCb;
-//	DirectX::XMFLOAT4X4 viewAndProj;
+	//CharacterCamera* camera;
+	ID3D11Buffer* camCb;
+	//DirectX::XMFLOAT4X4 viewAndProj;
 };
