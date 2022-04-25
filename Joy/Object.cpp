@@ -90,3 +90,8 @@ Mesh* Object::GetMesh()
 {
 	return mesh;
 }
+
+ID3D11ShaderResourceView** Object::GetLightMap()
+{
+	return &lightMap;
+}

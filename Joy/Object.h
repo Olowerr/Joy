@@ -24,10 +24,11 @@ public:
 	const DirectX::BoundingBox& GetBoundingBox() const;
 
 	Mesh* GetMesh();
+	ID3D11ShaderResourceView** GetLightMap();
 
 private:
 	Mesh* mesh;
 	DirectX::BoundingBox bBox;
 	//hej
-
+	ID3D11ShaderResourceView* lightMap; // no use in joy
 };
