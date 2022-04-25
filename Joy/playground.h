@@ -3,9 +3,6 @@
 #include "Character.h"
 #include "CharacterCamera.h"
 #include "Collision.h"
-
-#include "LightHandler.h"
-
 class testScene : public Scene
 {
 public:
@@ -33,6 +30,5 @@ public:
 
 	Character* collTest;
 	Collision coll;
-
 
 };
