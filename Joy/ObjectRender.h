@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Backend.h"
 #include "Object.h"
-#include "CharacterCamera.h"
+#include "CameraBase.h"
 
 struct InstancedObjects
 {
@@ -30,6 +30,8 @@ public:
 	ObjectRender();
 	void Shutdown();
 	void Clear();
+
+	void SetActiveCamera(Camera* camera);
 
 	void AddObject(Object* obj);
 	void DrawAll();

@@ -41,6 +41,11 @@ void ObjectRender::Clear()
 	objects.clear();
 }
 
+void ObjectRender::SetActiveCamera(Camera* camera)
+{
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, camera->GetMatrixBuffer());
+}
+
 bool ObjectRender::LoadShaders()
 {
 	std::string shaderData;
@@ -101,7 +106,6 @@ void ObjectRender::DrawAll()
 	devContext->IASetInputLayout(inpLayout);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	devContext->VSSetConstantBuffers(1, 1, &camCb);
 	devContext->VSSetShader(objVS, nullptr, 0);
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport()); // temp

@@ -144,9 +144,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backend.cpp" />
+    <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CharacterCamera.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="FreelookCamera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LightHandler.cpp" />
@@ -175,9 +177,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h" />
+    <ClInclude Include="CameraBase.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterCamera.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="FreelookCamera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="EasyLevel.h" />

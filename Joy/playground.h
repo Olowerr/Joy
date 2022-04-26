@@ -4,6 +4,7 @@
 #include "CharacterCamera.h"
 #include "Collision.h"
 #include "LightHandler.h"
+#include "FreelookCamera.h"
 
 class testScene : public Scene
 {
@@ -26,7 +27,9 @@ public:
 	Object* bg;
 	//CharacterCamera* camera;
 
-	CharacterCamera* camera;
+	Camera* activeCamera;
+	FreelookCamera* fCamera;
+	CharacterCamera* joyCamera;
 	ID3D11Buffer* camCb;
 	DirectX::XMFLOAT4X4 viewAndProj;
 

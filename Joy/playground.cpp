@@ -16,7 +16,7 @@ void testScene::Load()
     //test->SetPosition(0.0f, 0.2f, .0f);
     bg = new Object(meshStorage.GetMesh(2));
     ground = new Object(meshStorage.GetMesh(3));
-    camera = new CharacterCamera(*test);
+    joyCamera = new CharacterCamera(*test);
     objRender.AddObject(ground);
     objRender.AddObject(test);
     objRender.AddObject(bg);
@@ -24,21 +24,18 @@ void testScene::Load()
     test->Translate(0, 0.5f, 0);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     bg->SetPosition(-1.f, 1, -5);
-    //bg->SetScale(1.f / 23.f);
 
-  //  bg->Scale(2);
 
-    viewAndProj = camera->GetViewAndProj();
-
-    //Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-    //Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-    //devContext->VSSetConstantBuffers(1, 1, &camCb); 
     objRender.AddObject(collTest);
 
     HLight hLight(objRender);
     Object* test[2] = { ground, bg };
     hLight.GenerateLightMaps(test, 2);
     hLight.Shutdown();
+
+    fCamera = new FreelookCamera();
+    activeCamera = joyCamera;
+    objRender.SetActiveCamera(activeCamera);
 }
 
 void testScene::Shutdown()
@@ -46,32 +43,44 @@ void testScene::Shutdown()
     objRender.Clear();
     meshStorage.UnLoadAll();
 
-    test->Shutdown();
-    bg->Shutdown();
     ground->Shutdown();
-
     delete ground;
-    delete camera;
-    collTest->Shutdown();
+    
+    joyCamera->Shutdown();
+    delete joyCamera;
 
+    collTest->Shutdown();
     delete collTest;
+
+    test->Shutdown();
     delete test;
+    
+    bg->Shutdown();
     delete bg;
+
+    fCamera->Shutdown();
+    delete fCamera;
 }
 
 SceneState testScene::Update()
 {
-
-
-    ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-    //viewAndProj = camera->GetViewAndProj();
-    //devContext->VSSetConstantBuffers(1, 1, &camCb);
-    //Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+    if (Backend::GetKeyboard().KeyReleased(DIK_R))
+    {
+        activeCamera = fCamera;
+        objRender.SetActiveCamera(activeCamera);
+    }
+    else if (Backend::GetKeyboard().KeyReleased(DIK_T))
+    {
+        activeCamera = joyCamera;
+        objRender.SetActiveCamera(activeCamera);
+    }
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
+    if (activeCamera == fCamera)
+        return SceneState::Unchanged;
 
     //ground->SetPosition(0, -2, 0);
-    //Camera
-    //camera->UpdateCam();
-    //camera->SetView();
+
     //test->SetStopMovement(coll.GetDontStopMovement());
     test->SetCanJump(false);
     test->setCollidedY(coll.getCollidedY());
