@@ -29,8 +29,8 @@ void testScene::Load()
     objRender.AddObject(collTest);
 
     HLight hLight(objRender);
-    Object* test[2] = { ground, bg };
-    hLight.GenerateLightMaps(test, 2);
+    Object* elgato[2] = { ground, bg };
+    hLight.GenerateLightMaps(elgato, 2);
     hLight.Shutdown();
 
     fCamera = new FreelookCamera();

@@ -50,7 +50,7 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	deviceContext->IASetInputLayout(objRender.GetObjectInputLayout());
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	//DrawShadowMap(objects, amount);
+	DrawShadowMap(objects, amount);
 
 	lightViewPort.Width = (float)LightMapWidth;
 	lightViewPort.Height = (float)LightMapHeight;
@@ -63,7 +63,7 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
-
+	deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
 
 	D3D11_TEXTURE2D_DESC texDesc =
 	{
@@ -134,6 +134,7 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	for (UINT i = 0; i < amount; i++)
 		objects[i]->DrawGeometry();
 	
+	deviceContext->OMSetRenderTargets(0, &nullRTV, nullptr);
 }
 
 bool HLight::InitiateShadowMap()
@@ -220,8 +221,8 @@ bool HLight::InitiateBuffers()
 	HRESULT hr;
 
 	using namespace DirectX;
-	XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, 0.f, 0.f);
-	XMVECTOR SUNDIR = XMVectorSet(-1.f, -2.f, 0.f, 0.f);
+	XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, -10.f, 0.f);
+	XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f);
 
 	SUN.strength = 1.f;
 	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));

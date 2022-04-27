@@ -7,10 +7,10 @@ FreelookCamera::FreelookCamera()
 	, moveSpeed(2.f), turnSpeed(1.5f)
 {
 
-	position = DirectX::XMVectorSet(0.f, 5.f, -5.f, 0.f);
-	lookDir = DirectX::XMVectorSet(0.f, 0.f, 1.f, 0.f);
-	upDir =	DirectX::XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	sideDir = DirectX::XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	position = DirectX::XMVectorSet(0.f, 5.f, -5.f, 1.f);
+	lookDir = DirectX::XMVectorSet(0.f, 0.f, 1.f, 1.f);
+	upDir =	DirectX::XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	sideDir = DirectX::XMVector3Cross(lookDir, upDir);
 
 	DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookToLH(position, lookDir, upDir) * DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspectRatio, 0.1f, 200.f)));
@@ -27,18 +27,15 @@ void FreelookCamera::UpdateCam()
 
 	using namespace DirectX;
 
-	if (MouseX)
-	{
-		rotMatrix = XMMatrixRotationY(MouseX * DeltaTime * turnSpeed);
-		lookDir = XMVector3Transform(lookDir, rotMatrix);
-		sideDir = XMVector3Transform(sideDir, rotMatrix);
-	}
+	//x
+	rotMatrix = XMMatrixRotationY(MouseX * DeltaTime * turnSpeed);
+	lookDir = XMVector3Transform(lookDir, rotMatrix);
+	sideDir = XMVector3Transform(sideDir, rotMatrix);
+
+	//y
+	lookDir = XMVector3Transform(lookDir, XMMatrixRotationAxis(sideDir, -MouseY * DeltaTime * turnSpeed));
+	upDir = XMVector3Cross(sideDir, lookDir);
 	
-	if (MouseY)
-	{
-		lookDir = XMVector3Transform(lookDir, XMMatrixRotationAxis(sideDir, -mouse.GetDeltaY() * DeltaTime * turnSpeed));
-		upDir = XMVector3Cross(sideDir, lookDir);
-	}
 
 
 	if (keyboard.KeyDown(DIK_W))
