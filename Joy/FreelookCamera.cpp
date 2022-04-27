@@ -1,5 +1,5 @@
 #include "FreelookCamera.h"
-
+#include <iostream>
 FreelookCamera::FreelookCamera()
 	:keyboard(Backend::GetKeyboard()), mouse(Backend::GetMouse())
 	, aspectRatio((float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight())
@@ -25,39 +25,36 @@ void FreelookCamera::UpdateCam()
 	const INT MouseX = mouse.GetDeltaX();
 	const INT MouseY = mouse.GetDeltaY();
 
+	using namespace DirectX;
+
 	if (MouseX)
 	{
-		rotMatrix = DirectX::XMMatrixRotationAxis(upDir, turnSpeed * MouseX * DeltaTime);
-		lookDir = DirectX::XMVector3Transform(lookDir, rotMatrix);
-		upDir = DirectX::XMVector3Transform(upDir, rotMatrix);
-		sideDir = DirectX::XMVector3Cross(lookDir, upDir);
+		rotMatrix = XMMatrixRotationY(MouseX * DeltaTime * turnSpeed);
+		lookDir = XMVector3Transform(lookDir, rotMatrix);
+		sideDir = XMVector3Transform(sideDir, rotMatrix);
 	}
-
+	
 	if (MouseY)
 	{
-		rotMatrix = DirectX::XMMatrixRotationAxis(sideDir, turnSpeed * MouseY * DeltaTime);
-		lookDir = DirectX::XMVector3Transform(lookDir, rotMatrix);
-		sideDir = DirectX::XMVector3Transform(sideDir, rotMatrix);
-		upDir = DirectX::XMVector3Cross(lookDir, sideDir);
+		lookDir = XMVector3Transform(lookDir, XMMatrixRotationAxis(sideDir, -mouse.GetDeltaY() * DeltaTime * turnSpeed));
+		upDir = XMVector3Cross(sideDir, lookDir);
 	}
+
 
 	if (keyboard.KeyDown(DIK_W))
-	{
-		position = DirectX::XMVectorAdd(position, DirectX::XMVectorScale(lookDir, moveSpeed * DeltaTime));
-	}
+		position = XMVectorAdd(XMVectorScale(lookDir, DeltaTime * moveSpeed), position);
 	else if (keyboard.KeyDown(DIK_S))
-	{
-		position = DirectX::XMVectorAdd(position, DirectX::XMVectorScale(lookDir, -moveSpeed * DeltaTime));
-	}
+		position = XMVectorAdd(XMVectorScale(lookDir, DeltaTime * -moveSpeed), position);
 
-	if (keyboard.KeyDown(DIK_A))
-	{
-		position = DirectX::XMVectorAdd(position, DirectX::XMVectorScale(sideDir, -moveSpeed * DeltaTime));
-	}
-	else if (keyboard.KeyDown(DIK_D))
-	{
-		position = DirectX::XMVectorAdd(position, DirectX::XMVectorScale(sideDir, moveSpeed * DeltaTime));
-	}
+	if (keyboard.KeyDown(DIK_D))
+		position = XMVectorAdd(XMVectorScale(sideDir, DeltaTime * -moveSpeed), position);
+	else if (keyboard.KeyDown(DIK_A))
+		position = XMVectorAdd(XMVectorScale(sideDir, DeltaTime * moveSpeed), position);
+
+	if (keyboard.KeyDown(DIK_SPACE))
+		position.m128_f32[1] += moveSpeed * DeltaTime;
+	if (keyboard.KeyDown(DIK_LSHIFT))
+		position.m128_f32[1] -= moveSpeed * DeltaTime;
 }
 
 void FreelookCamera::SetView()
