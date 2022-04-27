@@ -70,10 +70,9 @@ private:
 	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
-		"cat.obj",
-		//"Kub.obj",
-		//"Kub.obj",
-		//"gGround.obj"
+		"Joy.obj",
+		"Kub.obj",
+		"gGround.obj"
 	};
 
 
