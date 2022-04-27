@@ -9,18 +9,6 @@ ObjectRender::ObjectRender()
 	assert(succeeded);
 
 	bbRTV = Backend::GetBackBufferRTV();
-
-	//camera = new CharacterCamera()
-
-	//// temp
-	//float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
-	//using namespace DirectX;
-	//DirectX::XMFLOAT4X4 temp = camera->GetViewAndProj();
-	//XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.f, 0.f, -6.f, 0.f), XMVectorSet(0.f, 0.f, 1.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	//XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
-	//XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
-
-	//Backend::CreateConstCBuffer(&camCb, &temp, 64);
 }
 
 void ObjectRender::Shutdown()
@@ -139,7 +127,6 @@ void ObjectRender::DrawAll()
 
 		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
 	}
-
 }
 
 void ObjectRender::CreateCharacterDecal(Character* character)
@@ -187,7 +174,6 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 		obj[i].Shutdown(); 
 	}
 
-
 	D3D11_BUFFER_DESC desc{};
 	desc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * amount;
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -220,17 +206,13 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	if (FAILED(hr))
 		return false;
 
-
-
 	instances.emplace_back();
 
 	instances.back().instanceCount = amount;
 	instances.back().indexCount = obj[0].GetMesh()->vertexCount;
 	instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
-	//instances.back().indexBuffer = obj[0].GetMesh()->indexBuffer;
 	instances.back().transformSRV = tempSRV;
 	instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
-	//instances.back().lightMapsSRV = get tha lightmaps srv
 
 	return true;
 }

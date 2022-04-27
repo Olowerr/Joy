@@ -32,7 +32,6 @@ void CharacterCamera::UpdateCam()
 	{
 		position.x -= (float)0.009 * dt;
 	}
-
 	
 	DirectX::XMVECTOR positionChange = DirectX::XMVector3Rotate(DirectX::XMVectorSet(direction, 0.f, 0.f, 0.f), DirectX::XMLoadFloat4(&rotation));
 	DirectX::XMStoreFloat3(&position, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), positionChange));
@@ -45,7 +44,6 @@ void CharacterCamera::SetView()
 	position.y = object.GetPosition().y * -1 * (float)0.01 + camHeight;
 	camFront = DirectX::XMVectorSet(position.x, object.GetPosition().y, 1, 1);
 
-	
 //	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
 	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookAtLH(XMLoadFloat3(&position), camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
 	XMStoreFloat4x4(&viewProjMtrx, XMMatrixTranspose(viewAndProj));
