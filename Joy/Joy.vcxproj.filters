@@ -46,6 +46,9 @@
     <Filter Include="Object\Pickups">
       <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Points">
+      <UniqueIdentifier>{f356e2fd-4963-4f8f-8d1e-5f1aa64cf0b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -110,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Points.cpp">
+      <Filter>Source Files\Points</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Points.h">
+      <Filter>Source Files\Points</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -167,6 +167,7 @@
     </ClCompile>
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Playground.cpp" />
+    <ClCompile Include="Points.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="UIRender.cpp" />
@@ -196,6 +197,7 @@
     </ClInclude>
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="Playground.h" />
+    <ClInclude Include="Points.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Transform.h" />
