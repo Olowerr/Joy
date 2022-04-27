@@ -182,6 +182,11 @@ void TempMeshStorage::import(UINT index)
 	meshes[index].bBox.Extents.y = (tempYmax - tempYmin)/2;
 	meshes[index].bBox.Extents.z = (tempZmax - tempZmin)/2;
 
+	if (index == 0)
+	{
+		meshes[index].bBox.Extents.y += 1;
+	}
+
 	meshes[index].vertexCount = verts.size();
 	D3D11_BUFFER_DESC desc;
 	desc.ByteWidth = sizeof(Vertex) * verts.size();
