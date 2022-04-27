@@ -12,11 +12,11 @@ class Character: public Object
 {
 public:
 	Character(Mesh* mesh);
-	void move();
+	void Move();
 	void Jump();
-	void respawn();
+	void Respawn();
 	void setSpeedZero();
-	void charGrounded();
+//	void charGrounded();
 	bool SetCanJump(bool canJump);
 	bool SetStopMovement(bool stopSpeed);
 	bool setCollidedY(bool verticalCollision);
@@ -44,10 +44,13 @@ private:
 	float currentYPos;
 	float maxJumpHeight;
 	float jumpStartHeight;
+
+	float fallSpeed;
+
 	bool canJump;
 	bool isJumping;
 	bool isFalling;
-	bool stopJumpVelocity;
+	bool isOnGround;
 
 	//boost
 	float boost;

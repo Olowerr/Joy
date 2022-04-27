@@ -30,7 +30,7 @@ public:
 	ObjectRender();
 	void Shutdown();
 	void Clear();
-
+	void CreateSamplerState(); // << temporary
 	void AddObject(Object* obj);
 	void DrawAll();
 
@@ -60,12 +60,12 @@ private:
 	ID3D11VertexShader* objVS;
 	ID3D11PixelShader* objPS;
 
+	// Sampler
+	ID3D11SamplerState* sampler;  // << temporary
+	
+	
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
 
-
-	//temp
-//	CharacterCamera* camera;
-//	ID3D11Buffer* camCb;
-//	DirectX::XMFLOAT4X4 viewAndProj;
+	
 };

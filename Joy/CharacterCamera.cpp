@@ -21,8 +21,7 @@ CharacterCamera::~CharacterCamera()
 
 void CharacterCamera::UpdateCam()
 {
-//	float dt = Backend::GetDeltaTime();
-	float dt = 1;
+	float dt = Backend::GetDeltaTime();
 	float x = object.GetPosition().x;
 
 	if (x > position.x +1)
