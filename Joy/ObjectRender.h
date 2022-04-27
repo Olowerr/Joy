@@ -34,6 +34,10 @@ public:
 	void AddObject(Object* obj);
 	void DrawAll();
 
+	void CreateCharacterDecal(Character* character);
+	void UpdateCharacterDecal(Character* character);
+	ID3D11Buffer* const* getDecalBuffer();
+
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
 
@@ -44,6 +48,9 @@ private:
 
 	ID3D11InputLayout* inpLayout;
 	ID3D11RenderTargetView* const* bbRTV;
+
+	// Decal buffer with character position, updates constantly
+	ID3D11Buffer* charPosBuff;
 
 	// Instanced
 	ID3D11VertexShader* objInstanceVS;
