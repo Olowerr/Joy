@@ -21,8 +21,8 @@ void testScene::Load()
     objRender.AddObject(joy);
     objRender.AddObject(bg);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
-    bg->SetPosition(-1.0f, 1.0f, -5.0f);
-    collTest->SetPosition(-2.0f, 0.0f, 0.0f);
+    bg->SetPosition(-10.0f, 1.0f, -5.0f);
+    collTest->SetPosition(-20.0f, 0.0f, 0.0f);
     //bg->SetScale(1.f / 23.f);
 
   //  bg->Scale(2);
@@ -62,11 +62,12 @@ SceneState testScene::Update()
     devContext->VSSetConstantBuffers(1, 1, &camCb);
     Backend::UpdateBuffer(camCb, &viewAndProj, 64);
 
-    //ground->SetPosition(0, -2, 0);
-    //Camera
+
     camera->UpdateCam();
     camera->SetView();
-    //test->SetStopMovement(coll.GetDontStopMovement());
+
+
+
     joy->SetCanJump(false);
     joy->setCollidedY(coll.getCollidedY());
     if (coll.hitObject(joy, collTest))
@@ -77,11 +78,16 @@ SceneState testScene::Update()
         joy->SetCanJump(coll.GetStopFall());
     
     coll.collided(joy, collTest);
-    //coll.collided(test, ground);
-    //Test Character(cube)
+
+
+
+
+
+
+
     joy->Jump();
-    joy->move();
-    joy->respawn();
+    joy->Move();
+    joy->Respawn();
     objRender.UpdateCharacterDecal(joy);
 
     //Collision
