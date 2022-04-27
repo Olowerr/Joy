@@ -106,7 +106,7 @@ void ObjectRender::DrawAll()
 
 	devContext->PSSetShader(objPS, nullptr, 0);
 	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
-
+	
 	for (Object* obj : objects)
 		obj->Draw();
 
@@ -120,6 +120,37 @@ void ObjectRender::DrawAll()
 		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
 	}
 
+}
+
+void ObjectRender::CreateCharacterDecal(Character* character)
+{
+	DirectX::XMFLOAT4 charPos;
+	auto pos = character->GetPosition();
+
+	charPos.x = pos.x;
+	charPos.y = pos.y;
+	charPos.z = pos.z;
+	charPos.w = 1.0f;
+
+	Backend::CreateDynamicCBuffer(&charPosBuff, &charPos, sizeof(DirectX::XMFLOAT4));
+}
+
+void ObjectRender::UpdateCharacterDecal(Character* character)
+{
+	DirectX::XMFLOAT4 charPos;
+	auto pos = character->GetPosition();
+
+	charPos.x = pos.x;
+	charPos.y = pos.y;
+	charPos.z = pos.z;
+	charPos.w = 1.0f;
+
+	Backend::UpdateBuffer(charPosBuff, &charPos, sizeof(DirectX::XMFLOAT4));
+}
+
+ID3D11Buffer* const* ObjectRender::getDecalBuffer()
+{
+	return &charPosBuff;
 }
 
 bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)

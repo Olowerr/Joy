@@ -21,10 +21,10 @@ Character::Character(Mesh* mesh)
 	
 
 	//Jump/Boost variable initiation
-	//fuel = 10.0f;
+	fuel = 10.0f;
 	//jumpDecc = 0.0f;
 	//boostAcc = 0.0f;
-	//canBoost = false;
+	canBoost = false;
 	//doJump = false;
 	//gravity = 0.0f;
 	//isAtMaxHeight = false;
@@ -149,7 +149,6 @@ void Character::Jump()
 {
 	float dt = Backend::GetDeltaTime();
 	gravity = 300;
-	jumpVelocity *= 0.9995;
 	jumpVelocity -= gravity * dt;
 
 	//this should check for collision with ground. Is now just checking y pos for 0
@@ -177,7 +176,7 @@ void Character::Jump()
 	//Boost
 	if (canBoost && key.KeyDown(DIK_SPACE))
 	{
-		jumpVelocity += 0.19;
+		jumpVelocity += 300 * dt;
 	}
 
 	this->Translate(0, jumpVelocity * dt, 0);

@@ -19,7 +19,7 @@ public:
 	virtual void Render() override;
 
 
-	Character* test;
+	Character* joy;
 	Object* ground;
 	Object* bg;
 	//CharacterCamera* camera;
@@ -28,7 +28,7 @@ public:
 	ID3D11Buffer* camCb;
 	DirectX::XMFLOAT4X4 viewAndProj;
 
-	Character* collTest;
+	Object* collTest;
 	Collision coll;
 
 };

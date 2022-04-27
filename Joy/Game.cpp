@@ -23,7 +23,7 @@ void Game::Run()
 	testScene test(uiRender, objRender, meshStorage);
 
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = &menu;
+	Scene* activeScene = &test;
 	activeScene->Load();
 
 	while (window.IsOpen())
