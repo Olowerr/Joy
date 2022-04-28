@@ -73,7 +73,7 @@ void Collision::distToComp(DX::XMVECTOR distToMove, Object& charBbox)
     charBbox.Translate(distToMove);
 }
 
-bool Collision::hitObject(Object* charBbox, Object* targetBbox)
+bool Collision::HitObject(Object* charBbox, Object* targetBbox)
 {
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();

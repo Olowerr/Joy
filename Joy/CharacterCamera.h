@@ -24,10 +24,7 @@ private:
 	DirectX::XMVECTOR camTarget;
 	float camHeight;
 
-
 	DirectX::XMFLOAT4 rotation;
-	DirectX::XMFLOAT3 position;
+ 	DirectX::XMFLOAT3 position;
 	float direction;
-	//float direction, stillZone, acceleration, slowStopping;
-	//bool isMovingRight, isMovingLeft;
 };

@@ -1,7 +1,7 @@
 #include "playground.h"
 
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), test(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
+    :Scene(uiRender, objRender, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
 
 {
 }
@@ -11,22 +11,31 @@ void testScene::Load()
     ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
     meshStorage.LoadAll();
-    test = new Character(meshStorage.GetMesh(1));
-    collTest = new Character(meshStorage.GetMesh(2));
-    //test->SetPosition(0.0f, 0.2f, .0f);
-    bg = new Object(meshStorage.GetMesh(2));
-    ground = new Object(meshStorage.GetMesh(3));
-    joyCamera = new CharacterCamera(*test);
+
+    // Joy should always be first in the array from mesh storage
+    joy = new Character(meshStorage.GetMesh(0)); 
+    collTest = new Object(meshStorage.GetMesh(1));
+    ground = new Object(meshStorage.GetMesh(2));
+
+
+    //Camera recives wich object to look at
+    camera = new CharacterCamera(*joy);
+
+
     objRender.AddObject(ground);
-    objRender.AddObject(test);
-    objRender.AddObject(bg);
-    
-    test->Translate(0, 0.5f, 0);
+    objRender.AddObject(joy);
+
+
     ground->SetPosition(0.0f, -2.0f, 0.0f);
-    bg->SetPosition(-1.f, 1, -5);
+    collTest->SetPosition(-20.0f, 0.0f, 0.0f);
 
+  //  bg->Scale(2);
 
-    objRender.AddObject(collTest);
+    viewAndProj = camera->GetViewAndProj();
+
+    Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
+    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+    devContext->VSSetConstantBuffers(1, 1, &camCb); 
 
     HLight hLight(objRender);
     Object* elgato[2] = { ground, bg };
@@ -36,34 +45,28 @@ void testScene::Load()
     fCamera = new FreelookCamera();
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
+    objRender.CreateCharacterDecal(joy);
+    
+    devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
+    objRender.AddObject(collTest);
 }
 
 void testScene::Shutdown()
 {
     objRender.Clear();
-    meshStorage.UnLoadAll();
 
-    ground->Shutdown();
-    delete ground;
-    
-    joyCamera->Shutdown();
-    delete joyCamera;
-
-    collTest->Shutdown();
-    delete collTest;
-
-    test->Shutdown();
-    delete test;
-    
+    joy->Shutdown();
     bg->Shutdown();
-    delete bg;
+    ground->Shutdown();
+    collTest->Shutdown();
 
-    fCamera->Shutdown();
-    delete fCamera;
+    delete camera;
+    collTest->Shutdown();
+    delete joy;
+    delete bg;
 }
 
 SceneState testScene::Update()
-{
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = fCamera;
@@ -78,28 +81,32 @@ SceneState testScene::Update()
     activeCamera->SetView();
     if (activeCamera == fCamera)
         return SceneState::Unchanged;
-
-    //ground->SetPosition(0, -2, 0);
-
-    //test->SetStopMovement(coll.GetDontStopMovement());
-    test->SetCanJump(false);
-    test->setCollidedY(coll.getCollidedY());
-    if (coll.hitObject(test, collTest))
-        test->setSpeedZero();
-    if (coll.hitObject(test, ground))
-        test->SetCanJump(coll.GetStopFall());
-    if (coll.hitObject(test, collTest))
-        test->SetCanJump(coll.GetStopFall());
-    
-    coll.collided(test, collTest);
-    //coll.collided(test, ground);
-    //Test Character(cube)
-    test->Jump();
-    test->move();
-    test->respawn();
+    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+    //Camera functions
+    camera->UpdateCam();
+    camera->SetView();
 
     //Collision
+    joy->SetCanJump(false);
+    joy->setCollidedY(coll.getCollidedY());
+    if (coll.HitObject(joy, collTest))
+        joy->setSpeedZero();
+    if (coll.HitObject(joy, ground))
+        joy->SetCanJump(coll.GetStopFall());
+    if (coll.HitObject(joy, collTest))
+        joy->SetCanJump(coll.GetStopFall());
     
+    coll.collided(joy, collTest);
+
+    //Joy functions
+    joy->Jump();
+    joy->Move();
+    joy->Respawn();
+    test->respawn();
+
+    //Decal
+    objRender.UpdateCharacterDecal(joy);
+
 
     return SceneState::Unchanged;
 }

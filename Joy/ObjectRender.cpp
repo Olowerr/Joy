@@ -9,23 +9,10 @@ ObjectRender::ObjectRender()
 	assert(succeeded);
 
 	bbRTV = Backend::GetBackBufferRTV();
-
-	//camera = new CharacterCamera()
-
-	// temp
-	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
-	using namespace DirectX;
-	XMFLOAT4X4 matri;
-	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(8.f, 3.f, -8.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
-	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
-
-	Backend::CreateConstCBuffer(&camCb, &matri, 64);
 }
 
 void ObjectRender::Shutdown()
 {
-	camCb->Release();
 	inpLayout->Release();
 	objVS->Release();
 	objPS->Release();
@@ -39,6 +26,26 @@ void ObjectRender::Clear()
 	instances.clear();
 
 	objects.clear();
+}
+
+void ObjectRender::CreateSamplerState()
+{
+	HRESULT hr;
+
+	D3D11_SAMPLER_DESC samplerDesc = { };
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	samplerDesc.BorderColor[0] = 1.0f;
+	samplerDesc.BorderColor[1] = 1.0f;
+	samplerDesc.BorderColor[2] = 1.0f;
+	samplerDesc.BorderColor[3] = 1.0f;
+
+	hr = Backend::GetDevice()->CreateSamplerState(&samplerDesc, &sampler);
+	assert(SUCCEEDED(hr));
 }
 
 void ObjectRender::SetActiveCamera(Camera* camera)
@@ -74,8 +81,8 @@ bool ObjectRender::LoadShaders()
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstanceVS)))
 		return false;
 
-
-
+	CreateSamplerState(); // << temporary
+	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
 	return true;
 }
 
@@ -112,7 +119,7 @@ void ObjectRender::DrawAll()
 
 	devContext->PSSetShader(objPS, nullptr, 0);
 	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
-
+	
 	for (Object* obj : objects)
 		obj->Draw();
 
@@ -125,7 +132,37 @@ void ObjectRender::DrawAll()
 
 		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
 	}
+}
 
+void ObjectRender::CreateCharacterDecal(Character* character)
+{
+	DirectX::XMFLOAT4 charPos;
+	auto pos = character->GetPosition();
+
+	charPos.x = pos.x;
+	charPos.y = pos.y;
+	charPos.z = pos.z;
+	charPos.w = 1.0f;
+
+	Backend::CreateDynamicCBuffer(&charPosBuff, &charPos, sizeof(DirectX::XMFLOAT4));
+}
+
+void ObjectRender::UpdateCharacterDecal(Character* character)
+{
+	DirectX::XMFLOAT4 charPos;
+	auto pos = character->GetPosition();
+
+	charPos.x = pos.x;
+	charPos.y = pos.y;
+	charPos.z = pos.z;
+	charPos.w = 1.0f;
+
+	Backend::UpdateBuffer(charPosBuff, &charPos, sizeof(DirectX::XMFLOAT4));
+}
+
+ID3D11Buffer* const* ObjectRender::getDecalBuffer()
+{
+	return &charPosBuff;
 }
 
 bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
@@ -141,7 +178,6 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 		// might get moved with lightmaps
 		obj[i].Shutdown(); 
 	}
-
 
 	D3D11_BUFFER_DESC desc{};
 	desc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * amount;
@@ -175,17 +211,13 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	if (FAILED(hr))
 		return false;
 
-
-
 	instances.emplace_back();
 
 	instances.back().instanceCount = amount;
 	instances.back().indexCount = obj[0].GetMesh()->vertexCount;
 	instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
-	//instances.back().indexBuffer = obj[0].GetMesh()->indexBuffer;
 	instances.back().transformSRV = tempSRV;
 	instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
-	//instances.back().lightMapsSRV = get tha lightmaps srv
 
 	return true;
 }
