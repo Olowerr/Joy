@@ -176,9 +176,6 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Pickup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Playground.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
@@ -187,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="Points.h">
       <Filter>Source Files\Points</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Object\Pickups</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,10 @@
 #include "Character.h"
 #include "CharacterCamera.h"
 #include "Collision.h"
+
+#include "Pickup.h"
+#include "Points.h"
+
 class testScene : public Scene
 {
 public:
@@ -26,4 +30,9 @@ private:
 
 	Object* collTest;
 	Collision coll;
+
+	// == Pickup Tests
+	Pickup* pickups;
+	Points* points;
+
 };

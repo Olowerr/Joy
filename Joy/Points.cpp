@@ -1,9 +1,21 @@
 #include "Points.h"
 
-Points::Points(Pickup* pickups_in)
-	: pickups(pickups_in)
+Points::Points()
+	: pickups(nullptr)
 {
-	
+}
+
+bool Points::setTrackedPickups(Pickup* pickups_in)
+{
+	if (pickups = nullptr)
+	{
+		pickups = pickups_in;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Points::StartTimer()

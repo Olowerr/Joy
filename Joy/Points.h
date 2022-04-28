@@ -4,7 +4,10 @@
 class Points
 {
 public:
-	Points(Pickup* pickups_in);
+	Points();
+
+	bool setTrackedPickups(Pickup* pickups_in);
+
 	void StartTimer();
 	void CountTimer();
 	void StopTimer();
