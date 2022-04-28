@@ -1,7 +1,8 @@
 #include "playground.h"
 
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
+    :Scene(uiRender, objRender, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr),
+    pickups(nullptr), points(nullptr)
 
 {
 }
@@ -9,51 +10,58 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStor
 void testScene::Load()
 {
     ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-
     meshStorage.LoadAll();
 
-    // Joy should always be first in the array from mesh storage
-    joy = new Character(meshStorage.GetMesh(0)); 
-    collTest = new Object(meshStorage.GetMesh(1));
-    ground = new Object(meshStorage.GetMesh(2));
+    pickups = new Pickup(meshStorage, 2);
+    pickups->AddObject(2.0f, -2.0f, 2.0f);
+    pickups->CreateSRV_CreateMatrixCB();
 
+    points = new Points();
+    points->setTrackedPickups(pickups);
 
-    //Camera recives wich object to look at
-    camera = new CharacterCamera(*joy);
+        // Joy should always be first in the array from mesh storage
+        joy = new Character(meshStorage.GetMesh(0)); 
+        collTest = new Object(meshStorage.GetMesh(1));
+        ground = new Object(meshStorage.GetMesh(2));
 
+        //Camera recives wich object to look at
+        camera = new CharacterCamera(*joy);
 
-    objRender.AddObject(ground);
-    objRender.AddObject(joy);
+        objRender.AddObject(ground);
+        objRender.AddObject(joy);
 
+        ground->SetPosition(0.0f, -2.0f, 0.0f);
+        collTest->SetPosition(-20.0f, 0.0f, 0.0f);
 
-    ground->SetPosition(0.0f, -2.0f, 0.0f);
-    collTest->SetPosition(-20.0f, 0.0f, 0.0f);
+        viewAndProj = camera->GetViewAndProj();
 
-    viewAndProj = camera->GetViewAndProj();
+        Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
+        Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+        devContext->VSSetConstantBuffers(1, 1, &camCb); 
 
-    Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-    devContext->VSSetConstantBuffers(1, 1, &camCb); 
-
-    objRender.AddObject(collTest);
-    objRender.CreateCharacterDecal(joy);
+        objRender.AddObject(collTest);
+        objRender.CreateCharacterDecal(joy);
     
-    devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
+        devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
+
+    points->StartTimer();
 }
 
 void testScene::Shutdown()
 {
-    objRender.Clear();
-    meshStorage.UnLoadAll();
+        objRender.Clear();
+        meshStorage.UnLoadAll();
 
-    joy->Shutdown();
-    ground->Shutdown();
-    collTest->Shutdown();
+        joy->Shutdown();
+        ground->Shutdown();
+        collTest->Shutdown();
 
-    delete ground;
-    delete camera;
-    delete collTest;
-    delete joy;
+    pickups->ShutDown();
+    delete pickups;
+        delete ground;
+        delete camera;
+        delete collTest;
+        delete joy;
 }
 
 SceneState testScene::Update()
@@ -66,6 +74,9 @@ SceneState testScene::Update()
     //Camera functions
     camera->UpdateCam();
     camera->SetView();
+    
+    pickups->UpdateMatrices();
+    
 
     //Collision
     joy->SetCanJump(false);
@@ -94,4 +105,5 @@ SceneState testScene::Update()
 void testScene::Render()
 {
     objRender.DrawAll();
+    pickups->DrawPickupInstances();
 }
