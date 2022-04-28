@@ -1,7 +1,7 @@
 #include "playground.h"
 
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
+    :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
 
 {
 }
@@ -16,29 +16,22 @@ void testScene::Load()
     joy = new Character(meshStorage.GetMesh(0)); 
     collTest = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
-
+    gatoKubo = new Object(meshStorage.GetMesh(1));
 
     //Camera recives wich object to look at
-    camera = new CharacterCamera(*joy);
+    joyCamera = new CharacterCamera(*joy);
 
 
     objRender.AddObject(ground);
     objRender.AddObject(joy);
-
+    objRender.AddObject(gatoKubo);
 
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     collTest->SetPosition(-20.0f, 0.0f, 0.0f);
-
-  //  bg->Scale(2);
-
-    viewAndProj = camera->GetViewAndProj();
-
-    Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-    devContext->VSSetConstantBuffers(1, 1, &camCb); 
+    gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
     HLight hLight(objRender);
-    Object* elgato[2] = { ground, bg };
+    Object* elgato[2] = { ground, gatoKubo };
     hLight.GenerateLightMaps(elgato, 2);
     hLight.Shutdown();
 
@@ -54,19 +47,27 @@ void testScene::Load()
 void testScene::Shutdown()
 {
     objRender.Clear();
+    meshStorage.UnLoadAll();
 
     joy->Shutdown();
-    bg->Shutdown();
+    gatoKubo->Shutdown();
     ground->Shutdown();
     collTest->Shutdown();
 
-    delete camera;
-    collTest->Shutdown();
+    fCamera->Shutdown();
+    joyCamera->Shutdown();
+
+    delete fCamera;
+    delete joyCamera;
+
     delete joy;
-    delete bg;
+    delete gatoKubo;
+    delete collTest;
+    delete ground;
 }
 
 SceneState testScene::Update()
+{
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = fCamera;
@@ -79,12 +80,13 @@ SceneState testScene::Update()
     }
     activeCamera->UpdateCam();
     activeCamera->SetView();
+
     if (activeCamera == fCamera)
         return SceneState::Unchanged;
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+
     //Camera functions
-    camera->UpdateCam();
-    camera->SetView();
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
 
     //Collision
     joy->SetCanJump(false);
@@ -102,7 +104,7 @@ SceneState testScene::Update()
     joy->Jump();
     joy->Move();
     joy->Respawn();
-    test->respawn();
+    //test->respawn();
 
     //Decal
     objRender.UpdateCharacterDecal(joy);

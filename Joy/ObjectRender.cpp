@@ -13,6 +13,9 @@ ObjectRender::ObjectRender()
 
 void ObjectRender::Shutdown()
 {
+	sampler->Release();
+
+	charPosBuff->Release();
 	inpLayout->Release();
 	objVS->Release();
 	objPS->Release();

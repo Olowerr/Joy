@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include "Backend.h"
-#include "Object.h"
+#include "Character.h"
 #include "CameraBase.h"
 
 struct InstancedObjects
@@ -65,10 +65,10 @@ private:
 
 	// Sampler
 	ID3D11SamplerState* sampler;  // << temporary
-	
-	
+
+
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
 
-	
+
 };

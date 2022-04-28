@@ -37,6 +37,16 @@ public:
 
 	static FLOAT GetDeltaTime();
 
+#ifdef _DEBUG
+	static void ReportLive()
+	{
+		ID3D11Debug* debugger = nullptr;
+		system->device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugger));
+		debugger->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+		debugger->Release();
+	}
+#endif
+
 	// --- Create Functions ---
 	static const std::string ShaderPath;
 	static bool LoadShader(const std::string& path, std::string* const outData);
