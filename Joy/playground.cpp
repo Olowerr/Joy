@@ -16,8 +16,7 @@ void testScene::Load()
     pickups->AddObject(2.0f, -2.0f, 2.0f);
     pickups->CreateSRV_CreateMatrixCB();
 
-    points = new Points();
-    points->setTrackedPickups(pickups);
+    points = new Points(pickups);
 
         // Joy should always be first in the array from mesh storage
         joy = new Character(meshStorage.GetMesh(0)); 

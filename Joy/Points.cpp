@@ -1,13 +1,8 @@
 #include "Points.h"
 
-Points::Points()
-	: pickups(nullptr), totalScore(0)
+Points::Points(Pickup* pickups_in)
+	: pickups(pickups_in), totalScore(0)
 {
-}
-
-void Points::setTrackedPickups(Pickup* pickups_in)
-{
-	pickups = pickups_in;
 }
 
 void Points::StartTimer()
