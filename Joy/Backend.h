@@ -45,7 +45,8 @@ public:
 		debugger->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 		debugger->Release();
 	}
-#endif
+#endif // _DEBUG
+
 
 	// --- Create Functions ---
 	static const std::string ShaderPath;

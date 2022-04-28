@@ -27,7 +27,7 @@ VS_OUT main(VS_IN input)
 {
 	VS_OUT output;
 
-	output.worldPos = mul(float4(input.pos, 1.0f), world);
+	output.worldPos = mul(float4(input.pos, 1.0f), world).xyz;
 	output.pos = mul(float4(output.worldPos, 1.0f), viewProj);
 	output.normal = mul(float4(input.normal, 0.f), world).xyz;
 	output.uv = input.uv;

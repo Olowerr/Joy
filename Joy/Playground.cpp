@@ -2,7 +2,7 @@
 
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
     :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
-
+    , activeCamera(nullptr), freeCamera(nullptr), joyCamera(nullptr)
 {
 }
 
@@ -18,7 +18,7 @@ void testScene::Load()
     ground = new Object(meshStorage.GetMesh(2));
     gatoKubo = new Object(meshStorage.GetMesh(1));
 
-    //Camera recives wich object to look at
+    //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
 
 
@@ -35,7 +35,7 @@ void testScene::Load()
     hLight.GenerateLightMaps(elgato, 2);
     hLight.Shutdown();
 
-    fCamera = new FreelookCamera();
+    freeCamera = new FreelookCamera();
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
     objRender.CreateCharacterDecal(joy);
@@ -54,10 +54,10 @@ void testScene::Shutdown()
     ground->Shutdown();
     collTest->Shutdown();
 
-    fCamera->Shutdown();
+    freeCamera->Shutdown();
     joyCamera->Shutdown();
 
-    delete fCamera;
+    delete freeCamera;
     delete joyCamera;
 
     delete joy;
@@ -70,7 +70,7 @@ SceneState testScene::Update()
 {
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
-        activeCamera = fCamera;
+        activeCamera = freeCamera;
         objRender.SetActiveCamera(activeCamera);
     }
     else if (Backend::GetKeyboard().KeyReleased(DIK_T))
@@ -81,7 +81,7 @@ SceneState testScene::Update()
     activeCamera->UpdateCam();
     activeCamera->SetView();
 
-    if (activeCamera == fCamera)
+    if (activeCamera == freeCamera)
         return SceneState::Unchanged;
 
     //Camera functions

@@ -108,7 +108,6 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 		resource->Release();
 		tempRTV->Release();
-
 	}
 
 	deviceContext->RSSetState(nullptr);

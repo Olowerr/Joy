@@ -32,6 +32,6 @@ float4 main(PS_IN input) : SV_TARGET
         return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f));
     }
 	
-	//float lightValue = lightMap.Sample(defaultSampler, input.uv).r;
-	return image.Sample(defaultSampler, input.uv);
+	float lightValue = lightMap.Sample(defaultSampler, input.uv).r;
+	return image.Sample(defaultSampler, input.uv) * lightValue;
 }

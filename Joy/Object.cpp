@@ -33,7 +33,7 @@ void Object::Draw()
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
-	dc->PSSetShaderResources(1, 1, &lightMap);
+	dc->PSSetShaderResources(2, 1, &lightMap);
 	dc->Draw(mesh->vertexCount, 0);
 }
 
