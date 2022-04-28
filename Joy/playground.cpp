@@ -49,6 +49,8 @@ void testScene::Load()
 
 void testScene::Shutdown()
 {
+    points->StopTimer();
+
         objRender.Clear();
         meshStorage.UnLoadAll();
 
