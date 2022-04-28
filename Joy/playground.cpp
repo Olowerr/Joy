@@ -1,7 +1,7 @@
 #include "playground.h"
 
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
+    :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
 
 {
 }
@@ -16,29 +16,32 @@ void testScene::Load()
     joy = new Character(meshStorage.GetMesh(0)); 
     collTest = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
-
+    gatoKubo = new Object(meshStorage.GetMesh(1));
 
     //Camera recives wich object to look at
-    camera = new CharacterCamera(*joy);
+    joyCamera = new CharacterCamera(*joy);
 
 
     objRender.AddObject(ground);
     objRender.AddObject(joy);
-
+    objRender.AddObject(gatoKubo);
 
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     collTest->SetPosition(-20.0f, 0.0f, 0.0f);
+    gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
-    viewAndProj = camera->GetViewAndProj();
+    HLight hLight(objRender);
+    Object* elgato[2] = { ground, gatoKubo };
+    hLight.GenerateLightMaps(elgato, 2);
+    hLight.Shutdown();
 
-    Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-    devContext->VSSetConstantBuffers(1, 1, &camCb); 
-
-    objRender.AddObject(collTest);
+    fCamera = new FreelookCamera();
+    activeCamera = joyCamera;
+    objRender.SetActiveCamera(activeCamera);
     objRender.CreateCharacterDecal(joy);
     
     devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
+    objRender.AddObject(collTest);
 }
 
 void testScene::Shutdown()
@@ -47,25 +50,43 @@ void testScene::Shutdown()
     meshStorage.UnLoadAll();
 
     joy->Shutdown();
+    gatoKubo->Shutdown();
     ground->Shutdown();
     collTest->Shutdown();
 
-    delete ground;
-    delete camera;
-    delete collTest;
+    fCamera->Shutdown();
+    joyCamera->Shutdown();
+
+    delete fCamera;
+    delete joyCamera;
+
     delete joy;
+    delete gatoKubo;
+    delete collTest;
+    delete ground;
 }
 
 SceneState testScene::Update()
 {
-    ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-    viewAndProj = camera->GetViewAndProj();
-    devContext->VSSetConstantBuffers(1, 1, &camCb);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
+    if (Backend::GetKeyboard().KeyReleased(DIK_R))
+    {
+        activeCamera = fCamera;
+        objRender.SetActiveCamera(activeCamera);
+    }
+    else if (Backend::GetKeyboard().KeyReleased(DIK_T))
+    {
+        activeCamera = joyCamera;
+        objRender.SetActiveCamera(activeCamera);
+    }
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
+
+    if (activeCamera == fCamera)
+        return SceneState::Unchanged;
 
     //Camera functions
-    camera->UpdateCam();
-    camera->SetView();
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
 
     //Collision
     joy->SetCanJump(false);
@@ -83,6 +104,7 @@ SceneState testScene::Update()
     joy->Jump();
     joy->Move();
     joy->Respawn();
+    //test->respawn();
 
     //Decal
     objRender.UpdateCharacterDecal(joy);
