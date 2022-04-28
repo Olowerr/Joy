@@ -65,19 +65,19 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
 	deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
 
-	D3D11_TEXTURE2D_DESC texDesc =
-	{
-		LightMapWidth,
-		LightMapHeight,
-		1,
-		1,
-		DXGI_FORMAT_R8_UNORM,
-		{1, 0},
-		D3D11_USAGE_DEFAULT,
-		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET,
-		0,
-		0
-	};
+	D3D11_TEXTURE2D_DESC texDesc{};
+	texDesc.Width = LightMapWidth;
+	texDesc.Height = LightMapHeight;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R8_UNORM;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+	
 
 	ID3D11Texture2D* resource{};
 	ID3D11RenderTargetView* tempRTV{};
@@ -226,16 +226,14 @@ bool HLight::InitiateBuffers()
 
 	SUN.strength = 1.f;
 	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
-	XMStoreFloat4x4(&SUN.viewProject,
-		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f));
+	XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
+		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f)));
 
 	hr = Backend::CreateConstCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
 	if (FAILED(hr))
 		return false;
 
-	XMFLOAT4X4 matrix4x4;
-	XMStoreFloat4x4(&matrix4x4, XMMatrixTranspose(XMLoadFloat4x4(&SUN.viewProject)));
-	hr = Backend::CreateConstCBuffer(&lightViewProjectBuffer, &matrix4x4, sizeof(XMFLOAT4X4));
+	hr = Backend::CreateConstCBuffer(&lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
 	if (FAILED(hr))
 		return false;
 
