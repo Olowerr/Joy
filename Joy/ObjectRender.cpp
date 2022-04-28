@@ -13,6 +13,9 @@ ObjectRender::ObjectRender()
 
 void ObjectRender::Shutdown()
 {
+	sampler->Release();
+
+	charPosBuff->Release();
 	inpLayout->Release();
 	objVS->Release();
 	objPS->Release();
@@ -46,6 +49,11 @@ void ObjectRender::CreateSamplerState()
 
 	hr = Backend::GetDevice()->CreateSamplerState(&samplerDesc, &sampler);
 	assert(SUCCEEDED(hr));
+}
+
+void ObjectRender::SetActiveCamera(Camera* camera)
+{
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, camera->GetMatrixBuffer());
 }
 
 bool ObjectRender::LoadShaders()
@@ -215,4 +223,14 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
 
 	return true;
+}
+
+ID3D11InputLayout* ObjectRender::GetObjectInputLayout()
+{
+	return inpLayout;
+}
+
+ID3D11VertexShader* ObjectRender::GetObjectVS()
+{
+	return objVS;
 }

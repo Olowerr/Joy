@@ -46,6 +46,12 @@
     <Filter Include="Object\Pickups">
       <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\Lights">
+      <UniqueIdentifier>{2b667f98-f219-4fc5-ac16-116aa4ff4857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Cameras">
+      <UniqueIdentifier>{e819d766-350d-4619-8c13-97999ca3bcca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -90,9 +96,6 @@
     <ClCompile Include="UIRender.cpp">
       <Filter>System\UI</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterCamera.cpp">
-      <Filter>Game\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -109,7 +112,19 @@
       <Filter>Game\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>Object</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHandler.cpp">
+      <Filter>System\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterCamera.cpp">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraBase.cpp">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="FreelookCamera.cpp">
+      <Filter>Game\Scene\Cameras</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +167,6 @@
     <ClInclude Include="UIRender.h">
       <Filter>System\UI</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterCamera.h">
-      <Filter>Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -173,11 +185,23 @@
     <ClInclude Include="Pickup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Playground.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Object</Filter>
+    <ClInclude Include="LightHandler.h">
+      <Filter>System\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterCamera.h">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraBase.h">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="FreelookCamera.h">
+      <Filter>Game\Scene\Cameras</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +224,12 @@
       <Filter>System\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="PickupVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapPS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

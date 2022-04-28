@@ -10,8 +10,11 @@ CharacterCamera::CharacterCamera(const Character& object) //const Character& obj
 	rotation = { 0,0,0,0 };
 	DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
 	DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
-	camHeight = 10;
-	DirectX::XMStoreFloat4x4(&viewProjMtrx, temp);
+	camHeight = 0;
+	DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(temp));
+
+	Backend::CreateDynamicCBuffer(&camMatrixBuffer, &viewProjMatrix, sizeof(DirectX::XMFLOAT4X4));
+
 }
 
 CharacterCamera::~CharacterCamera()
@@ -46,6 +49,8 @@ void CharacterCamera::SetView()
 
 //	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
 	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookAtLH(XMLoadFloat3(&position), camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
-	XMStoreFloat4x4(&viewProjMtrx, XMMatrixTranspose(viewAndProj));
+	XMStoreFloat4x4(&viewProjMatrix, XMMatrixTranspose(viewAndProj));
+
+	Backend::UpdateBuffer(camMatrixBuffer, &viewProjMatrix, 64);
 
 }
