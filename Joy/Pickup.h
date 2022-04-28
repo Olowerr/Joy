@@ -17,6 +17,7 @@ public:
 	void AddObject(float pX_in, float pY_in, float pZ_in);
 	void isHit(); // Collission Checks
 	UINT getPoints();
+	UINT getAmountHitPickups();
 	
 /* ==DXSPECIFIC_FUNCTIONS======================================================= */
 	bool CreateSRV_CreateMatrixCB();

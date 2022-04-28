@@ -1,18 +1,31 @@
 #pragma once
 #include "Pickup.h"
+using namespace std::chrono;
 
 class Points
 {
 public:
 	Points();
+	void setTrackedPickups(Pickup* pickups_in);
 
-	bool setTrackedPickups(Pickup* pickups_in);
-
+	// == Time ==
 	void StartTimer();
-	void CountTimer();
-	void StopTimer();
+	float getTotalTimeTaken();
+	// == Points ==
+	UINT getFinalScore();
+
+
 private:
 	Pickup* pickups;
-	std::chrono::steady_clock::time_point startTime;
-	std::chrono::steady_clock::time_point endTime;
+	
+	// == Time ==
+	steady_clock::time_point startTime;
+	steady_clock::time_point endTime;
+	duration<float> timer;
+	// == Points ==
+	UINT totalScore;
+
+private:
+	// == Time ==
+	void StopTimer();
 };

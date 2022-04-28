@@ -49,7 +49,8 @@ void testScene::Load()
 
 void testScene::Shutdown()
 {
-    points->StopTimer();
+    points->getFinalScore();
+    points->getTotalTimeTaken();
 
         objRender.Clear();
         meshStorage.UnLoadAll();
@@ -59,6 +60,7 @@ void testScene::Shutdown()
         collTest->Shutdown();
 
     pickups->ShutDown();
+    delete points;
     delete pickups;
         delete ground;
         delete camera;

@@ -2,7 +2,8 @@
 
 Pickup::Pickup(TempMeshStorage& meshStorage, UINT points_in)
 	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupTransSRV(nullptr),
-		pickupsRendered(0), charBB(DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))
+		pickupsRendered(0), charBB(DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f)),
+		points(points_in)
 {
 	// Catch the pickup mesh and store it.
 	meshStorage.LoadAll();
@@ -43,6 +44,11 @@ void Pickup::isHit()
 UINT Pickup::getPoints()
 {
 	return points;
+}
+
+UINT Pickup::getAmountHitPickups()
+{
+	return pickupsRendered - pickupObjs.size();
 }
 
 void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
