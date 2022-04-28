@@ -21,7 +21,7 @@ private:
 
 	Character* joy;
 	Object* ground;
-	Object* bg;
+	Object* gatoKubo;
 
 	Camera* activeCamera;
 	FreelookCamera* fCamera;
