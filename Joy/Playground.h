@@ -3,6 +3,9 @@
 #include "Character.h"
 #include "CharacterCamera.h"
 #include "Collision.h"
+#include "FreelookCamera.h"
+#include "LightHandler.h"
+
 class testScene : public Scene
 {
 public:
@@ -18,12 +21,13 @@ private:
 
 	Character* joy;
 	Object* ground;
+	Object* gatoKubo;
 	Object* bg;
 	Object* cube;
 
-	CharacterCamera* camera;
-	ID3D11Buffer* camCb;
-	DirectX::XMFLOAT4X4 viewAndProj;
+	Camera* activeCamera;
+	FreelookCamera* freeCamera;
+	CharacterCamera* joyCamera;
 
 	Object* collTest;
 	Collision coll;

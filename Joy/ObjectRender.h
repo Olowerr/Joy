@@ -2,8 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include "Backend.h"
-#include "Object.h"
-#include "CharacterCamera.h"
+#include "Character.h"
+#include "CameraBase.h"
 
 struct InstancedObjects
 {
@@ -29,6 +29,7 @@ public:
 	void Shutdown();
 	void Clear();
 	void CreateSamplerState(); // << temporary
+	void SetActiveCamera(Camera* camera);
 	void AddObject(Object* obj);
 	void DrawAll();
 
@@ -38,6 +39,9 @@ public:
 
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
+
+	ID3D11InputLayout* GetObjectInputLayout();
+	ID3D11VertexShader* GetObjectVS();
 
 
 private:

@@ -7,7 +7,10 @@ struct PS_IN
 };
 
 Texture2D image : register(t0);
+Texture2D lightMap : register(t2);
+
 SamplerState defaultSampler : register(s0);
+
 cbuffer decalShadow : register(b0)
 {
 	float decalPosX;
@@ -29,5 +32,6 @@ float4 main(PS_IN input) : SV_TARGET
         return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f));
     }
 	
-	return image.Sample(defaultSampler, input.uv);
+	float lightValue = lightMap.Sample(defaultSampler, input.uv).r;
+	return image.Sample(defaultSampler, input.uv) * lightValue;
 }
