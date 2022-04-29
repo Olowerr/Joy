@@ -1,7 +1,7 @@
 #include "playground.h"
 
-testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
+testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
+    :Scene(uiRender, objRender, decalShadow, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
 
 {
 }
@@ -17,8 +17,8 @@ void testScene::Load()
     bg = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
     camera = new CharacterCamera(*joy);
-    objRender.AddObject(ground);
     objRender.AddObject(joy);
+    objRender.AddObject(ground);
     objRender.AddObject(bg);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     bg->SetPosition(-1.0f, 1.0f, -5.0f);
@@ -27,15 +27,15 @@ void testScene::Load()
 
   //  bg->Scale(2);
 
+    // Create decal buffers. Camera and character pos as dynamic constant buffers.
+    decalShadow.CreateCharacterDecal(joy);
+    decalShadow.CreateDecalDepthCam(joy);
+
+    // Add Comment
     viewAndProj = camera->GetViewAndProj();
-
     Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-    devContext->VSSetConstantBuffers(1, 1, &camCb); 
-    objRender.AddObject(collTest);
 
-    objRender.CreateCharacterDecal(joy);
-    devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
+    objRender.AddObject(collTest);
 }
 
 void testScene::Shutdown()
@@ -55,8 +55,6 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
-
-
     ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
     viewAndProj = camera->GetViewAndProj();
     devContext->VSSetConstantBuffers(1, 1, &camCb);
@@ -82,7 +80,10 @@ SceneState testScene::Update()
     joy->Jump();
     joy->move();
     joy->respawn();
-    objRender.UpdateCharacterDecal(joy);
+
+    // Update Character and Camera pos for the buffers.
+    decalShadow.UpdateCharacterDecal(joy);
+    decalShadow.UpdateDecalDepthCam(joy);
 
     //Collision
     
