@@ -130,7 +130,7 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
-	deviceContext->OMSetRenderTargets(0, &nullRTV, shadowMapDSV);
+	deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV);
 
 	for (UINT i = 0; i < amount; i++)
 		objects[i]->DrawGeometry();
@@ -187,6 +187,8 @@ bool HLight::InitiateShadowMap()
 	}
 
 	resource->Release();
+
+	Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	return true;
 }
