@@ -94,12 +94,11 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
-<<<<<<< HEAD
     ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
     viewAndProj = camera->GetViewAndProj();
     devContext->VSSetConstantBuffers(1, 1, &camCb);
     Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-=======
+
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = freeCamera;
@@ -119,7 +118,6 @@ SceneState testScene::Update()
     //Camera functions
     activeCamera->UpdateCam();
     activeCamera->SetView();
->>>>>>> master
 
     //Collision
     joy->SetCanJump(false);
@@ -135,22 +133,20 @@ SceneState testScene::Update()
 
     //Joy functions
     joy->Jump();
-<<<<<<< HEAD
+
     joy->move();
     joy->respawn();
 
     // Update Character and Camera pos for the buffers.
     decalShadow.UpdateCharacterDecal(joy);
     decalShadow.UpdateDecalDepthCam(joy);
-=======
+
     joy->Move();
     joy->Respawn();
     //test->respawn();
 
     //Decal
     objRender.UpdateCharacterDecal(joy);
->>>>>>> master
-
 
     return SceneState::Unchanged;
 }
