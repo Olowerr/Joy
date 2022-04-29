@@ -108,10 +108,10 @@ void Character::Move()
 		maxSpeed = 10.0f;
 
 	if (std::abs(velocity.x) > maxSpeed)
-		velocity.x *= 0.5;
+		velocity.x *= 0.99;
 
 	if (std::abs(velocity.y) > maxSpeed)
-		velocity.y *= 0.5;
+		velocity.y *= 0.99;
 
 
 	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
@@ -173,21 +173,17 @@ void Character::SetSpeedZero()
 		if (canJump == true)
 			this->jumpVelocity = 0.0f;
 	}
-	//else
-	//{
-	//	if (xSpeed > 0.001 && zSpeed > 0.001f && xSpeed > zSpeed)
-	//		this->xSpeed = 0.0f;
-	//	if (zSpeed > 0.001 && xSpeed > 0.001f && zSpeed > xSpeed)
-	//		this->zSpeed = 0.0f;
-	//	if (xSpeed < -0.001 && zSpeed < -0.001f && xSpeed < zSpeed)
-	//		this->xSpeed = 0.0f;
-	//	if (zSpeed < -0.001 && xSpeed < -0.001f && zSpeed < xSpeed)
-	//		this->zSpeed = 0.0f;
-	//	if (xSpeed == 0.0f && zSpeed != 0.0f)
-	//		this->zSpeed = 0.0f;
-	//	if (xSpeed != 0.0f && zSpeed == 0.0f)
-	//		this->xSpeed = 0.0f;
-	//}
+	else
+	{
+		if (std::abs(velocity.x) > std::abs(velocity.y))
+		{
+			velocity.x = 0.0f;
+		}
+		else 
+		{
+			velocity.y = 0.0f;
+		}
+	}
 
 
 
