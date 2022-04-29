@@ -171,7 +171,8 @@ void Character::SetSpeedZero()
 {
 	if (collidedY)
 	{
-		this->jumpVelocity = 0.0f;
+		if (canJump == true)
+			this->jumpVelocity = 0.0f;
 	}
 	else if(!collidedY)
 	{
@@ -184,9 +185,6 @@ void Character::SetSpeedZero()
 			velocity.y = 0.0f;
 		}
 	}
-
-
-
 }
 
 bool Character::SetCanJump(bool canJump)
