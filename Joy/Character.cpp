@@ -33,7 +33,7 @@ void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
 	float maxSpeed = 10.0f;
-	float speed = 1.0f;
+	float speed = 0.1f;
 	float counterForce = 0.01f;
 
 	if (key.KeyDown(DIK_W))
@@ -55,7 +55,8 @@ void Character::Move()
 		velocity.x -= speed;
 	else if (velocity.x < 0.f)
 		velocity.x += counterForce;
-
+	std::cout << velocity.x << "===";
+	std::cout << velocity.y<< std::endl;
 	velocity.x *= 0.99f;
 	velocity.y *= 0.99f;
 
