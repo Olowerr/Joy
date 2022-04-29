@@ -18,7 +18,7 @@ SamplerState defaultSampler : register(s0);
 
 float4 main(PS_IN input) : SV_TARGET
 {
-	return float4(1.f, 0.f, 0.f, 0.f);
+	//return float4(1.f, 0.f, 0.f, 0.f);
 
 	float4 posLightSpace = mul(float4(input.wsPos, 1.f), lightViewProject);
 	posLightSpace.xyz /= posLightSpace.w;

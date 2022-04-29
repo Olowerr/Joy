@@ -81,6 +81,7 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 	ID3D11Texture2D* resource{};
 	ID3D11RenderTargetView* tempRTV{};
+	ID3D11RenderTargetView* nullRTV{};
 
 	for (UINT i = 0; i < amount; i++)
 	{
@@ -105,6 +106,7 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
 		objects[i]->DrawGeometry();
+		deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
 		resource->Release();
 		tempRTV->Release();
