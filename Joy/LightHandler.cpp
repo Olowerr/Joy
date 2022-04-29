@@ -186,6 +186,8 @@ bool HLight::InitiateShadowMap()
 
 	resource->Release();
 
+	Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
 	return true;
 }
 
