@@ -17,6 +17,7 @@ void testScene::Load()
     collTest = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
     gatoKubo = new Object(meshStorage.GetMesh(1));
+    cube = new Object(meshStorage.GetMesh(1));
 
     //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
@@ -26,6 +27,7 @@ void testScene::Load()
     objRender.AddObject(joy);
     objRender.AddObject(gatoKubo);
 
+    cube->SetPosition(2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     collTest->SetPosition(-20.0f, 0.0f, 0.0f);
     gatoKubo->SetPosition(1.f, 0.5f, 1.f);
@@ -53,6 +55,7 @@ void testScene::Shutdown()
     gatoKubo->Shutdown();
     ground->Shutdown();
     collTest->Shutdown();
+    cube->Shutdown();
 
     freeCamera->Shutdown();
     joyCamera->Shutdown();
@@ -64,6 +67,7 @@ void testScene::Shutdown()
     delete gatoKubo;
     delete collTest;
     delete ground;
+    delete cube;
 }
 
 SceneState testScene::Update()
@@ -89,17 +93,27 @@ SceneState testScene::Update()
     activeCamera->SetView();
 
     //Collision
-    joy->SetCanJump(false);
-    joy->setCollidedY(coll.getCollidedY());
-    if (coll.HitObject(joy, collTest))
-        joy->setSpeedZero();
+    joy->SetCollidedY(coll.getCollidedY());
+    if(coll.getCollidedY())
+        joy->SetSpeedZero();
+    if (coll.HitObject(joy, cube))
+        joy->SetSpeedZero();
     if (coll.HitObject(joy, ground))
+    {
+        joy->SetSpeedZero();
         joy->SetCanJump(coll.GetStopFall());
+    }
+        
     if (coll.HitObject(joy, collTest))
+    {
         joy->SetCanJump(coll.GetStopFall());
-    
+        joy->SetSpeedZero();
+    }
+    joy->SetCanJump(coll.GetStopFall());
+        
     coll.collided(joy, collTest);
-
+    coll.collided(joy, cube);
+    coll.collided(joy, ground);
     //Joy functions
     joy->Jump();
     joy->Move();
