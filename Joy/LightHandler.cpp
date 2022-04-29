@@ -81,7 +81,6 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 	ID3D11Texture2D* resource{};
 	ID3D11RenderTargetView* tempRTV{};
-	ID3D11RenderTargetView* nullRTV{};
 
 	for (UINT i = 0; i < amount; i++)
 	{
@@ -106,7 +105,6 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
 		objects[i]->DrawGeometry();
-		deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
 		resource->Release();
 		tempRTV->Release();
@@ -130,7 +128,7 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
-	deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV);
+	deviceContext->OMSetRenderTargets(0, &nullRTV, shadowMapDSV);
 
 	for (UINT i = 0; i < amount; i++)
 		objects[i]->DrawGeometry();
@@ -187,8 +185,6 @@ bool HLight::InitiateShadowMap()
 	}
 
 	resource->Release();
-
-	Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	return true;
 }
