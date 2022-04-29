@@ -8,9 +8,9 @@ struct VS_IN
 struct VS_OUT
 {
 	float4 pos : SV_POSITION;
+	float3 wsPos : WS_POSITION;
 	float3 normal : NORMAL;
 	float2 uv : UV;
-	float3 worldPos : WORLDPOS;
 };
 
 cbuffer world : register(b0)
@@ -20,15 +20,19 @@ cbuffer world : register(b0)
 
 cbuffer cam : register(b1)
 {
-	float4x4 viewProj;
+	float4x4 project;
 }
 
 VS_OUT main(VS_IN input)
 {
 	VS_OUT output;
 
-	output.worldPos = mul(float4(input.pos, 1.0f), world).xyz;
-	output.pos = mul(float4(output.worldPos, 1.0f), viewProj);
+	float2 uvs = input.uv;
+	input.uv.y = 1.f - input.uv.y;
+	input.uv = input.uv * 2.f - float2(1.f, 1.f);
+	output.pos = float4(input.uv, 0.f, 1.f);
+
+	output.wsPos = mul(float4(input.pos, 1.f), world).xyz;
 	output.normal = mul(float4(input.normal, 0.f), world).xyz;
 	output.uv = input.uv;
 

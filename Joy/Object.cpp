@@ -1,12 +1,12 @@
 #include "Object.h"
 Object::Object(Mesh* mesh)
-	:mesh(mesh)
+	:mesh(mesh), lightMap(nullptr)
 {
 	bBox = mesh->bBox;
 }
 
 Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
-	:Transform(pos, rot, scale), mesh(mesh)
+	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr)
 {
 	bBox = mesh->bBox;
 	bBox.Center.x += pos.x;
@@ -21,6 +21,9 @@ Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT s
 void Object::Shutdown()
 {
 	Transform::Shutdown();
+
+	if (lightMap)
+		lightMap->Release();
 }
 
 void Object::Draw()
@@ -30,6 +33,16 @@ void Object::Draw()
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
+	dc->PSSetShaderResources(2, 1, &lightMap);
+	dc->Draw(mesh->vertexCount, 0);
+}
+
+void Object::DrawGeometry()
+{
+	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
+
+	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->Draw(mesh->vertexCount, 0);
 }
 
@@ -89,4 +102,9 @@ const DirectX::BoundingBox& Object::GetBoundingBox() const
 Mesh* Object::GetMesh()
 {
 	return mesh;
+}
+
+ID3D11ShaderResourceView** Object::GetLightMapSRV()
+{
+	return &lightMap;
 }

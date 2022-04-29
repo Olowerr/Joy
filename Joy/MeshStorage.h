@@ -53,6 +53,7 @@ struct Mesh
 class TempMeshStorage
 {
 public:
+
 	TempMeshStorage();
 
 	void LoadAll();
@@ -64,7 +65,6 @@ public:
 
 private:
 
-
 	const std::string meshPath = "../Resources/Meshes/";
 	static const UINT MeshCount = 4;
 	Mesh meshes[MeshCount];
@@ -72,9 +72,8 @@ private:
 	{
 		"Joy.obj",
 		"Kub.obj",
-		"gGround.obj"
+		"Ground.obj"
 	};
-
 
 	void import(UINT index);
 };
