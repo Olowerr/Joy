@@ -72,23 +72,24 @@ SceneState testScene::Update()
     camera->SetView();
 
     //Collision
-    joy->SetCanJump(false);
     joy->SetCollidedY(coll.getCollidedY());
     if(coll.getCollidedY())
-        joy->SetSpeedZero();
-    if (coll.HitObject(joy, collTest))
         joy->SetSpeedZero();
     if (coll.HitObject(joy, cube))
         joy->SetSpeedZero();
     if (coll.HitObject(joy, ground))
+    {
+        joy->SetSpeedZero();
         joy->SetCanJump(coll.GetStopFall());
+    }
+        
     if (coll.HitObject(joy, collTest))
     {
         joy->SetCanJump(coll.GetStopFall());
         joy->SetSpeedZero();
     }
+    joy->SetCanJump(coll.GetStopFall());
         
-    
     coll.collided(joy, collTest);
     coll.collided(joy, cube);
     coll.collided(joy, ground);
