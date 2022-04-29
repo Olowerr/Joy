@@ -1,8 +1,8 @@
 #pragma once
 #include "MainMenu.h"
 #include "EasyLevel.h"
-
 #include "playground.h"
+
 class Game
 {
 public:
@@ -27,6 +27,7 @@ private:
 	UIRenderer uiRender;
 	TempMeshStorage meshStorage;
 	ObjectRender objRender;
+	DecalShadow decalShadow;
 	Window& window;
 
 	MainMenu menu;

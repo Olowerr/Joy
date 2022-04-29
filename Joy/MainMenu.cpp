@@ -1,7 +1,7 @@
 #include "MainMenu.h"
 
-MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, meshStorage), startButton(nullptr)
+MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow decalShadow, TempMeshStorage& meshStorage)
+	:Scene(uiRender, objRender, decalShadow, meshStorage), startButton(nullptr)
 {
 }
 

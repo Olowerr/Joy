@@ -33,7 +33,7 @@ void ObjectRender::Shutdown()
 
 void ObjectRender::Clear()
 {
-	for (InstancedObjects& inst : instances)
+	for (InstancedObject& inst : instances)
 		inst.Shutdown();
 	instances.clear();
 
@@ -68,8 +68,6 @@ bool ObjectRender::LoadShaders()
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstanceVS)))
 		return false;
 
-
-
 	return true;
 }
 
@@ -95,6 +93,8 @@ void ObjectRender::AddObject(Object* obj)
 
 void ObjectRender::DrawAll()
 {
+	decalShadow.DrawDecalShadowDepth(objects, instances);
+
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
 	devContext->IASetInputLayout(inpLayout);
@@ -102,9 +102,10 @@ void ObjectRender::DrawAll()
 
 	devContext->VSSetShader(objVS, nullptr, 0);
 
-	devContext->RSSetViewports(1, &Backend::GetDefaultViewport()); // temp
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
 	devContext->PSSetShader(objPS, nullptr, 0);
+
 	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
 	
 	for (Object* obj : objects)
@@ -112,7 +113,7 @@ void ObjectRender::DrawAll()
 
 	devContext->VSSetShader(objInstanceVS, nullptr, 0);
 
-	for (InstancedObjects& inst : instances)
+	for (InstancedObject& inst : instances)
 	{
 		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
@@ -120,37 +121,9 @@ void ObjectRender::DrawAll()
 		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
 	}
 
-}
-
-void ObjectRender::CreateCharacterDecal(Character* character)
-{
-	DirectX::XMFLOAT4 charPos;
-	auto pos = character->GetPosition();
-
-	charPos.x = pos.x;
-	charPos.y = pos.y;
-	charPos.z = pos.z;
-	charPos.w = 1.0f;
-
-	Backend::CreateDynamicCBuffer(&charPosBuff, &charPos, sizeof(DirectX::XMFLOAT4));
-}
-
-void ObjectRender::UpdateCharacterDecal(Character* character)
-{
-	DirectX::XMFLOAT4 charPos;
-	auto pos = character->GetPosition();
-
-	charPos.x = pos.x;
-	charPos.y = pos.y;
-	charPos.z = pos.z;
-	charPos.w = 1.0f;
-
-	Backend::UpdateBuffer(charPosBuff, &charPos, sizeof(DirectX::XMFLOAT4));
-}
-
-ID3D11Buffer* const* ObjectRender::getDecalBuffer()
-{
-	return &charPosBuff;
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	devContext->PSSetShaderResources(1, 1, nullSRV);
+	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)

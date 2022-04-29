@@ -4,25 +4,7 @@
 #include "Backend.h"
 #include "Object.h"
 #include "CharacterCamera.h"
-
-struct InstancedObjects
-{
-	ID3D11Buffer* vertexBuffer;
-	//ID3D11Buffer* indexBuffer; 
-	ID3D11ShaderResourceView* transformSRV;
-	ID3D11ShaderResourceView* mtl;
-	//ID3D11ShaderResourceView* lightMapsSRV;
-	UINT instanceCount;
-	UINT indexCount;
-
-	void Shutdown()
-	{
-		transformSRV->Release();
-		// Don't release vertexBuffer, meshStorage owns it
-		// Don't release mtl, meshStorage owns it
-	}
-
-};
+#include "DecalShadow.h"
 
 class ObjectRender
 {
@@ -34,27 +16,21 @@ public:
 	void AddObject(Object* obj);
 	void DrawAll();
 
-	void CreateCharacterDecal(Character* character);
-	void UpdateCharacterDecal(Character* character);
-	ID3D11Buffer* const* getDecalBuffer();
-
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
 
 
 private:
 
+	DecalShadow decalShadow;
 	std::vector<Object*> objects;
 
 	ID3D11InputLayout* inpLayout;
 	ID3D11RenderTargetView* const* bbRTV;
 
-	// Decal buffer with character position, updates constantly
-	ID3D11Buffer* charPosBuff;
-
 	// Instanced
 	ID3D11VertexShader* objInstanceVS;
-	std::vector<InstancedObjects> instances;
+	std::vector<InstancedObject> instances;
 
 	// Normal
 	ID3D11VertexShader* objVS;

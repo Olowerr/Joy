@@ -46,6 +46,9 @@
     <Filter Include="Object\Pickups">
       <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\Decal Renderer">
+      <UniqueIdentifier>{faafdfb2-e495-421b-b8ec-6e4adbf392c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -110,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="DecalShadow.cpp">
+      <Filter>System\Decal Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="InstancedObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +188,12 @@
     <ClInclude Include="Character.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="DecalShadow.h">
+      <Filter>System\Decal Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="InstancedObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ObjVS.hlsl">
@@ -200,6 +215,12 @@
       <Filter>System\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="PickupVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DecalVS.hlsl">
+      <Filter>System\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DecalPS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
