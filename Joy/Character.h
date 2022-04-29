@@ -15,26 +15,25 @@ public:
 	void Move();
 	void Jump();
 	void Respawn();
-	void setSpeedZero();
-//	void charGrounded();
+	void SetSpeedZero();
 	bool SetCanJump(bool canJump);
 	bool SetStopMovement(bool stopSpeed);
-	bool setCollidedY(bool verticalCollision);
+	bool SetCollidedY(bool verticalCollision);
 	
 private:
 
 	//movement
 	Keyboard& key;
 	Mesh joy;
-	float zSpeed;
-	float xSpeed;
-	bool diagMove;
-	float maxSpeed;
-	float minSpeed;
-	bool decreaseZSpeed;
-	bool decreaseXSpeed;
+
 	bool stopMovement;
 	bool collidedY;
+
+
+	DirectX::XMFLOAT2 velocity;
+
+
+
 
 	//jump
 	float jumpVelocity;

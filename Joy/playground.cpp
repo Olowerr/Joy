@@ -73,9 +73,9 @@ SceneState testScene::Update()
 
     //Collision
     joy->SetCanJump(false);
-    joy->setCollidedY(coll.getCollidedY());
+    joy->SetCollidedY(coll.getCollidedY());
     if (coll.HitObject(joy, collTest))
-        joy->setSpeedZero();
+        joy->SetSpeedZero();
     if (coll.HitObject(joy, ground))
         joy->SetCanJump(coll.GetStopFall());
     if (coll.HitObject(joy, collTest))
