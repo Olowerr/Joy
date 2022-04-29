@@ -16,6 +16,7 @@ void testScene::Load()
     joy = new Character(meshStorage.GetMesh(0)); 
     collTest = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
+    cube = new Object(meshStorage.GetMesh(1));
 
 
     //Camera recives wich object to look at
@@ -24,10 +25,11 @@ void testScene::Load()
 
     objRender.AddObject(ground);
     objRender.AddObject(joy);
+    objRender.AddObject(cube);
 
-
+    cube->SetPosition(2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
-    collTest->SetPosition(-20.0f, 0.0f, 0.0f);
+    collTest->SetPosition(-2.0f, 0.0f, 0.0f);
 
     viewAndProj = camera->GetViewAndProj();
 
@@ -49,11 +51,13 @@ void testScene::Shutdown()
     joy->Shutdown();
     ground->Shutdown();
     collTest->Shutdown();
+    cube->Shutdown();
 
     delete ground;
     delete camera;
     delete collTest;
     delete joy;
+    delete cube;
 }
 
 SceneState testScene::Update()
@@ -78,7 +82,8 @@ SceneState testScene::Update()
         joy->SetCanJump(coll.GetStopFall());
     
     coll.collided(joy, collTest);
-
+    coll.collided(joy, cube);
+    coll.collided(joy, ground);
     //Joy functions
     joy->Jump();
     joy->Move();
