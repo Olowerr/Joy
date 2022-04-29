@@ -25,7 +25,6 @@ void testScene::Load()
     objRender.AddObject(ground);
     objRender.AddObject(joy);
     objRender.AddObject(ground);
-    objRender.AddObject(bg);
 
     gatoKubo = new Object(meshStorage.GetMesh(1));
 
@@ -51,9 +50,6 @@ void testScene::Load()
     decalShadow.CreateDecalDepthCam(joy);
 
     // Add Comment
-    viewAndProj = camera->GetViewAndProj();
-    Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
-
     HLight hLight(objRender);
     Object* elgato[2] = { ground, gatoKubo };
     hLight.GenerateLightMaps(elgato, 2);
@@ -63,7 +59,6 @@ void testScene::Load()
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
 
-    objRender.AddObject(collTest);
     objRender.AddObject(collTest);
 }
 
@@ -107,10 +102,6 @@ SceneState testScene::Update()
     if (activeCamera == freeCamera)
         return SceneState::Unchanged;
 
-    //Camera functions
-    activeCamera->UpdateCam();
-    activeCamera->SetView();
-
     //Collision
     joy->SetCanJump(false);
     joy->setCollidedY(coll.getCollidedY());
@@ -125,9 +116,8 @@ SceneState testScene::Update()
 
     //Joy functions
     joy->Jump();
-
-    joy->move();
-    joy->respawn();
+    joy->Move();
+    joy->Respawn();
 
     // Update Character and Camera pos for the buffers.
     decalShadow.UpdateCharacterDecal(joy);

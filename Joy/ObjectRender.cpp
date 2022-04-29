@@ -14,8 +14,6 @@ ObjectRender::ObjectRender()
 void ObjectRender::Shutdown()
 {
 	sampler->Release();
-
-	charPosBuff->Release();
 	inpLayout->Release();
 	objVS->Release();
 	objPS->Release();
@@ -27,7 +25,6 @@ void ObjectRender::Clear()
 	for (InstancedObject& inst : instances)
 		inst.Shutdown();
 	instances.clear();
-
 	objects.clear();
 }
 
