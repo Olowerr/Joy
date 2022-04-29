@@ -55,7 +55,7 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
         &swapDesc, &system->swapChain, &system->device, nullptr, &system->deviceContext);
-    assert(!FAILED(hr));
+    assert(SUCCEEDED(hr));
 
 
     ID3D11Texture2D* backBuffer{};
@@ -71,8 +71,32 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     assert(SUCCEEDED(hr));
 
 
+    D3D11_TEXTURE2D_DESC texDesc{};
+    texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    texDesc.ArraySize = 1;
+    texDesc.MipLevels = 1;
+    texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    texDesc.CPUAccessFlags = 0;
+    texDesc.Height = height;
+    texDesc.Width = width;
+    texDesc.MiscFlags = 0;
+    texDesc.SampleDesc.Count = 1;
+    texDesc.SampleDesc.Quality = 0;
+    texDesc.Usage = D3D11_USAGE_DEFAULT;
+    ID3D11Texture2D* resource{};
+    hr = system->device->CreateTexture2D(&texDesc, nullptr, &resource);
+    if (FAILED(hr))
+    {
+        assert(SUCCEEDED(hr));
+        return *system;
+    }
+    hr = system->device->CreateDepthStencilView(resource, nullptr, &system->standardDSV);
+    resource->Release();
+    assert(SUCCEEDED(hr));
+
+
     hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&system->DInput), NULL);
-    assert(!FAILED(hr));
+    assert(SUCCEEDED(hr));
 
     result = system->mouse.Initiate(system->DInput);
     assert(result);
@@ -106,6 +130,7 @@ void Backend::Destroy()
     system->swapChain->Release();
     system->deviceContext->Release();
     system->bbRTV->Release();
+    system->standardDSV->Release();
 
 #ifdef _DEBUG
     ID3D11Debug* debugger = nullptr;
@@ -157,10 +182,16 @@ ID3D11RenderTargetView* const* Backend::GetBackBufferRTV()
     return &system->bbRTV;
 }
 
+ID3D11DepthStencilView* const* Backend::GetStandardDSV()
+{
+    return &system->standardDSV;
+}
+
 void Backend::Clear()
 {
     static const float clearColour[4] = { 0.2f, 0.2f, 0.2f, 0.f };
     system->deviceContext->ClearRenderTargetView(system->bbRTV, clearColour);
+    system->deviceContext->ClearDepthStencilView(system->standardDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
 
 void Backend::Display()

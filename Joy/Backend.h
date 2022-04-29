@@ -23,6 +23,7 @@ public:
 	static ID3D11DeviceContext* GetDeviceContext();
 	static IDXGISwapChain* GetSwapChain();
 	static ID3D11RenderTargetView* const* GetBackBufferRTV();
+	static ID3D11DepthStencilView* const* GetStandardDSV();
 	static void Clear();
 	static void Display();
 
@@ -77,6 +78,7 @@ private:
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
 	ID3D11RenderTargetView* bbRTV;
+	ID3D11DepthStencilView* standardDSV;
 	D3D11_VIEWPORT defaultViewport;
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
