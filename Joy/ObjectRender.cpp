@@ -108,14 +108,14 @@ void ObjectRender::AddObject(Object* obj)
 
 void ObjectRender::DrawAll()
 {
-	decalShadow.DrawDecalShadowDepth(objects, instances);
-
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
 	devContext->IASetInputLayout(inpLayout);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	devContext->VSSetShader(objVS, nullptr, 0);
+
+	decalShadow.DrawDecalShadowDepth(objects, instances);
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 

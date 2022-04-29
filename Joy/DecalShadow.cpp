@@ -14,10 +14,11 @@ DecalShadow::DecalShadow()
 
 void DecalShadow::Shutdown()
 {
-}
-
-void DecalShadow::Clear()
-{
+	decalDCBuff->Release();
+	decalDSView->Release();
+	decalSRV->Release();
+	decalCamDCBuff->Release();
+	frontFaceCullingRS->Release();
 }
 
 bool DecalShadow::InitiateRasterizerState()
@@ -38,6 +39,7 @@ bool DecalShadow::InitiateRasterizerState()
 
 	hr = Backend::GetDevice()->CreateRasterizerState(&rsDesc, &frontFaceCullingRS);
 	if (FAILED(hr))
+		return false;
 
 	return true;
 }
@@ -157,10 +159,6 @@ void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vecto
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	devContext->ClearDepthStencilView(decalDSView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	devContext->IASetInputLayout(inpLayout);
-	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	devContext->VSSetShader(decalVS, nullptr, 0);
 	devContext->VSSetConstantBuffers(1, 1, &decalCamDCBuff);
 
 	devContext->RSSetState(frontFaceCullingRS);
@@ -175,33 +173,18 @@ void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vecto
 			obj->Draw();
 		}
 
-	devContext->VSSetShader(decalInstanceVS, nullptr, 0);
+	//devContext->VSSetShader(decalInstanceVS, nullptr, 0);
 
-	for (InstancedObject& inst : instancedObjects)
-	{
-		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
+	//for (InstancedObject& inst : instancedObjects)
+	//{
+	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
 
-		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	}
+	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
+	//}
 
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 	devContext->RSSetState(nullptr);
-}
-
-bool DecalShadow::CreateInputLayout(const std::string& shaderData)
-{
-
-	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-	HRESULT hr = Backend::GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &inpLayout);
-
-	return SUCCEEDED(hr);
 }
 
 bool DecalShadow::LoadShaders()
@@ -209,26 +192,10 @@ bool DecalShadow::LoadShaders()
 	std::string shaderData;
 
 	// Normal Shaders
-	if (!Backend::LoadShader(Backend::ShaderPath + "DecalVS.cso", &shaderData))
-		return false;
-
-	if (!CreateInputLayout(shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &decalVS)))
-		return false;
-
 	if (!Backend::LoadShader(Backend::ShaderPath + "DecalPS.cso", &shaderData))
 		return false;
 
 	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &decalPS)))
-		return false;
-
-	// Instanced Shaders
-	if (!Backend::LoadShader(Backend::ShaderPath + "DecalInstanceVS.cso", &shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &decalInstanceVS)))
 		return false;
 
 	return true;

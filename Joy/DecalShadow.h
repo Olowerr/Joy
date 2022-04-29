@@ -8,7 +8,6 @@ public:
 
 	DecalShadow();
 	void Shutdown();
-	void Clear();
 
 	// Functions for decal to work. Bound to Joy.
 	bool InitiateRasterizerState();
@@ -24,8 +23,6 @@ public:
 
 private:
 
-	ID3D11InputLayout* inpLayout;
-
 	DirectX::XMFLOAT4 charPos;
 
 	// Decal buffer with character position, updates constantly (Also depth buffer for the decal)
@@ -38,14 +35,9 @@ private:
 	DirectX::XMFLOAT4X4 viewOrtMtrx;
 	ID3D11RasterizerState* frontFaceCullingRS;
 
-	// Instanced shaders
-	ID3D11VertexShader* decalInstanceVS;
-
 	// Normal shaders
-	ID3D11VertexShader* decalVS;
 	ID3D11PixelShader* decalPS;
 
 	bool LoadShaders();
-	bool CreateInputLayout(const std::string& shaderData);
 
 };
