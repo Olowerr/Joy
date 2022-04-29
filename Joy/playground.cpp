@@ -1,14 +1,8 @@
 #include "playground.h"
 
-<<<<<<< HEAD
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, decalShadow, meshStorage), joy(nullptr), bg(nullptr), collTest(nullptr), ground(nullptr)
-
-=======
-testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
+    :Scene(uiRender, objRender, decalShadow, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
     , activeCamera(nullptr), freeCamera(nullptr), joyCamera(nullptr)
->>>>>>> master
 {
 }
 
@@ -22,12 +16,12 @@ void testScene::Load()
     joy = new Character(meshStorage.GetMesh(0)); 
     collTest = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
-<<<<<<< HEAD
+
     camera = new CharacterCamera(*joy);
     objRender.AddObject(joy);
     objRender.AddObject(ground);
     objRender.AddObject(bg);
-=======
+
     gatoKubo = new Object(meshStorage.GetMesh(1));
 
     //Camera recives which object to look at
@@ -38,12 +32,10 @@ void testScene::Load()
     objRender.AddObject(joy);
     objRender.AddObject(gatoKubo);
 
->>>>>>> master
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     collTest->SetPosition(-20.0f, 0.0f, 0.0f);
     gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
-<<<<<<< HEAD
   //  bg->Scale(2);
 
     // Create decal buffers. Camera and character pos as dynamic constant buffers.
@@ -54,7 +46,6 @@ void testScene::Load()
     viewAndProj = camera->GetViewAndProj();
     Backend::CreateDynamicCBuffer(&camCb, &viewAndProj, 64);
 
-=======
     HLight hLight(objRender);
     Object* elgato[2] = { ground, gatoKubo };
     hLight.GenerateLightMaps(elgato, 2);
@@ -63,10 +54,7 @@ void testScene::Load()
     freeCamera = new FreelookCamera();
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
-    objRender.CreateCharacterDecal(joy);
-    
-    devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
->>>>>>> master
+
     objRender.AddObject(collTest);
 }
 
@@ -144,9 +132,6 @@ SceneState testScene::Update()
     joy->Move();
     joy->Respawn();
     //test->respawn();
-
-    //Decal
-    objRender.UpdateCharacterDecal(joy);
 
     return SceneState::Unchanged;
 }

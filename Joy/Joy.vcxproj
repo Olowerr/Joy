@@ -148,11 +148,8 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CharacterCamera.cpp" />
     <ClCompile Include="Collision.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="DecalShadow.cpp" />
-=======
     <ClCompile Include="FreelookCamera.cpp" />
->>>>>>> master
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InstancedObject.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -186,11 +183,8 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterCamera.h" />
     <ClInclude Include="Collision.h" />
-<<<<<<< HEAD
     <ClInclude Include="DecalShadow.h" />
-=======
     <ClInclude Include="FreelookCamera.h" />
->>>>>>> master
     <ClInclude Include="Game.h" />
     <ClInclude Include="InstancedObject.h" />
     <ClInclude Include="Keyboard.h" />
@@ -220,7 +214,6 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <FxCompile Include="DecalPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -232,7 +225,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-=======
+	</FxCompile>
     <FxCompile Include="LightMapPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -245,7 +238,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
->>>>>>> master
     </FxCompile>
     <FxCompile Include="ObjInstanceVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
