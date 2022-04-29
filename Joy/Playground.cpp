@@ -29,7 +29,7 @@ void testScene::Load()
 
     cube->SetPosition(2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
-    collTest->SetPosition(-20.0f, 0.0f, 0.0f);
+    collTest->SetPosition(2.0f, 0.0f, 0.0f);
     gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
     HLight hLight(objRender);
