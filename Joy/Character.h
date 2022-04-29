@@ -19,6 +19,7 @@ public:
 	bool SetCanJump(bool canJump);
 	bool SetStopMovement(bool stopSpeed);
 	bool SetCollidedY(bool verticalCollision);
+
 	
 private:
 

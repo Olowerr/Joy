@@ -11,7 +11,9 @@ Collision::Collision()
 
 void Collision::collided(Object* charBbox, Object* targetBbox)
 {
+    std::cout << stopFall << "\n";
     dontStopMovement = false;
+    stopFall = false;
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
     if (dBox.Intersects(bBox))
