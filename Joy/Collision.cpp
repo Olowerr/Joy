@@ -21,7 +21,11 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
         yIntDist = bBox.Center.y - dBox.Center.y;
         zIntDist = bBox.Center.z - dBox.Center.z;
 
-        if (std::abs(xIntDist) > std::abs(yIntDist) && std::abs(xIntDist) > std::abs(zIntDist))
+        float xTemp = (bBox.Extents.x+dBox.Extents.x) - std::abs(bBox.Center.x - dBox.Center.x);
+        float yTemp = (bBox.Extents.y + dBox.Extents.y) - std::abs(bBox.Center.y - dBox.Center.y);
+        float zTemp = (bBox.Extents.z + dBox.Extents.z) - std::abs(bBox.Center.z - dBox.Center.z);
+
+        if (xTemp<yTemp && xTemp < zTemp)
         {
             if (xIntDist < 0.0f)
             {
@@ -34,7 +38,7 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
                 distToComp(distToMoveX, *charBbox);
             }
         }
-        else if(std::abs(yIntDist) > std::abs(xIntDist) && std::abs(yIntDist) > std::abs(zIntDist))
+        else if(yTemp < xTemp && yTemp < zTemp)
         {
             collidedY = true;
             stopFall = false;
@@ -51,7 +55,7 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
             }
             
         }
-        else if (std::abs(zIntDist) > std::abs(xIntDist) && std::abs(zIntDist) > std::abs(yIntDist))
+        else if (zTemp < xTemp && zTemp < yTemp)
         {
             if (zIntDist < 0.0f)
             {
