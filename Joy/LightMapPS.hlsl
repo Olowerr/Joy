@@ -29,6 +29,7 @@ float4 main(PS_IN input) : SV_TARGET
 	float lightFactor = shadowMapDepth + 0.0001f > posLightSpace.z;
 	lightFactor *= max(dot(lightDirection, input.normal), 0.f);
 	lightFactor *= lightStrength;
+	lightFactor = clamp(lightFactor, 0.2f, 1.f);
 
 	return float4(lightFactor, 0.f, 0.f, 0.f);
 }
