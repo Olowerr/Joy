@@ -19,6 +19,7 @@ private:
 	Character* joy;
 	Object* ground;
 	Object* bg;
+	Object* cube;
 
 	CharacterCamera* camera;
 	ID3D11Buffer* camCb;
