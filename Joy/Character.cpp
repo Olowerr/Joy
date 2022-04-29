@@ -35,31 +35,77 @@ void Character::Move()
 	float maxSpeed = 10.0f;
 	float speed = 0.1f;
 	float counterForce = 0.01f;
+	bool wsPressed = false;
+	bool adPressed = false;
 
 	if (key.KeyDown(DIK_W))
+	{
 		velocity.y += speed;
+		wsPressed = true;
+	}
 	else if (velocity.y > 0.f)
+	{
 		velocity.y -= counterForce;
+		wsPressed = false;
+	}
+
 
 	if (key.KeyDown(DIK_S))
+	{
 		velocity.y -= speed;
+		wsPressed = true;
+	}
+		
 	else if (velocity.y < 0.f)
+	{
 		velocity.y += counterForce;
+		wsPressed = false;
+	}
 
 	if (key.KeyDown(DIK_D))
+	{
 		velocity.x += speed;
+		adPressed = true;
+	}
+		
 	else if (velocity.x > 0.f)
+	{
 		velocity.x -= counterForce;
+		adPressed = false;
+	}
+		
 	
 	if (key.KeyDown(DIK_A))
+	{
+		adPressed = true;
 		velocity.x -= speed;
+	}
+		
 	else if (velocity.x < 0.f)
+	{
 		velocity.x += counterForce;
-	std::cout << velocity.x << "===";
-	std::cout << velocity.y<< std::endl;
+		adPressed = false;
+	}
+		
+	/*std::cout << velocity.x << "===";
+	std::cout << velocity.y<< std::endl;*/
 	velocity.x *= 0.99f;
 	velocity.y *= 0.99f;
 
+	if (std::abs(velocity.x) < 0.001f)
+	{
+		velocity.x = 0;
+	}
+	if (std::abs(velocity.y) < 0.001f)
+	{
+		velocity.y = 0;
+	}
+	if (std::abs(velocity.x) > 0.0f && std::abs(velocity.y) > 0.0f && wsPressed == true && adPressed == true)
+	{
+		maxSpeed = 5.0f;
+	}
+	else
+		maxSpeed = 10.0f;
 
 	if (std::abs(velocity.x) > maxSpeed)
 		velocity.x *= 0.5;
