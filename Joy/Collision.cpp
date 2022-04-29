@@ -6,12 +6,14 @@ Collision::Collision()
     dBox.Center = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
     bBox.Extents = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
     dBox.Extents = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    collidedY = false;
 }
 
 void Collision::collided(Object* charBbox, Object* targetBbox)
 {
+    std::cout << stopFall << "\n";
     dontStopMovement = false;
-    collidedY = false;
+    stopFall = false;
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
     if (dBox.Intersects(bBox))
@@ -21,46 +23,54 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
         yIntDist = bBox.Center.y - dBox.Center.y;
         zIntDist = bBox.Center.z - dBox.Center.z;
 
-        if (std::abs(xIntDist) > std::abs(yIntDist) && std::abs(xIntDist) > std::abs(zIntDist))
+        float xTemp = (bBox.Extents.x+dBox.Extents.x) - std::abs(bBox.Center.x - dBox.Center.x);
+        float yTemp = (bBox.Extents.y + dBox.Extents.y) - std::abs(bBox.Center.y - dBox.Center.y);
+        float zTemp = (bBox.Extents.z + dBox.Extents.z) - std::abs(bBox.Center.z - dBox.Center.z);
+
+        if (xTemp<yTemp && xTemp < zTemp)
         {
+            collidedY = false;
+            stopFall = false;
             if (xIntDist < 0.0f)
             {
-                distToMoveX = { bBox.Extents.x*2.0001f + xIntDist, 0.0f, 0.0f };
+                distToMoveX = { (bBox.Extents.x+ dBox.Extents.x + 0.00001f)+ xIntDist, 0.0f, 0.0f };
                 distToComp(distToMoveX, *charBbox);
             }
             else
             {
-                distToMoveX = { (-1.0f * bBox.Extents.x* 2.0001f) +xIntDist, 0.0f, 0.0f };
+                distToMoveX = { (-1.0f * (bBox.Extents.x + dBox.Extents.x + 0.00001f)) +xIntDist, 0.0f, 0.0f };
                 distToComp(distToMoveX, *charBbox);
             }
         }
-        else if(std::abs(yIntDist) > std::abs(xIntDist) && std::abs(yIntDist) > std::abs(zIntDist))
+        else if(yTemp < xTemp && yTemp < zTemp)
         {
             collidedY = true;
-            stopFall = false;
+            stopFall = true;
 
             if (yIntDist < 0.0f)
             {
-                distToMoveY = { 0.0f, bBox.Extents.y* 2.f + yIntDist, 0.0f };
+                distToMoveY = { 0.0f, (bBox.Extents.y+dBox.Extents.y) + yIntDist, 0.0f };
                 distToComp(distToMoveY, *charBbox);
             }
             else
             {
-                distToMoveY = { 0.0f, (-1.0f* bBox.Extents.y* 2.f) + yIntDist, 0.0f };
+                distToMoveY = { 0.0f, (-1.0f* (bBox.Extents.y+dBox.Extents.y)) + yIntDist, 0.0f };
                 distToComp(distToMoveY, *charBbox);
             }
             
         }
-        else if (std::abs(zIntDist) > std::abs(xIntDist) && std::abs(zIntDist) > std::abs(yIntDist))
+        else if (zTemp < xTemp && zTemp < yTemp)
         {
+            collidedY = false;
+            stopFall = false;
             if (zIntDist < 0.0f)
             {
-                distToMoveZ = { 0.0f, 0.0f, bBox.Extents.z* 2.0001f + zIntDist };
+                distToMoveZ = { 0.0f, 0.0f, (bBox.Extents.z+dBox.Extents.z + 0.00001f) + zIntDist };
                 distToComp(distToMoveZ, *charBbox);
             }
             else
             {
-                distToMoveZ = { 0.0f, 0.0f, (-1.0f* bBox.Extents.z* 2.0001f) + zIntDist };
+                distToMoveZ = { 0.0f, 0.0f, (-1.0f* (bBox.Extents.z+dBox.Extents.z + 0.00001f)) + zIntDist };
                 distToComp(distToMoveZ, *charBbox);
             }
             
@@ -77,8 +87,7 @@ bool Collision::HitObject(Object* charBbox, Object* targetBbox)
 {
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
-   // std::cout << dBox.Intersects(bBox) << "\n";
-    stopFall = true;
+    //std::cout << dBox.Intersects(bBox) << "\n";
     dontStopMovement = true;
     return dBox.Intersects(bBox);
     
