@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjectRender.h"
+#include "DecalShadow.h"
 #include "UIRender.h"
 
 enum struct SceneState { Unchanged, MainMenu, Easy, Test/*, Medium, Hard*/ };
@@ -7,8 +8,8 @@ enum struct SceneState { Unchanged, MainMenu, Easy, Test/*, Medium, Hard*/ };
 class Scene
 {
 public:
-	Scene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-		:uiRender(uiRender), objRender(objRender), meshStorage(meshStorage)
+	Scene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
+		:uiRender(uiRender), objRender(objRender), decalShadow(decalShadow), meshStorage(meshStorage)
 	{
 
 	}
@@ -22,6 +23,7 @@ public:
 protected:
 	UIRenderer& uiRender;
 	ObjectRender& objRender;
+	DecalShadow& decalShadow;
 	TempMeshStorage& meshStorage;
 };
 

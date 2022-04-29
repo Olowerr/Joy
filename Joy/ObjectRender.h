@@ -2,25 +2,9 @@
 #include <fstream>
 #include <iostream>
 #include "Backend.h"
-#include "Character.h"
-#include "CameraBase.h"
-
-struct InstancedObjects
-{
-	ID3D11Buffer* vertexBuffer;
-	ID3D11ShaderResourceView* transformSRV;
-	ID3D11ShaderResourceView* mtl;
-	UINT instanceCount;
-	UINT indexCount;
-
-	void Shutdown()
-	{
-		transformSRV->Release();
-		// Don't release vertexBuffer, meshStorage owns it
-		// Don't release mtl, meshStorage owns it
-	}
-
-};
+#include "Object.h"
+#include "CharacterCamera.h"
+#include "DecalShadow.h"
 
 class ObjectRender
 {
@@ -33,41 +17,34 @@ public:
 	void AddObject(Object* obj);
 	void DrawAll();
 
-	void CreateCharacterDecal(Character* character);
-	void UpdateCharacterDecal(Character* character);
-	ID3D11Buffer* const* getDecalBuffer();
-
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
-
 	ID3D11InputLayout* GetObjectInputLayout();
 	ID3D11VertexShader* GetObjectVS();
 
-
 private:
 
+	DecalShadow decalShadow;
 	std::vector<Object*> objects;
 
 	ID3D11InputLayout* inpLayout;
 	ID3D11RenderTargetView* const* bbRTV;
 
-	// Decal buffer with character position, updates constantly
-	ID3D11Buffer* charPosBuff;
-
 	// Instanced
 	ID3D11VertexShader* objInstanceVS;
-	std::vector<InstancedObjects> instances;
+	std::vector<InstancedObject> instances;
 
 	// Normal
 	ID3D11VertexShader* objVS;
 	ID3D11PixelShader* objPS;
-
 	// Sampler
 	ID3D11SamplerState* sampler;  // << temporary
-	
-	
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
 
-	
+
+	//temp
+//	CharacterCamera* camera;
+//	ID3D11Buffer* camCb;
+//	DirectX::XMFLOAT4X4 viewAndProj;
 };
