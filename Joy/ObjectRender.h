@@ -12,13 +12,15 @@ public:
 	ObjectRender();
 	void Shutdown();
 	void Clear();
-
+	void CreateSamplerState(); // << temporary
+	void SetActiveCamera(Camera* camera);
 	void AddObject(Object* obj);
 	void DrawAll();
 
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
-
+	ID3D11InputLayout* GetObjectInputLayout();
+	ID3D11VertexShader* GetObjectVS();
 
 private:
 
@@ -35,7 +37,8 @@ private:
 	// Normal
 	ID3D11VertexShader* objVS;
 	ID3D11PixelShader* objPS;
-
+	// Sampler
+	ID3D11SamplerState* sampler;  // << temporary
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
 

@@ -16,8 +16,13 @@ void testScene::Load()
     joy = new Character(meshStorage.GetMesh(0)); 
     collTest = new Object(meshStorage.GetMesh(1));
     ground = new Object(meshStorage.GetMesh(2));
+    gatoKubo = new Object(meshStorage.GetMesh(1));
 
-    camera = new CharacterCamera(*joy);
+    //Camera recives which object to look at
+    joyCamera = new CharacterCamera(*joy);
+
+
+    objRender.AddObject(ground);
     objRender.AddObject(joy);
     objRender.AddObject(ground);
     objRender.AddObject(bg);
@@ -36,7 +41,10 @@ void testScene::Load()
     collTest->SetPosition(-20.0f, 0.0f, 0.0f);
     gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
-  //  bg->Scale(2);
+    HLight hLight(objRender);
+    Object* elgato[2] = { ground, gatoKubo };
+    hLight.GenerateLightMaps(elgato, 2);
+    hLight.Shutdown();
 
     // Create decal buffers. Camera and character pos as dynamic constant buffers.
     decalShadow.CreateCharacterDecal(joy);
@@ -55,6 +63,7 @@ void testScene::Load()
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
 
+    objRender.AddObject(collTest);
     objRender.AddObject(collTest);
 }
 
@@ -82,11 +91,6 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
-    ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-    viewAndProj = camera->GetViewAndProj();
-    devContext->VSSetConstantBuffers(1, 1, &camCb);
-    Backend::UpdateBuffer(camCb, &viewAndProj, 64);
-
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = freeCamera;
@@ -129,9 +133,6 @@ SceneState testScene::Update()
     decalShadow.UpdateCharacterDecal(joy);
     decalShadow.UpdateDecalDepthCam(joy);
 
-    joy->Move();
-    joy->Respawn();
-    //test->respawn();
 
     return SceneState::Unchanged;
 }

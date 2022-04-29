@@ -10,12 +10,6 @@ Texture2D image : register(t0);
 Texture2D lightMap : register(t2);
 
 SamplerState defaultSampler : register(s0);
-<<<<<<< HEAD
-
-float4 main(PS_IN input) : SV_TARGET
-{
-	return image.Sample(defaultSampler, input.uv);
-=======
 
 cbuffer decalShadow : register(b0)
 {
@@ -40,5 +34,4 @@ float4 main(PS_IN input) : SV_TARGET
 	
 	float lightValue = lightMap.Sample(defaultSampler, input.uv).r;
 	return image.Sample(defaultSampler, input.uv) * lightValue;
->>>>>>> master
 }

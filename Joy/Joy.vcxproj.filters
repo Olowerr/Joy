@@ -46,16 +46,13 @@
     <Filter Include="Object\Pickups">
       <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="System\Decal Renderer">
       <UniqueIdentifier>{faafdfb2-e495-421b-b8ec-6e4adbf392c8}</UniqueIdentifier>
-=======
     <Filter Include="System\Lights">
       <UniqueIdentifier>{2b667f98-f219-4fc5-ac16-116aa4ff4857}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene\Cameras">
       <UniqueIdentifier>{e819d766-350d-4619-8c13-97999ca3bcca}</UniqueIdentifier>
->>>>>>> master
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -243,17 +240,14 @@
     <FxCompile Include="PickupVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
-<<<<<<< HEAD
     <FxCompile Include="DecalVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="DecalPS.hlsl">
-=======
     <FxCompile Include="LightMapVS.hlsl">
       <Filter>System\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="LightMapPS.hlsl">
->>>>>>> master
       <Filter>System\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
