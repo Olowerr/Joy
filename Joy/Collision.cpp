@@ -6,12 +6,12 @@ Collision::Collision()
     dBox.Center = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
     bBox.Extents = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
     dBox.Extents = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    collidedY = false;
 }
 
 void Collision::collided(Object* charBbox, Object* targetBbox)
 {
     dontStopMovement = false;
-    collidedY = false;
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
     if (dBox.Intersects(bBox))
@@ -27,6 +27,8 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
 
         if (xTemp<yTemp && xTemp < zTemp)
         {
+            collidedY = false;
+            stopFall = false;
             if (xIntDist < 0.0f)
             {
                 distToMoveX = { (bBox.Extents.x+ dBox.Extents.x + 0.0001f)+ xIntDist, 0.0f, 0.0f };
@@ -57,6 +59,8 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
         }
         else if (zTemp < xTemp && zTemp < yTemp)
         {
+            collidedY = false;
+            stopFall = false;
             if (zIntDist < 0.0f)
             {
                 distToMoveZ = { 0.0f, 0.0f, (bBox.Extents.z+dBox.Extents.z + 0.0001f) + zIntDist };

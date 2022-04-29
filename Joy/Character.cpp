@@ -132,6 +132,7 @@ void Character::Jump()
 		canBoost = false;
 	}
 
+
 	//Jump
 	if (key.KeyDown(DIK_SPACE)&& canJump)
 	{
@@ -171,11 +172,9 @@ void Character::SetSpeedZero()
 	if (collidedY)
 	{
 		this->jumpVelocity = 0.0f;
-		std::cout << "aaaaaaaaaaaa\n";
 	}
-	else
+	else if(!collidedY)
 	{
-		std::cout << "bbbbbbbbbb\n";
 		if (std::abs(velocity.x) > std::abs(velocity.y))
 		{
 			velocity.x = 0.0f;
