@@ -170,11 +170,12 @@ void Character::SetSpeedZero()
 {
 	if (collidedY)
 	{
-		if (canJump == true)
-			this->jumpVelocity = 0.0f;
+		this->jumpVelocity = 0.0f;
+		std::cout << "aaaaaaaaaaaa\n";
 	}
 	else
 	{
+		std::cout << "bbbbbbbbbb\n";
 		if (std::abs(velocity.x) > std::abs(velocity.y))
 		{
 			velocity.x = 0.0f;
