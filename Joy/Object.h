@@ -40,10 +40,8 @@ private:
 	// "Global" arrays of all objects
 	static std::vector<Object*> levelObjects;
 	static std::vector<Object*> enviormentObjects;
-protected:
-	static void JoyDropPtr(Object* pJoy); // temp, only for Joy
-
 public:
+	static void DropLevelPtr(Object* pObject); // maybe temp
 	static const std::vector<Object*>& GetLevelObjects();
 	static const std::vector<Object*>& GetEnviormentObjects();
 };

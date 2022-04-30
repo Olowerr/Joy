@@ -127,10 +127,10 @@ ID3D11ShaderResourceView** Object::GetLightMapSRV()
 std::vector<Object*> Object::levelObjects;
 std::vector<Object*> Object::enviormentObjects;
 
-// Temp for joy ONLY
-void Object::JoyDropPtr(Object* pJoy)
+// maybe temp
+void Object::DropLevelPtr(Object* pObject)
 {
-	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pJoy), levelObjects.end());
+	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pObject), levelObjects.end());
 }
 
 const std::vector<Object*>& Object::GetLevelObjects()
