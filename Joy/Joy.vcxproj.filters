@@ -182,9 +182,6 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Pickup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -202,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="FreelookCamera.h">
       <Filter>Game\Scene\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Object\Pickups</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

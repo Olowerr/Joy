@@ -1,11 +1,17 @@
 #include "Object.h"
-Object::Object(Mesh* mesh)
+
+Object::Object(Mesh* mesh, bool levelObject)
 	:mesh(mesh), lightMap(nullptr)
 {
 	bBox = mesh->bBox;
+
+	if (levelObject)
+		levelObjects.emplace_back(this);
+	else
+		enviormentObjects.emplace_back(this);
 }
 
-Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
+Object::Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
 	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr)
 {
 	bBox = mesh->bBox;
@@ -16,6 +22,10 @@ Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT s
 	bBox.Extents.y *= scale;
 	bBox.Extents.z *= scale;
 
+	if (levelObject)
+		levelObjects.emplace_back(this);
+	else
+		enviormentObjects.emplace_back(this);
 }
 
 void Object::Shutdown()
@@ -107,4 +117,28 @@ Mesh* Object::GetMesh()
 ID3D11ShaderResourceView** Object::GetLightMapSRV()
 {
 	return &lightMap;
+}
+
+
+
+
+// --- Static Functions ---
+
+std::vector<Object*> Object::levelObjects;
+std::vector<Object*> Object::enviormentObjects;
+
+// Temp for joy ONLY
+void Object::JoyDropPtr(Object* pJoy)
+{
+	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pJoy), levelObjects.end());
+}
+
+const std::vector<Object*>& Object::GetLevelObjects()
+{
+	return levelObjects;
+}
+
+const std::vector<Object*>& Object::GetEnviormentObjects()
+{
+	return enviormentObjects;
 }

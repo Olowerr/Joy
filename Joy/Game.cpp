@@ -83,6 +83,12 @@ void Game::Run()
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_2) && activeScene != &easy)
 			activeState = SceneState::Easy;
+
+		else if (Backend::GetKeyboard().KeyReleased(DIK_M))
+			Backend::GetMouse().Lock(true);
+		
+		else if (Backend::GetKeyboard().KeyReleased(DIK_N))
+			Backend::GetMouse().Lock(false);
 		// --
 	}
 

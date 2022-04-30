@@ -1,8 +1,10 @@
 #include "Character.h"
 
 Character::Character(Mesh* mesh)
-	:Object(mesh), key(Backend::GetKeyboard()), velocity()
+	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
 {
+	Object::JoyDropPtr(this);
+
 	//Basic
 	//maxSpeed = 0.1f;
 	//minSpeed = -0.1f;
@@ -55,7 +57,7 @@ void Character::Move()
 		velocity.y -= speed;
 		wsPressed = true;
 	}
-		
+
 	else if (velocity.y < 0.f)
 	{
 		velocity.y += counterForce;
@@ -67,26 +69,26 @@ void Character::Move()
 		velocity.x += speed;
 		adPressed = true;
 	}
-		
+
 	else if (velocity.x > 0.f)
 	{
 		velocity.x -= counterForce;
 		adPressed = false;
 	}
-		
-	
+
+
 	if (key.KeyDown(DIK_A))
 	{
 		adPressed = true;
 		velocity.x -= speed;
 	}
-		
+
 	else if (velocity.x < 0.f)
 	{
 		velocity.x += counterForce;
 		adPressed = false;
 	}
-		
+
 	/*std::cout << velocity.x << "===";
 	std::cout << velocity.y<< std::endl;*/
 	velocity.x *= 0.99f;
@@ -115,7 +117,7 @@ void Character::Move()
 
 
 	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
-	
+
 }
 
 void Character::Jump()
@@ -134,7 +136,7 @@ void Character::Jump()
 
 
 	//Jump
-	if (key.KeyDown(DIK_SPACE)&& canJump)
+	if (key.KeyDown(DIK_SPACE) && canJump)
 	{
 		canJump = false;
 		jumpVelocity += std::sqrtf(2.0f * gravity * jumpHeight);
@@ -174,13 +176,13 @@ void Character::SetSpeedZero()
 		if (canJump == true)
 			this->jumpVelocity = 0.0f;
 	}
-	else if(!collidedY)
+	else if (!collidedY)
 	{
 		if (std::abs(velocity.x) > std::abs(velocity.y))
 		{
 			velocity.x = 0.0f;
 		}
-		else 
+		else
 		{
 			velocity.y = 0.0f;
 		}
