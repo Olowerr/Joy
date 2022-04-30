@@ -14,10 +14,10 @@ void testScene::Load()
 
     // Joy should always be first in the array from mesh storage
     joy = new Character(meshStorage.GetMesh(0)); 
-    collTest = new Object(meshStorage.GetMesh(1));
-    ground = new Object(meshStorage.GetMesh(2));
-    gatoKubo = new Object(meshStorage.GetMesh(1));
-    cube = new Object(meshStorage.GetMesh(1));
+    collTest = new Object(meshStorage.GetMesh(1), true);
+    ground = new Object(meshStorage.GetMesh(2), true);
+    gatoKubo = new Object(meshStorage.GetMesh(1), true);
+    cube = new Object(meshStorage.GetMesh(1), true);
 
     //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
