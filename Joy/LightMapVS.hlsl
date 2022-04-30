@@ -10,7 +10,6 @@ struct VS_OUT
 	float4 pos : SV_POSITION;
 	float3 wsPos : WS_POSITION;
 	float3 normal : NORMAL;
-	float2 uv : UV;
 };
 
 cbuffer world : register(b0)
@@ -34,7 +33,6 @@ VS_OUT main(VS_IN input)
 
 	output.wsPos = mul(float4(input.pos, 1.f), world).xyz;
 	output.normal = mul(float4(input.normal, 0.f), world).xyz;
-	output.uv = input.uv;
 
 	return output;
 }

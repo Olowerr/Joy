@@ -27,6 +27,7 @@ HLight::HLight(ObjectRender& objRender)
 void HLight::Shutdown()
 {
 	lightVS->Release();
+	lightGS->Release();
 	noCullingRS->Release();
 	lightPS->Release();
 	lightDataBuffer->Release();
@@ -59,11 +60,14 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
 
+	deviceContext->GSSetShader(lightGS, nullptr, 0);
+
 	deviceContext->RSSetState(noCullingRS);
 
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
 	deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
+
 
 	D3D11_TEXTURE2D_DESC texDesc{};
 	texDesc.Width = LightMapWidth;
@@ -77,11 +81,10 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
-	
 
 	ID3D11Texture2D* resource{};
 	ID3D11RenderTargetView* tempRTV{};
-
+	float lightMapBaseColour[4] = { 0.f, 0.f, 0.f, 0.f };
 	for (UINT i = 0; i < amount; i++)
 	{
 		hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
@@ -103,6 +106,7 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 			continue;
 		}
 
+		deviceContext->ClearRenderTargetView(tempRTV, lightMapBaseColour);
 		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
 		objects[i]->DrawGeometry();
 
@@ -110,6 +114,7 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 		tempRTV->Release();
 	}
 
+	deviceContext->GSSetShader(nullptr, nullptr, 0);
 	deviceContext->RSSetState(nullptr);
 }
 
@@ -128,12 +133,12 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
-	deviceContext->OMSetRenderTargets(0, &nullRTV, shadowMapDSV);
+	deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV);
 
 	for (UINT i = 0; i < amount; i++)
 		objects[i]->DrawGeometry();
 	
-	deviceContext->OMSetRenderTargets(0, &nullRTV, nullptr);
+	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 }
 
 bool HLight::InitiateShadowMap()
@@ -204,6 +209,14 @@ bool HLight::InitiateShaders()
 	hr = Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &lightVS);
 	if (FAILED(hr))
 		return false;
+	
+	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapGS.cso", &shaderData);
+	if (!succeeded)
+		return false;
+
+	hr = Backend::GetDevice()->CreateGeometryShader(shaderData.c_str(), shaderData.length(), nullptr, &lightGS);
+	if (FAILED(hr))
+		return false;
 
 	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapPS.cso", &shaderData);
 	if (!succeeded)
@@ -225,7 +238,7 @@ bool HLight::InitiateBuffers()
 	XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, -10.f, 0.f);
 	XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f);
 
-	SUN.strength = 1.f;
+	SUN.strength = 10.f;
 	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
 	XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
 		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f)));

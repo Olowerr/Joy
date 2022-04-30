@@ -52,6 +52,9 @@
     <Filter Include="Game\Scene\Cameras">
       <UniqueIdentifier>{e819d766-350d-4619-8c13-97999ca3bcca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\Shaders\LightMapShaders">
+      <UniqueIdentifier>{ae02075d-6930-43ec-b6b3-ea467e5342da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -227,10 +230,13 @@
       <Filter>System\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="LightMapVS.hlsl">
-      <Filter>System\Shaders</Filter>
+      <Filter>System\Shaders\LightMapShaders</Filter>
     </FxCompile>
     <FxCompile Include="LightMapPS.hlsl">
-      <Filter>System\Shaders</Filter>
+      <Filter>System\Shaders\LightMapShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapGS.hlsl">
+      <Filter>System\Shaders\LightMapShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

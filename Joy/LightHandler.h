@@ -10,21 +10,31 @@ public:
 
 	void GenerateLightMaps(Object** objects, UINT amount);
 
-	const UINT ShadowMapWidth = 1024;
-	const UINT ShadowMapHeight = 1024;
+	const UINT ShadowMapWidth  = 2048; // Can be large since only used during load
+	const UINT ShadowMapHeight = 2048; // Can be large since only used during load
 	
-	const UINT LightMapWidth = 1024;
-	const UINT LightMapHeight = 1024;
+	const UINT LightMapWidth  = 512; 
+	const UINT LightMapHeight = 512;
 
 private:
 	
+	/*
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP	
+	*/
+
 	// General
 	ObjectRender& objRender;
 	D3D11_VIEWPORT lightViewPort;
 	
 	//  --- Light maps ---
 	ID3D11VertexShader* lightVS;
-	// GS for expanding uv tris (instead of jitter)
+	ID3D11GeometryShader* lightGS;
 	ID3D11RasterizerState* noCullingRS;
 	ID3D11PixelShader* lightPS;
 	ID3D11Buffer* lightDataBuffer;
