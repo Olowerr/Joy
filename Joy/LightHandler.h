@@ -10,11 +10,9 @@ public:
 
 	void GenerateLightMaps(Object** objects, UINT amount);
 
-	const UINT ShadowMapWidth  = 2048; // Can be large since only used during load
-	const UINT ShadowMapHeight = 2048; // Can be large since only used during load
-	
-	const UINT LightMapWidth  = 512; 
-	const UINT LightMapHeight = 512;
+	const UINT ShadowMapXY = 2048; // Can be large since only used during load
+	const UINT LightMapXY  = 512; 
+	const UINT LightMapCSThreadXY = 16;
 
 private:
 	
@@ -34,7 +32,7 @@ private:
 	
 	//  --- Light maps ---
 	ID3D11VertexShader* lightVS;
-	ID3D11GeometryShader* lightGS;
+	ID3D11ComputeShader* lightCS;
 	ID3D11RasterizerState* noCullingRS;
 	ID3D11PixelShader* lightPS;
 	ID3D11Buffer* lightDataBuffer;
@@ -55,6 +53,9 @@ private:
 	};
 	DirectionalLight SUN;
 
+
+	void FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc,
+		D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc);
 
 	// --- Initiate Functions ---
 	bool InitiateShadowMap();

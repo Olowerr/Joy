@@ -27,10 +27,10 @@ HLight::HLight(ObjectRender& objRender)
 void HLight::Shutdown()
 {
 	lightVS->Release();
-	lightGS->Release();
 	noCullingRS->Release();
 	lightPS->Release();
 	lightDataBuffer->Release();
+	lightCS->Release();
 
 	shadowMapDSV->Release();
 	shadowMapSRV->Release();
@@ -53,14 +53,12 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	
 	DrawShadowMap(objects, amount);
 
-	lightViewPort.Width = (float)LightMapWidth;
-	lightViewPort.Height = (float)LightMapHeight;
+	lightViewPort.Width = (float)LightMapXY;
+	lightViewPort.Height = (float)LightMapXY;
 	deviceContext->RSSetViewports(1, &lightViewPort);
 
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
-
-	deviceContext->GSSetShader(lightGS, nullptr, 0);
 
 	deviceContext->RSSetState(noCullingRS);
 
@@ -68,52 +66,68 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
 	deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
 
-
+	deviceContext->CSSetShader(lightCS, nullptr, 0);
+	
 	D3D11_TEXTURE2D_DESC texDesc{};
-	texDesc.Width = LightMapWidth;
-	texDesc.Height = LightMapHeight;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R8_UNORM;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MiscFlags = 0;
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc{};
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+
+	FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
 
 	ID3D11Texture2D* resource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+		return;
+
 	ID3D11RenderTargetView* tempRTV{};
-	float lightMapBaseColour[4] = { 0.f, 0.f, 0.f, 0.f };
+	ID3D11UnorderedAccessView* tempUAV{};
+
+	ID3D11RenderTargetView* nullRTV{};
+	ID3D11UnorderedAccessView* nullUAV{};
+
+	const UINT NumGroups = LightMapXY / LightMapCSThreadXY;
+
 	for (UINT i = 0; i < amount; i++)
 	{
-		hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+		rtvDesc.Texture2DArray.FirstArraySlice = i;
+		srvDesc.Texture2DArray.FirstArraySlice = i;
+		uavDesc.Texture2DArray.FirstArraySlice = i;
+
+		hr = device->CreateShaderResourceView(resource, &srvDesc, objects[i]->GetLightMapSRV());
 		if (FAILED(hr))
 			continue;
 
-		hr = device->CreateShaderResourceView(resource, nullptr, objects[i]->GetLightMapSRV());
+		hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
 		if (FAILED(hr))
 		{
-			resource->Release();
-			continue;
-		}
-
-		hr = device->CreateRenderTargetView(resource, nullptr, &tempRTV);
-		if (FAILED(hr))
-		{
-			resource->Release();
 			(*objects[i]->GetLightMapSRV())->Release();
 			continue;
 		}
+		
+		hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
+		if (FAILED(hr))
+		{
+			(*objects[i]->GetLightMapSRV())->Release();
+			tempRTV->Release();
+			continue;
+		}
 
-		deviceContext->ClearRenderTargetView(tempRTV, lightMapBaseColour);
+
 		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
 		objects[i]->DrawGeometry();
 
-		resource->Release();
-		tempRTV->Release();
-	}
+		deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+		deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
+		deviceContext->Dispatch(NumGroups, NumGroups, 1);
+		deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, 0);
 
+		tempRTV->Release();
+		tempUAV->Release();
+	}
+	resource->Release();
+
+	deviceContext->CSSetShader(nullptr, nullptr, 0);
 	deviceContext->GSSetShader(nullptr, nullptr, 0);
 	deviceContext->RSSetState(nullptr);
 }
@@ -123,8 +137,8 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	ID3D11RenderTargetView* nullRTV{};
 
-	lightViewPort.Width = (float)ShadowMapWidth;
-	lightViewPort.Height = (float)ShadowMapHeight;
+	lightViewPort.Width = (float)ShadowMapXY;
+	lightViewPort.Height = (float)ShadowMapXY;
 	deviceContext->RSSetViewports(1, &lightViewPort);
 
 	deviceContext->VSSetShader(objRender.GetObjectVS(), nullptr, 0);
@@ -141,6 +155,37 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 }
 
+void HLight::FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc, D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
+{
+	texDesc->Width = LightMapXY;
+	texDesc->Height = LightMapXY;
+	texDesc->MipLevels = 1;
+	texDesc->ArraySize = numObjects;
+	texDesc->Format = DXGI_FORMAT_R8_UNORM;
+	texDesc->SampleDesc.Count = 1;
+	texDesc->SampleDesc.Quality = 0;
+	texDesc->Usage = D3D11_USAGE_DEFAULT;
+	texDesc->BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_UNORDERED_ACCESS;
+	texDesc->CPUAccessFlags = 0;
+	texDesc->MiscFlags = 0;
+
+	rtvDesc->Format = texDesc->Format;
+	rtvDesc->ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+	rtvDesc->Texture2DArray.ArraySize = 1;
+	rtvDesc->Texture2DArray.MipSlice = 0;
+
+	srvDesc->Format = texDesc->Format;
+	srvDesc->ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	srvDesc->Texture2DArray.ArraySize = 1;
+	srvDesc->Texture2DArray.MipLevels = 1;
+	srvDesc->Texture2DArray.MostDetailedMip = 0;
+
+	uavDesc->Format = texDesc->Format;
+	uavDesc->ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+	uavDesc->Texture2DArray.ArraySize = 1;
+	uavDesc->Texture2DArray.MipSlice = 0;
+}
+
 bool HLight::InitiateShadowMap()
 {
 	ID3D11Device* device = Backend::GetDevice();
@@ -152,8 +197,8 @@ bool HLight::InitiateShadowMap()
 	texDesc.MipLevels = 1;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0;
-	texDesc.Height = ShadowMapHeight;
-	texDesc.Width = ShadowMapWidth;
+	texDesc.Height = ShadowMapXY;
+	texDesc.Width = ShadowMapXY;
 	texDesc.MiscFlags = 0;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
@@ -191,7 +236,7 @@ bool HLight::InitiateShadowMap()
 
 	resource->Release();
 
-	Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 	return true;
 }
@@ -209,20 +254,20 @@ bool HLight::InitiateShaders()
 	hr = Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &lightVS);
 	if (FAILED(hr))
 		return false;
-	
-	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapGS.cso", &shaderData);
-	if (!succeeded)
-		return false;
-
-	hr = Backend::GetDevice()->CreateGeometryShader(shaderData.c_str(), shaderData.length(), nullptr, &lightGS);
-	if (FAILED(hr))
-		return false;
 
 	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapPS.cso", &shaderData);
 	if (!succeeded)
 		return false;
 	
 	hr = Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &lightPS);
+	if (FAILED(hr))
+		return false;
+
+	succeeded = Backend::LoadShader(Backend::ShaderPath + "LightMapCS.cso", &shaderData);
+	if (!succeeded)
+		return false;
+	
+	hr = Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &lightCS);
 	if (FAILED(hr))
 		return false;
 

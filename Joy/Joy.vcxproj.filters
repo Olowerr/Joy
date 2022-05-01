@@ -235,7 +235,7 @@
     <FxCompile Include="LightMapPS.hlsl">
       <Filter>System\Shaders\LightMapShaders</Filter>
     </FxCompile>
-    <FxCompile Include="LightMapGS.hlsl">
+    <FxCompile Include="LightMapCS.hlsl">
       <Filter>System\Shaders\LightMapShaders</Filter>
     </FxCompile>
   </ItemGroup>
