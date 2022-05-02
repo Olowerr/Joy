@@ -18,6 +18,7 @@ void ObjectRender::Shutdown()
 	objVS->Release();
 	objPS->Release();
 	objInstanceVS->Release();
+	decalShadow.Shutdown();
 }
 
 void ObjectRender::Clear()
