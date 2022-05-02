@@ -1,16 +1,21 @@
 #include "Character.h"
 
 Character::Character(Mesh* mesh)
-	:Object(mesh), key(Backend::GetKeyboard())
+	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
 {
+	Object::DropLevelPtr(this);
+
 	//Basic
-	maxSpeed = 0.1f;
-	minSpeed = -0.1f;
-	zSpeed = 0.0f;
-	xSpeed = 0.0f;
-	decreaseZSpeed = false;
-	decreaseXSpeed = false;
-	diagMove = false;
+	//maxSpeed = 0.1f;
+	//minSpeed = -0.1f;
+	//zSpeed = 0.0f;
+	//xSpeed = 0.0f;
+	//decreaseZSpeed = false;
+	//decreaseXSpeed = false;
+	//diagMove = false;
+
+	//Movement
+
 
 	//Jump
 	jumpVelocity = 0;
@@ -29,106 +34,90 @@ Character::Character(Mesh* mesh)
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
+	float maxSpeed = 10.0f;
+	float speed = 0.1f;
+	float counterForce = 0.01f;
+	bool wsPressed = false;
+	bool adPressed = false;
 
-	//After a movement key is pressed the speed in each respective direction is increased.
-	//On release a bool is triggered which starts to slow down the player
-	if (key.KeyDown(DIK_W) && zSpeed >= -0.001f)
+	if (key.KeyDown(DIK_W))
 	{
-		decreaseZSpeed = false;
-		if (zSpeed < maxSpeed)
-			zSpeed += 0.06f * Backend::GetDeltaTime();
+		velocity.y += speed;
+		wsPressed = true;
+	}
+	else if (velocity.y > 0.f)
+	{
+		velocity.y -= counterForce;
+		wsPressed = false;
 	}
 
-	if (key.KeyReleased(DIK_W))
+
+	if (key.KeyDown(DIK_S))
 	{
-		decreaseZSpeed = true;
+		velocity.y -= speed;
+		wsPressed = true;
 	}
 
-	if (key.KeyDown(DIK_A) && xSpeed <= 0.001f)
+	else if (velocity.y < 0.f)
 	{
-		decreaseXSpeed = false;
-		if (xSpeed > minSpeed)
-			xSpeed -= 0.06f * Backend::GetDeltaTime();
+		velocity.y += counterForce;
+		wsPressed = false;
 	}
 
-	if (key.KeyReleased(DIK_A))
+	if (key.KeyDown(DIK_D))
 	{
-		decreaseXSpeed = true;
+		velocity.x += speed;
+		adPressed = true;
 	}
 
-	if (key.KeyDown(DIK_S) && zSpeed <= 0.001f)
+	else if (velocity.x > 0.f)
 	{
-		decreaseZSpeed = false;
-		if (zSpeed > minSpeed)
-			zSpeed -= 0.06f * Backend::GetDeltaTime();
+		velocity.x -= counterForce;
+		adPressed = false;
 	}
 
-	if (key.KeyReleased(DIK_S))
+
+	if (key.KeyDown(DIK_A))
 	{
-		decreaseZSpeed = true;
+		adPressed = true;
+		velocity.x -= speed;
 	}
 
-	if (key.KeyDown(DIK_D) && xSpeed >= -0.001f)
+	else if (velocity.x < 0.f)
 	{
-		decreaseXSpeed = false;
-		if (xSpeed < maxSpeed)
-			xSpeed += 0.06f * Backend::GetDeltaTime();
+		velocity.x += counterForce;
+		adPressed = false;
 	}
 
-	if (key.KeyReleased(DIK_D))
+	/*std::cout << velocity.x << "===";
+	std::cout << velocity.y<< std::endl;*/
+	velocity.x *= 0.99f;
+	velocity.y *= 0.99f;
+
+	if (std::abs(velocity.x) < 0.001f)
 	{
-		decreaseXSpeed = true;
+		velocity.x = 0;
 	}
-
-	//Moves the character and makes sure the diagonal speen can't exceed forward or sideways speed
-	if (diagMove == false)
-		Translate(xSpeed, 0.0f, zSpeed);
-
-	if (zSpeed != 0.0f && xSpeed != 0.0f)
+	if (std::abs(velocity.y) < 0.001f)
 	{
-		diagMove = true;
-		Translate(xSpeed / 2, 0.0f, zSpeed / 2);
+		velocity.y = 0;
+	}
+	if (std::abs(velocity.x) > 0.0f && std::abs(velocity.y) > 0.0f && wsPressed == true && adPressed == true)
+	{
+		maxSpeed = 5.0f;
 	}
 	else
-		diagMove = false;
+		maxSpeed = 10.0f;
 
-	//Decreases the speed until the speed has almost reached 0 
-	//which results in the speed being set to 0 to properly stop it
-	if (decreaseZSpeed == true)
-	{
-		if (zSpeed > 0.0f)
-			zSpeed -= 0.1f * Backend::GetDeltaTime();
-		if (zSpeed < 0.0f)
-			zSpeed += 0.1f * Backend::GetDeltaTime();
-		if (zSpeed < 0.001f && zSpeed> 0.0f)
-		{
-			decreaseZSpeed = false;
-			zSpeed = 0.0f;
-		}
-		else if (zSpeed > -0.001f && zSpeed < 0.0f)
-		{
-			decreaseZSpeed = false;
-			zSpeed = 0.0f;
-		}
-	}
-	if (decreaseXSpeed == true)
-	{
-		if (xSpeed > 0.0f)
-			xSpeed -= 0.1f * dt;
-		if (xSpeed < 0.0f)
-			xSpeed += 0.1f * Backend::GetDeltaTime();
+	if (std::abs(velocity.x) > maxSpeed)
+		velocity.x *= 0.99;
 
-		if (xSpeed < 0.001f && xSpeed> 0.0f)
-		{
-			decreaseXSpeed = false;
-			xSpeed = 0.0f;
-		}
-		else if (xSpeed > -0.001f && xSpeed < 0.0f)
-		{
-			decreaseXSpeed = false;
-			xSpeed = 0.0f;
-		}
-	}
+	if (std::abs(velocity.y) > maxSpeed)
+		velocity.y *= 0.99;
+
+
+	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
+
 }
 
 void Character::Jump()
@@ -145,8 +134,9 @@ void Character::Jump()
 		canBoost = false;
 	}
 
+
 	//Jump
-	if (key.KeyDown(DIK_SPACE)&& canJump)
+	if (key.KeyDown(DIK_SPACE) && canJump)
 	{
 		canJump = false;
 		jumpVelocity += std::sqrtf(2.0f * gravity * jumpHeight);
@@ -162,7 +152,7 @@ void Character::Jump()
 	//Boost
 	if (canBoost && key.KeyDown(DIK_SPACE))
 	{
-		jumpVelocity += 350 * dt;
+		jumpVelocity += 325 * dt;
 	}
 	else if (jumpVelocity < -5)
 	{
@@ -179,27 +169,23 @@ void Character::Respawn()
 		SetPosition(0.0f, 0.0f, 0.0f);
 }
 
-void Character::setSpeedZero()
+void Character::SetSpeedZero()
 {
 	if (collidedY)
 	{
 		if (canJump == true)
 			this->jumpVelocity = 0.0f;
 	}
-	else
+	else if (!collidedY)
 	{
-		if (xSpeed > 0.001 && zSpeed > 0.001f && xSpeed > zSpeed)
-			this->xSpeed = 0.0f;
-		if (zSpeed > 0.001 && xSpeed > 0.001f && zSpeed > xSpeed)
-			this->zSpeed = 0.0f;
-		if (xSpeed < -0.001 && zSpeed < -0.001f && xSpeed < zSpeed)
-			this->xSpeed = 0.0f;
-		if (zSpeed < -0.001 && xSpeed < -0.001f && zSpeed < xSpeed)
-			this->zSpeed = 0.0f;
-		if (xSpeed == 0.0f && zSpeed != 0.0f)
-			this->zSpeed = 0.0f;
-		if (xSpeed != 0.0f && zSpeed == 0.0f)
-			this->xSpeed = 0.0f;
+		if (std::abs(velocity.x) > std::abs(velocity.y))
+		{
+			velocity.x = 0.0f;
+		}
+		else
+		{
+			velocity.y = 0.0f;
+		}
 	}
 }
 
@@ -215,7 +201,7 @@ bool Character::SetStopMovement(bool stopSpeed)
 	return stopMovement;
 }
 
-bool Character::setCollidedY(bool verticalCollision)
+bool Character::SetCollidedY(bool verticalCollision)
 {
 	collidedY = verticalCollision;
 	return collidedY;

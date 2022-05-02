@@ -13,32 +13,155 @@
     <FxCompile Include="UI_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Backend.cpp" />
-    <ClCompile Include="CameraBase.cpp" />
-    <ClCompile Include="Character.cpp" />
-    <ClCompile Include="CharacterCamera.cpp" />
-    <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="DecalShadow.cpp" />
-    <ClCompile Include="FreelookCamera.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="InstancedObject.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="LightHandler.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="EasyLevel.cpp" />
-    <ClCompile Include="MainMenu.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="MeshStorage.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjectRender.cpp" />
-    <ClCompile Include="ObjParser.cpp" />
-    <ClCompile Include="Pickup.cpp" />
-    <ClCompile Include="Playground.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="UIRender.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>System\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjParser.cpp">
+      <Filter>Source Files\Temp Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectRender.cpp">
+      <Filter>System\Object Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshStorage.cpp">
+      <Filter>Source Files\Temp Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EasyLevel.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>System\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRender.cpp">
+      <Filter>System\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Object\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Playground.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHandler.cpp">
+      <Filter>System\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterCamera.cpp">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraBase.cpp">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="FreelookCamera.cpp">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Backend.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>System\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjParser.h">
+      <Filter>Source Files\Temp Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRender.h">
+      <Filter>System\Object Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshStorage.h">
+      <Filter>Source Files\Temp Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source Files\Temp Objekt &amp; Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyLevel.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>System\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRender.h">
+      <Filter>System\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Playground.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHandler.h">
+      <Filter>System\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterCamera.h">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraBase.h">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="FreelookCamera.h">
+      <Filter>Game\Scene\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Object\Pickups</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h" />

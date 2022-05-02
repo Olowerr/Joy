@@ -7,8 +7,10 @@ class Object : public Transform
 {
 public:
 
-	Object(Mesh* mesh);
-	Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale);
+	// Make protected, should be for Joy ONLY. bool levelObject here is temporary before fix
+	Object(Mesh* mesh, bool levelObject);
+
+	Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot = DirectX::XMFLOAT3(), FLOAT scale = 1.f);
 	virtual void Shutdown() override;
 
 	void Draw();
@@ -32,4 +34,14 @@ private:
 	DirectX::BoundingBox bBox;
 	//hej
 	ID3D11ShaderResourceView* lightMap; // no use in joy
+
+
+
+	// "Global" arrays of all objects
+	static std::vector<Object*> levelObjects;
+	static std::vector<Object*> enviormentObjects;
+public:
+	static void DropLevelPtr(Object* pObject); // maybe temp
+	static const std::vector<Object*>& GetLevelObjects();
+	static const std::vector<Object*>& GetEnviormentObjects();
 };

@@ -1,8 +1,9 @@
-newmtl initialShadingGroup
+newmtl Material
+map_Kd elgato.jpg
 Ns 323.999994
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 d 1.000000
 illum 2
-map_Kd elgato.jpg
+

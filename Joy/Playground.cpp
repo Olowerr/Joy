@@ -14,9 +14,10 @@ void testScene::Load()
 
     // Joy should always be first in the array from mesh storage
     joy = new Character(meshStorage.GetMesh(0)); 
-    collTest = new Object(meshStorage.GetMesh(1));
-    ground = new Object(meshStorage.GetMesh(2));
-    gatoKubo = new Object(meshStorage.GetMesh(1));
+    collTest = new Object(meshStorage.GetMesh(1), true);
+    ground = new Object(meshStorage.GetMesh(2), true);
+    gatoKubo = new Object(meshStorage.GetMesh(1), true);
+    cube = new Object(meshStorage.GetMesh(1), true);
 
     //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
@@ -25,8 +26,9 @@ void testScene::Load()
     objRender.AddObject(ground);
     objRender.AddObject(gatoKubo);
 
+    cube->SetPosition(2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
-    collTest->SetPosition(-20.0f, 0.0f, 0.0f);
+    collTest->SetPosition(2.0f, 0.0f, 0.0f);
     gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
     HLight hLight(objRender);
@@ -49,6 +51,8 @@ void testScene::Shutdown()
     gatoKubo->Shutdown();
     ground->Shutdown();
     collTest->Shutdown();
+    cube->Shutdown();
+
     freeCamera->Shutdown();
     joyCamera->Shutdown();
 
@@ -59,6 +63,7 @@ void testScene::Shutdown()
     delete gatoKubo;
     delete collTest;
     delete ground;
+    delete cube;
 }
 
 SceneState testScene::Update()
@@ -79,19 +84,33 @@ SceneState testScene::Update()
     if (activeCamera == freeCamera)
         return SceneState::Unchanged;
 
-    // Collision
-    joy->SetCanJump(false);
-    joy->setCollidedY(coll.getCollidedY());
-    if (coll.HitObject(joy, collTest))
-        joy->setSpeedZero();
-    if (coll.HitObject(joy, ground))
-        joy->SetCanJump(coll.GetStopFall());
-    if (coll.HitObject(joy, collTest))
-        joy->SetCanJump(coll.GetStopFall());
-    
-    coll.collided(joy, collTest);
+    //Camera functions
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
 
-    // Joy functions
+    //Collision
+    joy->SetCollidedY(coll.getCollidedY());
+    if(coll.getCollidedY())
+        joy->SetSpeedZero();
+    if (coll.HitObject(joy, cube))
+        joy->SetSpeedZero();
+    if (coll.HitObject(joy, ground))
+    {
+        joy->SetSpeedZero();
+        joy->SetCanJump(coll.GetStopFall());
+    }
+        
+    if (coll.HitObject(joy, collTest))
+    {
+        joy->SetCanJump(coll.GetStopFall());
+        joy->SetSpeedZero();
+    }
+    joy->SetCanJump(coll.GetStopFall());
+        
+    coll.collided(joy, collTest);
+    coll.collided(joy, cube);
+    coll.collided(joy, ground);
+    //Joy functions
     joy->Jump();
     joy->Move();
     joy->Respawn();

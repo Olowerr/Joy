@@ -188,19 +188,7 @@ void TempMeshStorage::import(UINT index)
 	}
 
 	meshes[index].vertexCount = verts.size();
-	D3D11_BUFFER_DESC desc;
-	desc.ByteWidth = sizeof(Vertex) * verts.size();
-	desc.Usage = D3D11_USAGE_IMMUTABLE;
-	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = verts.data();
-	data.SysMemPitch = data.SysMemSlicePitch = 0;
-	Backend::GetDevice()->CreateBuffer(&desc, &data, &meshes[index].vertexBuffer);
-
-
+	Backend::CreateVertexBuffer(&meshes[index].vertexBuffer, verts.data(), sizeof(Vertex)* verts.size());
 
 	if (!mtlFound)
 		return;

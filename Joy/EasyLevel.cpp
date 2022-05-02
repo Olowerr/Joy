@@ -3,12 +3,7 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, meshStorage)
 {
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
+
 }
 
 void EasyLevel::Load()
@@ -16,15 +11,15 @@ void EasyLevel::Load()
 	meshStorage.LoadAll();
 
 	objects.reserve(66);
-	objects.emplace_back(meshStorage.GetMesh(0));
+	objects.emplace_back(meshStorage.GetMesh(0), true);
 
 	objRender.AddObject(&objects[0]);
 
 	typedef DirectX::XMFLOAT3 F3;
 	Object test[2] =
 	{
-		{meshStorage.GetMesh(0), F3(0.f, 0.f, 5.f), F3(0.f, 0.f, 0.f), 1.f},
-		{meshStorage.GetMesh(0), F3(0.f, 0.f, -5.f), F3(0.f, 0.f, 0.f), 1.f}
+		{meshStorage.GetMesh(0), true, F3(0.f, 0.f, 5.f)},
+		{meshStorage.GetMesh(0), true, F3(0.f, 0.f, -5.f)}
 	};
 	objRender.GiveInstancedObjects(test, 2);
 }

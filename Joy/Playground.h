@@ -22,6 +22,7 @@ private:
 	Character* joy;
 	Object* ground;
 	Object* gatoKubo;
+	Object* cube;
 
 	Camera* activeCamera;
 	FreelookCamera* freeCamera;
