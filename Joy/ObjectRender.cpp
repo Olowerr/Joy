@@ -56,8 +56,6 @@ void ObjectRender::SetMapDivier(MapDivider* sections)
 
 void ObjectRender::DrawAll()
 {
-	std::cout << "ObjectDrawAll\n";
-
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
 	devContext->IASetInputLayout(storage.objectInputLayout);
@@ -92,9 +90,6 @@ void ObjectRender::DrawAll()
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
-
-	std::cout << "ObjectDrawDONE\n\n";
-
 }
 
 void ObjectRender::DrawCharacter(Character& character)

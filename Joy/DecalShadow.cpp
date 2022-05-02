@@ -153,7 +153,6 @@ void DecalShadow::UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos)
 
 void DecalShadow::DrawDecalShadowDepth(const std::vector<Object*>& objects, DirectX::XMFLOAT3 joyPos)
 {
-	std::cout << "DecalDraw\n";
 
 	UpdateCharacterDecal(joyPos);
 	UpdateDecalDepthCam(joyPos);
@@ -186,8 +185,6 @@ void DecalShadow::DrawDecalShadowDepth(const std::vector<Object*>& objects, Dire
 
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 	devContext->RSSetState(nullptr);
-
-	std::cout << "DecalDrawDONE\n\n";
 
 }
 
