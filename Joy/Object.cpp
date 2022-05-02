@@ -1,7 +1,7 @@
 #include "Object.h"
 
 Object::Object(Mesh* mesh, bool levelObject)
-	:mesh(mesh), lightMap(nullptr)
+	:mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject)
 {
 	bBox = mesh->bBox;
 
@@ -12,7 +12,7 @@ Object::Object(Mesh* mesh, bool levelObject)
 }
 
 Object::Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
-	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr)
+	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject)
 {
 	bBox = mesh->bBox;
 	bBox.Center.x += pos.x;

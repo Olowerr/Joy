@@ -1,6 +1,6 @@
 
-RWTexture2D<unorm float> lightMapsUAV : register(u0);
-Texture2D<unorm float> lightMapsSRV : register(t0);
+RWTexture2DArray<unorm float> lightMapsUAV : register(u0);
+Texture2DArray<unorm float> lightMapsSRV : register(t0);
 
 #define NumThreadX 16
 #define NumThreadY 16
@@ -33,13 +33,16 @@ void main( uint3 DTid : SV_DispatchThreadID )
 		}
 	}*/
 
-	if (lightMapsSRV.Load(int3(DTid.xy, 0)).r < 0.1)
+	/*uint3 dimensions;
+	lightMapsUAV.GetDimensions(dimensions.x, dimensions.y, dimensions.z);*/
+
+	if (lightMapsSRV.Load(int4(DTid.xyz, 0)).r < 0.1)
 	{
 		for (int x = -SearchRadius; x <= SearchRadius; x++)
 		{
 			for (int y = -SearchRadius; y <= SearchRadius; y++)
 			{
-				foundValue = lightMapsSRV.Load(int3(DTid.x + x, DTid.y + y, 0)).r;
+				foundValue = lightMapsSRV.Load(int4(DTid.x + x, DTid.y + y, DTid.z, 0)).r;
 				if (foundValue > 0.1)
 				{
 					foundCount++;
@@ -55,6 +58,6 @@ void main( uint3 DTid : SV_DispatchThreadID )
 
 	if (foundCount)
 	{
-		lightMapsUAV[DTid.xy] = result / foundCount;
+		lightMapsUAV[DTid] = result / foundCount;
 	}
 }
