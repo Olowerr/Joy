@@ -1,6 +1,8 @@
 #pragma once
 #include "InstancedObject.h"
 #include "Character.h"
+#include "CameraBase.h"
+#include "MapSections.h"
 
 class DecalShadow
 {
@@ -9,6 +11,9 @@ public:
 	DecalShadow();
 	void Shutdown();
 
+	void SetActiveCamera(Camera* camera);
+	void SetMapDivider(MapDivider* sections);
+
 	// Functions for decal to work. Bound to Joy.
 	bool InitiateRasterizerState();
 	void CreateCharacterDecal();
@@ -16,7 +21,8 @@ public:
 	bool InitiateDecalDepthBuffer();
 	void CreateDecalDepthCam();
 	void UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos);
-	void DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects, DirectX::XMFLOAT3 joyPos);
+	void DrawDecalShadowDepth(const std::vector<Object*>& objects, DirectX::XMFLOAT3 joyPos);
+	void DrawAll(DirectX::XMFLOAT3 joyPos);
 
 	ID3D11PixelShader*& GetDecalPS();
 	ID3D11Buffer*& GetDecalDCBuff();
@@ -26,6 +32,8 @@ public:
 private:
 
 	DirectX::XMFLOAT4 charPos;
+	Camera* activeCamera;
+	MapDivider* sections;
 
 	// Decal buffer with character position, updates constantly (Also depth buffer for the decal)
 	ID3D11Buffer* decalDCBuff;

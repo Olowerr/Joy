@@ -24,6 +24,17 @@ void DecalShadow::Shutdown()
 	frontFaceCullingRS->Release();
 }
 
+void DecalShadow::SetActiveCamera(Camera* camera)
+{
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, camera->GetMatrixBuffer());
+	activeCamera = camera;
+}
+
+void DecalShadow::SetMapDivider(MapDivider* sections)
+{
+	this->sections = sections;
+}
+
 bool DecalShadow::InitiateRasterizerState()
 {
 	HRESULT hr;
@@ -138,7 +149,7 @@ void DecalShadow::UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos)
 	Backend::UpdateBuffer(decalCamDCBuff, &viewOrtMtrx, sizeof(DirectX::XMFLOAT4X4));
 }
 
-void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects, DirectX::XMFLOAT3 joyPos)
+void DecalShadow::DrawDecalShadowDepth(const std::vector<Object*>& objects, DirectX::XMFLOAT3 joyPos)
 {
 	UpdateCharacterDecal(joyPos);
 	UpdateDecalDepthCam(joyPos);
@@ -171,6 +182,43 @@ void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vecto
 
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 	devContext->RSSetState(nullptr);
+}
+
+void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
+{
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DrawDecalShadowDepth(sections->GetActiveSection()->levelObjects, joyPos);
+
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
+
+	devContext->PSSetShader(decalPS, nullptr, 0);
+	devContext->PSSetConstantBuffers(0, 1, &decalDCBuff);
+	devContext->PSSetConstantBuffers(1, 1, &decalCamDCBuff);
+	devContext->PSSetShaderResources(1, 1, &decalSRV);
+
+	devContext->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), *Backend::GetStandardDSV());
+
+	for (Object* obj : sections->GetActiveSection()->levelObjects)
+		obj->Draw();
+
+	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
+
+	//for (InstancedObject& inst : instances)
+	//{
+	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
+
+	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
+	//}
+
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	devContext->PSSetShaderResources(1, 1, nullSRV);
+	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 ID3D11PixelShader*& DecalShadow::GetDecalPS()

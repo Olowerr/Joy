@@ -3,8 +3,8 @@
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
 	, window(Backend::GetWindow()) 
-	, menu(uiRender, objRender, meshStorage)
-	, easy(uiRender, objRender, meshStorage)
+	, menu(uiRender, objRender, decalShadow, meshStorage)
+	, easy(uiRender, objRender, decalShadow, meshStorage)
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
 }
@@ -22,7 +22,7 @@ void Game::Shutdown()
 
 void Game::Run()
 {
-	testScene test(uiRender, objRender, meshStorage);
+	testScene test(uiRender, objRender, decalShadow, meshStorage);
 
 	SceneState activeState = SceneState::Unchanged;
 	Scene* activeScene = &test;
