@@ -1,7 +1,7 @@
 #include "EasyLevel.h"
 
-EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow decalShadow, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, decalShadow, meshStorage)
+EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
+	:Scene(uiRender, objRender, meshStorage)
 {
 	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
 	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation

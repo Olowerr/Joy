@@ -148,8 +148,10 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CharacterCamera.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="DecalShadow.cpp" />
     <ClCompile Include="FreelookCamera.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="InstancedObject.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LightHandler.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -181,8 +183,10 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterCamera.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="DecalShadow.h" />
     <ClInclude Include="FreelookCamera.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="InstancedObject.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="EasyLevel.h" />
     <ClInclude Include="LightHandler.h" />
@@ -210,6 +214,12 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="DecalPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="LightMapPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
