@@ -1,5 +1,5 @@
 #pragma once
-#include "Object.h"
+#include "Character.h"
 
 struct Section
 {
@@ -12,14 +12,16 @@ struct Section
 class MapDivider
 {
 public:
-	MapDivider(UINT numSections, float mapLength, float mapWidth, float mapHeight);
+	MapDivider(Character& joy, UINT numSections, float mapLength, float mapWidth, float mapHeight);
 	~MapDivider();
 	void Shutdown();
 
 	UINT GetNumSections() const;
 	Section* const GetSections() const;
+	const Section* GetActiveSection() const;
 
 private:
+	Character& joy;
 	Section* sections;
 	const UINT numSections;
 };
