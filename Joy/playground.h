@@ -15,7 +15,7 @@
 class testScene : public Scene
 {
 public:
-	testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage);
+	testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage);
 	
 	// Inherited via Scene
 	virtual void Load() override;

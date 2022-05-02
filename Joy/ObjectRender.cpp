@@ -18,6 +18,7 @@ void ObjectRender::Shutdown()
 	objVS->Release();
 	objPS->Release();
 	objInstanceVS->Release();
+	decalShadow.Shutdown();
 }
 
 void ObjectRender::Clear()
@@ -25,6 +26,7 @@ void ObjectRender::Clear()
 	for (InstancedObject& inst : instances)
 		inst.Shutdown();
 	instances.clear();
+	objects.clear();
 }
 
 void ObjectRender::CreateSamplerState()
@@ -51,11 +53,6 @@ void ObjectRender::SetActiveCamera(Camera* camera)
 {
 	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, camera->GetMatrixBuffer());
 	activeCamera = camera;
-}
-
-void ObjectRender::SetMapDivier(MapDivider* sections)
-{
-	this->sections = sections;
 }
 
 bool ObjectRender::LoadShaders()
@@ -106,6 +103,11 @@ bool ObjectRender::CreateInputLayout(const std::string& shaderData)
 	return SUCCEEDED(hr);
 }
 
+void ObjectRender::AddObject(Object* obj)
+{
+	objects.emplace_back(obj);
+}
+
 void ObjectRender::DrawAll()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
@@ -114,27 +116,32 @@ void ObjectRender::DrawAll()
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	devContext->VSSetShader(objVS, nullptr, 0);
+	
+	decalShadow.DrawDecalShadowDepth(objects, instances, objects[0]->GetPosition());
 
 	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
-	devContext->PSSetShader(objPS, nullptr, 0);
+	devContext->PSSetShader(decalShadow.GetDecalPS(), nullptr, 0);
+	devContext->PSSetConstantBuffers(0, 1, &decalShadow.GetDecalDCBuff());
+	devContext->PSSetConstantBuffers(1, 1, &decalShadow.GetDecalCamDCBuff());
+	devContext->PSSetShaderResources(1, 1, &decalShadow.GetDecalSRV());
 
-	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
+	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
 	
-	for (Object* obj : sections->GetSections()->enivormentObjects)
+	for (Object* obj : objects)
 		obj->Draw();
 
-	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
+	devContext->VSSetShader(objInstanceVS, nullptr, 0);
 
-	//for (InstancedObject& inst : instances)
-	//{
-	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
+	for (InstancedObject& inst : instances)
+	{
+		devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+		devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
 
-	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	//}
+		devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
+	}
 
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);

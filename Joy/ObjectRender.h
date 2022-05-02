@@ -14,7 +14,7 @@ public:
 	void Clear();
 	void CreateSamplerState(); // << temporary
 	void SetActiveCamera(Camera* camera);
-	void SetMapDivier(MapDivider* sections);
+	void AddObject(Object* obj);
 	void DrawAll();
 
 	// Add Instanced Objects
@@ -24,7 +24,8 @@ public:
 
 private:
 
-	MapDivider* sections;
+	DecalShadow decalShadow;
+	std::vector<Object*> objects;
 
 	ID3D11InputLayout* inpLayout;
 	ID3D11RenderTargetView* const* bbRTV;

@@ -32,7 +32,6 @@ private:
 	UIRenderer uiRender;
 	TempMeshStorage meshStorage;
 	ObjectRender objRender;
-	DecalShadow decalShadow;
 	Window& window;
 
 	MainMenu menu;

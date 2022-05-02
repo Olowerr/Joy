@@ -1,7 +1,7 @@
 #include "EasyLevel.h"
 
-EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, decalShadow, meshStorage)
+EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
+	:Scene(uiRender, objRender, meshStorage)
 {
 
 }
@@ -12,6 +12,8 @@ void EasyLevel::Load()
 
 	objects.reserve(66);
 	objects.emplace_back(meshStorage.GetMesh(0), true);
+
+	objRender.AddObject(&objects[0]);
 
 	typedef DirectX::XMFLOAT3 F3;
 	Object test[2] =

@@ -1,7 +1,7 @@
 #include "playground.h"
 
-testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, decalShadow, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
+testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
+    :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
     , activeCamera(nullptr), freeCamera(nullptr), joyCamera(nullptr)
 {
 }
@@ -22,6 +22,11 @@ void testScene::Load()
     //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
 
+    objRender.AddObject(joy);
+    objRender.AddObject(ground);
+    objRender.AddObject(gatoKubo);
+    objRender.AddObject(cube);
+
     cube->SetPosition(2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     collTest->SetPosition(2.0f, 0.0f, 0.0f);
@@ -35,11 +40,10 @@ void testScene::Load()
     freeCamera = new FreelookCamera();
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
-    decalShadow.SetActiveCamera(activeCamera);
+
+    objRender.AddObject(collTest);
 
     divider = new MapDivider(*joy, 3, 15.f, 10.f, 20.f);
-    objRender.SetMapDivier(divider);
-    decalShadow.SetMapDivider(divider);
 }
 
 void testScene::Shutdown()
@@ -109,7 +113,6 @@ SceneState testScene::Update()
     coll.collided(joy, collTest);
     coll.collided(joy, cube);
     coll.collided(joy, ground);
-
     //Joy functions
     joy->Jump();
     joy->Move();
@@ -121,7 +124,6 @@ SceneState testScene::Update()
 void testScene::Render()
 {
     objRender.DrawAll();
-    decalShadow.DrawAll(joy->GetPosition());
     ImGuiModifyPos(collTest);
     ImGuiModifyRot(collTest);
     ImGuiModifyScale(collTest);
