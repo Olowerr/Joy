@@ -83,12 +83,13 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	if (FAILED(hr))
 		return;
 
-	ID3D11ShaderResourceView* tempSRV{};
-	hr = device->CreateShaderResourceView(tempResource, nullptr, &tempSRV);
+	ID3D11Texture2D* resource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
 	if (FAILED(hr))
 		return;
 
-	ID3D11Texture2D* resource{};
+	ID3D11ShaderResourceView* tempSRV{};
+	
 	ID3D11RenderTargetView* tempRTV{};
 	ID3D11UnorderedAccessView* tempUAV{};
 
@@ -103,11 +104,11 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 		srvDesc.Texture2DArray.FirstArraySlice = i;
 		uavDesc.Texture2DArray.FirstArraySlice = i;
 
-		hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+		hr = device->CreateShaderResourceView(resource, nullptr, objects[i]->GetLightMapSRV());
 		if (FAILED(hr))
 			continue;
 
-		hr = device->CreateShaderResourceView(resource, nullptr, objects[i]->GetLightMapSRV());
+		hr = device->CreateShaderResourceView(tempResource, nullptr, &tempSRV);
 		if (FAILED(hr))
 			continue;
 
@@ -130,7 +131,8 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
 		objects[i]->DrawGeometry();
 
-		deviceContext->CopyResource(tempResource, resource);
+		//deviceContext->CopyResource(tempResource, resource);
+		deviceContext->CopySubresourceRegion(tempResource, i, 0, 0, 0, resource, i, nullptr);
 
 		deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 		deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
@@ -177,7 +179,7 @@ void HLight::FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3
 	texDesc->Width = LightMapXY;
 	texDesc->Height = LightMapXY;
 	texDesc->MipLevels = 1;
-	texDesc->ArraySize = 1;
+	texDesc->ArraySize = numObjects;
 	texDesc->Format = DXGI_FORMAT_R8_UNORM;
 	texDesc->SampleDesc.Count = 1;
 	texDesc->SampleDesc.Quality = 0;
