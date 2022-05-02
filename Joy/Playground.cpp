@@ -41,6 +41,8 @@ void testScene::Load()
     objRender.SetActiveCamera(activeCamera);
 
     objRender.AddObject(collTest);
+
+    divider = new MapDivider(3, 15.f, 10.f, 10.f);
 }
 
 void testScene::Shutdown()

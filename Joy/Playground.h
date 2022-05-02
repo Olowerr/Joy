@@ -5,6 +5,7 @@
 #include "Collision.h"
 #include "FreelookCamera.h"
 #include "LightHandler.h"
+#include "MapSections.h"
 
 class testScene : public Scene
 {
@@ -30,4 +31,6 @@ private:
 
 	Object* collTest;
 	Collision coll;
+
+	MapDivider* divider;
 };
