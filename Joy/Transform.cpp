@@ -20,6 +20,10 @@ void Transform::Shutdown()
     worldMatrixBuffer->Release();
 }
 
+Transform::~Transform()
+{
+}
+
 void Transform::Translate(const DirectX::XMVECTOR& movement)
 {
     if (immutable)

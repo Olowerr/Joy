@@ -46,9 +46,9 @@ HLight::~HLight()
 {
 }
 
-bool HLight::GenerateLightMaps(Object** objects, UINT amount)
+bool HLight::GenerateLightMaps()
 {
-	ID3D11Device* device = Backend::GetDevice();
+	/*ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	HRESULT hr;
 
@@ -80,7 +80,7 @@ bool HLight::GenerateLightMaps(Object** objects, UINT amount)
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
 	FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
-
+	*/
 	/*  
 		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
 
@@ -95,7 +95,7 @@ bool HLight::GenerateLightMaps(Object** objects, UINT amount)
 		Old computer can't read the format (R8_UNORM) in UAVs.
 		Solution was to copy the resource to a temporary SRV and read from that.
 	*/
-
+	/*
 	ID3D11Texture2D* tempResource{};
 	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
 	if (FAILED(hr))
@@ -166,7 +166,7 @@ bool HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 	deviceContext->CSSetShader(nullptr, nullptr, 0);
 	deviceContext->RSSetState(nullptr);
-
+	*/
 	return true;
 }
 

@@ -31,6 +31,10 @@ Character::Character(Mesh* mesh)
 	joy.bBox = mesh->bBox;
 }
 
+Character::~Character()
+{
+}
+
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();

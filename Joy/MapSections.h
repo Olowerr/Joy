@@ -14,10 +14,11 @@ struct Section
 class MapDivider
 {
 public:
-	MapDivider(Character& joy, UINT numSections, float mapLength, float mapWidth, float mapHeight);
+	MapDivider(Character& joy);
 	~MapDivider();
 	void Shutdown();
 
+	void CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight);
 	void Update();
 
 	UINT GetNumSections() const;

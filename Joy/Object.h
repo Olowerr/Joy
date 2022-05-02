@@ -9,9 +9,11 @@ public:
 
 	// Make protected, should be for Joy ONLY. bool levelObject here is temporary before fix
 	Object(Mesh* mesh, bool levelObject);
-
 	Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot = DirectX::XMFLOAT3(), FLOAT scale = 1.f);
 	virtual void Shutdown() override;
+	virtual ~Object();
+
+	void CheckBB();
 
 	void Draw();
 	void DrawGeometry();

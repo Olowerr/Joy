@@ -3,16 +3,14 @@
 
 #include<DirectXMath.h>
 
-typedef class Sprite
+class Sprite
 {
 public:
-	static Sprite* Create(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
-	static Sprite* Create(const std::string& imagePath);
-	static void Destroy(Sprite* sprite);
+	Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
+	Sprite(const std::string& imagePath);
+	void Shutdown();
+	~Sprite();
 
-	Sprite(const Sprite&) = delete;
-	Sprite(Sprite&&) = delete;
-	Sprite& operator= (const Sprite&) = delete;
 
 	void SetPosition(FLOAT x, FLOAT y);
 	void SetScale(FLOAT x, FLOAT y);
@@ -23,8 +21,6 @@ public:
 	void Draw();
 
 private:
-	Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
-	Sprite(const std::string& imagePath);
 
 	const bool immutable;
 
@@ -36,4 +32,4 @@ private:
 	ID3D11Buffer* transformBuffer;
 
 	bool Load(const std::string& imagePath);
-}*PSprite;
+};

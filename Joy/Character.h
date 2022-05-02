@@ -12,6 +12,7 @@ class Character: public Object
 {
 public:
 	Character(Mesh* mesh);
+	~Character();
 	void Move();
 	void Jump();
 	void Respawn();

@@ -34,7 +34,4 @@ private:
 	ObjectRender objRender;
 	DecalShadow decalShadow;
 	Window& window;
-
-	MainMenu menu;
-	EasyLevel easy;
 };

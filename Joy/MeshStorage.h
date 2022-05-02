@@ -31,7 +31,6 @@ struct Mesh
 		vertexBuffer->Release();
 	}
 
-	// temp, should maybe be in Object
 	ID3D11ShaderResourceView* diffuseTextureSRV;
 
 	ID3D11Buffer* vertexBuffer;
@@ -55,6 +54,7 @@ class TempMeshStorage
 public:
 
 	TempMeshStorage();
+	~TempMeshStorage();
 
 	void LoadAll();
 	void UnLoadAll();

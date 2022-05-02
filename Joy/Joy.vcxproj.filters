@@ -63,9 +63,6 @@
     <ClCompile Include="Character.cpp">
       <Filter>Character</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterCamera.cpp">
-      <Filter>Character</Filter>
-    </ClCompile>
     <ClCompile Include="CameraBase.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -133,6 +130,9 @@
       <Filter>Imgui</Filter>
     </ClCompile>
     <ClCompile Include="MapSections.cpp" />
+    <ClCompile Include="CharacterCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
@@ -157,9 +157,6 @@
       <Filter>Parser</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>Character</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterCamera.h">
       <Filter>Character</Filter>
     </ClInclude>
     <ClInclude Include="CameraBase.h">
@@ -234,6 +231,9 @@
     <ClInclude Include="MapSections.h" />
     <ClInclude Include="ShaderStorage.h">
       <Filter>Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
