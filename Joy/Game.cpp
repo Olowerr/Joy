@@ -6,14 +6,16 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 	, menu(uiRender, objRender, meshStorage)
 	, easy(uiRender, objRender, meshStorage)
 {
-
-
+	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
 }
 
 void Game::Shutdown()
 {
 	uiRender.Shutdown();
 	objRender.Shutdown();
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 
 	Backend::Destroy();
 }
@@ -63,10 +65,12 @@ void Game::Run()
 		Backend::Clear();
 
 		activeState = activeScene->Update();
+		StartImGuiFrame();
 		activeScene->Render();
+		Backend::GetDeviceContext()->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), nullptr);
+		EndImGuiFrame();
 
 		Backend::Display();
-
 
 		// temp --
 		if (Backend::GetKeyboard().KeyReleased(DIK_DELETE))
