@@ -29,6 +29,8 @@ public:
 	Mesh* GetMesh();
 	ID3D11ShaderResourceView** GetLightMapSRV();
 
+	const bool IsLevelObject;
+
 private:
 	Mesh* mesh;
 	DirectX::BoundingBox bBox;
