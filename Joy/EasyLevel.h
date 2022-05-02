@@ -4,7 +4,7 @@
 class EasyLevel : public Scene
 {
 public:
-	EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage);
+	EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage);
 
 	// Inherited via Scene
 	virtual void Load() override;

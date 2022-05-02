@@ -34,6 +34,12 @@
     <FxCompile Include="DecalPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PosOnlyVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="JoyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightHandler.cpp" />
@@ -126,6 +132,7 @@
     <ClCompile Include="ImguiSetup.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="MapSections.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
@@ -223,6 +230,10 @@
     </ClInclude>
     <ClInclude Include="ImguiSetup.h">
       <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="MapSections.h" />
+    <ClInclude Include="ShaderStorage.h">
+      <Filter>Backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

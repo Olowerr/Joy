@@ -16,7 +16,6 @@ public:
 	void SetActiveCamera(Camera* camera);
 	void SetMapDivier(MapDivider* sections);
 	void DrawAll();
-	void DrawCharacter(Character& character);
 
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);

@@ -17,11 +17,24 @@ DecalShadow::DecalShadow()
 
 void DecalShadow::Shutdown()
 {
+	decalPS->Release();
 	decalDCBuff->Release();
 	decalDSView->Release();
 	decalSRV->Release();
 	decalCamDCBuff->Release();
 	frontFaceCullingRS->Release();
+}
+
+void DecalShadow::SetActiveCamera(Camera* camera)
+{
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, camera->GetMatrixBuffer());
+	activeCamera = camera;
+}
+
+void DecalShadow::SetMapDivider(MapDivider* sections)
+{
+	this->sections = sections;
+	activeSection = sections->GetActiveSection();
 }
 
 bool DecalShadow::InitiateRasterizerState()
@@ -133,13 +146,15 @@ void DecalShadow::UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos)
 {
 	DirectX::XMMATRIX viewOrtXMtrx = DirectX::XMMatrixLookToLH({ joyPos.x, joyPos.y - 1.0f, joyPos.z },
 		{ 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }) *
-		DirectX::XMMatrixOrthographicLH(10.0f, 10.0f, 0.1f, 100.0f);
+		DirectX::XMMatrixOrthographicLH(0.1f, 0.1f, 0.1f, 100.0f);
 	DirectX::XMStoreFloat4x4(&viewOrtMtrx, DirectX::XMMatrixTranspose(viewOrtXMtrx));
 	Backend::UpdateBuffer(decalCamDCBuff, &viewOrtMtrx, sizeof(DirectX::XMFLOAT4X4));
 }
 
-void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects, DirectX::XMFLOAT3 joyPos)
+void DecalShadow::DrawDecalShadowDepth(const std::vector<Object*>& objects, DirectX::XMFLOAT3 joyPos)
 {
+	std::cout << "DecalDraw\n";
+
 	UpdateCharacterDecal(joyPos);
 	UpdateDecalDepthCam(joyPos);
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
@@ -171,6 +186,46 @@ void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vecto
 
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 	devContext->RSSetState(nullptr);
+
+	std::cout << "DecalDrawDONE\n\n";
+
+}
+
+void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
+{
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DrawDecalShadowDepth((*activeSection)->levelObjects, joyPos);
+
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
+
+	devContext->PSSetShader(decalPS, nullptr, 0);
+	devContext->PSSetConstantBuffers(0, 1, &decalDCBuff);
+	devContext->PSSetConstantBuffers(1, 1, &decalCamDCBuff);
+	devContext->PSSetShaderResources(1, 1, &decalSRV);
+
+	devContext->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), *Backend::GetStandardDSV());
+
+	for (Object* obj : (*activeSection)->levelObjects)
+		obj->Draw();
+
+	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
+
+	//for (InstancedObject& inst : instances)
+	//{
+	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
+
+	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
+	//}
+
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	devContext->PSSetShaderResources(1, 1, nullSRV);
+	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 ID3D11PixelShader*& DecalShadow::GetDecalPS()

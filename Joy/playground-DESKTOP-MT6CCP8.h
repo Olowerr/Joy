@@ -30,7 +30,6 @@ private:
 	Object* gatoKubo;
 	Object* cube;
 
-	HLight* hLight;
 	Camera* activeCamera;
 	FreelookCamera* freeCamera;
 	CharacterCamera* joyCamera;
