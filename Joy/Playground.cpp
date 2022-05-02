@@ -102,7 +102,6 @@ SceneState testScene::Update()
         
     if (coll.HitObject(joy, collTest))
     {
-        joy->SetCanJump(coll.GetStopFall());
         joy->SetSpeedZero();
     }
     joy->SetCanJump(coll.GetStopFall());
