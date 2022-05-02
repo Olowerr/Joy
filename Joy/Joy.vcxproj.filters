@@ -51,9 +51,6 @@
     <ClCompile Include="MeshStorage.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
-    <ClCompile Include="DecalShadow.cpp">
-      <Filter>Parser</Filter>
-    </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Character</Filter>
     </ClCompile>
@@ -99,6 +96,9 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Backend</Filter>
     </ClCompile>
+    <ClCompile Include="DecalShadow.cpp">
+      <Filter>Depth Folder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
@@ -120,9 +120,6 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="MeshStorage.h">
-      <Filter>Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="DecalShadow.h">
       <Filter>Parser</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
@@ -169,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="DecalShadow.h">
+      <Filter>Depth Folder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
