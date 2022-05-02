@@ -42,10 +42,13 @@ void testScene::Load()
     objRender.SetActiveCamera(activeCamera);
 
     objRender.AddObject(collTest);
+
+    divider = new MapDivider(*joy, 3, 15.f, 10.f, 20.f);
 }
 
 void testScene::Shutdown()
 {
+    divider->Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
     joy->Shutdown();

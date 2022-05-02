@@ -5,6 +5,7 @@
 #include "Collision.h"
 #include "FreelookCamera.h"
 #include "LightHandler.h"
+#include "MapSections.h"
 
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"
@@ -35,4 +36,6 @@ private:
 
 	Object* collTest;
 	Collision coll;
+
+	MapDivider* divider;
 };
