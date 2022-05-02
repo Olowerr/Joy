@@ -4,7 +4,7 @@
 class MainMenu : public Scene
 {
 public:
-	MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow decalShadow, TempMeshStorage& meshStorage);
+	MainMenu(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage);
 
 	// Inherited via Scene
 	virtual void Load() override;

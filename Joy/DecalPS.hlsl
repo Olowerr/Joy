@@ -8,6 +8,7 @@ struct PS_IN
 
 Texture2D image : register(t0);
 Texture2D decalDepth : register(t1);
+Texture2D lightMap : register(t2);
 SamplerState defaultSampler : register(s0);
 
 
@@ -37,13 +38,13 @@ float4 main(PS_IN input) : SV_TARGET
     float2 uvs = float2(shadowCamPos.x * 0.5f + 0.5f, shadowCamPos.y * -0.0f + 0.5f);
     float sampledUvs = decalDepth.Sample(defaultSampler, uvs).r;
 	
-    if (sampledUvs > shadowCamPos.z)
+    if (sampledUvs > shadowCamPos.z + 0.001f && shadowCamPos.z > 0 && (dot(float3(0.0f, 1.0f, 0.0f), input.normal) > 0.1f))
     {
         if (dot(isInside, isInside) < 1.0f - (distance * 0.2f) || dot(isInside, isInside) < 0.01f)
         {
-            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f));
+            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)); //* lightMap.Sample(defaultSampler, input.uv).r;
         }
     }
-	
-    return image.Sample(defaultSampler, input.uv);
+    
+    return image.Sample(defaultSampler, input.uv); // * lightMap.Sample(defaultSampler, input.uv).r;
 }

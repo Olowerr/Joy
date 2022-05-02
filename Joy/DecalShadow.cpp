@@ -8,8 +8,11 @@ DecalShadow::DecalShadow()
 	decalViewPort.Height = 1080.0f;
 	decalViewPort.MinDepth = 0.0f;
 	decalViewPort.MaxDepth = 1.0f;
+	LoadShaders();
 	InitiateRasterizerState();
 	InitiateDecalDepthBuffer();
+	CreateCharacterDecal();
+	CreateDecalDepthCam();
 }
 
 void DecalShadow::Shutdown()
@@ -44,33 +47,24 @@ bool DecalShadow::InitiateRasterizerState()
 	return true;
 }
 
-void DecalShadow::CreateCharacterDecal(Character* character)
+void DecalShadow::CreateCharacterDecal()
 {
-	DirectX::XMFLOAT3 pos = character->GetPosition();
-
-	charPos.x = pos.x;
-	charPos.y = pos.y - 2.0f;
-	charPos.z = pos.z;
+	charPos.x = 0.0f;
+	charPos.y = 0.0f;
+	charPos.z = 0.0f;
 	charPos.w = 1.0f;
 
 	Backend::CreateDynamicCBuffer(&decalDCBuff, &charPos, sizeof(DirectX::XMFLOAT4));
 }
 
-void DecalShadow::UpdateCharacterDecal(Character* character)
+void DecalShadow::UpdateCharacterDecal(DirectX::XMFLOAT3 joyPos)
 {
-	DirectX::XMFLOAT3 pos = character->GetPosition();
-
-	charPos.x = pos.x;
-	charPos.y = pos.y - 2.0f;
-	charPos.z = pos.z;
+	charPos.x = joyPos.x;
+	charPos.y = joyPos.y - 2.0f;
+	charPos.z = joyPos.z;
 	charPos.w = 1.0f;
 
 	Backend::UpdateBuffer(decalDCBuff, &charPos, sizeof(DirectX::XMFLOAT4));
-}
-
-ID3D11Buffer* const* DecalShadow::getDecalBuffer()
-{
-	return &decalDCBuff;
 }
 
 bool DecalShadow::InitiateDecalDepthBuffer()
@@ -126,36 +120,28 @@ bool DecalShadow::InitiateDecalDepthBuffer()
 	return true;
 }
 
-ID3D11ShaderResourceView* const* DecalShadow::getDecalSRV()
+void DecalShadow::CreateDecalDepthCam()
 {
-	return &decalSRV;
-}
-
-void DecalShadow::CreateDecalDepthCam(Character* character)
-{
-	DirectX::XMMATRIX viewOrtXMtrx = DirectX::XMMatrixLookToLH({ character->GetPosition().x, character->GetPosition().y - 1.5f,
-	character->GetPosition().z }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }) *
+	DirectX::XMMATRIX viewOrtXMtrx = DirectX::XMMatrixLookToLH({ 0.0f, 0.0f, 0.0f }, 
+		{ 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }) *
 		DirectX::XMMatrixOrthographicLH(5.0f, 5.0f, 0.1f, 100.0f);
 	DirectX::XMStoreFloat4x4(&viewOrtMtrx, DirectX::XMMatrixTranspose(viewOrtXMtrx));
 	Backend::CreateDynamicCBuffer(&decalCamDCBuff, &viewOrtMtrx, sizeof(DirectX::XMFLOAT4X4));
 }
 
-void DecalShadow::UpdateDecalDepthCam(Character* character)
+void DecalShadow::UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos)
 {
-	DirectX::XMMATRIX viewOrtXMtrx = DirectX::XMMatrixLookToLH({ character->GetPosition().x, character->GetPosition().y - 1.5f,
-	character->GetPosition().z }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }) *
+	DirectX::XMMATRIX viewOrtXMtrx = DirectX::XMMatrixLookToLH({ joyPos.x, joyPos.y - 1.0f, joyPos.z },
+		{ 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }) *
 		DirectX::XMMatrixOrthographicLH(10.0f, 10.0f, 0.1f, 100.0f);
 	DirectX::XMStoreFloat4x4(&viewOrtMtrx, DirectX::XMMatrixTranspose(viewOrtXMtrx));
 	Backend::UpdateBuffer(decalCamDCBuff, &viewOrtMtrx, sizeof(DirectX::XMFLOAT4X4));
 }
 
-ID3D11Buffer* const* DecalShadow::getDecalCamDCBuff()
+void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects, DirectX::XMFLOAT3 joyPos)
 {
-	return &decalCamDCBuff;
-}
-
-void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects)
-{
+	UpdateCharacterDecal(joyPos);
+	UpdateDecalDepthCam(joyPos);
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	devContext->ClearDepthStencilView(decalDSView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -185,6 +171,26 @@ void DecalShadow::DrawDecalShadowDepth(std::vector<Object*>& objects, std::vecto
 
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 	devContext->RSSetState(nullptr);
+}
+
+ID3D11PixelShader*& DecalShadow::GetDecalPS()
+{
+	return decalPS;
+}
+
+ID3D11Buffer*& DecalShadow::GetDecalDCBuff()
+{
+	return decalDCBuff;
+}
+
+ID3D11Buffer*& DecalShadow::GetDecalCamDCBuff()
+{
+	return decalCamDCBuff;
+}
+
+ID3D11ShaderResourceView*& DecalShadow::GetDecalSRV()
+{
+	return decalSRV;
 }
 
 bool DecalShadow::LoadShaders()

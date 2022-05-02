@@ -51,6 +51,7 @@ void ObjectRender::CreateSamplerState()
 void ObjectRender::SetActiveCamera(Camera* camera)
 {
 	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, camera->GetMatrixBuffer());
+	activeCamera = camera;
 }
 
 bool ObjectRender::LoadShaders()
@@ -114,12 +115,17 @@ void ObjectRender::DrawAll()
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	devContext->VSSetShader(objVS, nullptr, 0);
+	
+	decalShadow.DrawDecalShadowDepth(objects, instances, objects[0]->GetPosition());
 
-	decalShadow.DrawDecalShadowDepth(objects, instances);
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
-	devContext->PSSetShader(objPS, nullptr, 0);
+	devContext->PSSetShader(decalShadow.GetDecalPS(), nullptr, 0);
+	devContext->PSSetConstantBuffers(0, 1, &decalShadow.GetDecalDCBuff());
+	devContext->PSSetConstantBuffers(1, 1, &decalShadow.GetDecalCamDCBuff());
+	devContext->PSSetShaderResources(1, 1, &decalShadow.GetDecalSRV());
 
 	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
 	

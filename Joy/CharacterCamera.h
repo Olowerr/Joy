@@ -25,6 +25,6 @@ private:
 	float camHeight;
 
 	DirectX::XMFLOAT4 rotation;
- 	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT3 position;
 	float direction;
 };

@@ -1,7 +1,7 @@
 #include "playground.h"
 
-testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, decalShadow, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
+testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
+    :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
     , activeCamera(nullptr), freeCamera(nullptr), joyCamera(nullptr)
 {
 }
@@ -21,11 +21,8 @@ void testScene::Load()
     //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
 
-    //Camera recives which object to look at
-    joyCamera = new CharacterCamera(*joy);
-
-    objRender.AddObject(ground);
     objRender.AddObject(joy);
+    objRender.AddObject(ground);
     objRender.AddObject(gatoKubo);
 
     ground->SetPosition(0.0f, -2.0f, 0.0f);
@@ -36,10 +33,6 @@ void testScene::Load()
     Object* elgato[2] = { ground, gatoKubo };
     hLight.GenerateLightMaps(elgato, 2);
     hLight.Shutdown();
-
-    // Create decal buffers. Camera and character pos as dynamic constant buffers.
-    decalShadow.CreateCharacterDecal(joy);
-    decalShadow.CreateDecalDepthCam(joy);
 
     freeCamera = new FreelookCamera();
     activeCamera = joyCamera;
@@ -58,7 +51,6 @@ void testScene::Shutdown()
     collTest->Shutdown();
     freeCamera->Shutdown();
     joyCamera->Shutdown();
-    decalShadow.Shutdown();
 
     delete freeCamera;
     delete joyCamera;
@@ -103,10 +95,6 @@ SceneState testScene::Update()
     joy->Jump();
     joy->Move();
     joy->Respawn();
-
-    // Update Character and Camera pos for the buffers.
-    decalShadow.UpdateCharacterDecal(joy);
-    decalShadow.UpdateDecalDepthCam(joy);
 
     return SceneState::Unchanged;
 }

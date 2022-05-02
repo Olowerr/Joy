@@ -11,15 +11,17 @@ public:
 
 	// Functions for decal to work. Bound to Joy.
 	bool InitiateRasterizerState();
-	void CreateCharacterDecal(Character* character);
-	void UpdateCharacterDecal(Character* character);
-	ID3D11Buffer* const* getDecalBuffer();
+	void CreateCharacterDecal();
+	void UpdateCharacterDecal(DirectX::XMFLOAT3 joyPos);
 	bool InitiateDecalDepthBuffer();
-	ID3D11ShaderResourceView* const* getDecalSRV();
-	void CreateDecalDepthCam(Character* character);
-	void UpdateDecalDepthCam(Character* character);
-	ID3D11Buffer* const* getDecalCamDCBuff();
-	void DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects);
+	void CreateDecalDepthCam();
+	void UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos);
+	void DrawDecalShadowDepth(std::vector<Object*>& objects, std::vector<InstancedObject>& instancedObjects, DirectX::XMFLOAT3 joyPos);
+
+	ID3D11PixelShader*& GetDecalPS();
+	ID3D11Buffer*& GetDecalDCBuff();
+	ID3D11Buffer*& GetDecalCamDCBuff();
+	ID3D11ShaderResourceView*& GetDecalSRV();
 
 private:
 
