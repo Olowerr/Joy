@@ -3,14 +3,14 @@
 CharacterCamera::CharacterCamera(const Character& object) //const Character& object?
 	:object(object), rotation()
 {
-	camPos = { 0.0f, 10.0f, -20.0f, 0.0f };
+	camPos = { 0.0f, 10.0f, -40.0f, 0.0f };
 	DirectX::XMStoreFloat3(&position, camPos);
 	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
 	camUpDir = { 0.0f, 1.0f, 0.0f, 1.0f };
 	rotation = { 0,0,0,0 };
 	DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
 	DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
-	camHeight = 0;
+	camHeight = 10;
 	DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(temp));
 
 	Backend::CreateDynamicCBuffer(&camMatrixBuffer, &viewProjMatrix, sizeof(DirectX::XMFLOAT4X4));

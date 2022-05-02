@@ -22,9 +22,8 @@ void testScene::Load()
     //Camera recives which object to look at
     joyCamera = new CharacterCamera(*joy);
 
-
-    objRender.AddObject(ground);
     objRender.AddObject(joy);
+    objRender.AddObject(ground);
     objRender.AddObject(gatoKubo);
 
     cube->SetPosition(2.0f, 0.0f, 0.0f);
@@ -40,9 +39,7 @@ void testScene::Load()
     freeCamera = new FreelookCamera();
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
-    objRender.CreateCharacterDecal(joy);
-    
-    devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
+
     objRender.AddObject(collTest);
 }
 
@@ -50,7 +47,6 @@ void testScene::Shutdown()
 {
     objRender.Clear();
     meshStorage.UnLoadAll();
-
     joy->Shutdown();
     gatoKubo->Shutdown();
     ground->Shutdown();
@@ -118,11 +114,6 @@ SceneState testScene::Update()
     joy->Jump();
     joy->Move();
     joy->Respawn();
-    //test->respawn();
-
-    //Decal
-    objRender.UpdateCharacterDecal(joy);
-
 
     return SceneState::Unchanged;
 }
