@@ -42,6 +42,7 @@ private:
 	bool LoadShaders();
 	bool CreateInputLayout(const std::string& shaderData);
 
+	Camera* activeCamera;
 
 	//temp
 //	CharacterCamera* camera;
