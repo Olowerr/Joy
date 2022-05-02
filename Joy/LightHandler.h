@@ -10,7 +10,7 @@ public:
 	void ShutdownTools();
 	~HLight();
 
-	bool GenerateLightMaps(Object** objects, UINT amount);
+	bool GenerateLightMaps();
 	bool GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load

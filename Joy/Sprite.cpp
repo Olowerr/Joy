@@ -30,22 +30,16 @@ Sprite::Sprite(const std::string& imagePath)
 	assert(SUCCEEDED(hr));
 }
 
-Sprite* Sprite::Create(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale)
+void Sprite::Shutdown()
 {
-	return new Sprite(imagePath, xPos, yPos, xScale, yScale);
+	transformBuffer->Release();
+	imageSRV->Release();
 }
 
-Sprite* Sprite::Create(const std::string& imagePath)
+Sprite::~Sprite()
 {
-	return new Sprite(imagePath);
 }
 
-void Sprite::Destroy(Sprite* sprite)
-{
-	sprite->transformBuffer->Release();
-	sprite->imageSRV->Release();
-	delete sprite;
-}
 
 void Sprite::SetPosition(FLOAT x, FLOAT y)
 {

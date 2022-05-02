@@ -6,6 +6,10 @@ TempMeshStorage::TempMeshStorage()
 
 }
 
+TempMeshStorage::~TempMeshStorage()
+{
+}
+
 void TempMeshStorage::LoadAll()
 {
 	for (UINT i = 0; i < MeshCount; i++)

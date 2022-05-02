@@ -1,7 +1,22 @@
 #include "MapSections.h"
 
-MapDivider::MapDivider(Character& joy, UINT numSections, float mapLength, float mapWidth, float mapHeight)
+MapDivider::MapDivider(Character& joy)
 	:numSections(numSections), joy(joy), activeSection(&nullSection)
+{
+
+}
+
+MapDivider::~MapDivider()
+{
+
+}
+
+void MapDivider::Shutdown()
+{
+	delete[] sections;
+}
+
+void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight)
 {
 	float sectionZSize = (mapLength / (float)(numSections));
 	const std::vector<Object*>& levelObjects = Object::GetLevelObjects();
@@ -18,7 +33,7 @@ MapDivider::MapDivider(Character& joy, UINT numSections, float mapLength, float 
 		currentBB.Extents.x = mapWidth;		// Can be large just incase ;))))))
 		currentBB.Extents.y = mapHeight;	// Can be large just incase ;))))))
 		currentBB.Extents.z = sectionZSize * 0.5f;
-		
+
 		for (Object* object : levelObjects)
 		{
 			if (object->IsLevelObject)
@@ -27,7 +42,7 @@ MapDivider::MapDivider(Character& joy, UINT numSections, float mapLength, float 
 					sections[i].levelObjects.emplace_back(object);
 			}
 		}
-		
+
 		for (Object* object : enviormentObjects)
 		{
 			if (!object->IsLevelObject)
@@ -39,16 +54,6 @@ MapDivider::MapDivider(Character& joy, UINT numSections, float mapLength, float 
 	}
 
 	activeSection = &sections[0];
-}
-
-MapDivider::~MapDivider()
-{
-
-}
-
-void MapDivider::Shutdown()
-{
-	delete[] sections;
 }
 
 void MapDivider::Update()

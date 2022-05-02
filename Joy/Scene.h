@@ -5,6 +5,7 @@
 
 enum struct SceneState { Unchanged, MainMenu, Easy, Test/*, Medium, Hard*/ };
 
+__declspec(align(16))
 class Scene
 {
 public:
@@ -13,10 +14,9 @@ public:
 	{
 
 	}
+	virtual ~Scene() { }
 
-	virtual void Load() = 0;
 	virtual void Shutdown() = 0;
-
 	virtual SceneState Update() = 0;
 	virtual void Render() = 0;
 
@@ -25,5 +25,16 @@ protected:
 	ObjectRender& objRender;
 	TempMeshStorage& meshStorage;
 	DecalShadow& decalShadow;
+
+	// Overloaded operators
+public:
+	void* operator new(size_t i)
+	{
+		return _aligned_malloc(i, 16);
+	}
+	void operator delete(void* ptr)
+	{
+		_aligned_free(ptr);
+	}
 };
 
