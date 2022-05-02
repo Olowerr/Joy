@@ -102,6 +102,9 @@
     <ClCompile Include="DecalShadow.cpp">
       <Filter>Depth Folder</Filter>
     </ClCompile>
+    <ClCompile Include="MapSections.cpp">
+      <Filter>Scenes\MapSections</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
@@ -173,6 +176,9 @@
     <ClInclude Include="DecalShadow.h">
       <Filter>Depth Folder</Filter>
     </ClInclude>
+    <ClInclude Include="MapSections.h">
+      <Filter>Scenes\MapSections</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h" />
@@ -226,6 +232,9 @@
     </Filter>
     <Filter Include="Backend">
       <UniqueIdentifier>{99e4f065-892d-4efc-b708-993f2da58f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\MapSections">
+      <UniqueIdentifier>{87282d52-2912-4b2e-a9c5-55907871d8fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

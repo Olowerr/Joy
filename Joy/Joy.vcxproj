@@ -157,6 +157,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="EasyLevel.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="MapSections.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="EasyLevel.h" />
     <ClInclude Include="LightHandler.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="MapSections.h" />
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Object.h" />
