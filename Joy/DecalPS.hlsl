@@ -46,5 +46,5 @@ float4 main(PS_IN input) : SV_TARGET
         }
     }
     
-    return image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
+    return image.Sample(defaultSampler, input.uv); //* lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
 }

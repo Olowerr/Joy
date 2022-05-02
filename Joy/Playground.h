@@ -5,6 +5,12 @@
 #include "Collision.h"
 #include "FreelookCamera.h"
 #include "LightHandler.h"
+#include "MapSections.h"
+
+#include "ImguiSetup.h"
+#include "imgui\imgui.h"
+#include "imgui\imgui_impl_win32.h"
+#include "imgui\imgui_impl_dx11.h"
 
 class testScene : public Scene
 {
@@ -30,4 +36,6 @@ private:
 
 	Object* collTest;
 	Collision coll;
+
+	MapDivider* divider;
 };

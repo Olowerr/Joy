@@ -25,6 +25,7 @@ void testScene::Load()
     objRender.AddObject(joy);
     objRender.AddObject(ground);
     objRender.AddObject(gatoKubo);
+    objRender.AddObject(cube);
 
     cube->SetPosition(2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
@@ -41,10 +42,13 @@ void testScene::Load()
     objRender.SetActiveCamera(activeCamera);
 
     objRender.AddObject(collTest);
+
+    divider = new MapDivider(*joy, 3, 15.f, 10.f, 20.f);
 }
 
 void testScene::Shutdown()
 {
+    divider->Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
     joy->Shutdown();
@@ -120,4 +124,7 @@ SceneState testScene::Update()
 void testScene::Render()
 {
     objRender.DrawAll();
+    ImGuiModifyPos(collTest);
+    ImGuiModifyRot(collTest);
+    ImGuiModifyScale(collTest);
 }
