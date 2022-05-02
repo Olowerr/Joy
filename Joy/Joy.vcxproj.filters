@@ -25,10 +25,10 @@
     <FxCompile Include="UI_VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="DecalPS.hlsl">
+    <FxCompile Include="ObjInstanceVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="ObjInstanceVS.hlsl">
+    <FxCompile Include="LightMapCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -183,12 +183,10 @@
     <ClInclude Include="EasyLevel.h" />
     <ClInclude Include="LightHandler.h" />
     <ClInclude Include="MainMenu.h" />
-    <ClInclude Include="Material.h" />
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectRender.h" />
-    <ClInclude Include="ObjParser.h" />
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="Playground.h" />
     <ClInclude Include="Scene.h" />
