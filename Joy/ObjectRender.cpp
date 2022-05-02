@@ -128,7 +128,7 @@ void ObjectRender::DrawAll()
 	devContext->PSSetConstantBuffers(1, 1, &decalShadow.GetDecalCamDCBuff());
 	devContext->PSSetShaderResources(1, 1, &decalShadow.GetDecalSRV());
 
-	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
+	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
 	
 	for (Object* obj : objects)
 		obj->Draw();

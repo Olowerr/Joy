@@ -133,7 +133,7 @@ void DecalShadow::UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos)
 {
 	DirectX::XMMATRIX viewOrtXMtrx = DirectX::XMMatrixLookToLH({ joyPos.x, joyPos.y - 1.0f, joyPos.z },
 		{ 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }) *
-		DirectX::XMMatrixOrthographicLH(10.0f, 10.0f, 0.1f, 100.0f);
+		DirectX::XMMatrixOrthographicLH(0.1f, 0.1f, 0.1f, 100.0f);
 	DirectX::XMStoreFloat4x4(&viewOrtMtrx, DirectX::XMMatrixTranspose(viewOrtXMtrx));
 	Backend::UpdateBuffer(decalCamDCBuff, &viewOrtMtrx, sizeof(DirectX::XMFLOAT4X4));
 }
