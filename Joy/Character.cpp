@@ -110,10 +110,10 @@ void Character::Move()
 		maxSpeed = 10.0f;
 
 	if (std::abs(velocity.x) > maxSpeed)
-		velocity.x *= 0.99;
+		velocity.x *= 0.99f;
 
 	if (std::abs(velocity.y) > maxSpeed)
-		velocity.y *= 0.99;
+		velocity.y *= 0.99f;
 
 
 	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
