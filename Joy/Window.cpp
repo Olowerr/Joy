@@ -1,4 +1,7 @@
 #include "Window.h"
+#include "imgui/imgui_impl_win32.h"
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LPARAM Window::lParam;
 
@@ -51,6 +54,9 @@ void Window::ProcessMessages()
 
 LRESULT Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
 	Window::lParam = lParam;
 
 	switch (message)

@@ -15,8 +15,8 @@ public:
 	ID3D11ShaderResourceView* transformSRV;
 	ID3D11ShaderResourceView* mtl;
 	//ID3D11ShaderResourceView* lightMapsSRV;
-	UINT instanceCount;
 	UINT indexCount;
+	UINT instanceCount;
 
 	void Shutdown();
 

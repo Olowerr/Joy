@@ -99,9 +99,9 @@ void Object::Scale(FLOAT amount)
 void Object::SetScale(FLOAT Scale)
 {
 	Transform::SetScale(Scale);
-	bBox.Extents.x = mesh->bBox.Center.x * Scale;
-	bBox.Extents.y = mesh->bBox.Center.y * Scale;
-	bBox.Extents.z = mesh->bBox.Center.z * Scale;
+	bBox.Extents.x = mesh->bBox.Extents.x * Scale;
+	bBox.Extents.y = mesh->bBox.Extents.y * Scale;
+	bBox.Extents.z = mesh->bBox.Extents.z * Scale;
 }
 
 const DirectX::BoundingBox& Object::GetBoundingBox() const
