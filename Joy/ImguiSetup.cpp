@@ -39,7 +39,7 @@ void ImGuiModifyPos(Object* toModify)
 	ImGui::End();
 
 	toModify->SetPosition({ tempPos.x, tempPos.y, tempPos.z });
-	std::cout << toModify->GetBoundingBox().Center.x;
+	//std::cout << toModify->GetBoundingBox().Center.x;
 }
 
 void ImGuiModifyRot(Object* toModify)
@@ -55,7 +55,7 @@ void ImGuiModifyRot(Object* toModify)
 	ImGui::End();
 
 	toModify->SetRotation(tempRot.x, tempRot.y, tempRot.z);
-	std::cout << toModify->GetBoundingBox().Center.x;
+	//std::cout << toModify->GetBoundingBox().Center.x;
 }
 
 void ImGuiModifyScale(Object* toModify)
@@ -69,7 +69,7 @@ void ImGuiModifyScale(Object* toModify)
 	ImGui::End();
 
 	toModify->SetScale(tempScale);
-	std::cout << toModify->GetBoundingBox().Center.x;
+	//std::cout << toModify->GetBoundingBox().Center.x;
 }
 
 void EndImGuiFrame()

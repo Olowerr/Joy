@@ -9,6 +9,7 @@ public:
 	Transform();
 	Transform(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale);
 	virtual void Shutdown();
+	virtual ~Transform();
 
 	virtual void Translate(const DirectX::XMVECTOR& movement);
 	virtual void Translate(FLOAT X, FLOAT Y, FLOAT Z);

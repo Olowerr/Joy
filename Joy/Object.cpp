@@ -36,6 +36,15 @@ void Object::Shutdown()
 		lightMap->Release();
 }
 
+Object::~Object()
+{
+}
+
+void Object::CheckBB()
+{
+	bBox = mesh->bBox;
+}
+
 void Object::Draw()
 {
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();

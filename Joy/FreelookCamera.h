@@ -5,6 +5,7 @@ class FreelookCamera : public Camera
 {
 public:
 	FreelookCamera();
+	~FreelookCamera();
 
 	virtual void UpdateCam() override;
 	virtual void SetView() override;

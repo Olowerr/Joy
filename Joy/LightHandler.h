@@ -1,5 +1,6 @@
 #pragma once
-#include "ObjectRender.h"
+#include "Backend.h"
+#include "Object.h"
 
 class HLight
 {
@@ -9,7 +10,8 @@ public:
 	void ShutdownTools();
 	~HLight();
 
-	void GenerateLightMaps(Object** objects, UINT amount);
+	bool GenerateLightMaps();
+	bool GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
 	const UINT LightMapXY  = 512; 
@@ -63,4 +65,5 @@ private:
 	bool InitiateShaders();
 	bool InitiateBuffers();
 	bool InitiateRasterizerStates();
+
 };
