@@ -8,7 +8,7 @@ struct PS_IN
 
 Texture2D image : register(t0);
 Texture2D decalDepth : register(t1);
-Texture2D lightMap : register(t2);
+Texture2DArray lightMap : register(t2);
 SamplerState defaultSampler : register(s0);
 
 
@@ -46,5 +46,5 @@ float4 main(PS_IN input) : SV_TARGET
         }
     }
     
-    return image.Sample(defaultSampler, input.uv); // * lightMap.Sample(defaultSampler, input.uv).r;
+    return image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
 }
