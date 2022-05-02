@@ -36,27 +36,6 @@ void testScene::Load()
     hLight.GenerateLightMaps(elgato, 2);
     hLight.Shutdown();
 
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-    // fix light map for instanced objects
-
     freeCamera = new FreelookCamera();
     activeCamera = joyCamera;
     objRender.SetActiveCamera(activeCamera);
