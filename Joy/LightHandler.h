@@ -66,9 +66,4 @@ private:
 	bool InitiateBuffers();
 	bool InitiateRasterizerStates();
 
-
-
-	// temp
-	ID3D11InputLayout* inpLayout;
-	ID3D11VertexShader* vs;
 };

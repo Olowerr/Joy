@@ -22,22 +22,6 @@ HLight::HLight()
 	lightViewPort.TopLeftY = 0.f;
 	lightViewPort.MaxDepth = 1.f;
 	lightViewPort.MinDepth = 0.f;
-
-
-
-	//temp
-	std::string shaderData;
-	Backend::LoadShader(Backend::ShaderPath + "ObjVS.cso", &shaderData);
-
-	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-	Backend::GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &inpLayout);
-	Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &vs);
 }
 
 void HLight::Shutdown()
@@ -192,7 +176,7 @@ bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11Sha
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	HRESULT hr;
 
-	deviceContext->IASetInputLayout(inpLayout);
+	deviceContext->IASetInputLayout(storage.objectInputLayout);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//DrawShadowMap(objects, amount);
