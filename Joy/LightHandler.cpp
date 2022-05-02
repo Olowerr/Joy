@@ -75,25 +75,41 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 
 	FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
 
-	// Old computer can't read the format (R8_UNORM) in UAVs. 
-	// Solution was to copy the resource to a temporary SRV and read from that.
+	/*  
+		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
+
+		D3D11 ERROR: ID3D11DeviceContext::Dispatch:
+		The Unordered Access View (UAV) in slot 0 of the Compute Shader unit has the Format (R8_UNORM).
+		This format does not support being read from a shader as as UAV. 
+		This mismatch is invalid if the shader actually uses the view (e.g. it is not skipped due to shader code branching).
+		It was unfortunately not possible to have all hardware implementations support reading this format as a UAV, 
+		despite that the format can written to as a UAV. If the shader only needs to perform reads but not writes to this resource, 
+		consider using a Shader Resource View instead of a UAV.  [ EXECUTION ERROR #2097381: DEVICE_UNORDEREDACCESSVIEW_FORMAT_LD_UNSUPPORTED]
+
+		Old computer can't read the format (R8_UNORM) in UAVs.
+		Solution was to copy the resource to a temporary SRV and read from that.
+	*/
+
+	
 
 	ID3D11Texture2D* tempResource{};
 	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
 	if (FAILED(hr))
 		return;
 
-	ID3D11ShaderResourceView* tempSRV{};
-	hr = device->CreateShaderResourceView(tempResource, nullptr, &tempSRV);
+	ID3D11Texture2D* resource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
 	if (FAILED(hr))
 		return;
 
-	ID3D11Texture2D* resource{};
+	ID3D11ShaderResourceView* tempSRV{};
+	
 	ID3D11RenderTargetView* tempRTV{};
 	ID3D11UnorderedAccessView* tempUAV{};
 
 	ID3D11RenderTargetView* nullRTV{};
 	ID3D11UnorderedAccessView* nullUAV{};
+	ID3D11ShaderResourceView* nullSRV{};
 
 	const UINT NumGroups = LightMapXY / LightMapCSThreadXY;
 
@@ -101,49 +117,48 @@ void HLight::GenerateLightMaps(Object** objects, UINT amount)
 	{
 		rtvDesc.Texture2DArray.FirstArraySlice = i;
 		srvDesc.Texture2DArray.FirstArraySlice = i;
-		uavDesc.Texture2DArray.FirstArraySlice = i;
 
-		hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+		hr = device->CreateShaderResourceView(resource, &srvDesc, objects[i]->GetLightMapSRV());
 		if (FAILED(hr))
 			continue;
 
-		hr = device->CreateShaderResourceView(resource, nullptr, objects[i]->GetLightMapSRV());
-		if (FAILED(hr))
-			continue;
-
-		hr = device->CreateRenderTargetView(resource, nullptr, &tempRTV);
+		hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
 		if (FAILED(hr))
 		{
 			(*objects[i]->GetLightMapSRV())->Release();
 			continue;
 		}
 		
-		hr = device->CreateUnorderedAccessView(resource, nullptr, &tempUAV);
-		if (FAILED(hr))
-		{
-			(*objects[i]->GetLightMapSRV())->Release();
-			tempRTV->Release();
-			continue;
-		}
-
-
 		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
 		objects[i]->DrawGeometry();
-
-		deviceContext->CopyResource(tempResource, resource);
-
-		deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
-		deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
-		deviceContext->CSSetShaderResources(0, 1, &tempSRV);
-		deviceContext->Dispatch(NumGroups, NumGroups, 1);
-		deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, 0);
-
+		
 		tempRTV->Release();
-		tempUAV->Release();
-		resource->Release();
 	}
-	tempResource->Release();
+
+	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+	deviceContext->CopyResource(tempResource, resource);
+
+	srvDesc.Texture2DArray.ArraySize = amount;
+	srvDesc.Texture2DArray.FirstArraySlice = 0;
+
+	hr = device->CreateShaderResourceView(tempResource, &srvDesc, &tempSRV);
+	if (FAILED(hr))
+		return;
+
+	hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
+	if (FAILED(hr))
+		return;
+
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
+	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
+	deviceContext->Dispatch(NumGroups, NumGroups, amount);
+	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
+
+	tempUAV->Release();
 	tempSRV->Release();
+	resource->Release();
+	tempResource->Release();
 
 	deviceContext->CSSetShader(nullptr, nullptr, 0);
 	deviceContext->RSSetState(nullptr);
@@ -177,7 +192,7 @@ void HLight::FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3
 	texDesc->Width = LightMapXY;
 	texDesc->Height = LightMapXY;
 	texDesc->MipLevels = 1;
-	texDesc->ArraySize = 1;
+	texDesc->ArraySize = numObjects;
 	texDesc->Format = DXGI_FORMAT_R8_UNORM;
 	texDesc->SampleDesc.Count = 1;
 	texDesc->SampleDesc.Quality = 0;
@@ -199,8 +214,9 @@ void HLight::FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3
 
 	uavDesc->Format = texDesc->Format;
 	uavDesc->ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
-	uavDesc->Texture2DArray.ArraySize = 1;
+	uavDesc->Texture2DArray.ArraySize = numObjects;
 	uavDesc->Texture2DArray.MipSlice = 0;
+	uavDesc->Texture2DArray.FirstArraySlice = 0;
 }
 
 bool HLight::InitiateShadowMap()
