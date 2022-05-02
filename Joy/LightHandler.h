@@ -1,14 +1,16 @@
 #pragma once
-#include "ObjectRender.h"
+#include "Backend.h"
+#include "Object.h"
 
 class HLight
 {
 public:
-	HLight(ObjectRender& objRender);
+	HLight();
 	void Shutdown();
 	~HLight();
 
-	void GenerateLightMaps(Object** objects, UINT amount);
+	bool GenerateLightMaps(Object** objects, UINT amount);
+	bool GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
 	const UINT LightMapXY  = 512; 
@@ -27,7 +29,6 @@ private:
 	*/
 
 	// General
-	ObjectRender& objRender;
 	D3D11_VIEWPORT lightViewPort;
 	
 	//  --- Light maps ---
@@ -62,4 +63,10 @@ private:
 	bool InitiateShaders();
 	bool InitiateBuffers();
 	bool InitiateRasterizerStates();
+
+
+
+	// temp
+	ID3D11InputLayout* inpLayout;
+	ID3D11VertexShader* vs;
 };
