@@ -42,11 +42,12 @@ void testScene::Load()
 
     objRender.AddObject(collTest);
 
-    divider = new MapDivider(3, 15.f, 10.f, 10.f);
+    divider = new MapDivider(*joy, 3, 15.f, 10.f, 20.f);
 }
 
 void testScene::Shutdown()
 {
+    divider->Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
     joy->Shutdown();
