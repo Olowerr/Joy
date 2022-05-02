@@ -3,6 +3,8 @@
 ObjectRender::ObjectRender()
 	:bbRTV(nullptr), storage(Backend::GetShaderStorage())
 {
+	bool succeeded = false;
+
 	CreateSamplerState(); // << temporary
 	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
 
@@ -51,11 +53,13 @@ void ObjectRender::SetActiveCamera(Camera* camera)
 void ObjectRender::SetMapDivier(MapDivider* sections)
 {
 	this->sections = sections;
-	activeSection = sections->GetActiveSection();
+	activeSection = &sections->GetActiveSection();
 }
 
 void ObjectRender::DrawAll()
 {
+	std::cout << "ObjectDrawAll\n";
+
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
 	devContext->IASetInputLayout(storage.objectInputLayout);
@@ -72,9 +76,11 @@ void ObjectRender::DrawAll()
 	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
 	
 	// temp
+	auto obs = sections->GetActiveSection();
+	if (!obs)
+		return;
 
-
-	for (Object* obj : (*activeSection)->enivormentObjects)
+	for (Object* obj : obs->enivormentObjects)
 		obj->Draw();
 
 	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
@@ -90,25 +96,9 @@ void ObjectRender::DrawAll()
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
-}
 
-void ObjectRender::DrawCharacter(Character& character)
-{
-	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+	std::cout << "ObjectDrawDONE\n\n";
 
-	devContext->IASetInputLayout(storage.objectInputLayout);
-	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	devContext->VSSetShader(storage.objectVS, nullptr, 0);
-	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
-
-	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
-
-	devContext->PSSetShader(storage.JoyPS, nullptr, 0);
-
-	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
-
-	character.Draw();
 }
 
 bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)

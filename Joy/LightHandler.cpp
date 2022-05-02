@@ -1,6 +1,7 @@
 #include "LightHandler.h"
 
 HLight::HLight()
+	:storage(Backend::GetShaderStorage())
 {
 
 	bool succeeded = false;
@@ -41,10 +42,14 @@ HLight::HLight()
 
 void HLight::Shutdown()
 {
+	lightDataBuffer->Release();
+}
+
+void HLight::ShutdownTools()
+{
 	lightVS->Release();
 	noCullingRS->Release();
 	lightPS->Release();
-	lightDataBuffer->Release();
 	lightCS->Release();
 
 	shadowMapDSV->Release();
@@ -63,18 +68,20 @@ bool HLight::GenerateLightMaps(Object** objects, UINT amount)
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	HRESULT hr;
 
-	deviceContext->IASetInputLayout(inpLayout);
+	deviceContext->IASetInputLayout(storage.objectInputLayout);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 //	DrawShadowMap(objects, amount);
 
 	lightViewPort.Width = (float)LightMapXY;
 	lightViewPort.Height = (float)LightMapXY;
-	deviceContext->RSSetViewports(1, &lightViewPort);
+
+	deviceContext->IASetInputLayout(storage.objectInputLayout);
 
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
 
+	deviceContext->RSSetViewports(1, &lightViewPort);
 	deviceContext->RSSetState(noCullingRS);
 
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
@@ -307,11 +314,13 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 
 	lightViewPort.Width = (float)ShadowMapXY;
 	lightViewPort.Height = (float)ShadowMapXY;
-	deviceContext->RSSetViewports(1, &lightViewPort);
 
-	deviceContext->VSSetShader(vs, nullptr, 0);
+	deviceContext->IASetInputLayout(storage.posOnlyInputLayout);
+
+	deviceContext->VSSetShader(storage.posOnlyVS, nullptr, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
 
+	deviceContext->RSSetViewports(1, &lightViewPort);
 	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);

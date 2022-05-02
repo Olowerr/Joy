@@ -26,8 +26,11 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     system->width = width;
     system->height = height;
 
-    bool result = system->window.Initiate(hInst, showCmd, width, height);
-    assert(result);
+    bool succeeded = false;
+    HRESULT hr;
+
+    succeeded = system->window.Initiate(hInst, showCmd, width, height);
+    assert(succeeded);
 
     UINT flags = 0;
 
@@ -53,10 +56,9 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     swapDesc.Flags = 0;
 
-    HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
+    hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLvl, 1, D3D11_SDK_VERSION,
         &swapDesc, &system->swapChain, &system->device, nullptr, &system->deviceContext);
     assert(SUCCEEDED(hr));
-
 
     ID3D11Texture2D* backBuffer{};
     hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
@@ -70,6 +72,8 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     backBuffer->Release();
     assert(SUCCEEDED(hr));
 
+    succeeded = system->InitiateShaders();
+    assert(succeeded);
 
     D3D11_TEXTURE2D_DESC texDesc{};
     texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -98,11 +102,11 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&system->DInput), NULL);
     assert(SUCCEEDED(hr));
 
-    result = system->mouse.Initiate(system->DInput);
-    assert(result);
+    succeeded = system->mouse.Initiate(system->DInput);
+    assert(succeeded);
 
-    result = system->keyboard.Initiate(system->DInput, hInst);
-    assert(result);
+    succeeded = system->keyboard.Initiate(system->DInput, hInst);
+    assert(succeeded);
 
 #ifndef _DEBUG
     system->swapChain->SetFullscreenState(TRUE, nullptr);
@@ -127,6 +131,7 @@ void Backend::Destroy()
     if (!system)
         return;
 
+    system->storage.Shutdown();
     system->swapChain->Release();
     system->deviceContext->Release();
     system->bbRTV->Release();
@@ -199,6 +204,11 @@ void Backend::Display()
     system->swapChain->Present(0, 0);
 }
 
+GraphicsStorage& Backend::GetShaderStorage()
+{
+    return system->storage;
+}
+
 Window& Backend::GetWindow()
 {
     return system->window;
@@ -232,6 +242,80 @@ const D3D11_VIEWPORT& Backend::GetDefaultViewport()
 FLOAT Backend::GetDeltaTime()
 {
     return system->deltaTime.count();
+}
+
+bool Backend::InitiateShaders()
+{
+    std::string shaderData;
+    bool succeeded = false;
+    HRESULT hr;
+
+    D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
+    {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+    };
+
+    // Depth
+    succeeded = LoadShader(ShaderPath + "PosOnlyVS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+    
+    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyVS);
+    if (FAILED(hr))
+        return false;
+
+    hr = system->device->CreateInputLayout(inputDesc, 1, shaderData.c_str(), shaderData.length(), &storage.posOnlyInputLayout);
+    if (FAILED(hr))
+        return false;
+
+
+    // Object VS
+    succeeded = LoadShader(ShaderPath + "ObjVS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+
+    hr = system->device->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &storage.objectInputLayout);
+    if (FAILED(hr))
+        return false;
+
+    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectVS);
+    if (FAILED(hr))
+        return false;
+
+
+    // Object PS
+    succeeded = LoadShader(ShaderPath + "ObjPS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+    
+    hr = system->device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectPS);
+    if (FAILED(hr))
+        return false;
+
+    // Object Instanced VS
+    succeeded = LoadShader(ShaderPath + "ObjInstanceVS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+
+    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectInstancedVS);
+    if (FAILED(hr))
+        return false;
+
+
+    // Joy
+    succeeded = LoadShader(ShaderPath + "JoyPS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+
+    hr = system->device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.JoyPS);
+    if (FAILED(hr))
+        return false;
+
+
+    return true;
+
 }
 
 bool Backend::LoadShader(const std::string& path, std::string* const outData)

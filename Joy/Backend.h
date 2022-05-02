@@ -7,6 +7,7 @@
 #include "Window.h"
 #include "Mouse.h"
 #include "Keyboard.h"
+#include "ShaderStorage.h"
 
 #include "stb_image.h" // "shouldn't" be here but solves lnk problems
 
@@ -26,6 +27,8 @@ public:
 	static ID3D11DepthStencilView* const* GetStandardDSV();
 	static void Clear();
 	static void Display();
+
+	static GraphicsStorage& GetShaderStorage();
 
 	static Window& GetWindow();
 	static Mouse& GetMouse();
@@ -83,6 +86,9 @@ private:
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
 	std::chrono::duration<float> deltaTime;
+
+	GraphicsStorage storage;
+	bool InitiateShaders();
 
 public:
 	Backend(const Backend& other) = delete;

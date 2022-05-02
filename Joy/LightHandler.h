@@ -7,6 +7,7 @@ class HLight
 public:
 	HLight();
 	void Shutdown();
+	void ShutdownTools();
 	~HLight();
 
 	bool GenerateLightMaps(Object** objects, UINT amount);
@@ -30,7 +31,8 @@ private:
 
 	// General
 	D3D11_VIEWPORT lightViewPort;
-	
+	GraphicsStorage& storage;
+
 	//  --- Light maps ---
 	ID3D11VertexShader* lightVS;
 	ID3D11ComputeShader* lightCS;
