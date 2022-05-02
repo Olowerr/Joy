@@ -1,6 +1,6 @@
 
-RWTexture2DArray<unorm float> lightMapsUAV : register(u0);
-Texture2DArray<unorm float> lightMapsSRV : register(t0);
+RWTexture2D<unorm float> lightMapsUAV : register(u0);
+Texture2D<unorm float> lightMapsSRV : register(t0);
 
 #define NumThreadX 16
 #define NumThreadY 16
