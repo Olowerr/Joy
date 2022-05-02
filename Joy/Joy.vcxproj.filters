@@ -1,57 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="System">
-      <UniqueIdentifier>{efa9caa1-17a4-4304-bcad-5e29946db26f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\Window">
-      <UniqueIdentifier>{a25c0885-3f78-46f8-b456-0902ccf42502}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{83fa01b3-1214-4fef-80a5-d747673a9691}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Temp Parser">
-      <UniqueIdentifier>{10d7b968-f034-4ef2-9126-5560013bb505}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Temp Objekt &amp; Material">
-      <UniqueIdentifier>{536c6928-00e0-4aae-a8ea-c94ee7039f66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\Shaders">
-      <UniqueIdentifier>{9bf0b20e-6557-4181-8615-d970074c9713}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\Object Renderer">
-      <UniqueIdentifier>{91705ca3-9428-47b2-8af8-15ebb13e6a04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene">
-      <UniqueIdentifier>{e4854ccf-d890-4b9d-9b3d-3b2997671cb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\UI">
-      <UniqueIdentifier>{e325052b-dbc4-4b4e-8f97-479875bd4f02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object">
-      <UniqueIdentifier>{a4db5131-0b2a-4024-8b1a-295702eccbc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object\Pickups">
-      <UniqueIdentifier>{6401f6fb-cbb1-4bf3-a40f-e4b9d0f6e6c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\Lights">
-      <UniqueIdentifier>{2b667f98-f219-4fc5-ac16-116aa4ff4857}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene\Cameras">
-      <UniqueIdentifier>{e819d766-350d-4619-8c13-97999ca3bcca}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="DecalPS.hlsl" />
+    <FxCompile Include="LightMapPS.hlsl" />
+    <FxCompile Include="LightMapVS.hlsl" />
+    <FxCompile Include="ObjInstanceVS.hlsl" />
+    <FxCompile Include="ObjPS.hlsl" />
+    <FxCompile Include="ObjVS.hlsl" />
+    <FxCompile Include="PickupPS.hlsl" />
+    <FxCompile Include="PickupVS.hlsl" />
+    <FxCompile Include="UI_PS.hlsl" />
+    <FxCompile Include="UI_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -205,32 +164,32 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="ObjVS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjPS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="UI_VS.hlsl">
-      <Filter>System\UI</Filter>
-    </FxCompile>
-    <FxCompile Include="UI_PS.hlsl">
-      <Filter>System\UI</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjInstanceVS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PickupPS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PickupVS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LightMapVS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LightMapPS.hlsl">
-      <Filter>System\Shaders</Filter>
-    </FxCompile>
+    <ClInclude Include="Backend.h" />
+    <ClInclude Include="CameraBase.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="CharacterCamera.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="DecalShadow.h" />
+    <ClInclude Include="FreelookCamera.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="InstancedObject.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="EasyLevel.h" />
+    <ClInclude Include="LightHandler.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="MeshStorage.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectRender.h" />
+    <ClInclude Include="ObjParser.h" />
+    <ClInclude Include="Pickup.h" />
+    <ClInclude Include="Playground.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="UIRender.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
 </Project>

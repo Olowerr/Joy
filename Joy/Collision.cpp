@@ -11,7 +11,6 @@ Collision::Collision()
 
 void Collision::collided(Object* charBbox, Object* targetBbox)
 {
-    std::cout << stopFall << "\n";
     dontStopMovement = false;
     stopFall = false;
     dBox = charBbox->GetBoundingBox();
@@ -87,7 +86,6 @@ bool Collision::HitObject(Object* charBbox, Object* targetBbox)
 {
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
-    //std::cout << dBox.Intersects(bBox) << "\n";
     dontStopMovement = true;
     return dBox.Intersects(bBox);
     

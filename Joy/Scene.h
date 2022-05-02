@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjectRender.h"
+#include "DecalShadow.h"
 #include "UIRender.h"
 
 enum struct SceneState { Unchanged, MainMenu, Easy, Test/*, Medium, Hard*/ };
