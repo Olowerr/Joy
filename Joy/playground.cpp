@@ -28,17 +28,16 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects[1].SetPosition(2.0f, 0.f, 0.0f);
     sceneObjects[2].SetPosition(1.f, 0.5f, 1.f);
 
-
-
-    hLight.GenerateLightMaps();
-    hLight.ShutdownTools();
-
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 50.f, 50.);
+    divider.CreateSections(1, 15.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
+    
+    hLight.InitiateTools(divider);
+    hLight.GenerateLightMaps(divider);
+    hLight.ShutdownTools();
 }
 
 void testScene::Shutdown()

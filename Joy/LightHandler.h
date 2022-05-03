@@ -1,6 +1,5 @@
 #pragma once
-#include "Backend.h"
-#include "Object.h"
+#include "MapSections.h"
 
 class HLight
 {
@@ -10,7 +9,8 @@ public:
 	void ShutdownTools();
 	~HLight();
 
-	bool GenerateLightMaps();
+	bool InitiateTools(MapDivider& sections);
+	bool GenerateLightMaps(MapDivider& sections);
 	bool GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
@@ -41,11 +41,14 @@ private:
 	ID3D11Buffer* lightDataBuffer;
 
 	// --- Shadow mapping ---
-	ID3D11DepthStencilView* shadowMapDSV;
-	ID3D11ShaderResourceView* shadowMapSRV;
+	ID3D11DepthStencilView** shadowMapDSV;
+	ID3D11ShaderResourceView** shadowMapSRV;
+	UINT amount;
+
 	ID3D11Buffer* lightViewProjectBuffer;
 	ID3D11RasterizerState* frontFaceCullingRS;
-	void DrawShadowMap(Object** objects, UINT amount);
+
+	void DrawShadowMaps(MapDivider& sections);
 
 	// SUN SUN SUN SUN SUN SUN SUN SUN 
 	struct DirectionalLight
@@ -57,11 +60,11 @@ private:
 	DirectionalLight SUN;
 
 
-	void FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc,
+	void FillDescriptions(D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc,
 		D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc);
 
 	// --- Initiate Functions ---
-	bool InitiateShadowMap();
+	bool InitiateShadowMaps(UINT amount);
 	bool InitiateShaders();
 	bool InitiateBuffers();
 	bool InitiateRasterizerStates();

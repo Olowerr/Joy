@@ -3,21 +3,6 @@
 HLight::HLight()
 	:storage(Backend::GetShaderStorage())
 {
-
-	bool succeeded = false;
-
-	succeeded = InitiateBuffers();
-	assert(succeeded);
-
-	succeeded = InitiateShaders();
-	assert(succeeded);
-
-	succeeded = InitiateRasterizerStates();
-	assert(succeeded);
-
-	succeeded = InitiateShadowMap();
-	assert(succeeded);
-
 	lightViewPort.TopLeftX = 0.f;
 	lightViewPort.TopLeftY = 0.f;
 	lightViewPort.MaxDepth = 1.f;
@@ -35,31 +20,60 @@ void HLight::ShutdownTools()
 	noCullingRS->Release();
 	lightPS->Release();
 	lightCS->Release();
-
-	shadowMapDSV->Release();
-	shadowMapSRV->Release();
 	lightViewProjectBuffer->Release();
 	frontFaceCullingRS->Release();
+
+	for (UINT i = 0; i < amount; i++)
+	{
+		shadowMapDSV[i]->Release();
+		shadowMapSRV[i]->Release();
+	}
+	delete[]shadowMapDSV;
+	delete[]shadowMapSRV;
 }
 
 HLight::~HLight()
 {
 }
 
-bool HLight::GenerateLightMaps()
+bool HLight::InitiateTools(MapDivider& sections)
 {
-	/*ID3D11Device* device = Backend::GetDevice();
+	amount = sections.GetNumSections();
+	bool succeeded = false;
+
+	shadowMapDSV = new ID3D11DepthStencilView * [amount];
+	shadowMapSRV = new ID3D11ShaderResourceView * [amount];
+
+	succeeded = InitiateBuffers();
+	assert(succeeded);
+
+	succeeded = InitiateShaders();
+	assert(succeeded);
+
+	succeeded = InitiateRasterizerStates();
+	assert(succeeded);
+
+	succeeded = InitiateShadowMaps(amount);
+	assert(succeeded);
+
+
+	DrawShadowMaps(sections);
+
+	return false;
+}
+
+bool HLight::GenerateLightMaps(MapDivider& sections)
+{
+	// add bool isInstanced in Object
+
+	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	HRESULT hr;
-
-	deviceContext->IASetInputLayout(storage.objectInputLayout);
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
-//	DrawShadowMap(objects, amount);
 
 	lightViewPort.Width = (float)LightMapXY;
 	lightViewPort.Height = (float)LightMapXY;
 
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	deviceContext->IASetInputLayout(storage.objectInputLayout);
 
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
@@ -70,17 +84,117 @@ bool HLight::GenerateLightMaps()
 
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
-	deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
 
-	deviceContext->CSSetShader(lightCS, nullptr, 0);
-	
+	ID3D11ShaderResourceView* tempSRV{};
+	ID3D11UnorderedAccessView* tempUAV{};
+	ID3D11RenderTargetView* tempRTV{};
+	ID3D11RenderTargetView* nullRTV{};
+	ID3D11UnorderedAccessView* nullUAV{};
+	ID3D11ShaderResourceView* nullSRV{};
+
 	D3D11_TEXTURE2D_DESC texDesc{};
 	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
-	FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
-	*/
+	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
+	texDesc.ArraySize = Object::GetLevelObjects().size() + Object::GetEnviormentObjects().size();
+
+	ID3D11Texture2D* resource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+		return false;
+
+	UINT textureIndex = 0;
+	for (UINT s = 0; s < sections.GetNumSections(); s++)
+	{
+		Section& section = sections.GetSections()[s];
+		deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV[s]);
+
+		std::vector<Object*>& levelObjects = section.levelObjects;
+		std::vector<Object*>& enviormentObjects = section.enivormentObjects;
+
+		for (UINT k = 0; k < levelObjects.size(); k++)
+		{
+			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;
+			rtvDesc.Texture2DArray.FirstArraySlice = textureIndex;
+			textureIndex++;
+
+			hr = device->CreateShaderResourceView(resource, &srvDesc, levelObjects[k]->GetLightMapSRV());
+			if (FAILED(hr))
+				continue;
+
+			hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
+			if (FAILED(hr))
+			{
+				(*levelObjects[k]->GetLightMapSRV())->Release();
+				continue;
+			}
+
+			deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
+			levelObjects.at(k)->DrawGeometry();
+			tempRTV->Release();
+		}
+
+		for (UINT k = 0; k < enviormentObjects.size(); k++)
+		{
+			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;
+			rtvDesc.Texture2DArray.FirstArraySlice = textureIndex;
+			textureIndex++;
+
+			hr = device->CreateShaderResourceView(resource, &srvDesc, enviormentObjects[k]->GetLightMapSRV());
+			if (FAILED(hr))
+				continue;
+
+			hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
+			if (FAILED(hr))
+			{
+				(*enviormentObjects[k]->GetLightMapSRV())->Release();
+				continue;
+			}
+
+			enviormentObjects.at(k)->DrawGeometry();
+			tempRTV->Release();
+		}
+	}
+	deviceContext->RSSetState(nullptr);
+
+
+	ID3D11Texture2D* tempResource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
+	if (FAILED(hr))
+		return false;
+
+	
+	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+	deviceContext->CopyResource(tempResource, resource);
+
+	srvDesc.Texture2DArray.ArraySize = texDesc.ArraySize;
+	srvDesc.Texture2DArray.FirstArraySlice = 0;
+
+	hr = device->CreateShaderResourceView(tempResource, &srvDesc, &tempSRV);
+	if (FAILED(hr))
+		return false;
+
+	hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
+	if (FAILED(hr))
+		return false;
+
+	const UINT NumGroups = LightMapXY / LightMapCSThreadXY;
+	
+	deviceContext->CSSetShader(lightCS, nullptr, 0);
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
+	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
+	deviceContext->Dispatch(NumGroups, NumGroups, texDesc.ArraySize);
+	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
+	deviceContext->CSSetShader(nullptr, nullptr, 0);
+
+	tempUAV->Release();
+	tempSRV->Release();
+	resource->Release();
+	tempResource->Release();
+
 	/*  
 		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
 
@@ -95,78 +209,8 @@ bool HLight::GenerateLightMaps()
 		Old computer can't read the format (R8_UNORM) in UAVs.
 		Solution was to copy the resource to a temporary SRV and read from that.
 	*/
-	/*
-	ID3D11Texture2D* tempResource{};
-	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
-	if (FAILED(hr))
-		return false;
-
-	ID3D11Texture2D* resource{};
-	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
-	if (FAILED(hr))
-		return false;
-
-	ID3D11ShaderResourceView* tempSRV{};
 	
-	ID3D11RenderTargetView* tempRTV{};
-	ID3D11UnorderedAccessView* tempUAV{};
 
-	ID3D11RenderTargetView* nullRTV{};
-	ID3D11UnorderedAccessView* nullUAV{};
-	ID3D11ShaderResourceView* nullSRV{};
-
-	const UINT NumGroups = LightMapXY / LightMapCSThreadXY;
-
-	for (UINT i = 0; i < amount; i++)
-	{
-		rtvDesc.Texture2DArray.FirstArraySlice = i;
-		srvDesc.Texture2DArray.FirstArraySlice = i;
-
-		hr = device->CreateShaderResourceView(resource, &srvDesc, objects[i]->GetLightMapSRV());
-		if (FAILED(hr))
-			continue;
-
-		hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
-		if (FAILED(hr))
-		{
-			(*objects[i]->GetLightMapSRV())->Release();
-			continue;
-		}
-		
-		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
-		objects[i]->DrawGeometry();
-		
-		tempRTV->Release();
-	}
-
-	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
-	deviceContext->CopyResource(tempResource, resource);
-
-	srvDesc.Texture2DArray.ArraySize = amount;
-	srvDesc.Texture2DArray.FirstArraySlice = 0;
-
-	hr = device->CreateShaderResourceView(tempResource, &srvDesc, &tempSRV);
-	if (FAILED(hr))
-		return false;
-
-	hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
-	if (FAILED(hr))
-		return false;
-
-	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
-	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
-	deviceContext->Dispatch(NumGroups, NumGroups, amount);
-	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
-	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
-
-	tempUAV->Release();
-	tempSRV->Release();
-	resource->Release();
-	tempResource->Release();
-
-	deviceContext->CSSetShader(nullptr, nullptr, 0);
-	deviceContext->RSSetState(nullptr);
-	*/
 	return true;
 }
 
@@ -192,7 +236,7 @@ bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11Sha
 
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
-	deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
+	//deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
 
 	deviceContext->CSSetShader(lightCS, nullptr, 0);
 
@@ -201,7 +245,7 @@ bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11Sha
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
-	FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
+	//FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
 
 	/*
 		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
@@ -285,13 +329,12 @@ bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11Sha
 	resource->Release();
 	tempResource->Release();
 
-	deviceContext->CSSetShader(nullptr, nullptr, 0);
 	deviceContext->RSSetState(nullptr);
 
 	return true;
 }
 
-void HLight::DrawShadowMap(Object** objects, UINT amount)
+void HLight::DrawShadowMaps(MapDivider& sections)
 {
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	ID3D11RenderTargetView* nullRTV{};
@@ -300,6 +343,7 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	lightViewPort.Height = (float)ShadowMapXY;
 
 	deviceContext->IASetInputLayout(storage.posOnlyInputLayout);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	deviceContext->VSSetShader(storage.posOnlyVS, nullptr, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
@@ -308,20 +352,50 @@ void HLight::DrawShadowMap(Object** objects, UINT amount)
 	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
-	deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV);
 
-	for (UINT i = 0; i < amount; i++)
-		objects[i]->DrawGeometry();
-	
+	using namespace DirectX;
+	const FLOAT SUNDISTANCE = 20.f;
+	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f); // From sun to ground
+	XMVECTOR SUNPOS{};
+
+	for (UINT s = 0; s < sections.GetNumSections(); s++)
+	{
+		Section& currentSection = sections.GetSections()[s];
+
+		SUNPOS = XMVectorAdd(
+			XMVectorSet(currentSection.sectionBB.Center.x, 0.f, currentSection.sectionBB.Center.z, 0.f),
+			XMVectorScale(SUNDIR, -SUNDISTANCE));
+
+		XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
+			XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(30.f, 30.f, 0.1f, 100.f)));
+
+		Backend::UpdateBuffer(lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
+
+		deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV[s]);
+
+		for (UINT o = 0; o < sections.GetNumSections(); o++)
+		{
+			std::vector<Object*>& levelObjects = sections.GetSections()[s].levelObjects;
+			std::vector<Object*>& enviormentObjects = sections.GetSections()[s].enivormentObjects;
+
+			for (UINT k = 0; k < levelObjects.size(); k++)
+				levelObjects.at(k)->DrawGeometry();
+
+			for (UINT k = 0; k < enviormentObjects.size(); k++)
+				enviormentObjects.at(k)->DrawGeometry();
+		}
+
+	}
+
 	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 }
 
-void HLight::FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc, D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
+void HLight::FillDescriptions(D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc, D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
 {
 	texDesc->Width = LightMapXY;
 	texDesc->Height = LightMapXY;
 	texDesc->MipLevels = 1;
-	texDesc->ArraySize = numObjects;
+	texDesc->ArraySize = 1;
 	texDesc->Format = DXGI_FORMAT_R8_UNORM;
 	texDesc->SampleDesc.Count = 1;
 	texDesc->SampleDesc.Quality = 0;
@@ -343,19 +417,22 @@ void HLight::FillDescriptions(UINT numObjects, D3D11_TEXTURE2D_DESC* texDesc, D3
 
 	uavDesc->Format = texDesc->Format;
 	uavDesc->ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
-	uavDesc->Texture2DArray.ArraySize = numObjects;
+	uavDesc->Texture2DArray.ArraySize = 1;
 	uavDesc->Texture2DArray.MipSlice = 0;
 	uavDesc->Texture2DArray.FirstArraySlice = 0;
 }
 
-bool HLight::InitiateShadowMap()
+bool HLight::InitiateShadowMaps(UINT amount)
 {
+	bool succeded = false;
+
+
 	ID3D11Device* device = Backend::GetDevice();
 	HRESULT hr;
 
 	D3D11_TEXTURE2D_DESC texDesc{};
 	texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
-	texDesc.ArraySize = 1;
+	texDesc.ArraySize = amount;
 	texDesc.MipLevels = 1;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0;
@@ -373,32 +450,39 @@ bool HLight::InitiateShadowMap()
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	hr = device->CreateShaderResourceView(resource, &srvDesc, &shadowMapSRV);
-	if (FAILED(hr))
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	srvDesc.Texture2DArray.ArraySize = 1;
+	srvDesc.Texture2DArray.MipLevels = 1;
+	srvDesc.Texture2DArray.MostDetailedMip = 0;
+
+	for (size_t i = 0; i < amount; i++)
 	{
-		resource->Release();
-		return false;
+		srvDesc.Texture2DArray.FirstArraySlice = i;
+		hr = device->CreateShaderResourceView(resource, &srvDesc, &shadowMapSRV[i]);
+		if (FAILED(hr))
+			continue;
+		
 	}
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	dsvDesc.Texture2D.MipSlice = 0;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	dsvDesc.Texture2DArray.MipSlice = 0;
+	dsvDesc.Texture2DArray.ArraySize = 1;
 	dsvDesc.Flags = 0;
-	hr = device->CreateDepthStencilView(resource, &dsvDesc, &shadowMapDSV);
-	if (FAILED(hr))
+	
+	for (size_t i = 0; i < amount; i++)
 	{
-		shadowMapSRV->Release();
-		resource->Release();
-		return false;
+		dsvDesc.Texture2DArray.FirstArraySlice = i;
+		hr = device->CreateDepthStencilView(resource, &dsvDesc, &shadowMapDSV[i]);
+		if (FAILED(hr))
+			continue;
+
+		Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV[i], D3D11_CLEAR_DEPTH, 1.f, 0);
 	}
 
 	resource->Release();
 
-	Backend::GetDeviceContext()->ClearDepthStencilView(shadowMapDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 	return true;
 }
@@ -442,19 +526,19 @@ bool HLight::InitiateBuffers()
 	HRESULT hr;
 
 	using namespace DirectX;
-	XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, -10.f, 0.f);
-	XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f);
+	const XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, -10.f, 0.f);
+	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f);
 
 	SUN.strength = 10.f;
 	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
 	XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
 		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f)));
 
-	hr = Backend::CreateConstCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
+	hr = Backend::CreateDynamicCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
 	if (FAILED(hr))
 		return false;
 
-	hr = Backend::CreateConstCBuffer(&lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
+	hr = Backend::CreateDynamicCBuffer(&lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
 	if (FAILED(hr))
 		return false;
 

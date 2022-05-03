@@ -28,7 +28,7 @@ public:
 private:
 	Character& joy;
 	Section* sections;
-	const UINT numSections;
+	UINT numSections;
 
 	Section* activeSection;
 	Section nullSection;

@@ -1,7 +1,7 @@
 #include "MapSections.h"
 
 MapDivider::MapDivider(Character& joy)
-	:numSections(numSections), joy(joy), activeSection(&nullSection)
+	:numSections(0), joy(joy), activeSection(&nullSection)
 {
 
 }
@@ -24,6 +24,8 @@ void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidt
 
 
 	sections = new Section[numSections];
+	this->numSections = numSections;
+
 	for (UINT i = 0; i < numSections; i++)
 	{
 		DirectX::BoundingBox& currentBB = sections[i].sectionBB;
