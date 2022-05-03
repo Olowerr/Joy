@@ -119,8 +119,4 @@ void testScene::Render()
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
-
-    ImGuiModifyPos(&sceneObjects[0]);
-    ImGuiModifyRot(&sceneObjects[0]);
-    ImGuiModifyScale(&sceneObjects[0]);
 }
