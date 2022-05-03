@@ -14,7 +14,7 @@ public:
 	bool GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
-	const UINT LightMapXY  = 512; 
+	const UINT LightMapXY = 256; 
 	const UINT LightMapCSThreadXY = 16;
 
 private:

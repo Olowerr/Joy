@@ -64,7 +64,29 @@ bool HLight::InitiateTools(MapDivider& sections)
 
 bool HLight::GenerateLightMaps(MapDivider& sections)
 {
-	// add bool isInstanced in Object
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+	// add bool isInstanced in Object	// Or do I have too..?
+
+
+	// Separate SUN buffer into (Strength, Direction) & ViewProject
+	// Prepare ViewProjectBuffers per section
+	// Separate SUN buffer into (Strength, Direction) & ViewProject
+	// Prepare ViewProjectBuffers per section
+	// Separate SUN buffer into (Strength, Direction) & ViewProject
+	// Prepare ViewProjectBuffers per section
+	// Separate SUN buffer into (Strength, Direction) & ViewProject
+	// Prepare ViewProjectBuffers per section
+	// Separate SUN buffer into (Strength, Direction) & ViewProject
+	// Prepare ViewProjectBuffers per section
+	// Separate SUN buffer into (Strength, Direction) & ViewProject
+	// Prepare ViewProjectBuffers per section
+
 
 	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
@@ -85,8 +107,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
 
-	ID3D11ShaderResourceView* tempSRV{};
-	ID3D11UnorderedAccessView* tempUAV{};
+
 	ID3D11RenderTargetView* tempRTV{};
 	ID3D11RenderTargetView* nullRTV{};
 	ID3D11UnorderedAccessView* nullUAV{};
@@ -159,7 +180,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	}
 	deviceContext->RSSetState(nullptr);
 
-
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	ID3D11Texture2D* tempResource{};
 	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
 	if (FAILED(hr))
@@ -171,11 +192,15 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 
 	srvDesc.Texture2DArray.ArraySize = texDesc.ArraySize;
 	srvDesc.Texture2DArray.FirstArraySlice = 0;
+	uavDesc.Texture2DArray.ArraySize = texDesc.ArraySize;
+	uavDesc.Texture2DArray.FirstArraySlice = 0;
 
+	ID3D11ShaderResourceView* tempSRV{};
 	hr = device->CreateShaderResourceView(tempResource, &srvDesc, &tempSRV);
 	if (FAILED(hr))
 		return false;
 
+	ID3D11UnorderedAccessView* tempUAV{};
 	hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
 	if (FAILED(hr))
 		return false;
@@ -196,7 +221,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	resource->Release();
 
 	/*  
-		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
+		Reading a UAV connected to resource with the format (R8_UNORM) resulted in the following error:
 
 		D3D11 ERROR: ID3D11DeviceContext::Dispatch:
 		The Unordered Access View (UAV) in slot 0 of the Compute Shader unit has the Format (R8_UNORM).
@@ -442,7 +467,6 @@ void HLight::FillDescriptions(D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET
 	uavDesc->ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
 	uavDesc->Texture2DArray.ArraySize = 1;
 	uavDesc->Texture2DArray.MipSlice = 0;
-	uavDesc->Texture2DArray.FirstArraySlice = 0;
 }
 
 bool HLight::InitiateShadowMaps(UINT amount)
