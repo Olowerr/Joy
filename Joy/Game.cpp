@@ -20,10 +20,9 @@ void Game::Shutdown()
 
 void Game::Run()
 {
-	testScene* test = new testScene(uiRender, objRender, decalShadow, meshStorage);
-
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = test;
+	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
+	Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
 
 	while (window.IsOpen())
 	{
