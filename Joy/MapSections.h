@@ -3,6 +3,8 @@
 
 struct Section
 {
+	Section() = default;
+
 	std::vector<Object*> levelObjects;
 	std::vector<Object*> enivormentObjects;
 
@@ -12,16 +14,22 @@ struct Section
 class MapDivider
 {
 public:
-	MapDivider(Character& joy, UINT numSections, float mapLength, float mapWidth, float mapHeight);
+	MapDivider(Character& joy);
 	~MapDivider();
 	void Shutdown();
 
+	void CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight);
+	void Update();
+
 	UINT GetNumSections() const;
 	Section* const GetSections() const;
-	const Section* GetActiveSection() const;
+	Section* const * GetActiveSection();
 
 private:
 	Character& joy;
 	Section* sections;
 	const UINT numSections;
+
+	Section* activeSection;
+	Section nullSection;
 };

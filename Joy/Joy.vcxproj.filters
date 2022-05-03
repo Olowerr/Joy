@@ -34,6 +34,12 @@
     <FxCompile Include="DecalPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PosOnlyVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="JoyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightHandler.cpp" />
@@ -55,9 +61,6 @@
       <Filter>Parser</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>Character</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterCamera.cpp">
       <Filter>Character</Filter>
     </ClCompile>
     <ClCompile Include="CameraBase.cpp">
@@ -126,6 +129,10 @@
     <ClCompile Include="ImguiSetup.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="MapSections.cpp" />
+    <ClCompile Include="CharacterCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
@@ -150,9 +157,6 @@
       <Filter>Parser</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>Character</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterCamera.h">
       <Filter>Character</Filter>
     </ClInclude>
     <ClInclude Include="CameraBase.h">
@@ -223,6 +227,13 @@
     </ClInclude>
     <ClInclude Include="ImguiSetup.h">
       <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="MapSections.h" />
+    <ClInclude Include="ShaderStorage.h">
+      <Filter>Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

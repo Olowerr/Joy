@@ -7,6 +7,7 @@ class Camera
 {
 public:
 	Camera();
+	virtual ~Camera();
 	virtual void Shutdown();
 
 	virtual void UpdateCam() = 0;

@@ -4,15 +4,15 @@
 class MainMenu : public Scene
 {
 public:
-	MainMenu(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage);
+	MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage);
+	~MainMenu()  override { }
 
 	// Inherited via Scene
-	virtual void Load() override;
 	virtual void Shutdown() override;
 	virtual SceneState Update() override;
 	virtual void Render() override;
 
 private:
-	PSprite startButton;//*
+	Sprite startButton;
 
 };

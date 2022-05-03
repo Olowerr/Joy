@@ -3,8 +3,6 @@
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
 	, window(Backend::GetWindow()) 
-	, menu(uiRender, objRender, meshStorage)
-	, easy(uiRender, objRender, meshStorage)
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
 }
@@ -22,11 +20,10 @@ void Game::Shutdown()
 
 void Game::Run()
 {
-	testScene test(uiRender, objRender, meshStorage);
+	testScene* test = new testScene(uiRender, objRender, decalShadow, meshStorage);
 
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = &test;
-	activeScene->Load();
+	Scene* activeScene = test;
 
 	while (window.IsOpen())
 	{
@@ -36,27 +33,15 @@ void Game::Run()
 			break;
 		case SceneState::MainMenu:
 			activeScene->Shutdown();
-			activeScene = &menu;
-			activeScene->Load();
+			delete activeScene;
+			activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 			break;
 
 		case SceneState::Easy:
 			activeScene->Shutdown();
-			activeScene = &easy;
-			activeScene->Load();
+			delete activeScene;
+			activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
 			break;
-
-		/*case SceneState::Medium:
-			activeScene->Shutdown();
-			activeScene = &medium;
-			activeScene->Load();
-			break;*/
-
-		/*case SceneState::Hard:
-			activeScene->Shutdown();
-			activeScene = &hard;
-			activeScene->Load();
-			break;*/
 
 		}
 		
@@ -82,10 +67,10 @@ void Game::Run()
 		else if (Backend::GetKeyboard().KeyReleased(DIK_G))
 			Backend::GetSwapChain()->SetFullscreenState(FALSE, nullptr);
 
-		else if (Backend::GetKeyboard().KeyReleased(DIK_1) && activeScene != &menu)
+		else if (Backend::GetKeyboard().KeyReleased(DIK_F1) && activeState != SceneState::MainMenu)
 			activeState = SceneState::MainMenu;
 
-		else if (Backend::GetKeyboard().KeyReleased(DIK_2) && activeScene != &easy)
+		else if (Backend::GetKeyboard().KeyReleased(DIK_F2) && activeState != SceneState::Easy)
 			activeState = SceneState::Easy;
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_M))
@@ -97,5 +82,5 @@ void Game::Run()
 	}
 
 	activeScene->Shutdown();
-
+	delete activeScene;
 }

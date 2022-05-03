@@ -5,6 +5,10 @@ Camera::Camera()
 {
 }
 
+Camera::~Camera()
+{
+}
+
 void Camera::Shutdown()
 {
     camMatrixBuffer->Release();
