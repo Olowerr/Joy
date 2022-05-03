@@ -210,19 +210,11 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 	for (Object* obj : (*activeSection)->levelObjects)
 		obj->Draw();
 
-	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
-
-	//for (InstancedObject& inst : instances)
-	//{
-	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
-
-	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	//}
-
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+	ImGuiModifyTransform((*activeSection)->levelObjects);
 }
 
 ID3D11PixelShader*& DecalShadow::GetDecalPS()
