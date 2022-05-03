@@ -8,10 +8,10 @@ CharacterCamera::CharacterCamera(const Character& object) //const Character& obj
 	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
 	camUpDir = { 0.0f, 1.0f, 0.0f, 1.0f };
 	rotation = { 0,0,0,0 };
-	DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
+	//DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
 	DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
 	camHeight = 10;
-	DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(temp));
+	//DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(temp));
 
 	Backend::CreateDynamicCBuffer(&camMatrixBuffer, &viewProjMatrix, sizeof(DirectX::XMFLOAT4X4));
 
@@ -26,6 +26,8 @@ void CharacterCamera::UpdateCam()
 {
 	float dt = Backend::GetDeltaTime();
 	float x = object.GetPosition().x;
+	float z = object.GetPosition().z;
+
 
 	if (x > position.x +1)
 	{
@@ -35,6 +37,16 @@ void CharacterCamera::UpdateCam()
 	{
 		position.x -= (float)0.009 * dt;
 	}
+	if (z > position.z + 35)
+	{
+		position.z += 5.0f * dt;
+	}
+	if (z < position.z + 30)
+	{
+		position.z -= 5.0f * dt;
+	}
+
+
 	
 	DirectX::XMVECTOR positionChange = DirectX::XMVector3Rotate(DirectX::XMVectorSet(direction, 0.f, 0.f, 0.f), DirectX::XMLoadFloat4(&rotation));
 	DirectX::XMStoreFloat3(&position, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), positionChange));
@@ -44,11 +56,11 @@ void CharacterCamera::SetView()
 {
 
 //	camFront = DirectX::XMVectorSet( object.GetPosition().x, object.GetPosition().y, object.GetPosition().z, 1);
-	position.y = object.GetPosition().y * -1 * (float)0.01 + camHeight;
-	camFront = DirectX::XMVectorSet(position.x, object.GetPosition().y, 1, 1);
+	position.y = object.GetPosition().y + 16;
+	camFront = DirectX::XMVectorSet(0, -0.4, 1, 1);
 
 //	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
-	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookAtLH(XMLoadFloat3(&position), camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
+	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookToLH(XMLoadFloat3(&position), camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
 	XMStoreFloat4x4(&viewProjMatrix, XMMatrixTranspose(viewAndProj));
 
 	Backend::UpdateBuffer(camMatrixBuffer, &viewProjMatrix, 64);

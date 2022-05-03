@@ -1,21 +1,21 @@
 #include "Character.h"
-
+#include <iterator>
 Character::Character(Mesh* mesh)
 	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
 {
 	Object::DropLevelPtr(this);
 
-	//Basic
-	//maxSpeed = 0.1f;
-	//minSpeed = -0.1f;
-	//zSpeed = 0.0f;
-	//xSpeed = 0.0f;
-	//decreaseZSpeed = false;
-	//decreaseXSpeed = false;
-	//diagMove = false;
-
 	//Movement
+	maxSpeed = 0;  // sett all these values in movement function
+	speed = 0;
+	counterForce = 0; // how fast you stop after releasing, higher number means stopping faster
+	wsPressed = false;
+	adPressed = false;
 
+	//Slide
+	canSlide = true;
+	isSliding = false;
+	slideSpeed = 0;
 
 	//Jump
 	jumpVelocity = 0;
@@ -34,12 +34,18 @@ Character::Character(Mesh* mesh)
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
-	float maxSpeed = 10.0f;
-	float speed = 0.1f;
-	float counterForce = 0.01f;
-	bool wsPressed = false;
-	bool adPressed = false;
+	maxSpeed = 10.0f;
+	speed = 0.1;
+	counterForce = 0.01f;
+	wsPressed = false;
+	adPressed = false;
+	timer += dt;
 
+	std::cout << "timer: " << timer << std::endl;
+	//slide
+	slideSpeed = 1.05f;
+
+#pragma region -------------------MOVEMENT X&Z--------------------
 	if (key.KeyDown(DIK_W))
 	{
 		velocity.y += speed;
@@ -89,8 +95,6 @@ void Character::Move()
 		adPressed = false;
 	}
 
-	/*std::cout << velocity.x << "===";
-	std::cout << velocity.y<< std::endl;*/
 	velocity.x *= 0.99f;
 	velocity.y *= 0.99f;
 
@@ -102,6 +106,25 @@ void Character::Move()
 	{
 		velocity.y = 0;
 	}
+#pragma endregion
+
+
+	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f)
+	{
+		isSliding = true;
+		canSlide = false;
+		timer = 0;
+	}
+	if (timer < 0.5f && isSliding == true)
+	{
+		slideSpeed += 1.7f;
+	}
+	else
+	{
+		isSliding = false;
+	}
+
+
 	if (std::abs(velocity.x) > 0.0f && std::abs(velocity.y) > 0.0f && wsPressed == true && adPressed == true)
 	{
 		maxSpeed = 5.0f;
@@ -116,7 +139,16 @@ void Character::Move()
 		velocity.y *= 0.99f;
 
 
-	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
+
+	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
+
+}
+
+
+
+void Character::Slide()
+{
+
 
 }
 

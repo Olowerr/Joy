@@ -116,6 +116,7 @@ SceneState testScene::Update()
     //Joy functions
     joy->Jump();
     joy->Move();
+
     joy->Respawn();
 
     return SceneState::Unchanged;
