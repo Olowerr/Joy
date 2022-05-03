@@ -192,8 +192,8 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 
 	tempUAV->Release();
 	tempSRV->Release();
-	resource->Release();
 	tempResource->Release();
+	resource->Release();
 
 	/*  
 		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
@@ -336,6 +336,32 @@ bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11Sha
 
 void HLight::DrawShadowMaps(MapDivider& sections)
 {
+	bool succeeded = false;
+	HRESULT hr;
+
+	using namespace DirectX;
+	const FLOAT SUNDISTANCE = 20.f;
+	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f); // From sun to ground
+	XMVECTOR SUNPOS{};
+
+	SUN.strength = 10.f;
+	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
+	SUNPOS = XMVectorAdd(
+		XMVectorSet(sections.GetSections()[0].sectionBB.Center.x, 0.f, sections.GetSections()[0].sectionBB.Center.z, 0.f),
+		XMVectorScale(SUNDIR, -SUNDISTANCE));
+
+	XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
+		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(30.f, 30.f, 0.1f, 100.f)));
+
+	hr = Backend::CreateDynamicCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
+	if (FAILED(hr))
+		return;
+
+	hr = Backend::CreateDynamicCBuffer(&lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
+	if (FAILED(hr))
+		return;
+
+
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	ID3D11RenderTargetView* nullRTV{};
 
@@ -353,10 +379,7 @@ void HLight::DrawShadowMaps(MapDivider& sections)
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
 
-	using namespace DirectX;
-	const FLOAT SUNDISTANCE = 20.f;
-	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f); // From sun to ground
-	XMVECTOR SUNPOS{};
+
 
 	for (UINT s = 0; s < sections.GetNumSections(); s++)
 	{
@@ -522,26 +545,6 @@ bool HLight::InitiateShaders()
 
 bool HLight::InitiateBuffers()
 {
-	bool succeeded = false;
-	HRESULT hr;
-
-	using namespace DirectX;
-	const XMVECTOR SUNPOS = XMVectorSet(10.f, 10.f, -10.f, 0.f);
-	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f);
-
-	SUN.strength = 10.f;
-	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
-	XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
-		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(15.f, 15.f, 0.1f, 30.f)));
-
-	hr = Backend::CreateDynamicCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
-	if (FAILED(hr))
-		return false;
-
-	hr = Backend::CreateDynamicCBuffer(&lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
-	if (FAILED(hr))
-		return false;
-
 	return true;
 }
 
