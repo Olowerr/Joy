@@ -16,30 +16,25 @@ public:
 	void SetActiveCamera(Camera* camera);
 	void SetMapDivier(MapDivider* sections);
 	void DrawAll();
+	void DrawCharacter(Character& character);
 
 	// Add Instanced Objects
 	bool GiveInstancedObjects(Object* objArr, UINT amount);
-	ID3D11InputLayout* GetObjectInputLayout();
-	ID3D11VertexShader* GetObjectVS();
 
 private:
 
 	MapDivider* sections;
+	const Section* const* activeSection;
 
-	ID3D11InputLayout* inpLayout;
+	GraphicsStorage& storage;
+
 	ID3D11RenderTargetView* const* bbRTV;
 
 	// Instanced
-	ID3D11VertexShader* objInstanceVS;
 	std::vector<InstancedObject> instances;
 
-	// Normal
-	ID3D11VertexShader* objVS;
-	ID3D11PixelShader* objPS;
 	// Sampler
 	ID3D11SamplerState* sampler;  // << temporary
-	bool LoadShaders();
-	bool CreateInputLayout(const std::string& shaderData);
 
 	Camera* activeCamera;
 

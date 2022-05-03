@@ -1,12 +1,10 @@
 #include "ObjectRender.h"
 
 ObjectRender::ObjectRender()
-	:objVS(nullptr), objPS(nullptr), inpLayout(nullptr), bbRTV(nullptr)
+	:bbRTV(nullptr), storage(Backend::GetShaderStorage())
 {
-	bool succeeded = false;
-
-	succeeded = LoadShaders();
-	assert(succeeded);
+	CreateSamplerState(); // << temporary
+	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
 
 	bbRTV = Backend::GetBackBufferRTV();
 }
@@ -14,10 +12,7 @@ ObjectRender::ObjectRender()
 void ObjectRender::Shutdown()
 {
 	sampler->Release();
-	inpLayout->Release();
-	objVS->Release();
-	objPS->Release();
-	objInstanceVS->Release();
+
 }
 
 void ObjectRender::Clear()
@@ -56,74 +51,30 @@ void ObjectRender::SetActiveCamera(Camera* camera)
 void ObjectRender::SetMapDivier(MapDivider* sections)
 {
 	this->sections = sections;
-}
-
-bool ObjectRender::LoadShaders()
-{
-	std::string shaderData;
-
-	// Normal Shaders
-	if (!Backend::LoadShader(Backend::ShaderPath + "ObjVS.cso", &shaderData))
-		return false;
-
-	if (!CreateInputLayout(shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objVS)))
-		return false;
-
-	if (!Backend::LoadShader(Backend::ShaderPath + "ObjPS.cso", &shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &objPS)))
-		return false;
-
-
-	// Instanced Shaders
-	if (!Backend::LoadShader(Backend::ShaderPath + "ObjInstanceVS.cso", &shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &objInstanceVS)))
-		return false;
-
-	CreateSamplerState(); // << temporary
-	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
-	return true;
-}
-
-bool ObjectRender::CreateInputLayout(const std::string& shaderData)
-{
-
-	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}, 
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-	HRESULT hr = Backend::GetDevice()->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &inpLayout);
-
-	return SUCCEEDED(hr);
+	activeSection = sections->GetActiveSection();
 }
 
 void ObjectRender::DrawAll()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
-	devContext->IASetInputLayout(inpLayout);
+	devContext->IASetInputLayout(storage.objectInputLayout);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	devContext->VSSetShader(objVS, nullptr, 0);
+	devContext->VSSetShader(storage.objectVS, nullptr, 0);
 
 	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
-	devContext->PSSetShader(objPS, nullptr, 0);
+	devContext->PSSetShader(storage.objectPS, nullptr, 0);
 
 	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
 	
-	for (Object* obj : sections->GetSections()->enivormentObjects)
+	// temp
+
+
+	for (Object* obj : (*activeSection)->enivormentObjects)
 		obj->Draw();
 
 	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
@@ -139,6 +90,25 @@ void ObjectRender::DrawAll()
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
+}
+
+void ObjectRender::DrawCharacter(Character& character)
+{
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->IASetInputLayout(storage.objectInputLayout);
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	devContext->VSSetShader(storage.objectVS, nullptr, 0);
+	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
+
+	devContext->PSSetShader(storage.JoyPS, nullptr, 0);
+
+	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
+
+	character.Draw();
 }
 
 bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
@@ -196,14 +166,4 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
 
 	return true;
-}
-
-ID3D11InputLayout* ObjectRender::GetObjectInputLayout()
-{
-	return inpLayout;
-}
-
-ID3D11VertexShader* ObjectRender::GetObjectVS()
-{
-	return objVS;
 }
