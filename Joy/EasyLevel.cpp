@@ -105,38 +105,7 @@ SceneState EasyLevel::Update()
     activeCamera->SetView();
 
     //Collision
-    joy.SetCollidedY(coll.getCollidedY());
-    if (coll.getCollidedY())
-        joy.SetSpeedZero();
 
-    if (coll.HitObject(&joy, obstacle))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle1))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle2))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle3))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle4))
-        joy.SetSpeedZero();
-
-    if (coll.HitObject(&joy, ground))
-    {
-        joy.SetSpeedZero();
-        joy.SetCanJump(coll.GetStopFall());
-    }
-    if (coll.HitObject(&joy, ground1))
-    {
-        joy.SetSpeedZero();
-        joy.SetCanJump(coll.GetStopFall());
-    }
-    if (coll.HitObject(&joy, ground2))
-    {
-        joy.SetSpeedZero();
-        joy.SetCanJump(coll.GetStopFall());
-    }
-
-    joy.SetCanJump(coll.GetStopFall());
 
     coll.collided(&joy, ground);
     coll.collided(&joy, ground1);

@@ -99,24 +99,7 @@ SceneState MainMenu::Update()
     activeCamera->SetView();
 
     //Collision
-    joy.SetCollidedY(coll.getCollidedY());
-    if (coll.getCollidedY())
-        joy.SetSpeedZero();
 
-    if (coll.HitObject(&joy, obstacle))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle1))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle2))
-        joy.SetSpeedZero();
-
-    if (coll.HitObject(&joy, ground))
-    {
-        joy.SetSpeedZero();
-        joy.SetCanJump(coll.GetStopFall());
-    }
-
-    joy.SetCanJump(coll.GetStopFall());
 
     coll.collided(&joy, ground);
     if (joy.GetBoundingBox().Intersects(obstacle1->GetBoundingBox()))
