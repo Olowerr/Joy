@@ -11,8 +11,6 @@ Collision::Collision()
 
 void Collision::collided(Object* charBbox, Object* targetBbox)
 {
-    //std::cout << stopFall << "\n";
-    dontStopMovement = false;
     stopFall = false;
     collidedY = false;
     dBox = charBbox->GetBoundingBox();
@@ -24,7 +22,7 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
         yIntDist = bBox.Center.y - dBox.Center.y;
         zIntDist = bBox.Center.z - dBox.Center.z;
 
-        float xTemp = (bBox.Extents.x+dBox.Extents.x) - std::abs(bBox.Center.x - dBox.Center.x);
+        float xTemp = (bBox.Extents.x + dBox.Extents.x) - std::abs(bBox.Center.x - dBox.Center.x);
         float yTemp = (bBox.Extents.y + dBox.Extents.y) - std::abs(bBox.Center.y - dBox.Center.y);
         float zTemp = (bBox.Extents.z + dBox.Extents.z) - std::abs(bBox.Center.z - dBox.Center.z);
 
@@ -90,7 +88,6 @@ bool Collision::HitObject(Object* charBbox, Object* targetBbox)
 {
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
-    //std::cout << dBox.Intersects(bBox) << "\n";
     dontStopMovement = true;
     return dBox.Intersects(bBox);
     
@@ -99,16 +96,6 @@ bool Collision::HitObject(Object* charBbox, Object* targetBbox)
 bool Collision::hitItem(const DX::BoundingBox& charbBox, const DX::BoundingBox& itemBbox)
 {
     return charbBox.Intersects(itemBbox);
-}
-
-bool Collision::GetStopFall()
-{
-    return stopFall;
-}
-
-bool Collision::GetDontStopMovement()
-{
-    return dontStopMovement;
 }
 
 bool Collision::getCollidedY()

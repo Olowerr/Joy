@@ -111,7 +111,6 @@ SceneState testScene::Update()
     
     //Joy functions
 
-    //test->respawn();
 
     //Decal
     objRender.UpdateCharacterDecal(joy);

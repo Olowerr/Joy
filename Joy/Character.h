@@ -15,10 +15,8 @@ public:
 	void Move();
 	void Jump();
 	void Respawn();
-	void SetSpeedZero(bool test);
 	bool SetCanJump(bool canJump);
-	bool SetStopMovement(bool stopSpeed);
-	bool SetCollidedY(bool verticalCollision);
+
 
 	
 private:
