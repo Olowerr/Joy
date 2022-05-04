@@ -30,4 +30,6 @@ private:
 
 	Object* collTest;
 	Collision coll;
+	Collision coll2;
+	Collision coll3;
 };

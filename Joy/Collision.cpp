@@ -11,9 +11,10 @@ Collision::Collision()
 
 void Collision::collided(Object* charBbox, Object* targetBbox)
 {
-    std::cout << stopFall << "\n";
+    //std::cout << stopFall << "\n";
     dontStopMovement = false;
     stopFall = false;
+    collidedY = false;
     dBox = charBbox->GetBoundingBox();
     bBox = targetBbox->GetBoundingBox();
     if (dBox.Intersects(bBox))
@@ -44,11 +45,13 @@ void Collision::collided(Object* charBbox, Object* targetBbox)
         }
         else if(yTemp < xTemp && yTemp < zTemp)
         {
-            collidedY = true;
-            stopFall = true;
+            
+            
 
             if (yIntDist < 0.0f)
             {
+                collidedY = true;
+                stopFall = true;
                 distToMoveY = { 0.0f, (bBox.Extents.y+dBox.Extents.y) + yIntDist, 0.0f };
                 distToComp(distToMoveY, *charBbox);
             }

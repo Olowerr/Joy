@@ -124,7 +124,7 @@ void Character::Jump()
 
 	gravity = 300;
 	jumpVelocity -= gravity * dt;
-
+	std::cout << canJump << std::endl; //슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬슬�
 	if (isOnGround)
 	{
 		jumpVelocity = 0;
@@ -138,6 +138,7 @@ void Character::Jump()
 	{
 		canJump = false;
 		jumpVelocity += std::sqrtf(2.0f * gravity * jumpHeight);
+		isOnGround = false;
 	}
 
 	if (jumpVelocity < 0 && canBoost == false && fuel > 0)
@@ -167,14 +168,22 @@ void Character::Respawn()
 		SetPosition(0.0f, 0.0f, 0.0f);
 }
 
-void Character::SetSpeedZero()
+void Character::SetSpeedZero(bool test)
 {
+	//if (canJump == true)
+	//	std::cout << "You can jump\n";
+	//else
+	//	std::cout << "Not able to jump\n";
+	//std::cout << collidedY << std::endl;
 	if (collidedY)
 	{
 		if (canJump == true)
+		{
 			this->jumpVelocity = 0.0f;
+		}
+			
 	}
-	else if(!collidedY)
+	else if(!collidedY && test == true)
 	{
 		if (std::abs(velocity.x) > std::abs(velocity.y))
 		{
