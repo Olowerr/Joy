@@ -1,53 +1,163 @@
 #include "EasyLevel.h"
 
-EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, meshStorage)
+EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
+	:Scene(uiRender, objRender, decalShadow, meshStorage)
+    , joy(meshStorage.GetMesh(0))
+    , joyCamera(joy)
+    , divider(joy)
+    , activeCamera(&joyCamera)
 {
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-	// Implement Object::Create() & Object::Destroy() (same as for Sprite) for dynamic allocation
-}
+    meshStorage.LoadAll();
 
-void EasyLevel::Load()
-{
-	meshStorage.LoadAll();
+    joy.CheckBB();
 
-	objects.reserve(66);
-	objects.emplace_back(meshStorage.GetMesh(0));
+    sceneObjects.reserve(10);
+    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
 
-	objRender.AddObject(&objects[0]);
+    ground = &sceneObjects[0];
+    ground1 = &sceneObjects[1];
+    ground2 = &sceneObjects[2];
+    obstacle = &sceneObjects[3];
+    obstacle1 = &sceneObjects[4];
+    obstacle2 = &sceneObjects[5];
+    obstacle3 = &sceneObjects[6];
+    obstacle4 = &sceneObjects[7];
 
-	typedef DirectX::XMFLOAT3 F3;
-	Object test[2] =
-	{
-		{meshStorage.GetMesh(0), F3(0.f, 0.f, 5.f), F3(0.f, 0.f, 0.f), 1.f},
-		{meshStorage.GetMesh(0), F3(0.f, 0.f, -5.f), F3(0.f, 0.f, 0.f), 1.f}
-	};
-	objRender.GiveInstancedObjects(test, 2);
+    joy.SetPosition(0.0f, 3.0f, 10.0f);
+    ground->SetPosition(0.0f, -2.0f, 10.0f);
+    ground1->SetPosition(0.0f, -0.2f, 27.3f);
+    ground2->SetPosition(5.1f, 2.4f, 64.2f);
+    ground2->SetScale(2.8f);
+    obstacle->SetPosition(-2.4f, 0.6f, 16.3f);
+    obstacle->SetRotation(0.0f, 0.5f, 0.4f);
+    obstacle->SetScale(0.4f);
+    obstacle1->SetPosition(1.8f, -0.2f, 11.1f);
+    obstacle1->SetScale(2.5f);
+    obstacle2->SetPosition(1.5f, 3.0f, 15.5f);
+    obstacle2->SetRotation(0.7f, 0.6f, 0.0f);
+    obstacle2->SetScale(1.3f);
+    obstacle3->SetPosition(2.8f, 2.5f, 31.4f);
+    obstacle3->SetScale(4.4f);
+    obstacle4->SetPosition(3.1f, 1.2f, 28.3f);
+    obstacle4->SetScale(1.8f);
+
+
+    objRender.SetActiveCamera(activeCamera);
+    decalShadow.SetActiveCamera(activeCamera);
+
+    divider.CreateSections(1, 200.f, 50.f, 50.f);
+    objRender.SetMapDivier(&divider);
+    decalShadow.SetMapDivider(&divider);
+
+    hLight.InitiateTools(divider);
+    hLight.GenerateLightMaps(divider);
+    hLight.ShutdownTools();
 }
 
 void EasyLevel::Shutdown()
 {
-	meshStorage.UnLoadAll();
+    hLight.Shutdown();
 
-	objRender.Clear();
+    objRender.Clear();
+    meshStorage.UnLoadAll();
+    Object::EmptyObjectLists();
 
-	for (Object& obj : objects)
-		obj.Shutdown();
-	objects.clear();
+    joy.Shutdown();
+
+    for (Object& object : sceneObjects)
+        object.Shutdown();
+
+    freeCamera.Shutdown();
+    joyCamera.Shutdown();
+
+    divider.Shutdown();
 }
 
 SceneState EasyLevel::Update()
 {
-	objects[0].Rotate(0.f, 2.f * Backend::GetDeltaTime(), 0.f);
+    if (Backend::GetKeyboard().KeyReleased(DIK_R))
+    {
+        activeCamera = &freeCamera;
+        objRender.SetActiveCamera(activeCamera);
+        decalShadow.SetActiveCamera(activeCamera);
+    }
+    else if (Backend::GetKeyboard().KeyReleased(DIK_T))
+    {
+        activeCamera = &joyCamera;
+        objRender.SetActiveCamera(activeCamera);
+        decalShadow.SetActiveCamera(activeCamera);
+    }
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
 
-	return SceneState::Unchanged;
+    if (activeCamera == &freeCamera)
+        return SceneState::Unchanged;
+
+    //Camera functions
+    activeCamera->UpdateCam();
+    activeCamera->SetView();
+
+    //Collision
+    joy.SetCollidedY(coll.getCollidedY());
+    if (coll.getCollidedY())
+        joy.SetSpeedZero();
+
+    if (coll.HitObject(&joy, obstacle))
+        joy.SetSpeedZero();
+    if (coll.HitObject(&joy, obstacle1))
+        joy.SetSpeedZero();
+    if (coll.HitObject(&joy, obstacle2))
+        joy.SetSpeedZero();
+    if (coll.HitObject(&joy, obstacle3))
+        joy.SetSpeedZero();
+    if (coll.HitObject(&joy, obstacle4))
+        joy.SetSpeedZero();
+
+    if (coll.HitObject(&joy, ground))
+    {
+        joy.SetSpeedZero();
+        joy.SetCanJump(coll.GetStopFall());
+    }
+    if (coll.HitObject(&joy, ground1))
+    {
+        joy.SetSpeedZero();
+        joy.SetCanJump(coll.GetStopFall());
+    }
+    if (coll.HitObject(&joy, ground2))
+    {
+        joy.SetSpeedZero();
+        joy.SetCanJump(coll.GetStopFall());
+    }
+
+    joy.SetCanJump(coll.GetStopFall());
+
+    coll.collided(&joy, ground);
+    coll.collided(&joy, ground1);
+    coll.collided(&joy, ground2);
+    coll.collided(&joy, obstacle);
+    coll.collided(&joy, obstacle1);
+    coll.collided(&joy, obstacle2);
+    coll.collided(&joy, obstacle3);
+    coll.collided(&joy, obstacle4);
+
+    //Joy functions
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
+
+    return SceneState::Unchanged;
 }
 
 void EasyLevel::Render()
 {
 	objRender.DrawAll();
+    decalShadow.DrawAll(joy.GetPosition());
+    objRender.DrawCharacter(joy);
 }

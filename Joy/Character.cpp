@@ -1,8 +1,10 @@
 #include "Character.h"
 
 Character::Character(Mesh* mesh)
-	:Object(mesh), key(Backend::GetKeyboard()), velocity()
+	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
 {
+	Object::DropLevelPtr(this);
+
 	//Basic
 	//maxSpeed = 0.1f;
 	//minSpeed = -0.1f;
@@ -27,6 +29,10 @@ Character::Character(Mesh* mesh)
 	canBoost = false;
 
 	joy.bBox = mesh->bBox;
+}
+
+Character::~Character()
+{
 }
 
 void Character::Move()
@@ -55,7 +61,7 @@ void Character::Move()
 		velocity.y -= speed;
 		wsPressed = true;
 	}
-		
+
 	else if (velocity.y < 0.f)
 	{
 		velocity.y += counterForce;
@@ -67,26 +73,26 @@ void Character::Move()
 		velocity.x += speed;
 		adPressed = true;
 	}
-		
+
 	else if (velocity.x > 0.f)
 	{
 		velocity.x -= counterForce;
 		adPressed = false;
 	}
-		
-	
+
+
 	if (key.KeyDown(DIK_A))
 	{
 		adPressed = true;
 		velocity.x -= speed;
 	}
-		
+
 	else if (velocity.x < 0.f)
 	{
 		velocity.x += counterForce;
 		adPressed = false;
 	}
-		
+
 	/*std::cout << velocity.x << "===";
 	std::cout << velocity.y<< std::endl;*/
 	velocity.x *= 0.99f;
@@ -108,14 +114,14 @@ void Character::Move()
 		maxSpeed = 10.0f;
 
 	if (std::abs(velocity.x) > maxSpeed)
-		velocity.x *= 0.99;
+		velocity.x *= 0.99f;
 
 	if (std::abs(velocity.y) > maxSpeed)
-		velocity.y *= 0.99;
+		velocity.y *= 0.99f;
 
 
 	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
-	
+
 }
 
 void Character::Jump()
@@ -137,7 +143,7 @@ void Character::Jump()
 
 
 	//Jump
-	if (key.KeyDown(DIK_SPACE)&& canJump)
+	if (key.KeyDown(DIK_SPACE) && canJump)
 	{
 		canJump = false;
 		jumpVelocity += std::sqrtf(2.0f * gravity * jumpHeight);

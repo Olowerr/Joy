@@ -1,40 +1,54 @@
 #pragma once
-#include "ObjectRender.h"
+#include "MapSections.h"
 
 class HLight
 {
 public:
-	HLight(ObjectRender& objRender);
+	HLight();
 	void Shutdown();
+	void ShutdownTools();
 	~HLight();
 
-	void GenerateLightMaps(Object** objects, UINT amount);
+	bool InitiateTools(MapDivider& sections);
+	bool GenerateLightMaps(MapDivider& sections);
+	bool GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps);
 
-	const UINT ShadowMapWidth = 1024;
-	const UINT ShadowMapHeight = 1024;
-	
-	const UINT LightMapWidth = 1024;
-	const UINT LightMapHeight = 1024;
+	const UINT ShadowMapXY = 2048; // Can be large since only used during load
+	const UINT LightMapXY = 256; 
+	const UINT LightMapCSThreadXY = 16;
 
 private:
 	
+	/*
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP
+		ADD COMPUTESHADER WHICH BLURS ILLEGAL TEXELS ON LIGHTMAP	
+	*/
+
 	// General
-	ObjectRender& objRender;
 	D3D11_VIEWPORT lightViewPort;
-	
+	GraphicsStorage& storage;
+
 	//  --- Light maps ---
 	ID3D11VertexShader* lightVS;
-	// GS for expanding uv tris (instead of jitter)
+	ID3D11ComputeShader* lightCS;
 	ID3D11RasterizerState* noCullingRS;
 	ID3D11PixelShader* lightPS;
 	ID3D11Buffer* lightDataBuffer;
 
 	// --- Shadow mapping ---
-	ID3D11DepthStencilView* shadowMapDSV;
-	ID3D11ShaderResourceView* shadowMapSRV;
+	ID3D11DepthStencilView** shadowMapDSV;
+	ID3D11ShaderResourceView** shadowMapSRV;
+	UINT amount;
+
 	ID3D11Buffer* lightViewProjectBuffer;
 	ID3D11RasterizerState* frontFaceCullingRS;
-	void DrawShadowMap(Object** objects, UINT amount);
+
+	void DrawShadowMaps(MapDivider& sections);
 
 	// SUN SUN SUN SUN SUN SUN SUN SUN 
 	struct DirectionalLight
@@ -46,9 +60,13 @@ private:
 	DirectionalLight SUN;
 
 
+	void FillDescriptions(D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET_VIEW_DESC* rtvDesc,
+		D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc);
+
 	// --- Initiate Functions ---
-	bool InitiateShadowMap();
+	bool InitiateShadowMaps(UINT amount);
 	bool InitiateShaders();
 	bool InitiateBuffers();
 	bool InitiateRasterizerStates();
+
 };

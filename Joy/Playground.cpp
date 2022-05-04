@@ -1,74 +1,61 @@
 #include "playground.h"
 
-testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage)
-    :Scene(uiRender, objRender, meshStorage), joy(nullptr), gatoKubo(nullptr), collTest(nullptr), ground(nullptr)
-    , activeCamera(nullptr), freeCamera(nullptr), joyCamera(nullptr)
+testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
+    :Scene(uiRender, objRender, decalShadow, meshStorage)
+    // Joy should always be first in the array from mesh storage
+    , joy(meshStorage.GetMesh(0))
+    , joyCamera(joy)
+    , divider(joy)
+    , activeCamera(&joyCamera)
 {
-}
-
-void testScene::Load()
-{
-    ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-
     meshStorage.LoadAll();
 
-    // Joy should always be first in the array from mesh storage
-    joy = new Character(meshStorage.GetMesh(0)); 
-    collTest = new Object(meshStorage.GetMesh(1));
-    ground = new Object(meshStorage.GetMesh(2));
-    gatoKubo = new Object(meshStorage.GetMesh(1));
-    cube = new Object(meshStorage.GetMesh(1));
+    joy.CheckBB();
 
-    //Camera recives which object to look at
-    joyCamera = new CharacterCamera(*joy);
+    sceneObjects.reserve(10);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
 
-
-    objRender.AddObject(ground);
-    objRender.AddObject(joy);
-    objRender.AddObject(gatoKubo);
-    objRender.AddObject(cube);
-
-    cube->SetPosition(-2.0f, 0.0f, 0.0f);
-    ground->SetPosition(0.0f, -2.0f, 0.0f);
-    collTest->SetPosition(2.0f, 0.0f, 0.0f);
-    gatoKubo->SetPosition(1.f, 0.5f, 1.f);
-
-    HLight hLight(objRender);
-    Object* elgato[3] = { ground, gatoKubo, collTest };
-    hLight.GenerateLightMaps(elgato, 3);
-    hLight.Shutdown();
-
-    freeCamera = new FreelookCamera();
-    activeCamera = joyCamera;
-    objRender.SetActiveCamera(activeCamera);
-    objRender.CreateCharacterDecal(joy);
+    cube = &sceneObjects[0];
+    ground = &sceneObjects[3];
+    collTest = &sceneObjects[1];
     
-    devContext->PSSetConstantBuffers(0, 1, objRender.getDecalBuffer());
-    objRender.AddObject(collTest);
+    joy.SetPosition(0.f, 3.f, 0.f);
+    ground->SetPosition(0.f, -2.0f, 0.f);
+    sceneObjects[0].SetPosition(2.0f, 0.0f, 0.0f);
+    sceneObjects[1].SetPosition(2.0f, 0.f, 0.0f);
+    sceneObjects[2].SetPosition(1.f, 0.5f, 1.f);
+
+    objRender.SetActiveCamera(activeCamera);
+    decalShadow.SetActiveCamera(activeCamera);
+
+    divider.CreateSections(1, 15.f, 15.f, 10.f);
+    objRender.SetMapDivier(&divider);
+    decalShadow.SetMapDivider(&divider);
+    
+    hLight.InitiateTools(divider);
+    hLight.GenerateLightMaps(divider);
+    hLight.ShutdownTools();
 }
 
 void testScene::Shutdown()
 {
+    hLight.Shutdown();
+
     objRender.Clear();
     meshStorage.UnLoadAll();
+    Object::EmptyObjectLists();
+ 
+    joy.Shutdown();
+    for (Object& object : sceneObjects)
+        object.Shutdown();
 
-    joy->Shutdown();
-    gatoKubo->Shutdown();
-    ground->Shutdown();
-    collTest->Shutdown();
-    cube->Shutdown();
+    freeCamera.Shutdown();
+    joyCamera.Shutdown();
 
-    freeCamera->Shutdown();
-    joyCamera->Shutdown();
-
-    delete freeCamera;
-    delete joyCamera;
-
-    delete joy;
-    delete gatoKubo;
-    delete collTest;
-    delete ground;
-    delete cube;
+    divider.Shutdown();
 }
 
 SceneState testScene::Update()
@@ -78,18 +65,18 @@ SceneState testScene::Update()
     joy->Respawn();
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
-        activeCamera = freeCamera;
+        activeCamera = &freeCamera;
         objRender.SetActiveCamera(activeCamera);
     }
     else if (Backend::GetKeyboard().KeyReleased(DIK_T))
     {
-        activeCamera = joyCamera;
+        activeCamera = &joyCamera;
         objRender.SetActiveCamera(activeCamera);
     }
     activeCamera->UpdateCam();
     activeCamera->SetView();
 
-    if (activeCamera == freeCamera)
+    if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
 
     //Camera functions
@@ -112,8 +99,6 @@ SceneState testScene::Update()
     //Joy functions
 
 
-    //Decal
-    objRender.UpdateCharacterDecal(joy);
 
 
     return SceneState::Unchanged;
@@ -122,4 +107,6 @@ SceneState testScene::Update()
 void testScene::Render()
 {
     objRender.DrawAll();
+    decalShadow.DrawAll(joy.GetPosition());
+    objRender.DrawCharacter(joy);
 }

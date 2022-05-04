@@ -21,7 +21,7 @@ private:
 	ID3D11Buffer* quadBuffer;
 	ID3D11Buffer* projection;
 
-	ID3D11ShaderResourceView* uiImgSRV;
+	//ID3D11ShaderResourceView* uiImgSRV;
 	ID3D11InputLayout* UI_IL;
 	ID3D11VertexShader* UI_VS;
 	ID3D11RasterizerState* UI_RS;

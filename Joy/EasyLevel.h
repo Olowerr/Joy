@@ -4,10 +4,10 @@
 class EasyLevel : public Scene
 {
 public:
-	EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, TempMeshStorage& meshStorage);
+	EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage);
+	~EasyLevel() override { }
 
 	// Inherited via Scene
-	virtual void Load() override;
 	virtual void Shutdown() override;
 
 	virtual SceneState Update() override;
@@ -15,6 +15,25 @@ public:
 
 
 private:
-	std::vector<Object> objects;
+
+	std::vector<Object> sceneObjects;
+	Character joy;
+	Object* ground;
+	Object* ground1;
+	Object* ground2;
+	Object* obstacle;
+	Object* obstacle1;
+	Object* obstacle2;
+	Object* obstacle3;
+	Object* obstacle4;
+
+	HLight hLight;
+	Camera* activeCamera;
+	FreelookCamera freeCamera;
+	CharacterCamera joyCamera;
+
+	Collision coll;
+
+	MapDivider divider;
 
 };

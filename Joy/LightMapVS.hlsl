@@ -28,9 +28,9 @@ VS_OUT main(VS_IN input)
 	VS_OUT output;
 
 	float2 uvs = input.uv;
-	input.uv.y = 1.f - input.uv.y;
-	input.uv = input.uv * 2.f - float2(1.f, 1.f);
-	output.pos = float4(input.uv, 0.f, 1.f);
+	uvs.y = 1.f - uvs.y;
+	uvs = uvs * 2.f - float2(1.f, 1.f);
+	output.pos = float4(uvs, 0.f, 1.f);
 
 	output.wsPos = mul(float4(input.pos, 1.f), world).xyz;
 	output.normal = mul(float4(input.normal, 0.f), world).xyz;

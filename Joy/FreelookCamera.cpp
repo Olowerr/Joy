@@ -18,8 +18,13 @@ FreelookCamera::FreelookCamera()
 	Backend::CreateDynamicCBuffer(&camMatrixBuffer, &viewProjMatrix, sizeof(DirectX::XMFLOAT4X4));
 }
 
+FreelookCamera::~FreelookCamera()
+{
+}
+
 void FreelookCamera::UpdateCam()
 {
+	return;
 
 	const float DeltaTime = Backend::GetDeltaTime();
 	const INT MouseX = mouse.GetDeltaX();

@@ -1,12 +1,18 @@
 #include "Object.h"
-Object::Object(Mesh* mesh)
-	:mesh(mesh), lightMap(nullptr)
+
+Object::Object(Mesh* mesh, bool levelObject)
+	:mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject)
 {
 	bBox = mesh->bBox;
+
+	if (levelObject)
+		levelObjects.emplace_back(this);
+	else
+		enviormentObjects.emplace_back(this);
 }
 
-Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
-	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr)
+Object::Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
+	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject)
 {
 	bBox = mesh->bBox;
 	bBox.Center.x += pos.x;
@@ -16,6 +22,10 @@ Object::Object(Mesh* mesh, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT s
 	bBox.Extents.y *= scale;
 	bBox.Extents.z *= scale;
 
+	if (levelObject)
+		levelObjects.emplace_back(this);
+	else
+		enviormentObjects.emplace_back(this);
 }
 
 void Object::Shutdown()
@@ -24,6 +34,15 @@ void Object::Shutdown()
 
 	if (lightMap)
 		lightMap->Release();
+}
+
+Object::~Object()
+{
+}
+
+void Object::CheckBB()
+{
+	bBox = mesh->bBox;
 }
 
 void Object::Draw()
@@ -89,9 +108,9 @@ void Object::Scale(FLOAT amount)
 void Object::SetScale(FLOAT Scale)
 {
 	Transform::SetScale(Scale);
-	bBox.Extents.x = mesh->bBox.Center.x * Scale;
-	bBox.Extents.y = mesh->bBox.Center.y * Scale;
-	bBox.Extents.z = mesh->bBox.Center.z * Scale;
+	bBox.Extents.x = mesh->bBox.Extents.x * Scale;
+	bBox.Extents.y = mesh->bBox.Extents.y * Scale;
+	bBox.Extents.z = mesh->bBox.Extents.z * Scale;
 }
 
 const DirectX::BoundingBox& Object::GetBoundingBox() const
@@ -107,4 +126,34 @@ Mesh* Object::GetMesh()
 ID3D11ShaderResourceView** Object::GetLightMapSRV()
 {
 	return &lightMap;
+}
+
+
+
+
+// --- Static Functions ---
+
+std::vector<Object*> Object::levelObjects;
+std::vector<Object*> Object::enviormentObjects;
+
+// maybe temp
+void Object::DropLevelPtr(Object* pObject)
+{
+	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pObject), levelObjects.end());
+}
+
+void Object::EmptyObjectLists()
+{
+	levelObjects.clear();
+	enviormentObjects.clear();
+}
+
+const std::vector<Object*>& Object::GetLevelObjects()
+{
+	return levelObjects;
+}
+
+const std::vector<Object*>& Object::GetEnviormentObjects()
+{
+	return enviormentObjects;
 }
