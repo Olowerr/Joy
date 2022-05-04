@@ -38,7 +38,7 @@ float GetLightLevel(const float2 uvs, const float lightSpaceZ)
 		}
 	}
 
-	return clamp(lightValue / float(pow(xyRadius * 2 + 1, 2)), 0.2f, 1.f);
+	return lightValue / float(pow(xyRadius * 2 + 1, 2));
 }
 
 float4 main(PS_IN input) : SV_TARGET
