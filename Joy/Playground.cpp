@@ -26,15 +26,16 @@ void testScene::Load()
     objRender.AddObject(ground);
     objRender.AddObject(joy);
     objRender.AddObject(gatoKubo);
+    objRender.AddObject(cube);
 
-    cube->SetPosition(2.0f, 0.0f, 0.0f);
+    cube->SetPosition(-2.0f, 0.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     collTest->SetPosition(2.0f, 0.0f, 0.0f);
     gatoKubo->SetPosition(1.f, 0.5f, 1.f);
 
     HLight hLight(objRender);
-    Object* elgato[2] = { ground, gatoKubo };
-    hLight.GenerateLightMaps(elgato, 2);
+    Object* elgato[3] = { ground, gatoKubo, collTest };
+    hLight.GenerateLightMaps(elgato, 3);
     hLight.Shutdown();
 
     freeCamera = new FreelookCamera();
@@ -72,6 +73,9 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
+    joy->Jump();
+    joy->Move();
+    joy->Respawn();
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = freeCamera;
@@ -93,31 +97,20 @@ SceneState testScene::Update()
     activeCamera->SetView();
 
     //Collision
-    joy->SetCollidedY(coll.getCollidedY());
-    if(coll.getCollidedY())
-        joy->SetSpeedZero();
-    if (coll.HitObject(joy, cube))
-        joy->SetSpeedZero();
-    if (coll.HitObject(joy, ground))
-    {
-        joy->SetSpeedZero();
-        joy->SetCanJump(coll.GetStopFall());
-    }
-        
-    if (coll.HitObject(joy, collTest))
-    {
-        joy->SetCanJump(coll.GetStopFall());
-        joy->SetSpeedZero();
-    }
-    joy->SetCanJump(coll.GetStopFall());
-        
+
+
+    if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
+        joy->SetCanJump(true);
+    else
+        joy->SetCanJump(false);
     coll.collided(joy, collTest);
-    coll.collided(joy, cube);
-    coll.collided(joy, ground);
+    coll2.collided(joy, cube);
+    coll3.collided(joy, ground);
+
+    
+    
     //Joy functions
-    joy->Jump();
-    joy->Move();
-    joy->Respawn();
+
     //test->respawn();
 
     //Decal
