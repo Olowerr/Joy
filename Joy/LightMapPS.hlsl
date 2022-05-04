@@ -10,14 +10,17 @@ cbuffer light : register(b0)
 {
 	float lightStrength;
 	float3 lightDirection;
+}
+cbuffer lightMatrix : register(b1)
+{
 	float4x4 lightViewProject;
 }
 
 Texture2D shadowMap : register(t0);
 SamplerState defaultSampler : register(s0);
 
-#define xyRadius 5
-#define texelSampleDist 2.f
+#define xyRadius 2
+#define texelSampleDist 1.f
 
 float GetLightLevel(const float2 uvs, const float lightSpaceZ)
 {
