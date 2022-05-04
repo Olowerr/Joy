@@ -26,6 +26,8 @@ private:
 	CharacterCamera joyCamera;
 
 	Collision coll;
+	Collision coll2;
+	Collision coll3;
 
 	MapDivider divider;
 };
