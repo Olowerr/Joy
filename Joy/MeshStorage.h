@@ -72,7 +72,8 @@ private:
 	{
 		"Joy.obj",
 		"Kub.obj",
-		"Ground.obj"
+		"Ground.obj",
+		"Portal.obj"
 	};
 
 	void import(UINT index);

@@ -11,10 +11,10 @@ void Game::Shutdown()
 {
 	uiRender.Shutdown();
 	objRender.Shutdown();
+
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
 	Backend::Destroy();
 }
 
@@ -23,6 +23,7 @@ void Game::Run()
 	SceneState activeState = SceneState::Unchanged;
 	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
 	Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
+	//Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 
 	while (window.IsOpen())
 	{

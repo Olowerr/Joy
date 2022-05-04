@@ -63,9 +63,12 @@ void EasyLevel::Shutdown()
 {
     hLight.Shutdown();
 
+    uiRender.Shutdown();
     decalShadow.Shutdown();
+    objRender.Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
+    Object::EmptyObjectLists();
 
     joy.Shutdown();
 

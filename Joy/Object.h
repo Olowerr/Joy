@@ -46,6 +46,7 @@ private:
 	static std::vector<Object*> enviormentObjects;
 public:
 	static void DropLevelPtr(Object* pObject); // maybe temp
+	static void EmptyObjectLists();
 	static const std::vector<Object*>& GetLevelObjects();
 	static const std::vector<Object*>& GetEnviormentObjects();
 };
