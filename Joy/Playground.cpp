@@ -60,9 +60,9 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
-    joy->Jump();
-    joy->Move();
-    joy->Respawn();
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -87,12 +87,12 @@ SceneState testScene::Update()
 
 
     if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
-        joy->SetCanJump(true);
+        joy.SetCanJump(true);
     else
-        joy->SetCanJump(false);
-    coll.collided(joy, collTest);
-    coll2.collided(joy, cube);
-    coll3.collided(joy, ground);
+        joy.SetCanJump(false);
+    coll.collided(&joy, collTest);
+    coll2.collided(&joy, cube);
+    coll3.collided(&joy, ground);
 
     
     
