@@ -32,13 +32,15 @@ public:
 	ID3D11ShaderResourceView** GetLightMapSRV();
 
 	const bool IsLevelObject;
+	void SetInstanced(bool isInstanced);
+	bool GetIsInstanced() const;
 
 private:
 	Mesh* mesh;
 	DirectX::BoundingBox bBox;
 	//hej
 	ID3D11ShaderResourceView* lightMap; // no use in joy
-
+	bool isInstanced;
 
 
 	// "Global" arrays of all objects

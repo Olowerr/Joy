@@ -128,6 +128,16 @@ ID3D11ShaderResourceView** Object::GetLightMapSRV()
 	return &lightMap;
 }
 
+void Object::SetInstanced(bool isInstanced)
+{
+	this->isInstanced = isInstanced;
+}
+
+bool Object::GetIsInstanced() const
+{
+	return isInstanced;
+}
+
 
 
 
