@@ -35,7 +35,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     obstacle1->SetPosition(0.7f, 1.5f, 20.0f);
     obstacle2->SetPosition(7.5f, 1.5f, 20.0f);
 
-    hLight.GenerateLightMaps();
+    hLight.GenerateLightMaps(divider);
     hLight.ShutdownTools();
 
     objRender.SetActiveCamera(activeCamera);
