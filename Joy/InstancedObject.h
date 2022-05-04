@@ -1,25 +1,26 @@
 #pragma once
-#include "Transform.h"
-#include "MeshStorage.h"
-#include <DirectXCollision.h>
+#include "Object.h"
 
 class InstancedObject
 {
 public:
 
-	InstancedObject();
+	InstancedObject(UINT capacity = 5);
 	~InstancedObject();
-
-	ID3D11Buffer* vertexBuffer;
-	//ID3D11Buffer* indexBuffer; 
-	ID3D11ShaderResourceView* transformSRV;
-	ID3D11ShaderResourceView* mtl;
-	//ID3D11ShaderResourceView* lightMapsSRV;
-	UINT indexCount;
-	UINT instanceCount;
-
 	void Shutdown();
 
-private:
+	void AddObject(Object* pObject);
+	bool Finalize();
 
+	void Draw();
+
+	const UINT Capacity;
+
+private:
+	Mesh* mesh;
+	ID3D11ShaderResourceView* transformSRV;
+	//ID3D11ShaderResourceView* lightMapsSRV;
+	UINT instanceCount;
+
+	Object** ppObjects;
 };

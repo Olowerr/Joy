@@ -51,13 +51,10 @@ void main( uint3 DTid : SV_DispatchThreadID )
 			}
 		}
 	}
-	
-
 
 	AllMemoryBarrierWithGroupSync();
 
 	if (foundCount)
-	{
 		lightMapsUAV[DTid] = result / foundCount;
-	}
+	
 }
