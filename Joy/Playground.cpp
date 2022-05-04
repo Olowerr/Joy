@@ -47,6 +47,7 @@ void testScene::Shutdown()
     decalShadow.Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
+    Object::EmptyObjectLists();
  
     joy.Shutdown();
     for (Object& object : sceneObjects)
