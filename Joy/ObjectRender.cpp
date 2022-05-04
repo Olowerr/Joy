@@ -74,7 +74,7 @@ void ObjectRender::DrawAll()
 	// temp
 
 
-	for (Object* obj : (*activeSection)->enivormentObjects)
+	for (Object* obj : Object::GetEnviormentObjects())
 		obj->Draw();
 
 	//devContext->VSSetShader(objInstanceVS, nullptr, 0);

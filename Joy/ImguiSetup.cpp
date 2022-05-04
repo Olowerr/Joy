@@ -26,50 +26,44 @@ void StartImGuiFrame()
 	ImGui::NewFrame();
 }
 
-void ImGuiModifyPos(Object* toModify)
+void ImGuiModifyTransform(std::vector<Object*> object)
 {
-	DirectX::XMFLOAT3 tempPos = toModify->GetPosition();
+	float xPos = object[imguiObjCounter]->GetPosition().x;
+	float yPos = object[imguiObjCounter]->GetPosition().y;
+	float zPos = object[imguiObjCounter]->GetPosition().z;
+	float xRot = object[imguiObjCounter]->GetRotation().x;
+	float yRot = object[imguiObjCounter]->GetRotation().y;
+	float zRot = object[imguiObjCounter]->GetRotation().z;
+	float scale = object[imguiObjCounter]->GetScale();
+
 	bool begun = ImGui::Begin("Modifiers");
 	if (begun)
 	{
-		ImGui::InputFloat("X pos modifier", &tempPos.x, 0.1f);
-		ImGui::InputFloat("Y pos modifier", &tempPos.y, 0.1f);
-		ImGui::InputFloat("Z pos modifier", &tempPos.z, 0.1f);
+		ImGui::InputInt("Object to change", &imguiObjCounter, 1);
+		if (imguiObjCounter > object.size() - 1)
+		{
+			imguiObjCounter = object.size() - 1;
+		}
+		xPos = object[imguiObjCounter]->GetPosition().x;
+		yPos = object[imguiObjCounter]->GetPosition().y;
+		zPos = object[imguiObjCounter]->GetPosition().z;
+		ImGui::InputFloat("X pos modifier", &xPos, 0.1f);
+		ImGui::InputFloat("Y pos modifier", &yPos, 0.1f);
+		ImGui::InputFloat("Z pos modifier", &zPos, 0.1f);
+		xRot = object[imguiObjCounter]->GetRotation().x;
+		yRot = object[imguiObjCounter]->GetRotation().y;
+		zRot = object[imguiObjCounter]->GetRotation().z;
+		ImGui::InputFloat("X rot modifier", &xRot, 0.1f);
+		ImGui::InputFloat("Y rot modifier", &yRot, 0.1f);
+		ImGui::InputFloat("Z rot modifier", &zRot, 0.1f);
+		scale = object[imguiObjCounter]->GetScale();
+		ImGui::InputFloat("Scale modifier", &scale, 0.1f);
 	}
 	ImGui::End();
 
-	toModify->SetPosition({ tempPos.x, tempPos.y, tempPos.z });
-	//std::cout << toModify->GetBoundingBox().Center.x;
-}
-
-void ImGuiModifyRot(Object* toModify)
-{
-	DirectX::XMFLOAT3 tempRot = toModify->GetRotation();
-	bool begun = ImGui::Begin("Modifiers");
-	if (begun)
-	{
-		ImGui::InputFloat("X rot modifier", &tempRot.x, 0.1f);
-		ImGui::InputFloat("Y rot modifier", &tempRot.y, 0.1f);
-		ImGui::InputFloat("Z rot modifier", &tempRot.z, 0.1f);
-	}
-	ImGui::End();
-
-	toModify->SetRotation(tempRot.x, tempRot.y, tempRot.z);
-	//std::cout << toModify->GetBoundingBox().Center.x;
-}
-
-void ImGuiModifyScale(Object* toModify)
-{
-	float tempScale = toModify->GetScale();
-	bool begun = ImGui::Begin("Modifiers");
-	if (begun)
-	{
-		ImGui::InputFloat("X scale modifier", &tempScale, 0.1f);
-	}
-	ImGui::End();
-
-	toModify->SetScale(tempScale);
-	//std::cout << toModify->GetBoundingBox().Center.x;
+	object[imguiObjCounter]->SetPosition(xPos, yPos, zPos);
+	object[imguiObjCounter]->SetRotation(xRot, yRot, zRot);
+	object[imguiObjCounter]->SetScale(scale);
 }
 
 void EndImGuiFrame()

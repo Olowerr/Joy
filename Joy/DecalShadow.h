@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "CameraBase.h"
 #include "MapSections.h"
+#include "ImguiSetup.h"
 
 class DecalShadow
 {

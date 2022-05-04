@@ -194,7 +194,7 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	DrawDecalShadowDepth((*activeSection)->levelObjects, joyPos);
+	DrawDecalShadowDepth(Object::GetLevelObjects(), joyPos);
 
 	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
@@ -207,22 +207,14 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 
 	devContext->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), *Backend::GetStandardDSV());
 
-	for (Object* obj : (*activeSection)->levelObjects)
+	for (Object* obj : Object::GetLevelObjects())
 		obj->Draw();
-
-	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
-
-	//for (InstancedObject& inst : instances)
-	//{
-	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
-
-	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	//}
 
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+	ImGuiModifyTransform(Object::GetLevelObjects());
 }
 
 ID3D11PixelShader*& DecalShadow::GetDecalPS()
