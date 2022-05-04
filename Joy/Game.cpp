@@ -52,7 +52,7 @@ void Game::Run()
 		activeState = activeScene->Update();
 		StartImGuiFrame();
 		activeScene->Render();
-		Backend::GetDeviceContext()->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), nullptr);
+
 		EndImGuiFrame();
 
 		Backend::Display();
