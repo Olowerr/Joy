@@ -19,21 +19,34 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     sceneObjects.reserve(10);
     sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
 
     ground = &sceneObjects[0];
-    obstacle = &sceneObjects[1];
-    obstacle1 = &sceneObjects[2];
-    obstacle2 = &sceneObjects[3];
+    ground1 = &sceneObjects[1];
+    portal = &sceneObjects[2];
+    wall = &sceneObjects[3];
+    wall1 = &sceneObjects[4];
+    wall2 = &sceneObjects[5];
 
     joy.SetPosition(0.0f, 5.0f, 10.0f);
     ground->SetPosition(0.0f, 0.0f, 10.0f);
     ground->SetScale(2.0f);
-    obstacle->SetPosition(-6.1f, 1.5f, 20.0f);
-    obstacle1->SetPosition(0.7f, 1.5f, 20.0f);
-    obstacle2->SetPosition(7.5f, 1.5f, 20.0f);
+    ground1->SetPosition(-8.0f, 0.0f, 29.8f);
+    ground1->SetScale(2.0f);
+    portal->SetPosition(0.7f, 1.5f, 20.0f);
+    portal->SetScale(2.0f);
+    wall->SetPosition(10.0f, 1.9f, 10.0f);
+    wall->SetRotation(0.0f, 1.570f, 0.0f);
+    wall->SetScale(2.0f);
+    wall1->SetPosition(-10.0f, 1.9f, 10.0f);
+    wall1->SetRotation(0.0f, -1.570f, 0.0f);
+    wall1->SetScale(2.0f);
+    wall2->SetPosition(4.9f, 1.9f, 20.0f);
+    wall2->SetScale(2.0f);
 
 
     objRender.SetActiveCamera(activeCamera);
@@ -103,14 +116,12 @@ SceneState MainMenu::Update()
     if (coll.getCollidedY())
         joy.SetSpeedZero();
 
-    if (coll.HitObject(&joy, obstacle))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle1))
-        joy.SetSpeedZero();
-    if (coll.HitObject(&joy, obstacle2))
-        joy.SetSpeedZero();
-
     if (coll.HitObject(&joy, ground))
+    {
+        joy.SetSpeedZero();
+        joy.SetCanJump(coll.GetStopFall());
+    }
+    if (coll.HitObject(&joy, ground1))
     {
         joy.SetSpeedZero();
         joy.SetCanJump(coll.GetStopFall());
@@ -119,12 +130,14 @@ SceneState MainMenu::Update()
     joy.SetCanJump(coll.GetStopFall());
 
     coll.collided(&joy, ground);
-    if (joy.GetBoundingBox().Intersects(obstacle1->GetBoundingBox()))
+    coll.collided(&joy, ground1);
+    coll.collided(&joy, wall);
+    coll.collided(&joy, wall1);
+    coll.collided(&joy, wall2);
+    if (joy.GetBoundingBox().Intersects(portal->GetBoundingBox()))
     {
         return SceneState::Easy;
     }
-    coll.collided(&joy, obstacle);
-    coll.collided(&joy, obstacle2);
 
     //Joy functions
     joy.Jump();

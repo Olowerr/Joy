@@ -17,9 +17,11 @@ private:
 	std::vector<Object> sceneObjects;
 	Character joy;
 	Object* ground;
-	Object* obstacle;
-	Object* obstacle1;
-	Object* obstacle2;
+	Object* ground1;
+	Object* portal;
+	Object* wall;
+	Object* wall1;
+	Object* wall2;
 
 	HLight hLight;
 	Camera* activeCamera;
