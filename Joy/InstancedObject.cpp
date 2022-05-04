@@ -82,6 +82,21 @@ bool InstancedObject::Finalize()
 	return true;
 }
 
+ID3D11ShaderResourceView** InstancedObject::GetLightMaps()
+{
+	return &lightMapsSRV;
+}
+
+Object** InstancedObject::GetObjects()
+{
+	return ppObjects;
+}
+
+UINT InstancedObject::GetNumObjects()
+{
+	return instanceCount;
+}
+
 void InstancedObject::Draw()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();

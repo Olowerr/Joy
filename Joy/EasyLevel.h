@@ -15,7 +15,6 @@ public:
 
 
 private:
-	//InstancedObject tast;
 	std::vector<Object> sceneObjects;
 	Character joy;
 	Object* ground;

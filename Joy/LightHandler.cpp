@@ -234,7 +234,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	return true;
 }
 
-bool HLight::GenerateLightMapsInstanced(MapDivider& sections, Object** objects, UINT numObjects, ID3D11ShaderResourceView** lightMaps)
+bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs)
 {
 	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
@@ -265,6 +265,9 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, Object** objects, 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
+	const UINT numObjects = instststs.GetNumObjects();
+	Object** objects = instststs.GetObjects();
+
 	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
 	texDesc.ArraySize = numObjects;
 	
@@ -273,7 +276,7 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, Object** objects, 
 	if (FAILED(hr))
 		return false;
 
-	hr = device->CreateShaderResourceView(resource, nullptr, lightMaps);
+	hr = device->CreateShaderResourceView(resource, nullptr, instststs.GetLightMaps());
 	if (FAILED(hr))
 	{
 		resource->Release();
@@ -364,11 +367,6 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, Object** objects, 
 
 
 	return true;
-}
-
-bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs)
-{
-	return false;
 }
 
 void HLight::DrawShadowMaps(MapDivider& sections)

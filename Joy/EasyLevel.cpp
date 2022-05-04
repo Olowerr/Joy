@@ -64,8 +64,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 void EasyLevel::Shutdown()
 {
     hLight.Shutdown();
-
-   
+    
     decalShadow.Shutdown();
 
     objRender.Clear();

@@ -12,11 +12,10 @@ public:
 
 	bool InitiateTools(MapDivider& sections);
 	bool GenerateLightMaps(MapDivider& sections);
-	bool GenerateLightMapsInstanced(MapDivider& sections, Object** objects, UINT numObjects, ID3D11ShaderResourceView** lightMaps);
 	bool GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
-	const UINT LightMapXY = 1024; 
+	const UINT LightMapXY = 512; 
 	const UINT LightMapCSThreadXY = 16;
 
 private:
