@@ -47,7 +47,7 @@ float4 main(PS_IN input) : SV_TARGET
     }
     float lightValue = lightMap.Sample(defaultSampler, float3(input.uv,0)).r;
 
-    float4 Color = image.Sample(defaultSampler, input.uv) ;
+    /*float4 Color = image.Sample(defaultSampler, input.uv) ;
     float3 Normal = normalize(input.normal);
 
     float3 directionalLight = float3(-1, -1, 1);
@@ -66,7 +66,7 @@ float4 main(PS_IN input) : SV_TARGET
         Color = float4(0.1, 0.1, 0.1, 1.0) + Color;
 
 
-    return Color * lightValue;
+    return Color * lightValue;*/
 
-    //image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r
+    return image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
 }

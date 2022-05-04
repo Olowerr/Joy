@@ -97,11 +97,6 @@ bool DecalShadow::InitiateRasterizerState()
 		return false;
 	}
 
-
-
-
-
-
 	return true;
 }
 
@@ -264,18 +259,19 @@ void DecalShadow::DrawWithOutline()
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
 	devContext->RSSetState(ccwRS);
-		devContext->VSSetShader(outlineVS, nullptr, 0);
-		devContext->PSSetShader(outlinePS, nullptr, 0);
+	devContext->VSSetShader(outlineVS, nullptr, 0);
+	devContext->PSSetShader(outlinePS, nullptr, 0);
 
-		for (Object* obj : Object::GetLevelObjects())
-			obj->Draw();
-		devContext->RSSetState(cwRS);
-		devContext->VSSetShader(storage.objectVS, nullptr, 0);
-		devContext->PSSetShader(decalPS, nullptr, 0);
+	for (Object* obj : Object::GetLevelObjects())
+		obj->Draw();
 
-		for (Object* obj : Object::GetLevelObjects())
-			obj->Draw();
-		devContext->RSSetState(nullptr);
+
+	devContext->RSSetState(nullptr);
+	devContext->VSSetShader(storage.objectVS, nullptr, 0);
+	devContext->PSSetShader(decalPS, nullptr, 0);
+
+	for (Object* obj : Object::GetLevelObjects())
+		obj->Draw();
 
 }
 
