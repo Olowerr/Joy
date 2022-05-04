@@ -43,6 +43,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
+    hLight.InitiateTools(divider);
     hLight.GenerateLightMaps(divider);
     hLight.ShutdownTools();
 }
@@ -51,10 +52,8 @@ void MainMenu::Shutdown()
 {
     hLight.Shutdown();
 
-    //decalShadow.Shutdown();
-    //objRender.Shutdown();
-    uiRender.Shutdown();
-    //objRender.Clear();
+    //uiRender.Shutdown();
+    objRender.Clear();
     meshStorage.UnLoadAll();
     Object::EmptyObjectLists();
 

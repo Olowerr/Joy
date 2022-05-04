@@ -151,7 +151,7 @@ void DecalShadow::UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos)
 	Backend::UpdateBuffer(decalCamDCBuff, &viewOrtMtrx, sizeof(DirectX::XMFLOAT4X4));
 }
 
-void DecalShadow::DrawDecalShadowDepth(const std::vector<Object*>& objects, DirectX::XMFLOAT3 joyPos)
+void DecalShadow::DrawDecalShadowDepth(DirectX::XMFLOAT3 joyPos)
 {
 	UpdateCharacterDecal(joyPos);
 	UpdateDecalDepthCam(joyPos);
@@ -166,11 +166,8 @@ void DecalShadow::DrawDecalShadowDepth(const std::vector<Object*>& objects, Dire
 	devContext->PSSetShader(nullptr, nullptr, 0);
 	devContext->OMSetRenderTargets(0, nullptr, decalDSView);
 
-	for (Object* obj : objects)
-		if (obj != objects[0])
-		{
-			obj->Draw();
-		}
+	for (Object* obj : Object::GetLevelObjects())
+		obj->Draw();
 
 	//devContext->VSSetShader(decalInstanceVS, nullptr, 0);
 
@@ -192,7 +189,7 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	DrawDecalShadowDepth(Object::GetLevelObjects(), joyPos);
+	DrawDecalShadowDepth(joyPos);
 
 	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 

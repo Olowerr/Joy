@@ -52,7 +52,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 50.f, 50.);
+    divider.CreateSections(1, 200.f, 50.f, 50.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
@@ -64,9 +64,6 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 void EasyLevel::Shutdown()
 {
     hLight.Shutdown();
-
-   
-    decalShadow.Shutdown();
 
     objRender.Clear();
     meshStorage.UnLoadAll();

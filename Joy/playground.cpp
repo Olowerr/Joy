@@ -44,7 +44,6 @@ void testScene::Shutdown()
 {
     hLight.Shutdown();
 
-    decalShadow.Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
     Object::EmptyObjectLists();
