@@ -152,11 +152,11 @@ void Object::DropLevelPtr(Object* pObject)
 	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pObject), levelObjects.end());
 }
 
-void Object::EmptyObjectLists()
-{
-	levelObjects.clear();
-	enviormentObjects.clear();
-}
+//void Object::EmptyObjectLists()
+//{
+//	levelObjects.clear();
+//	enviormentObjects.clear();
+//}
 
 const std::vector<Object*>& Object::GetLevelObjects()
 {

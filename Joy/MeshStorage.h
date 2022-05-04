@@ -71,7 +71,7 @@ private:
 	const std::string meshNames[MeshCount] =
 	{
 		"Joy.obj",
-		"FirstTree.obj",
+		"sphere.obj",
 		"Ground.obj",
 		"Portal.obj"
 	};

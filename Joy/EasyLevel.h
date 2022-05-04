@@ -36,24 +36,4 @@ private:
 
 	MapDivider divider;
 
-	std::vector<Object> sceneObjects;
-	Character joy;
-	Object* ground;
-	Object* ground1;
-	Object* ground2;
-	Object* obstacle;
-	Object* obstacle1;
-	Object* obstacle2;
-	Object* obstacle3;
-	Object* obstacle4;
-
-	HLight hLight;
-	Camera* activeCamera;
-	FreelookCamera freeCamera;
-	CharacterCamera joyCamera;
-
-	Collision coll;
-
-	MapDivider divider;
-
 };
