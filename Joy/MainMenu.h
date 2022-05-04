@@ -13,6 +13,22 @@ public:
 	virtual void Render() override;
 
 private:
-	Sprite startButton;
 
+	std::vector<Object> sceneObjects;
+	Character joy;
+	Object* ground;
+	Object* obstacle;
+	Object* obstacle1;
+	Object* obstacle2;
+
+	HLight hLight;
+	Camera* activeCamera;
+	FreelookCamera freeCamera;
+	CharacterCamera joyCamera;
+
+	Collision coll;
+
+	MapDivider divider;
+
+	Sprite startButton;
 };
