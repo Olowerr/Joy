@@ -133,6 +133,9 @@
     <ClCompile Include="CharacterCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="HighscoreLevel.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
@@ -234,6 +237,9 @@
     </ClInclude>
     <ClInclude Include="CharacterCamera.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="HighscoreLevel.h">
+      <Filter>Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -90,16 +90,10 @@ SceneState testScene::Update()
         joy.SetCanJump(true);
     else
         joy.SetCanJump(false);
+
     coll.collided(&joy, collTest);
     coll2.collided(&joy, cube);
     coll3.collided(&joy, ground);
-
-    
-    
-    //Joy functions
-
-
-
 
     return SceneState::Unchanged;
 }

@@ -2,6 +2,7 @@
 #include "MainMenu.h"
 #include "EasyLevel.h"
 #include "playground.h"
+#include "HighscoreLevel.h"
 
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"

@@ -26,13 +26,21 @@ private:
 	Object* obstacle2;
 	Object* obstacle3;
 	Object* obstacle4;
+	Object* portal;
 
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
-	Collision coll;
+	Collision coll1;
+	Collision coll2;
+	Collision coll3;
+	Collision coll4;
+	Collision coll5;
+	Collision coll6;
+	Collision coll7;
+	Collision coll8;
 
 	MapDivider divider;
 

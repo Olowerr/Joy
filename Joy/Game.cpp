@@ -43,6 +43,11 @@ void Game::Run()
 			activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
 			break;
 
+		case SceneState::Highscore:
+			activeScene->Shutdown();
+			delete activeScene;
+			activeScene = new HighscoreLevel(uiRender, objRender, decalShadow, meshStorage);
+			break;
 		}
 		
 		Backend::Process();

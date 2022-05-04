@@ -1,11 +1,11 @@
 #pragma once
 #include "Scene.h"
 
-class MainMenu : public Scene
+class HighscoreLevel : public Scene
 {
 public:
-	MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage);
-	~MainMenu()  override { }
+	HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage);
+	~HighscoreLevel()  override { }
 
 	// Inherited via Scene
 	virtual void Shutdown() override;
@@ -17,9 +17,7 @@ private:
 	std::vector<Object> sceneObjects;
 	Character joy;
 	Object* ground1;
-	Object* ground2;
-	Object* portal1;
-	Object* portal2;
+	Object* portal;
 	Object* wall1;
 	Object* wall2;
 	Object* wall3;
@@ -28,7 +26,6 @@ private:
 	Collision coll2;
 	Collision coll3;
 	Collision coll4;
-	Collision coll5;
 
 	HLight hLight;
 	Camera* activeCamera;
@@ -36,6 +33,4 @@ private:
 	CharacterCamera joyCamera;
 
 	MapDivider divider;
-
-	Sprite startButton;
 };

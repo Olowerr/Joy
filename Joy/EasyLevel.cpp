@@ -20,6 +20,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
 
     ground = &sceneObjects[0];
     ground1 = &sceneObjects[1];
@@ -29,6 +30,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     obstacle2 = &sceneObjects[5];
     obstacle3 = &sceneObjects[6];
     obstacle4 = &sceneObjects[7];
+    portal = &sceneObjects[8];
 
     joy.SetPosition(0.0f, 3.0f, 10.0f);
     ground->SetPosition(0.0f, -2.0f, 10.0f);
@@ -47,7 +49,8 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     obstacle3->SetScale(4.4f);
     obstacle4->SetPosition(3.1f, 1.2f, 28.3f);
     obstacle4->SetScale(1.8f);
-
+    portal->SetPosition(6.1f, 4.3f, 78.099f);
+    portal->Scale(2.0f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -82,6 +85,10 @@ void EasyLevel::Shutdown()
 
 SceneState EasyLevel::Update()
 {
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
+
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -106,20 +113,24 @@ SceneState EasyLevel::Update()
 
     //Collision
 
+    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY() || coll5.getCollidedY() || coll6.getCollidedY() || coll7.getCollidedY() || coll8.getCollidedY())
+        joy.SetCanJump(true);
+    else
+        joy.SetCanJump(false);
 
-    coll.collided(&joy, ground);
-    coll.collided(&joy, ground1);
-    coll.collided(&joy, ground2);
-    coll.collided(&joy, obstacle);
-    coll.collided(&joy, obstacle1);
-    coll.collided(&joy, obstacle2);
-    coll.collided(&joy, obstacle3);
-    coll.collided(&joy, obstacle4);
+    coll1.collided(&joy, ground);
+    coll2.collided(&joy, ground1);
+    coll3.collided(&joy, ground2);
+    coll4.collided(&joy, obstacle);
+    coll5.collided(&joy, obstacle1);
+    coll6.collided(&joy, obstacle2);
+    coll7.collided(&joy, obstacle3);
+    coll8.collided(&joy, obstacle4);
 
-    //Joy functions
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
+    if (joy.GetBoundingBox().Intersects(portal->GetBoundingBox()))
+    {
+        return SceneState::Highscore;
+    }
 
     return SceneState::Unchanged;
 }

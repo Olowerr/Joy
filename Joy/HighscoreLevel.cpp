@@ -1,55 +1,41 @@
-#include "MainMenu.h"
+#include "HighscoreLevel.h"
 
-MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, decalShadow, meshStorage)
-	, startButton("../Resources/Images/cat.png", (float)Backend::GetWindowWidth() * 0.5f, (float)Backend::GetWindowHeight() * 0.5f, 1.f, 1.f)
+HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
+    :Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetMesh(0))
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
 {
-	uiRender.Clear();
-	uiRender.Add(&startButton);
-
-	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
-
     meshStorage.LoadAll();
 
     joy.CheckBB();
 
     sceneObjects.reserve(10);
     sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
 
     ground1 = &sceneObjects[0];
-    ground2 = &sceneObjects[1];
-    portal1 = &sceneObjects[2];
-    portal2 = &sceneObjects[3];
-    wall1 = &sceneObjects[4];
-    wall2 = &sceneObjects[5];
-    wall3 = &sceneObjects[6];
+    portal = &sceneObjects[1];
+    wall1 = &sceneObjects[2];
+    wall2 = &sceneObjects[3];
+    wall3 = &sceneObjects[4];
 
-    joy.SetPosition(0.0f, 5.0f, 10.0f);
-    ground1->SetPosition(0.0f, 0.0f, 10.0f);
+    joy.SetPosition(0.0f, 3.0f, 0.0f);
+    ground1->SetPosition(0.0f, 0.0f, 0.0f);
     ground1->SetScale(2.0f);
-    ground2->SetPosition(-8.0f, 0.0f, 29.8f);
-    ground2->SetScale(2.0f);
-    portal1->SetPosition(-0.4f, 1.5f, 20.0f);
-    portal1->SetScale(2.0f);
-    portal2->SetPosition(5.7f, 1.5f, 20.0f);
-    portal2->SetScale(2.0f);
-    wall1->SetPosition(10.0f, 1.9f, 10.0f);
+    portal->SetPosition(-7.4f, 2.0f, 9.5f);
+    portal->SetRotation(0.0f, 0.0f, 0.0f);
+    portal->SetScale(2.0f);
+    wall1->SetPosition(9.9f, 1.9f, 0.0f);
     wall1->SetScale(2.0f);
-    wall2->SetPosition(-10.0f, 1.9f, 10.0f);
+    wall2->SetPosition(-9.9f, 1.9f, 0.0f);
     wall2->SetScale(2.0f);
-    wall3->SetPosition(4.9f, 1.9f, 20.0f);
+    wall3->SetPosition(0.0f, 1.9f, 9.8f);
     wall3->SetScale(2.0f);
-
 
 
     objRender.SetActiveCamera(activeCamera);
@@ -64,7 +50,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     hLight.ShutdownTools();
 }
 
-void MainMenu::Shutdown()
+void HighscoreLevel::Shutdown()
 {
     hLight.Shutdown();
 
@@ -82,16 +68,10 @@ void MainMenu::Shutdown()
     joyCamera.Shutdown();
 
     divider.Shutdown();
-	startButton.Shutdown();
 }
 
-SceneState MainMenu::Update()
+SceneState HighscoreLevel::Update()
 {
-	//if (startButton.Clicked())
-	//{
-	//	std::cout << "Clicked\n";
-	//	return SceneState::Easy;
-	//}
     joy.Jump();
     joy.Move();
     joy.Respawn();
@@ -119,32 +99,26 @@ SceneState MainMenu::Update()
 
     //Collision
 
-    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY() || coll5.getCollidedY())
+    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY())
         joy.SetCanJump(true);
     else
         joy.SetCanJump(false);
 
     coll1.collided(&joy, ground1);
-    coll2.collided(&joy, ground2);
-    coll3.collided(&joy, wall1);
-    coll4.collided(&joy, wall2);
-    coll5.collided(&joy, wall3);
+    coll2.collided(&joy, wall1);
+    coll3.collided(&joy, wall2);
+    coll4.collided(&joy, wall3);
 
-    if (joy.GetBoundingBox().Intersects(portal1->GetBoundingBox()))
+    if (joy.GetBoundingBox().Intersects(portal->GetBoundingBox()))
     {
-        return SceneState::Easy;
-    }
-    if (joy.GetBoundingBox().Intersects(portal2->GetBoundingBox()))
-    {
-        return SceneState::Highscore;
+        return SceneState::MainMenu;
     }
 
     return SceneState::Unchanged;
 }
 
-void MainMenu::Render()
+void HighscoreLevel::Render()
 {
-	//uiRender.Draw();
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
