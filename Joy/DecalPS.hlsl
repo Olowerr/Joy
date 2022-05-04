@@ -42,9 +42,31 @@ float4 main(PS_IN input) : SV_TARGET
     {
         if (dot(isInside, isInside) < 1.0f - (distance * 0.2f) || dot(isInside, isInside) < 0.01f)
         {
-            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)); //* lightMap.Sample(defaultSampler, input.uv).r;
+            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)) * lightMap.Sample(defaultSampler, float3(input.uv,0.f)).r;
         }
     }
-    
-    return image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
+    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv,0)).r;
+
+    float4 Color = image.Sample(defaultSampler, input.uv) ;
+    float3 Normal = normalize(input.normal);
+
+    float3 directionalLight = float3(-1, -1, 1);
+    float intensity = dot(normalize(directionalLight), Normal);
+
+    if (intensity < 0)
+        intensity = 0;
+
+    if (intensity > 0.95)
+        Color = float4(1.0, 1, 1, 1.0) * Color;
+    else if (intensity > 0.5)
+        Color = float4(0.7, 0.7, 0.7, 1.0) * Color;
+    else if (intensity > 0.05)
+        Color = float4(0.35, 0.35, 0.35, 1.0) * Color;
+    else
+        Color = float4(0.1, 0.1, 0.1, 1.0) + Color;
+
+
+    return Color * lightValue;
+
+    //image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r
 }
