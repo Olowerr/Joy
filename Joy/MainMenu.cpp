@@ -2,7 +2,7 @@
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
-	, startButton("../Resources/Images/cat.png", (float)Backend::GetWindowWidth() * 0.5f, (float)Backend::GetWindowHeight() * 0.5f, 1.f, 1.f)
+	, startButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , joy(meshStorage.GetMesh(0))
     , joyCamera(joy)
     , divider(joy)
@@ -10,11 +10,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 {   
     
     uiRender.Clear();
-	//uiRender.Add(&startButton);
+	uiRender.Add(&startButton);
     uiRender.Add(&thomas);
-    thomas.SetPosition(200.f, 200.f);
+    thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
     thomas.SetText("THOMAS");
+    thomas.SetScale(1.5f, 1.5f);
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -96,13 +97,10 @@ SceneState MainMenu::Update()
 {
     static float time = 0.f;
     time += Backend::GetDeltaTime();
-    thomas.SetText(std::to_string(time));
+    auto asd = std::to_string(time);
+    asd.erase(asd.find_first_of('.') + 3, std::string::npos);
+    thomas.SetText(asd);
 
-	//if (startButton.Clicked())
-	//{
-	//	std::cout << "Clicked\n";
-	//	return SceneState::Easy;
-	//}
     joy.Jump();
     joy.Move();
     joy.Respawn();
