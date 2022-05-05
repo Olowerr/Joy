@@ -2,6 +2,9 @@
 
 HLight::HLight()
 	:storage(Backend::GetShaderStorage())
+	, lightViewPort(), lightVS(nullptr), lightCS(nullptr), noCullingRS(nullptr), lightPS(nullptr), lightDataBuffer(nullptr)
+	,shadowMapDSV(nullptr), shadowMapSRV(nullptr), amount(0), lightViewProjectBuffer(0), frontFaceCullingRS(nullptr)
+	, SUN(), viewProject()
 {
 	lightViewPort.TopLeftX = 0.f;
 	lightViewPort.TopLeftY = 0.f;
@@ -20,16 +23,17 @@ void HLight::ShutdownTools()
 	noCullingRS->Release();
 	lightPS->Release();
 	lightCS->Release();
-	lightViewProjectBuffer->Release();
 	frontFaceCullingRS->Release();
 
 	for (UINT i = 0; i < amount; i++)
 	{
+		lightViewProjectBuffer[i]->Release();
 		shadowMapDSV[i]->Release();
 		shadowMapSRV[i]->Release();
 	}
 	delete[]shadowMapDSV;
 	delete[]shadowMapSRV;
+	delete[]lightViewProjectBuffer;
 }
 
 HLight::~HLight()
@@ -44,7 +48,7 @@ bool HLight::InitiateTools(MapDivider& sections)
 	shadowMapDSV = new ID3D11DepthStencilView * [amount];
 	shadowMapSRV = new ID3D11ShaderResourceView * [amount];
 
-	succeeded = InitiateBuffers();
+	succeeded = InitiateBuffers(sections);
 	assert(succeeded);
 
 	succeeded = InitiateShaders();
@@ -53,7 +57,7 @@ bool HLight::InitiateTools(MapDivider& sections)
 	succeeded = InitiateRasterizerStates();
 	assert(succeeded);
 
-	succeeded = InitiateShadowMaps(amount);
+	succeeded = InitiateShadowMaps();
 	assert(succeeded);
 
 
@@ -64,29 +68,6 @@ bool HLight::InitiateTools(MapDivider& sections)
 
 bool HLight::GenerateLightMaps(MapDivider& sections)
 {
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-	// add bool isInstanced in Object	// Or do I have too..?
-
-
-	// Separate SUN buffer into (Strength, Direction) & ViewProject
-	// Prepare ViewProjectBuffers per section
-	// Separate SUN buffer into (Strength, Direction) & ViewProject
-	// Prepare ViewProjectBuffers per section
-	// Separate SUN buffer into (Strength, Direction) & ViewProject
-	// Prepare ViewProjectBuffers per section
-	// Separate SUN buffer into (Strength, Direction) & ViewProject
-	// Prepare ViewProjectBuffers per section
-	// Separate SUN buffer into (Strength, Direction) & ViewProject
-	// Prepare ViewProjectBuffers per section
-	// Separate SUN buffer into (Strength, Direction) & ViewProject
-	// Prepare ViewProjectBuffers per section
-
 
 	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
@@ -99,7 +80,6 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	deviceContext->IASetInputLayout(storage.objectInputLayout);
 
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
 
 	deviceContext->RSSetViewports(1, &lightViewPort);
 	deviceContext->RSSetState(noCullingRS);
@@ -119,8 +99,14 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
 	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
-	texDesc.ArraySize = Object::GetLevelObjects().size() + Object::GetEnviormentObjects().size();
 
+	const std::vector<Object*>& levelObjs = Object::GetLevelObjects();
+	const std::vector<Object*>& enviormentObjs = Object::GetEnviormentObjects();
+	for (size_t i = 0; i < levelObjs.size(); i++)
+		texDesc.ArraySize++;
+	for (size_t i = 0; i < enviormentObjs.size(); i++)
+		texDesc.ArraySize++;
+	
 	ID3D11Texture2D* resource{};
 	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
 	if (FAILED(hr))
@@ -129,14 +115,20 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	UINT textureIndex = 0;
 	for (UINT s = 0; s < sections.GetNumSections(); s++)
 	{
-		Section& section = sections.GetSections()[s];
+		deviceContext->PSSetConstantBuffers(1, 1, &lightViewProjectBuffer[s]);
 		deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV[s]);
+		
+		Section& section = sections.GetSections()[s];
 
 		std::vector<Object*>& levelObjects = section.levelObjects;
 		std::vector<Object*>& enviormentObjects = section.enivormentObjects;
-
+		
 		for (UINT k = 0; k < levelObjects.size(); k++)
 		{
+			if (levelObjects[k]->GetIsInstanced() || (*levelObjects[k]->GetLightMapSRV()))
+				continue;
+
+
 			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;
 			rtvDesc.Texture2DArray.FirstArraySlice = textureIndex;
 			textureIndex++;
@@ -159,6 +151,9 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 
 		for (UINT k = 0; k < enviormentObjects.size(); k++)
 		{
+			if (levelObjects[k]->GetIsInstanced())
+				continue;
+
 			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;
 			rtvDesc.Texture2DArray.FirstArraySlice = textureIndex;
 			textureIndex++;
@@ -239,41 +234,124 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	return true;
 }
 
-bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11ShaderResourceView** lightMaps)
+bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs)
 {
 	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	HRESULT hr;
 
-	deviceContext->IASetInputLayout(storage.objectInputLayout);
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//DrawShadowMap(objects, amount);
-
 	lightViewPort.Width = (float)LightMapXY;
 	lightViewPort.Height = (float)LightMapXY;
-	deviceContext->RSSetViewports(1, &lightViewPort);
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(storage.objectInputLayout);
 
 	deviceContext->VSSetShader(lightVS, nullptr, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
 
+	deviceContext->RSSetViewports(1, &lightViewPort);
 	deviceContext->RSSetState(noCullingRS);
 
 	deviceContext->PSSetShader(lightPS, nullptr, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &lightDataBuffer);
-	//deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV);
 
-	deviceContext->CSSetShader(lightCS, nullptr, 0);
+
+	ID3D11RenderTargetView* tempRTV{};
+	ID3D11RenderTargetView* nullRTV{};
+	ID3D11UnorderedAccessView* nullUAV{};
+	ID3D11ShaderResourceView* nullSRV{};
 
 	D3D11_TEXTURE2D_DESC texDesc{};
 	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
-	//FillDescriptions(amount, &texDesc, &rtvDesc, &srvDesc, &uavDesc);
+	const UINT numObjects = instststs.GetNumObjects();
+	Object** objects = instststs.GetObjects();
+
+	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
+	texDesc.ArraySize = numObjects;
+	
+	ID3D11Texture2D* resource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+		return false;
+
+	hr = device->CreateShaderResourceView(resource, nullptr, instststs.GetLightMaps());
+	if (FAILED(hr))
+	{
+		resource->Release();
+		return false;
+	}
+
+	for (UINT i = 0; i < numObjects; i++)
+	{
+		for (UINT s = 0; s < sections.GetNumSections(); s++)
+		{
+			if (objects[i]->GetBoundingBox().Intersects(sections.GetSections()[s].sectionBB))
+			{
+				rtvDesc.Texture2DArray.FirstArraySlice = i;
+				hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
+				if (SUCCEEDED(hr))
+				{
+					deviceContext->PSSetShaderResources(0, 1, &shadowMapSRV[s]);
+					deviceContext->PSSetConstantBuffers(1, 1, &lightViewProjectBuffer[s]);
+					deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
+
+					objects[i]->DrawGeometry();
+					tempRTV->Release();
+				}
+				s = sections.GetNumSections();
+
+			}
+		}
+	}
+	
+	// "blur"
+
+	deviceContext->RSSetState(nullptr);
+	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	ID3D11Texture2D* tempResource{};
+	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
+	if (FAILED(hr))
+		return false;
+
+
+	deviceContext->CopyResource(tempResource, resource);
+
+	srvDesc.Texture2DArray.ArraySize = texDesc.ArraySize;
+	srvDesc.Texture2DArray.FirstArraySlice = 0;
+	uavDesc.Texture2DArray.ArraySize = texDesc.ArraySize;
+	uavDesc.Texture2DArray.FirstArraySlice = 0;
+
+	ID3D11ShaderResourceView* tempSRV{};
+	hr = device->CreateShaderResourceView(tempResource, &srvDesc, &tempSRV);
+	if (FAILED(hr))
+		return false;
+
+	ID3D11UnorderedAccessView* tempUAV{};
+	hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
+	if (FAILED(hr))
+		return false;
+
+	const UINT NumGroups = LightMapXY / LightMapCSThreadXY;
+
+	deviceContext->CSSetShader(lightCS, nullptr, 0);
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
+	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
+	deviceContext->Dispatch(NumGroups, NumGroups, texDesc.ArraySize);
+	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
+	deviceContext->CSSetShader(nullptr, nullptr, 0);
+
+	tempUAV->Release();
+	tempSRV->Release();
+	tempResource->Release();
+	resource->Release();
 
 	/*
-		Reading a UAV connected to resource with format (R8_UNORM) resulted in the following error:
+		Reading a UAV connected to resource with the format (R8_UNORM) resulted in the following error:
 
 		D3D11 ERROR: ID3D11DeviceContext::Dispatch:
 		The Unordered Access View (UAV) in slot 0 of the Compute Shader unit has the Format (R8_UNORM).
@@ -287,105 +365,13 @@ bool HLight::GenerateLightMapsInstanced(Object** objects, UINT amount, ID3D11Sha
 		Solution was to copy the resource to a temporary SRV and read from that.
 	*/
 
-	ID3D11Texture2D* tempResource{};
-	hr = device->CreateTexture2D(&texDesc, nullptr, &tempResource);
-	if (FAILED(hr))
-		return false;
-
-	ID3D11Texture2D* resource{};
-	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
-	if (FAILED(hr))
-		return false;
-
-	ID3D11ShaderResourceView* tempSRV{};
-
-	ID3D11RenderTargetView* tempRTV{};
-	ID3D11UnorderedAccessView* tempUAV{};
-
-	ID3D11RenderTargetView* nullRTV{};
-	ID3D11UnorderedAccessView* nullUAV{};
-	ID3D11ShaderResourceView* nullSRV{};
-
-	hr = device->CreateShaderResourceView(resource, nullptr, lightMaps);
-	if (FAILED(hr))
-		return false;
-
-	const UINT NumGroups = LightMapXY / LightMapCSThreadXY;
-	bool succeeded = true;
-	for (UINT i = 0; i < amount; i++)
-	{
-		rtvDesc.Texture2DArray.FirstArraySlice = i;
-
-		hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
-		if (FAILED(hr))
-		{
-			succeeded = false;
-			continue;
-		}
-
-		deviceContext->OMSetRenderTargets(1, &tempRTV, nullptr);
-		objects[i]->DrawGeometry();
-
-		tempRTV->Release();
-	}
-
-	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
-	deviceContext->CopyResource(tempResource, resource);
-
-	srvDesc.Texture2DArray.ArraySize = amount;
-	srvDesc.Texture2DArray.FirstArraySlice = 0;
-
-	hr = device->CreateShaderResourceView(tempResource, &srvDesc, &tempSRV);
-	if (FAILED(hr))
-		return false;
-
-	hr = device->CreateUnorderedAccessView(resource, &uavDesc, &tempUAV);
-	if (FAILED(hr))
-		return false;
-
-	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
-	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
-	deviceContext->Dispatch(NumGroups, NumGroups, amount);
-	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
-	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
-
-	tempUAV->Release();
-	tempSRV->Release();
-	resource->Release();
-	tempResource->Release();
-
-	deviceContext->RSSetState(nullptr);
 
 	return true;
 }
 
 void HLight::DrawShadowMaps(MapDivider& sections)
 {
-	bool succeeded = false;
-	HRESULT hr;
-
-	using namespace DirectX;
-	const FLOAT SUNDISTANCE = 20.f;
-	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f); // From sun to ground
-	XMVECTOR SUNPOS{};
-
-	SUN.strength = 10.f;
-	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
-	SUNPOS = XMVectorAdd(
-		XMVectorSet(sections.GetSections()[0].sectionBB.Center.x, 0.f, sections.GetSections()[0].sectionBB.Center.z, 0.f),
-		XMVectorScale(SUNDIR, -SUNDISTANCE));
-
-	XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
-		XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(30.f, 30.f, 0.1f, 100.f)));
-
-	hr = Backend::CreateDynamicCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
-	if (FAILED(hr))
-		return;
-
-	hr = Backend::CreateDynamicCBuffer(&lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
-	if (FAILED(hr))
-		return;
-
+	
 
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
 	ID3D11RenderTargetView* nullRTV{};
@@ -397,34 +383,21 @@ void HLight::DrawShadowMaps(MapDivider& sections)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	deviceContext->VSSetShader(storage.posOnlyVS, nullptr, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer);
 
 	deviceContext->RSSetViewports(1, &lightViewPort);
 	deviceContext->RSSetState(frontFaceCullingRS);
 
 	deviceContext->PSSetShader(nullptr, nullptr, 0);
 
-
-
-	for (UINT s = 0; s < sections.GetNumSections(); s++)
+	for (UINT i = 0; i < sections.GetNumSections(); i++)
 	{
-		Section& currentSection = sections.GetSections()[s];
-
-		SUNPOS = XMVectorAdd(
-			XMVectorSet(currentSection.sectionBB.Center.x, 0.f, currentSection.sectionBB.Center.z, 0.f),
-			XMVectorScale(SUNDIR, -SUNDISTANCE));
-
-		XMStoreFloat4x4(&SUN.viewProject, XMMatrixTranspose(
-			XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixOrthographicLH(30.f, 30.f, 0.1f, 100.f)));
-
-		Backend::UpdateBuffer(lightViewProjectBuffer, &SUN.viewProject, sizeof(XMFLOAT4X4));
-
-		deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV[s]);
+		deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer[i]);
+		deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV[i]);
 
 		for (UINT o = 0; o < sections.GetNumSections(); o++)
 		{
-			std::vector<Object*>& levelObjects = sections.GetSections()[s].levelObjects;
-			std::vector<Object*>& enviormentObjects = sections.GetSections()[s].enivormentObjects;
+			std::vector<Object*>& levelObjects = sections.GetSections()[i].levelObjects;
+			std::vector<Object*>& enviormentObjects = sections.GetSections()[i].enivormentObjects;
 
 			for (UINT k = 0; k < levelObjects.size(); k++)
 				levelObjects.at(k)->DrawGeometry();
@@ -443,7 +416,7 @@ void HLight::FillDescriptions(D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET
 	texDesc->Width = LightMapXY;
 	texDesc->Height = LightMapXY;
 	texDesc->MipLevels = 1;
-	texDesc->ArraySize = 1;
+	texDesc->ArraySize = 0;
 	texDesc->Format = DXGI_FORMAT_R8_UNORM;
 	texDesc->SampleDesc.Count = 1;
 	texDesc->SampleDesc.Quality = 0;
@@ -469,7 +442,7 @@ void HLight::FillDescriptions(D3D11_TEXTURE2D_DESC* texDesc, D3D11_RENDER_TARGET
 	uavDesc->Texture2DArray.MipSlice = 0;
 }
 
-bool HLight::InitiateShadowMaps(UINT amount)
+bool HLight::InitiateShadowMaps()
 {
 	bool succeded = false;
 
@@ -567,8 +540,46 @@ bool HLight::InitiateShaders()
 	return true;
 }
 
-bool HLight::InitiateBuffers()
+bool HLight::InitiateBuffers(MapDivider& sections)
 {
+	bool succeeded = false;
+	HRESULT hr;
+
+	using namespace DirectX;
+	const FLOAT SUNDISTANCE = 20.f;
+	const XMVECTOR SUNDIR = XMVectorSet(-1.f, -1.f, 1.f, 0.f); // From sun to ground
+	XMVECTOR SUNPOS{};
+
+	SUN.strength = 2.f;
+	XMStoreFloat3(&SUN.direction, -XMVector3Normalize(SUNDIR));
+
+	hr = Backend::CreateDynamicCBuffer(&lightDataBuffer, &SUN, sizeof(DirectionalLight));
+	if (FAILED(hr))
+		return false;
+
+	lightViewProjectBuffer = new ID3D11Buffer * [sections.GetNumSections()];
+	const float xLength = sections.GetSections()[0].sectionBB.Extents.x;
+	const float yLength = sections.GetSections()[0].sectionBB.Extents.y;
+	const float zLength = sections.GetSections()[0].sectionBB.Extents.z;
+	const float viewDimension = std::sqrt(xLength * xLength + yLength * yLength + zLength * zLength) * 1.5f;
+
+	for (UINT i = 0; i < sections.GetNumSections(); i++)
+	{
+		Section& currentSection = sections.GetSections()[i];
+
+		SUNPOS = XMVectorAdd(
+			XMVectorSet(currentSection.sectionBB.Center.x, 0.f, currentSection.sectionBB.Center.z, 0.f),
+			XMVectorScale(SUNDIR, -SUNDISTANCE));
+
+		XMStoreFloat4x4(&viewProject, XMMatrixTranspose(
+			XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * 
+			XMMatrixOrthographicLH(viewDimension, viewDimension, 0.1f, 100.f)));
+
+		hr = Backend::CreateDynamicCBuffer(&lightViewProjectBuffer[i], &viewProject, sizeof(XMFLOAT4X4));
+		if (FAILED(hr))
+			continue;
+	}
+
 	return true;
 }
 

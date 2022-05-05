@@ -24,6 +24,12 @@ public:
 	void UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos);
 	void DrawDecalShadowDepth(DirectX::XMFLOAT3 joyPos);
 	void DrawAll(DirectX::XMFLOAT3 joyPos);
+	void DrawWithOutline();
+
+	//Toon Shader
+
+	bool InitiateToonShaders();
+
 
 	ID3D11PixelShader*& GetDecalPS();
 	ID3D11Buffer*& GetDecalDCBuff();
@@ -49,6 +55,14 @@ private:
 
 	// Normal shaders
 	ID3D11PixelShader* decalPS;
+
+	GraphicsStorage& storage;
+
+	//Toon and outline shaders
+	ID3D11PixelShader* outlinePS;
+	ID3D11VertexShader* outlineVS;
+	ID3D11RasterizerState* ccwRS;
+	ID3D11RasterizerState* cwRS;
 
 	bool LoadShaders();
 

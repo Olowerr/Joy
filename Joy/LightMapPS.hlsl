@@ -10,14 +10,17 @@ cbuffer light : register(b0)
 {
 	float lightStrength;
 	float3 lightDirection;
+}
+cbuffer lightMatrix : register(b1)
+{
 	float4x4 lightViewProject;
 }
 
 Texture2D shadowMap : register(t0);
 SamplerState defaultSampler : register(s0);
 
-#define xyRadius 5
-#define texelSampleDist 2.f
+#define xyRadius 2
+#define texelSampleDist 1.f
 
 float GetLightLevel(const float2 uvs, const float lightSpaceZ)
 {
@@ -31,11 +34,11 @@ float GetLightLevel(const float2 uvs, const float lightSpaceZ)
 		for (int y = -xyRadius; y <= xyRadius; y++)
 		{
 			float shadowMapDepth = shadowMap.Sample(defaultSampler, uvs + texelSize * float2(x, y)).r;
-			lightValue += shadowMapDepth + 0.0001f > lightSpaceZ;
+			lightValue += shadowMapDepth + 0.001f > lightSpaceZ;
 		}
 	}
 
-	return lightValue / float( pow(xyRadius * 2 + 1, 2));
+	return lightValue / float(pow(xyRadius * 2 + 1, 2));
 }
 
 float4 main(PS_IN input) : SV_TARGET
@@ -46,11 +49,22 @@ float4 main(PS_IN input) : SV_TARGET
 	posLightSpace.xyz /= posLightSpace.w;
 	float2 uvs = float2(posLightSpace.x * 0.5f + 0.5f, posLightSpace.y * -0.5f + 0.5f);
 
-	float shadowFactor = GetLightLevel(uvs, posLightSpace.z);
-	//float shadowFactor = shadowMap.Sample(defaultSampler, uvs).r + 0.0001f > posLightSpace.z;
+	float3 Normal = normalize(input.normal);
 	
-	float lightValue = clamp(dot(lightDirection, input.normal) * lightStrength, 0.2f, 1.f);
-	lightValue *= shadowFactor;
+	float shadowFactor = GetLightLevel(uvs, posLightSpace.z);
+	float intensity = dot(normalize(lightDirection), Normal);
 
-	return float4(clamp(lightValue, 0.2f, 1.f), 0.f, 0.f, 0.f);
+	if (intensity < 0)
+		intensity = 0;
+
+	if (intensity > 0.7)
+		intensity = 1.0f;
+	else if (intensity > 0.5)
+		intensity = 0.7f;
+	else if (intensity > 0.3)
+		intensity = 0.3f;
+	else
+		intensity = 0.2f;
+
+	return float4(clamp(shadowFactor * intensity, 0.2f, 1.f), 0.f, 0.f, 0.f);
 }
