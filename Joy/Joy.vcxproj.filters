@@ -326,4 +326,7 @@
       <Filter>UI</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
