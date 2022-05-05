@@ -19,7 +19,7 @@ CharacterCamera::CharacterCamera(const Character& object) //const Character& obj
 
 CharacterCamera::~CharacterCamera()
 {
-
+	 
 }
 
 void CharacterCamera::UpdateCam()
