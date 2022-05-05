@@ -29,7 +29,7 @@ void InstancedObject::AddObject(Object* pObject)
 	else if (mesh != pObject->GetMesh())
 		return;
 
-	pObject->SetInstanced(true);
+	pObject->SetIsInstanced(true);
 	ppObjects[instanceCount++] = pObject;
 }
 
