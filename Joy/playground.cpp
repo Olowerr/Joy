@@ -34,13 +34,13 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     divider.CreateSections(1, 15.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
-    
-    hLight.InitiateTools(divider);
-    hLight.GenerateLightMaps(divider);
 
     tast.AddObject(&sceneObjects[0]);
     tast.AddObject(&sceneObjects[1]);
     tast.AddObject(&sceneObjects[2]);
+    
+    hLight.InitiateTools(divider);
+    hLight.GenerateLightMaps(divider);
     hLight.GenerateLightMapsInstanced(divider, tast);
     tast.Finalize();
 
