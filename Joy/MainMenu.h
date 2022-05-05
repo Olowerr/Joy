@@ -35,7 +35,7 @@ private:
 
 	MapDivider divider;
 
-	Sprite startButton;
+	Sprite catButton;
 	Text thomas;
 
 	std::unique_ptr<DirectX::AudioEngine> audEngine;

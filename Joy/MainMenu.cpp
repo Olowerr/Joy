@@ -2,7 +2,7 @@
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
-	, startButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+	, catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , joy(meshStorage.GetMesh(0))
     , joyCamera(joy)
     , divider(joy)
@@ -10,7 +10,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 {   
     
     uiRender.Clear();
-	uiRender.Add(&startButton);
+	uiRender.Add(&catButton);
     uiRender.Add(&thomas);
     thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
@@ -96,7 +96,7 @@ void MainMenu::Shutdown()
 
     divider.Shutdown();
 	
-    startButton.Shutdown();
+    catButton.Shutdown();
     thomas.Shutdown();
 }
 
