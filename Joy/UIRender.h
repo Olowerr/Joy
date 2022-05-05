@@ -2,6 +2,7 @@
 #include<vector>
 
 #include "Sprite.h" 
+#include "Text.h"
 
 class UIRenderer
 {
@@ -10,13 +11,18 @@ public:
 	void Shutdown();
 
 	void Clear();
-	void Add(Sprite* element);
+	void Add(Sprite* sprite);
+	void Add(Text* text);
 	void Draw();
 
 	static const UINT NumVertices = 4;
 	
 private:
-	std::vector<Sprite*> elements;
+	std::vector<Sprite*> sprites;
+	std::vector<Text*> texts;
+
+	DirectX::SpriteBatch spriteBatch;
+	const wchar_t fontPath[41] = L"../Resources/TextStuff/myfile.spritefont";
 
 	ID3D11Buffer* quadBuffer;
 	ID3D11Buffer* projection;

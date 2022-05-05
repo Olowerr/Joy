@@ -50,7 +50,6 @@
   <ItemGroup>
     <ClCompile Include="LightHandler.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="UIRender.cpp" />
     <ClCompile Include="Playground.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
@@ -105,9 +104,6 @@
     <ClCompile Include="Backend.cpp">
       <Filter>Backend</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Backend</Filter>
-    </ClCompile>
     <ClCompile Include="DecalShadow.cpp">
       <Filter>Depth Folder</Filter>
     </ClCompile>
@@ -142,11 +138,19 @@
     <ClCompile Include="HighscoreLevel.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRender.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightHandler.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="UIRender.h" />
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
@@ -201,9 +205,6 @@
     <ClInclude Include="Backend.h">
       <Filter>Backend</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Backend</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Backend</Filter>
     </ClInclude>
@@ -246,6 +247,18 @@
     </ClInclude>
     <ClInclude Include="HighscoreLevel.h">
       <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRender.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -304,8 +317,13 @@
     <Filter Include="Imgui">
       <UniqueIdentifier>{64167419-0545-414e-9298-0f73706d6e39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{02875ff4-bf80-4991-8a53-c0e4729ceca6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <Filter>UI</Filter>
+    </None>
   </ItemGroup>
 </Project>

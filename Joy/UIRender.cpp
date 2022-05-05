@@ -2,7 +2,7 @@
 
 UIRenderer::UIRenderer()
 	:UI_IL(nullptr), UI_VS(nullptr), UI_RS(nullptr), UI_PS(nullptr), quadBuffer(nullptr)
-	, projection(nullptr)
+	, projection(nullptr), spriteBatch(Backend::GetDeviceContext())
 {
 	HRESULT hr;
 	bool succeeded = false;
@@ -79,12 +79,19 @@ void UIRenderer::Shutdown()
 
 void UIRenderer::Clear()
 {
-	elements.clear();
+	sprites.clear();
+	texts.clear();
 }
 
-void UIRenderer::Add(Sprite* element)
+void UIRenderer::Add(Sprite* sprite)
 {
-	elements.emplace_back(element);
+	sprites.emplace_back(sprite);
+}
+
+void UIRenderer::Add(Text* text)
+{
+	texts.emplace_back(text);
+	text->Initiate(&spriteBatch, fontPath);
 }
 
 void UIRenderer::Draw()
@@ -107,9 +114,19 @@ void UIRenderer::Draw()
 
 	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
 
-	for (Sprite* element : elements)
+	for (Sprite* element : sprites)
 		element->Draw();
 
-
 	devContext->RSSetState(nullptr);
+
+
+	spriteBatch.Begin();
+	
+	for (Text* text : texts)
+		text->Draw();
+	
+	spriteBatch.End();
+
+	Backend::GetDeviceContext()->OMSetBlendState(nullptr, nullptr, 1);
+	Backend::GetDeviceContext()->OMSetDepthStencilState(nullptr, 0);
 }

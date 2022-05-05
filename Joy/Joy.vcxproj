@@ -175,6 +175,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Playground.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="UIRender.cpp" />
@@ -216,8 +217,10 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderStorage.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIRender.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

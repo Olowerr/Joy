@@ -1,18 +1,15 @@
 #pragma once
-#include "Backend.h"
+#include "UIElement.h"
 
-#include<DirectXMath.h>
-
-class Sprite
+class Sprite : UIElement
 {
 public:
 	Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);
 	Sprite(const std::string& imagePath);
-	void Shutdown();
+	virtual void Shutdown() override;
 	~Sprite();
 
-
-	void SetPosition(FLOAT x, FLOAT y);
+	virtual void SetPosition(FLOAT X, FLOAT Y) override;
 	void SetScale(FLOAT x, FLOAT y);
 
 	bool Hovered();
@@ -25,7 +22,6 @@ private:
 	const bool immutable;
 
 	DirectX::XMINT2 initialSize;
-	DirectX::XMFLOAT2 pos;
 	DirectX::XMFLOAT2 size;
 
 	ID3D11ShaderResourceView* imageSRV;

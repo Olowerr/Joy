@@ -7,13 +7,14 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
-
-    , spriteBatch(Backend::GetDeviceContext())
-    , spriteFont(Backend::GetDevice(), L"../Resources/TextStuff/myfile.spritefont")
 {   
     
     uiRender.Clear();
-	uiRender.Add(&startButton);
+	//uiRender.Add(&startButton);
+    uiRender.Add(&thomas);
+    thomas.SetPosition(200.f, 200.f);
+    thomas.SetColour(DirectX::Colors::BlueViolet);
+    thomas.SetText("THOMAS");
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -66,13 +67,13 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     hLight.InitiateTools(divider);
     hLight.GenerateLightMaps(divider);
     hLight.ShutdownTools();
+
 }
 
 void MainMenu::Shutdown()
 {
     hLight.Shutdown();
 
-    //uiRender.Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
     Object::EmptyObjectLists();
@@ -86,11 +87,17 @@ void MainMenu::Shutdown()
     joyCamera.Shutdown();
 
     divider.Shutdown();
-	startButton.Shutdown();
+	
+    startButton.Shutdown();
+    thomas.Shutdown();
 }
 
 SceneState MainMenu::Update()
 {
+    static float time = 0.f;
+    time += Backend::GetDeltaTime();
+    thomas.SetText(std::to_string(time));
+
 	//if (startButton.Clicked())
 	//{
 	//	std::cout << "Clicked\n";
@@ -148,13 +155,9 @@ SceneState MainMenu::Update()
 
 void MainMenu::Render()
 {
-	//uiRender.Draw();
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
+	uiRender.Draw();
 
-    spriteBatch.Begin();
-    spriteFont.DrawString(&spriteBatch, L"Thomas", DirectX::XMFLOAT2(500.f, 500.f), DirectX::Colors::Magenta);
-    spriteFont.DrawString(&spriteBatch, L"Dhomas", DirectX::XMFLOAT2(600.f, 500.f), DirectX::Colors::Magenta);
-    spriteBatch.End();
 }
