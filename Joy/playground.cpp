@@ -52,7 +52,6 @@ void testScene::Shutdown()
     hLight.Shutdown();
     tast.Shutdown();
 
-    decalShadow.Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
    // Object::EmptyObjectLists();
@@ -69,6 +68,9 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -90,34 +92,16 @@ SceneState testScene::Update()
     activeCamera->SetView();
 
     //Collision
-    joy.SetCollidedY(coll.getCollidedY());
-    if (coll.getCollidedY())
-        joy.SetSpeedZero();
 
-   if (coll.HitObject(&joy, cube))
-        joy.SetSpeedZero();
 
-    if (coll.HitObject(&joy, ground))
-    {
-        joy.SetSpeedZero();
-        joy.SetCanJump(coll.GetStopFall());
-    }
-
-    if (coll.HitObject(&joy, collTest))
-    {
-        joy.SetSpeedZero();
-    }
-    joy.SetCanJump(coll.GetStopFall());
+    if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
+        joy.SetCanJump(true);
+    else
+        joy.SetCanJump(false);
 
     coll.collided(&joy, collTest);
-    coll.collided(&joy, cube);
-    coll.collided(&joy, ground);
-
-
-    //Joy functions
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
+    coll2.collided(&joy, cube);
+    coll3.collided(&joy, ground);
 
     return SceneState::Unchanged;
 }

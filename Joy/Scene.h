@@ -16,7 +16,7 @@
 
 
 
-enum struct SceneState { Unchanged, MainMenu, Easy, Test/*, Medium, Hard*/ };
+enum struct SceneState { Unchanged, MainMenu, Easy, Test, Highscore/*, Medium, Hard*/ };
 
 __declspec(align(16))
 class Scene

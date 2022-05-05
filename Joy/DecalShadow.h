@@ -22,7 +22,7 @@ public:
 	bool InitiateDecalDepthBuffer();
 	void CreateDecalDepthCam();
 	void UpdateDecalDepthCam(DirectX::XMFLOAT3 joyPos);
-	void DrawDecalShadowDepth(const std::vector<Object*>& objects, DirectX::XMFLOAT3 joyPos);
+	void DrawDecalShadowDepth(DirectX::XMFLOAT3 joyPos);
 	void DrawAll(DirectX::XMFLOAT3 joyPos);
 	void DrawWithOutline();
 

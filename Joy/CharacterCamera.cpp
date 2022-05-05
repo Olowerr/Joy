@@ -27,25 +27,38 @@ void CharacterCamera::UpdateCam()
 	float dt = Backend::GetDeltaTime();
 	float x = object.GetPosition().x;
 	float z = object.GetPosition().z;
-
-
-	if (x > position.x + 1)
+	bool diagonalX = false;
+	bool diagonalZ = false;
+	float camSpeedX = 3.0f;
+	float camSpeedZ = 3.0f;
+	float camStillZoneX = 5;
+	if (x > position.x + camStillZoneX)
 	{
-		position.x += 20.0f * dt;
+		diagonalX = true;
+		position.x += camSpeedX * dt;
 	}
-	if (x < position.x - 1)
+	if (x < position.x - camStillZoneX)
 	{
-		position.x -= 20.0f * dt;
+		diagonalX = true;
+		position.x -= camSpeedX * dt;
 	}
 	if (z > position.z + 35)
 	{
-		position.z += 5.0f * dt;
+		diagonalZ = true;
+		position.z += camSpeedZ * dt;
 	}
-	if (z < position.z + 30)
+	if (z < position.z + 30 )
 	{
-		position.z -= 5.0f * dt;
+		diagonalZ = true;
+		position.z -= camSpeedZ * dt;
 	}
 
+//if (diagonalZ && diagonalX)
+//{
+//	camSpeedX /= 2;
+//	camSpeedZ /= 2;
+//}
+//
 
 
 	DirectX::XMVECTOR positionChange = DirectX::XMVector3Rotate(DirectX::XMVectorSet(direction, 0.f, 0.f, 0.f), DirectX::XMLoadFloat4(&rotation));

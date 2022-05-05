@@ -42,7 +42,7 @@ float4 main(PS_IN input) : SV_TARGET
     {
         if (dot(isInside, isInside) < 1.0f - (distance * 0.2f) || dot(isInside, isInside) < 0.01f)
         {
-            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)) * lightMap.Sample(defaultSampler, float3(input.uv,0.f)).r;
+            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
         }
     }
     float lightValue = lightMap.Sample(defaultSampler, float3(input.uv,0)).r;
