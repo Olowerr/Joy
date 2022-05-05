@@ -34,23 +34,21 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     wall2 = &sceneObjects[5];
     wall3 = &sceneObjects[6];
 
-    joy.SetPosition(0.0f, 5.0f, 10.0f);
-    ground1->SetPosition(0.0f, 0.0f, 10.0f);
+    joy.SetPosition(0.0f, 5.0f, 0.0f);
+    ground1->SetPosition(0.0f, 0.0f, 0.0f);
     ground1->SetScale(2.0f);
-    ground2->SetPosition(-8.0f, 0.0f, 29.8f);
+    ground2->SetPosition(-8.0f, 0.0f, 19.8f);
     ground2->SetScale(2.0f);
-    portal1->SetPosition(-0.4f, 1.5f, 20.0f);
+    portal1->SetPosition(-0.4f, 1.5f, 10.0f);
     portal1->SetScale(2.0f);
-    portal2->SetPosition(5.7f, 1.5f, 20.0f);
+    portal2->SetPosition(5.7f, 1.5f, 10.0f);
     portal2->SetScale(2.0f);
-    wall1->SetPosition(10.0f, 1.9f, 10.0f);
+    wall1->SetPosition(10.0f, 1.9f, 0.0f);
     wall1->SetScale(2.0f);
-    wall2->SetPosition(-10.0f, 1.9f, 10.0f);
+    wall2->SetPosition(-10.0f, 1.9f, 0.0f);
     wall2->SetScale(2.0f);
-    wall3->SetPosition(4.9f, 1.9f, 20.0f);
+    wall3->SetPosition(4.9f, 1.9f, 10.0f);
     wall3->SetScale(2.0f);
-
-
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);

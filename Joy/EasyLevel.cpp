@@ -32,8 +32,8 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     obstacle4 = &sceneObjects[7];
     portal = &sceneObjects[8];
 
-    joy.SetPosition(0.0f, 3.0f, 10.0f);
-    ground->SetPosition(0.0f, -2.0f, 10.0f);
+    joy.SetPosition(0.0f, 3.0f, 0.0f);
+    ground->SetPosition(0.0f, -2.0f, 0.0f);
     ground1->SetPosition(0.0f, -0.2f, 27.3f);
     ground2->SetPosition(5.1f, 2.4f, 64.2f);
     ground2->SetScale(2.8f);
