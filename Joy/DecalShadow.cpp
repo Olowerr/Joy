@@ -1,6 +1,7 @@
 #include "DecalShadow.h"
 
 DecalShadow::DecalShadow()
+	:storage(Backend::GetShaderStorage())
 {
 	decalViewPort.TopLeftX = 0.0f;
 	decalViewPort.TopLeftY = 0.0f;
@@ -9,10 +10,13 @@ DecalShadow::DecalShadow()
 	decalViewPort.MinDepth = 0.0f;
 	decalViewPort.MaxDepth = 1.0f;
 	LoadShaders();
+	InitiateToonShaders();
 	InitiateRasterizerState();
 	InitiateDecalDepthBuffer();
 	CreateCharacterDecal();
 	CreateDecalDepthCam();
+
+
 }
 
 void DecalShadow::Shutdown()
@@ -56,6 +60,42 @@ bool DecalShadow::InitiateRasterizerState()
 	hr = Backend::GetDevice()->CreateRasterizerState(&rsDesc, &frontFaceCullingRS);
 	if (FAILED(hr))
 		return false;
+
+	rsDesc = {};
+	rsDesc.FillMode = D3D11_FILL_SOLID;
+	rsDesc.CullMode = D3D11_CULL_BACK;
+	rsDesc.FrontCounterClockwise = false;
+	rsDesc.DepthBias = 0;
+	rsDesc.SlopeScaledDepthBias = 0.f;
+	rsDesc.DepthBiasClamp = 0.f;
+	rsDesc.DepthClipEnable = true;
+	rsDesc.ScissorEnable = false;
+	rsDesc.MultisampleEnable = false;
+	rsDesc.AntialiasedLineEnable = false;
+
+	hr = Backend::GetDevice()->CreateRasterizerState(&rsDesc, &cwRS);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	rsDesc = {};
+	rsDesc.FillMode = D3D11_FILL_SOLID;
+	rsDesc.CullMode = D3D11_CULL_BACK;
+	rsDesc.FrontCounterClockwise = true;
+	rsDesc.DepthBias = 0;
+	rsDesc.SlopeScaledDepthBias = 0.f;
+	rsDesc.DepthBiasClamp = 0.f;
+	rsDesc.DepthClipEnable = true;
+	rsDesc.ScissorEnable = false;
+	rsDesc.MultisampleEnable = false;
+	rsDesc.AntialiasedLineEnable = false;
+
+	hr = Backend::GetDevice()->CreateRasterizerState(&rsDesc, &ccwRS);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -202,14 +242,56 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 
 	devContext->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), *Backend::GetStandardDSV());
 
-	for (Object* obj : Object::GetLevelObjects())
-		obj->Draw();
+	DrawWithOutline();
 
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 
 	ImGuiModifyTransform(Object::GetLevelObjects());
+}
+
+void DecalShadow::DrawWithOutline()
+{
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->RSSetState(ccwRS);
+	devContext->VSSetShader(outlineVS, nullptr, 0);
+	devContext->PSSetShader(outlinePS, nullptr, 0);
+
+	for (Object* obj : Object::GetLevelObjects())
+		obj->Draw();
+
+
+	devContext->RSSetState(nullptr);
+	devContext->VSSetShader(storage.objectVS, nullptr, 0);
+	devContext->PSSetShader(decalPS, nullptr, 0);
+
+	for (Object* obj : Object::GetLevelObjects())
+		obj->Draw();
+
+}
+
+bool DecalShadow::InitiateToonShaders()
+{
+
+	std::string shaderData;
+
+
+	if (!Backend::LoadShader(Backend::ShaderPath + "ObjVSOutline.cso", &shaderData))
+		return false;
+
+	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &outlineVS)))
+		return false;
+
+	if (!Backend::LoadShader(Backend::ShaderPath + "ObjPSOutline.cso", &shaderData))
+		return false;
+
+	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &outlinePS)))
+		return false;
+
+
+	return true;
 }
 
 ID3D11PixelShader*& DecalShadow::GetDecalPS()

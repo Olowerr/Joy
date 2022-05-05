@@ -24,9 +24,9 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     
     joy.SetPosition(0.f, 3.f, 0.f);
     ground->SetPosition(0.f, -2.0f, 0.f);
-    sceneObjects[0].SetPosition(2.0f, 0.0f, 0.0f);
-    sceneObjects[1].SetPosition(2.0f, 0.f, 0.0f);
-    sceneObjects[2].SetPosition(1.f, 0.5f, 1.f);
+    sceneObjects[0].SetPosition(0.0f, 1.0f, 0.0f);
+    sceneObjects[1].SetPosition(1.f, 3.f, -1.0f);
+    sceneObjects[2].SetPosition(3.f, 1.0f, 1.f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -37,16 +37,24 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     
     hLight.InitiateTools(divider);
     hLight.GenerateLightMaps(divider);
+
+    tast.AddObject(&sceneObjects[0]);
+    tast.AddObject(&sceneObjects[1]);
+    tast.AddObject(&sceneObjects[2]);
+    hLight.GenerateLightMapsInstanced(divider, tast);
+    tast.Finalize();
+
     hLight.ShutdownTools();
 }
 
 void testScene::Shutdown()
 {
     hLight.Shutdown();
+    tast.Shutdown();
 
     objRender.Clear();
     meshStorage.UnLoadAll();
-    Object::EmptyObjectLists();
+   // Object::EmptyObjectLists();
  
     joy.Shutdown();
     for (Object& object : sceneObjects)

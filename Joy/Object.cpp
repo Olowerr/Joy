@@ -1,7 +1,7 @@
 #include "Object.h"
 
 Object::Object(Mesh* mesh, bool levelObject)
-	:mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject)
+	:mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject), isInstanced(false)
 {
 	bBox = mesh->bBox;
 
@@ -12,7 +12,7 @@ Object::Object(Mesh* mesh, bool levelObject)
 }
 
 Object::Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
-	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject)
+	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject), isInstanced(false)
 {
 	bBox = mesh->bBox;
 	bBox.Center.x += pos.x;
@@ -128,6 +128,16 @@ ID3D11ShaderResourceView** Object::GetLightMapSRV()
 	return &lightMap;
 }
 
+void Object::SetInstanced(bool isInstanced)
+{
+	this->isInstanced = isInstanced;
+}
+
+bool Object::GetIsInstanced() const
+{
+	return isInstanced;
+}
+
 
 
 
@@ -142,11 +152,11 @@ void Object::DropLevelPtr(Object* pObject)
 	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pObject), levelObjects.end());
 }
 
-void Object::EmptyObjectLists()
-{
-	levelObjects.clear();
-	enviormentObjects.clear();
-}
+//void Object::EmptyObjectLists()
+//{
+//	levelObjects.clear();
+//	enviormentObjects.clear();
+//}
 
 const std::vector<Object*>& Object::GetLevelObjects()
 {

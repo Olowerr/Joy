@@ -29,6 +29,7 @@ void InstancedObject::AddObject(Object* pObject)
 	else if (mesh != pObject->GetMesh())
 		return;
 
+	pObject->SetInstanced(true);
 	ppObjects[instanceCount++] = pObject;
 }
 
@@ -79,6 +80,21 @@ bool InstancedObject::Finalize()
 	}
 
 	return true;
+}
+
+ID3D11ShaderResourceView** InstancedObject::GetLightMaps()
+{
+	return &lightMapsSRV;
+}
+
+Object** InstancedObject::GetObjects()
+{
+	return ppObjects;
+}
+
+UINT InstancedObject::GetNumObjects()
+{
+	return instanceCount;
 }
 
 void InstancedObject::Draw()

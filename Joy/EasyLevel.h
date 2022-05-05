@@ -15,7 +15,6 @@ public:
 
 
 private:
-
 	std::vector<Object> sceneObjects;
 	Character joy;
 	Object* ground;

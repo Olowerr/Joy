@@ -11,6 +11,10 @@ public:
 
 	void AddObject(Object* pObject);
 	bool Finalize();
+	
+	ID3D11ShaderResourceView** GetLightMaps();
+	Object** GetObjects();
+	UINT GetNumObjects();
 
 	void Draw();
 
@@ -19,7 +23,7 @@ public:
 private:
 	Mesh* mesh;
 	ID3D11ShaderResourceView* transformSRV;
-	//ID3D11ShaderResourceView* lightMapsSRV;
+	ID3D11ShaderResourceView* lightMapsSRV;
 	UINT instanceCount;
 
 	Object** ppObjects;

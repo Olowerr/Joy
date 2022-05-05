@@ -71,7 +71,7 @@ void MainMenu::Shutdown()
     //uiRender.Shutdown();
     objRender.Clear();
     meshStorage.UnLoadAll();
-    Object::EmptyObjectLists();
+    //Object::EmptyObjectLists();
 
     joy.Shutdown();
 
