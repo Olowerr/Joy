@@ -15,7 +15,7 @@ public:
 	bool GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
-	const UINT LightMapXY = 512; 
+	const UINT LightMapXY = 2048;
 	const UINT LightMapCSThreadXY = 16;
 
 private:
