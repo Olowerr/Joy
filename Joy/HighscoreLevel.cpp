@@ -89,6 +89,7 @@ void HighscoreLevel::Shutdown()
     joyCamera.Shutdown();
 
     divider.Shutdown();
+    uiRender.Clear();
 }
 
 SceneState HighscoreLevel::Update()

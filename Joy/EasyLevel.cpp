@@ -3,11 +3,19 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetMesh(0))
+    , catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
 {
     meshStorage.LoadAll();
+
+    uiRender.Add(&catButton);
+    uiRender.Add(&thomas);
+    thomas.SetPosition(10.f, 10.f);
+    thomas.SetColour(DirectX::Colors::BlueViolet);
+    thomas.SetText("THOMAS");
+    thomas.SetScale(1.5f, 1.5f);
 
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     if (FAILED(hr))
@@ -100,10 +108,16 @@ void EasyLevel::Shutdown()
     joyCamera.Shutdown();
 
     divider.Shutdown();
+    uiRender.Clear();
 }
 
 SceneState EasyLevel::Update()
 {
+    time += Backend::GetDeltaTime();
+    auto asd = std::to_string(time);
+    asd.erase(asd.find_first_of('.') + 3, std::string::npos);
+    thomas.SetText(asd);
+
     joy.Jump();
     joy.Move();
     joy.Respawn();
@@ -170,4 +184,5 @@ void EasyLevel::Render()
 	objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
+    uiRender.Draw();
 }

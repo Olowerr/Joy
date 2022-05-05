@@ -2,20 +2,11 @@
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
-	, catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , joy(meshStorage.GetMesh(0))
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
 {   
-    
-    uiRender.Clear();
-	uiRender.Add(&catButton);
-    uiRender.Add(&thomas);
-    thomas.SetPosition(10.f, 10.f);
-    thomas.SetColour(DirectX::Colors::BlueViolet);
-    thomas.SetText("THOMAS");
-    thomas.SetScale(1.5f, 1.5f);
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -96,18 +87,11 @@ void MainMenu::Shutdown()
 
     divider.Shutdown();
 	
-    catButton.Shutdown();
-    thomas.Shutdown();
+    uiRender.Clear();
 }
 
 SceneState MainMenu::Update()
 {
-    static float time = 0.f;
-    time += Backend::GetDeltaTime();
-    auto asd = std::to_string(time);
-    asd.erase(asd.find_first_of('.') + 3, std::string::npos);
-    thomas.SetText(asd);
-
     joy.Jump();
     joy.Move();
     joy.Respawn();
