@@ -36,6 +36,7 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     decalShadow.SetMapDivider(&divider);
     
     hLight.InitiateTools(divider);
+    hLight.GenerateLightMaps(divider);
 
     tast.AddObject(&sceneObjects[0]);
     tast.AddObject(&sceneObjects[1]);
@@ -43,7 +44,6 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     hLight.GenerateLightMapsInstanced(divider, tast);
     tast.Finalize();
 
-    hLight.GenerateLightMaps(divider);
     hLight.ShutdownTools();
 }
 
