@@ -19,7 +19,6 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     sceneObjects.reserve(10);
     sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
@@ -27,27 +26,24 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
 
     ground1 = &sceneObjects[0];
-    ground2 = &sceneObjects[1];
-    portal1 = &sceneObjects[2];
-    portal2 = &sceneObjects[3];
-    wall1 = &sceneObjects[4];
-    wall2 = &sceneObjects[5];
-    wall3 = &sceneObjects[6];
+    portal1 = &sceneObjects[1];
+    portal2 = &sceneObjects[2];
+    wall1 = &sceneObjects[3];
+    wall2 = &sceneObjects[4];
+    wall3 = &sceneObjects[5];
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
     ground1->SetPosition(0.0f, 0.0f, 0.0f);
     ground1->SetScale(2.0f);
-    ground2->SetPosition(-8.0f, 0.0f, 19.8f);
-    ground2->SetScale(2.0f);
-    portal1->SetPosition(-0.4f, 1.5f, 10.0f);
+    portal1->SetPosition(-3.1f, 1.5f, 10.0f);
     portal1->SetScale(2.0f);
-    portal2->SetPosition(5.7f, 1.5f, 10.0f);
+    portal2->SetPosition(4.3f, 1.5f, 10.0f);
     portal2->SetScale(2.0f);
     wall1->SetPosition(10.0f, 1.9f, 0.0f);
     wall1->SetScale(2.0f);
     wall2->SetPosition(-10.0f, 1.9f, 0.0f);
     wall2->SetScale(2.0f);
-    wall3->SetPosition(4.9f, 1.9f, 10.0f);
+    wall3->SetPosition(0.0f, 1.9f, 10.0f);
     wall3->SetScale(2.0f);
 
     objRender.SetActiveCamera(activeCamera);
@@ -117,16 +113,15 @@ SceneState MainMenu::Update()
 
     //Collision
 
-    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY() || coll5.getCollidedY())
+    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY())
         joy.SetCanJump(true);
     else
         joy.SetCanJump(false);
 
     coll1.collided(&joy, ground1);
-    coll2.collided(&joy, ground2);
-    coll3.collided(&joy, wall1);
-    coll4.collided(&joy, wall2);
-    coll5.collided(&joy, wall3);
+    coll2.collided(&joy, wall1);
+    coll3.collided(&joy, wall2);
+    coll4.collided(&joy, wall3);
 
     if (joy.GetBoundingBox().Intersects(portal1->GetBoundingBox()))
     {

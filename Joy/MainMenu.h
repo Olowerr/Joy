@@ -17,7 +17,6 @@ private:
 	std::vector<Object> sceneObjects;
 	Character joy;
 	Object* ground1;
-	Object* ground2;
 	Object* portal1;
 	Object* portal2;
 	Object* wall1;
@@ -28,7 +27,6 @@ private:
 	Collision coll2;
 	Collision coll3;
 	Collision coll4;
-	Collision coll5;
 
 	HLight hLight;
 	Camera* activeCamera;

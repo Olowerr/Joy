@@ -26,6 +26,8 @@ private:
 	Object* obstacle3;
 	Object* obstacle4;
 	Object* portal;
+	Object* tree1;
+	Object* tree2;
 
 	HLight hLight;
 	Camera* activeCamera;
@@ -40,6 +42,8 @@ private:
 	Collision coll6;
 	Collision coll7;
 	Collision coll8;
+	Collision coll9;
+	Collision coll10;
 
 	MapDivider divider;
 

@@ -17,12 +17,16 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
     sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(8), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(9), true);
 
     ground1 = &sceneObjects[0];
     portal = &sceneObjects[1];
     wall1 = &sceneObjects[2];
     wall2 = &sceneObjects[3];
     wall3 = &sceneObjects[4];
+    highscore = &sceneObjects[5];
+    frame = &sceneObjects[6];
 
     joy.SetPosition(0.0f, 3.0f, 0.0f);
     ground1->SetPosition(0.0f, 0.0f, 0.0f);
@@ -36,6 +40,10 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
     wall2->SetScale(2.0f);
     wall3->SetPosition(0.0f, 1.9f, 9.8f);
     wall3->SetScale(2.0f);
+    highscore->SetPosition(2.1f, 5.0f, 9.3f);
+    highscore->SetScale(6.0f);
+    frame->SetPosition(2.1f, 5.0f, 9.4f);
+    frame->SetScale(6.0f);
 
 
     objRender.SetActiveCamera(activeCamera);
