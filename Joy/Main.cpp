@@ -7,6 +7,8 @@
 #include <io.h>
 #include <fcntl.h>
 #include <iostream>
+#include "StoredData.h"
+
 
 #define CONSOLE_ENABLE
 
@@ -54,11 +56,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance
 #endif // CONSOLE_ENABLE
 
 
+    JOY::data.StoreAll();
+
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	Game game(hInstance, showCmd);
 	game.Run();
+    
 
+    
+    
 	game.Shutdown();
 
 	return 0;
