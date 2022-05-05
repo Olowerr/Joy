@@ -36,4 +36,7 @@ private:
 	MapDivider divider;
 
 	Sprite startButton;
+	std::unique_ptr<DirectX::AudioEngine> audEngine;
+	std::unique_ptr<DirectX::SoundEffect> soundEffect;
+	std::unique_ptr<DirectX::SoundEffectInstance> effect;
 };
