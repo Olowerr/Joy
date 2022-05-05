@@ -7,8 +7,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
-{
-	uiRender.Clear();
+
+    , spriteBatch(Backend::GetDeviceContext())
+    , spriteFont(Backend::GetDevice(), L"../Resources/TextStuff/myfile.spritefont")
+{   
+    
+    uiRender.Clear();
 	uiRender.Add(&startButton);
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
@@ -148,4 +152,9 @@ void MainMenu::Render()
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
+
+    spriteBatch.Begin();
+    spriteFont.DrawString(&spriteBatch, L"Thomas", DirectX::XMFLOAT2(500.f, 500.f), DirectX::Colors::Magenta);
+    spriteFont.DrawString(&spriteBatch, L"Dhomas", DirectX::XMFLOAT2(600.f, 500.f), DirectX::Colors::Magenta);
+    spriteBatch.End();
 }

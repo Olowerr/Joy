@@ -1,5 +1,9 @@
 #pragma once
 #include "Scene.h"
+#include "SpriteBatch.h"
+#include "SpriteFont.h"
+#include "SpriteSheet.h"
+#include "WICTextureLoader.h"
 
 class MainMenu : public Scene
 {
@@ -13,6 +17,9 @@ public:
 	virtual void Render() override;
 
 private:
+
+	DirectX::SpriteBatch spriteBatch;
+	DirectX::SpriteFont spriteFont;
 
 	std::vector<Object> sceneObjects;
 	Character joy;

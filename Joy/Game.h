@@ -4,6 +4,8 @@
 #include "playground.h"
 #include "HighscoreLevel.h"
 
+#include "SpriteBatch.h"
+
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"
 #include "imgui\imgui_impl_win32.h"
