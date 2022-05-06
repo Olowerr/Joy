@@ -7,12 +7,6 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , divider(joy)
     , activeCamera(&joyCamera)
 {   
-    // hej
-    //hej 
-    //neee din mamma
-    // KÖRVAAA
-    // NU DEAAAASSSS
-
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
     meshStorage.LoadAll();
