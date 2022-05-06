@@ -9,19 +9,6 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
 {
     meshStorage.LoadAll();
 
-    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    if (FAILED(hr))
-        return;
-
-    DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
-#ifdef _DEBUG
-    eflags |= DirectX::AudioEngine_Debug;
-#endif
-    audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
-    soundEffect = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"HighScoreSound.wav");
-    effect = soundEffect->CreateInstance();
-    effect->Play(true);
-
     joy.CheckBB();
 
     sceneObjects.reserve(10);
@@ -41,7 +28,7 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
     highscore = &sceneObjects[5];
     frame = &sceneObjects[6];
 
-    joy.SetPosition(0.0f, 3.0f, 0.0f);
+    joy.SetPosition(0.0f, 5.0f, 0.0f);
     ground1->SetPosition(0.0f, 0.0f, 0.0f);
     ground1->SetScale(2.0f);
     portal->SetPosition(-7.4f, 2.0f, 9.5f);
@@ -98,13 +85,6 @@ SceneState HighscoreLevel::Update()
     joy.Move();
     joy.Respawn();
 
-    if (!audEngine->Update())
-    {
-        // No audio device is active
-        if (audEngine->IsCriticalError())
-        {
-        }
-    }
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -117,6 +97,7 @@ SceneState HighscoreLevel::Update()
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
+
     activeCamera->UpdateCam();
     activeCamera->SetView();
 

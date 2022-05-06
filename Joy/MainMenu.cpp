@@ -10,19 +10,6 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
-    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    if (FAILED(hr))
-        return;
-
-    DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
-#ifdef _DEBUG
-    eflags |= DirectX::AudioEngine_Debug;
-#endif
-    audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
-    soundEffect = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"WeirdSound.wav");
-    effect = soundEffect->CreateInstance();
-    effect->Play(true);
-
     meshStorage.LoadAll();
 
     joy.CheckBB();
@@ -96,13 +83,6 @@ SceneState MainMenu::Update()
     joy.Move();
     joy.Respawn();
 
-    if (!audEngine->Update())
-    {
-        // No audio device is active
-        if (audEngine->IsCriticalError())
-        {
-        }
-    }
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -141,6 +121,7 @@ SceneState MainMenu::Update()
     {
         return SceneState::Easy;
     }
+
     if (joy.GetBoundingBox().Intersects(portal2->GetBoundingBox()))
     {
         return SceneState::Highscore;

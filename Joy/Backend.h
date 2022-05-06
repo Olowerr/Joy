@@ -40,6 +40,7 @@ public:
 	static const D3D11_VIEWPORT& GetDefaultViewport();
 
 	static FLOAT GetDeltaTime();
+	static void ResetDeltaTime();
 
 #ifdef _DEBUG
 	static void ReportLive()

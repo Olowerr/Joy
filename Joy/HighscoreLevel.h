@@ -35,7 +35,4 @@ private:
 	CharacterCamera joyCamera;
 
 	MapDivider divider;
-	std::unique_ptr<DirectX::AudioEngine> audEngine;
-	std::unique_ptr<DirectX::SoundEffect> soundEffect;
-	std::unique_ptr<DirectX::SoundEffectInstance> effect;
 };

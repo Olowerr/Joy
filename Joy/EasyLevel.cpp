@@ -17,19 +17,6 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     thomas.SetText("THOMAS");
     thomas.SetScale(1.5f, 1.5f);
 
-    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    if (FAILED(hr))
-        return;
-
-    DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
-#ifdef _DEBUG
-    eflags |= DirectX::AudioEngine_Debug;
-#endif
-    audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
-    soundEffect = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"EasyLevelSound.wav");
-    effect = soundEffect->CreateInstance();
-    effect->Play(true);
-
     joy.CheckBB();
 
     sceneObjects.reserve(20);
@@ -57,7 +44,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     tree1 = &sceneObjects[9];
     tree2 = &sceneObjects[10];
 
-    joy.SetPosition(0.0f, 3.0f, 0.0f);
+    joy.SetPosition(0.0f, 5.0f, 0.0f);
     ground->SetPosition(0.0f, -2.0f, 0.0f);
     ground1->SetPosition(0.0f, -0.2f, 27.3f);
     ground2->SetPosition(5.1f, 2.4f, 64.2f);
@@ -109,6 +96,7 @@ void EasyLevel::Shutdown()
 
     divider.Shutdown();
     uiRender.Clear();
+    thomas.Shutdown();
 }
 
 SceneState EasyLevel::Update()
@@ -121,14 +109,6 @@ SceneState EasyLevel::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
-
-    if (!audEngine->Update())
-    {
-        // No audio device is active
-        if (audEngine->IsCriticalError())
-        {
-        }
-    }
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
