@@ -11,6 +11,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     //hej 
     //neee din mamma
     // KÖRVAAA
+    // NU DEAAAASSSS
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
