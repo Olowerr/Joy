@@ -8,6 +8,7 @@
 #include "FreelookCamera.h"
 #include "LightHandler.h"
 #include "MapSections.h"
+#include "Audio.h"
 
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"
