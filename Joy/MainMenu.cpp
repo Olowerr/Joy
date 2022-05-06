@@ -8,6 +8,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , activeCamera(&joyCamera)
 {   
     // hej
+    //hej 
 
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
