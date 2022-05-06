@@ -45,10 +45,15 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     tast.Finalize();
 
     hLight.ShutdownTools();
+
+
+    sky.init();
 }
 
 void testScene::Shutdown()
 {
+    sky.Shutdown();
+
     hLight.Shutdown();
     tast.Shutdown();
 
@@ -111,4 +116,7 @@ void testScene::Render()
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
+    uiRender.Draw();
+
+    sky.Draw(activeCamera);
 }

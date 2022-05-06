@@ -5,6 +5,7 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 	, window(Backend::GetWindow()) 
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
+	
 }
 
 void Game::Shutdown()

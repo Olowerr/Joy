@@ -46,6 +46,12 @@
     <FxCompile Include="ObjPsOutline.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="SkyBoxVS.hlsl">
+      <Filter>SKY</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyBoxPS.hlsl">
+      <Filter>SKY</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightHandler.cpp" />
@@ -247,6 +253,9 @@
     <ClInclude Include="HighscoreLevel.h">
       <Filter>Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>SKY</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend.h" />
@@ -303,6 +312,9 @@
     </Filter>
     <Filter Include="Imgui">
       <UniqueIdentifier>{64167419-0545-414e-9298-0f73706d6e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SKY">
+      <UniqueIdentifier>{2e3aa7a7-b3e8-49a1-a21e-4768a141db19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -14,10 +14,11 @@ public:
 	virtual void SetView() = 0;
 
 	ID3D11Buffer* const* GetMatrixBuffer() const;
-
+	DirectX::XMVECTOR GetPosition();
 
 protected:
 	DirectX::XMFLOAT4X4 viewProjMatrix;
+	DirectX::XMVECTOR position;
 	ID3D11Buffer* camMatrixBuffer;
 
 
