@@ -96,6 +96,7 @@ void EasyLevel::Shutdown()
 
     divider.Shutdown();
     uiRender.Clear();
+    catButton.Shutdown();
     thomas.Shutdown();
 }
 
