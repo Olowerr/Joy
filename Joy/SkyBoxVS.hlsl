@@ -19,7 +19,6 @@ output main(float3 pos : POSITION, float2 uv : UV)
 {
 	output o;
 	o.uv = uv;
-	//o.pos = mul(float4(pos + camPos, 1.f), viewproject).xyww;
-	o.pos = float4(pos.xy, 1.f, 1.f);
+	o.pos = mul(float4(pos + camPos, 1.f), viewproject).xyww;
 	return o;
 }

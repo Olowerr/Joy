@@ -4,10 +4,10 @@ struct input
 	float2 uv : UV;
 };
 
-Texture2D cube : register(t0);
+Texture2D skyTexture : register(t0);
 SamplerState sampy : register(s0);
 
 float4 main(input vs_out) : SV_TARGET
 {
-	return cube.Sample(sampy, vs_out.uv);
+	return skyTexture.Sample(sampy, vs_out.uv);
 }

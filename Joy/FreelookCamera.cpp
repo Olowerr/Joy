@@ -24,8 +24,6 @@ FreelookCamera::~FreelookCamera()
 
 void FreelookCamera::UpdateCam()
 {
-	return;
-
 	const float DeltaTime = Backend::GetDeltaTime();
 	const INT MouseX = mouse.GetDeltaX();
 	const INT MouseY = mouse.GetDeltaY();
