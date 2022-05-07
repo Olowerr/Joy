@@ -73,18 +73,17 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
         objRender.SetActiveCamera(activeCamera);
+        decalShadow.SetActiveCamera(activeCamera);
     }
     else if (Backend::GetKeyboard().KeyReleased(DIK_T))
     {
         activeCamera = &joyCamera;
         objRender.SetActiveCamera(activeCamera);
+        decalShadow.SetActiveCamera(activeCamera);
     }
     activeCamera->UpdateCam();
     activeCamera->SetView();
@@ -92,6 +91,10 @@ SceneState testScene::Update()
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
 
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
+    
     //Camera functions
     activeCamera->UpdateCam();
     activeCamera->SetView();
