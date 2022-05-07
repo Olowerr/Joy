@@ -12,7 +12,7 @@ Sprite::Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScal
 	succeeded = Load(imagePath);
 	assert(succeeded);
 
-	float gpuVariables[4] = {xPos, -yPos, size.x, size.y };
+	float gpuVariables[4] = {xPos, -yPos, size.x * xScale, size.y * xScale };
 	hr = Backend::CreateConstCBuffer(&transformBuffer, gpuVariables, 16);
 	assert(SUCCEEDED(hr));
 	

@@ -45,16 +45,21 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     tast.Finalize();
 
     hLight.ShutdownTools();
+
+
+    sky.init();
 }
 
 void testScene::Shutdown()
 {
+    sky.Shutdown();
+
     hLight.Shutdown();
     tast.Shutdown();
 
     objRender.Clear();
     meshStorage.UnLoadAll();
-    Object::EmptyObjectLists();
+   // Object::EmptyObjectLists();
  
     joy.Shutdown();
     for (Object& object : sceneObjects)
@@ -68,18 +73,17 @@ void testScene::Shutdown()
 
 SceneState testScene::Update()
 {
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
         objRender.SetActiveCamera(activeCamera);
+        decalShadow.SetActiveCamera(activeCamera);
     }
     else if (Backend::GetKeyboard().KeyReleased(DIK_T))
     {
         activeCamera = &joyCamera;
         objRender.SetActiveCamera(activeCamera);
+        decalShadow.SetActiveCamera(activeCamera);
     }
     activeCamera->UpdateCam();
     activeCamera->SetView();
@@ -87,6 +91,10 @@ SceneState testScene::Update()
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
 
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
+    
     //Camera functions
     activeCamera->UpdateCam();
     activeCamera->SetView();
@@ -111,4 +119,7 @@ void testScene::Render()
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
+    uiRender.Draw();
+
+    sky.Draw(activeCamera);
 }
