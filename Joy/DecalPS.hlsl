@@ -27,6 +27,8 @@ cbuffer decalCam : register(b1)
 
 float4 main(PS_IN input) : SV_TARGET
 {
+    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv,0)).r;
+
     float2 decal = float2(decalPosX, decalPosZ);
     float2 pixelXZ = float2(input.worldPos.x, input.worldPos.z);
     float2 isInside = decal - pixelXZ;
@@ -42,31 +44,28 @@ float4 main(PS_IN input) : SV_TARGET
     {
         if (dot(isInside, isInside) < 1.0f - (distance * 0.2f) || dot(isInside, isInside) < 0.01f)
         {
-            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
+            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)) * lightValue;
         }
     }
-    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv,0)).r;
 
-    /*float4 Color = image.Sample(defaultSampler, input.uv) ;
-    float3 Normal = normalize(input.normal);
+    const float3 lightDirection = normalize(float3(1.f, 1.f, -1.f));
+    const float3 Normal = normalize(input.normal);
 
-    float3 directionalLight = float3(-1, -1, 1);
-    float intensity = dot(normalize(directionalLight), Normal);
+    float intensity = dot(normalize(lightDirection), Normal);
 
     if (intensity < 0)
         intensity = 0;
 
-    if (intensity > 0.95)
-        Color = float4(1.0, 1, 1, 1.0) * Color;
+    if (intensity > 0.7)
+        intensity = 1.0f;
     else if (intensity > 0.5)
-        Color = float4(0.7, 0.7, 0.7, 1.0) * Color;
-    else if (intensity > 0.05)
-        Color = float4(0.35, 0.35, 0.35, 1.0) * Color;
+        intensity = 0.7f;
+    else if (intensity > 0.3)
+        intensity = 0.3f;
     else
-        Color = float4(0.1, 0.1, 0.1, 1.0) + Color;
+        intensity = 0.2f;
 
+    intensity = clamp(intensity * lightValue, 0.2f, 1.f);
 
-    return Color * lightValue;*/
-
-    return image.Sample(defaultSampler, input.uv) * lightMap.Sample(defaultSampler, float3(input.uv, 0.f)).r;
+    return image.Sample(defaultSampler, input.uv) * intensity;
 }

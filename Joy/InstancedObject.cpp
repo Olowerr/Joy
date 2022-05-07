@@ -1,7 +1,7 @@
 #include "InstancedObject.h"
 
 InstancedObject::InstancedObject(UINT capacity)
-	:Capacity(capacity), instanceCount(0), transformSRV(nullptr), mesh(nullptr)
+	:Capacity(capacity), instanceCount(0), transformSRV(nullptr), mesh(nullptr), lightMapsSRV(nullptr)
 {
 	ppObjects = new Object*[Capacity];
 }
@@ -13,6 +13,7 @@ InstancedObject::~InstancedObject()
 void InstancedObject::Shutdown()
 {
 	transformSRV->Release();
+	lightMapsSRV->Release();
 	// Don't release mesh, MeshStorage owns it
 
 	delete[] ppObjects;
@@ -79,6 +80,8 @@ bool InstancedObject::Finalize()
 		return false;
 	}
 
+	ShrinkToFit();
+
 	return true;
 }
 
@@ -107,4 +110,14 @@ void InstancedObject::Draw()
 	devContext->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 
 	devContext->DrawInstanced(mesh->vertexCount, instanceCount, 0, 0);
+}
+
+void InstancedObject::ShrinkToFit()
+{
+	Object** pTemp = new Object * [instanceCount];
+	for (UINT i = 0; i < instanceCount; i++)
+		pTemp[i] = ppObjects[i];
+
+	delete[]ppObjects;
+	ppObjects = pTemp;
 }
