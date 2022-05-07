@@ -13,9 +13,9 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
+    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
     sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
 
     cube = &sceneObjects[0];
@@ -31,7 +31,7 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 15.f, 15.f, 10.f);
+    divider.CreateSections(1, 50.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
     

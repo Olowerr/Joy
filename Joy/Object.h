@@ -32,7 +32,11 @@ public:
 	ID3D11ShaderResourceView** GetLightMapSRV();
 
 	const bool IsLevelObject;
+<<<<<<< HEAD
 	void SetInstanced(bool isInstanced);
+=======
+	void SetIsInstanced(bool isInstanced);
+>>>>>>> master
 	bool GetIsInstanced() const;
 
 private:

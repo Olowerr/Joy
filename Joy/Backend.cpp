@@ -244,6 +244,11 @@ FLOAT Backend::GetDeltaTime()
     return system->deltaTime.count();
 }
 
+void Backend::ResetDeltaTime()
+{
+    system->deltaTime = std::chrono::duration<float>(0.0f);
+}
+
 bool Backend::InitiateShaders()
 {
     std::string shaderData;

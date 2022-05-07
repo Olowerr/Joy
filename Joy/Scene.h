@@ -8,7 +8,11 @@
 #include "FreelookCamera.h"
 #include "LightHandler.h"
 #include "MapSections.h"
+<<<<<<< HEAD
 //#include "Audio.h"
+=======
+#include "Audio.h"
+>>>>>>> master
 
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"

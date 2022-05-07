@@ -66,7 +66,7 @@ public:
 private:
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 6;
+	static const UINT MeshCount = 10;
 	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
@@ -75,7 +75,11 @@ private:
 		"Ground.obj",
 		"Portal.obj",
 		"Wall.obj",
-		"Wall2.obj"
+		"Wall2.obj",
+		"sphere.obj",
+		"FirstTree.obj",
+		"HighscoreScreen.obj",
+		"Frame.obj"
 	};
 
 	void import(UINT index);

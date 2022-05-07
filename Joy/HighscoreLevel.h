@@ -21,6 +21,8 @@ private:
 	Object* wall1;
 	Object* wall2;
 	Object* wall3;
+	Object* highscore;
+	Object* frame;
 
 	Collision coll1;
 	Collision coll2;

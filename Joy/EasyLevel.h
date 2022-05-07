@@ -26,6 +26,8 @@ private:
 	Object* obstacle3;
 	Object* obstacle4;
 	Object* portal;
+	Object* tree1;
+	Object* tree2;
 
 	HLight hLight;
 	Camera* activeCamera;
@@ -40,7 +42,15 @@ private:
 	Collision coll6;
 	Collision coll7;
 	Collision coll8;
+	Collision coll9;
+	Collision coll10;
+
+	Sprite catButton;
+	Text thomas;
+	float time = 0.f;
 
 	MapDivider divider;
-
+	std::unique_ptr<DirectX::AudioEngine> audEngine;
+	std::unique_ptr<DirectX::SoundEffect> soundEffect;
+	std::unique_ptr<DirectX::SoundEffectInstance> effect;
 };
