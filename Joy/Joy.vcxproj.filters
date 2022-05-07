@@ -25,12 +25,6 @@
     <FxCompile Include="PosOnlyVS.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="UI_VS.hlsl">
-      <Filter>UI\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="UI_PS.hlsl">
-      <Filter>UI\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="SkyBoxVS.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
@@ -51,6 +45,12 @@
     </FxCompile>
     <FxCompile Include="LightMapPS.hlsl">
       <Filter>Lights</Filter>
+    </FxCompile>
+    <FxCompile Include="UI_PS.hlsl">
+      <Filter>UI</Filter>
+    </FxCompile>
+    <FxCompile Include="UI_VS.hlsl">
+      <Filter>UI</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -300,9 +300,6 @@
     </Filter>
     <Filter Include="3D Rendering\Shaders">
       <UniqueIdentifier>{94b6b6c4-2b0c-4d41-bf79-381c3bbd445a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Shaders">
-      <UniqueIdentifier>{93fa5e85-d654-437f-a38c-129b0f609f01}</UniqueIdentifier>
     </Filter>
     <Filter Include="Pickups">
       <UniqueIdentifier>{a254288f-2c35-4181-9dbc-587a319484ec}</UniqueIdentifier>
