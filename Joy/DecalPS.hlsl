@@ -26,8 +26,13 @@ cbuffer decalCam : register(b1)
 }
 
 float4 main(PS_IN input) : SV_TARGET
-{
-    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv,0)).r;
+{ 
+    //float2 dimensions;
+    //float q;
+    //lightMap.GetDimensions(dimensions.x, dimensions.y, q);
+    //float lightValue = lightMap.Load(int4(input.uv * dimensions, 0.f, 0.f)).r;
+
+    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv, 0.f));
 
     float2 decal = float2(decalPosX, decalPosZ);
     float2 pixelXZ = float2(input.worldPos.x, input.worldPos.z);
@@ -56,11 +61,11 @@ float4 main(PS_IN input) : SV_TARGET
     if (intensity < 0)
         intensity = 0;
 
-    if (intensity > 0.7)
+    if (intensity > 0.4)
         intensity = 1.0f;
-    else if (intensity > 0.5)
-        intensity = 0.7f;
     else if (intensity > 0.3)
+        intensity = 0.7f;
+    else if (intensity > 0.2)
         intensity = 0.3f;
     else
         intensity = 0.2f;

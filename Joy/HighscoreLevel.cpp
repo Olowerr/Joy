@@ -80,10 +80,6 @@ void HighscoreLevel::Shutdown()
 
 SceneState HighscoreLevel::Update()
 {
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
-
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -102,6 +98,10 @@ SceneState HighscoreLevel::Update()
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
+
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
 
     //Camera functions
     activeCamera->UpdateCam();

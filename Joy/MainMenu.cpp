@@ -78,10 +78,6 @@ void MainMenu::Shutdown()
 
 SceneState MainMenu::Update()
 {
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
-
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -99,6 +95,10 @@ SceneState MainMenu::Update()
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
+
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
 
     //Camera functions
     activeCamera->UpdateCam();

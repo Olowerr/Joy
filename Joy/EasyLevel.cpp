@@ -107,10 +107,6 @@ SceneState EasyLevel::Update()
     asd.erase(asd.find_first_of('.') + 3, std::string::npos);
     thomas.SetText(asd);
 
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
-
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -128,6 +124,10 @@ SceneState EasyLevel::Update()
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
+
+    joy.Jump();
+    joy.Move();
+    joy.Respawn();
 
     //Camera functions
     activeCamera->UpdateCam();
