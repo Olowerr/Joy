@@ -59,7 +59,7 @@ void testScene::Shutdown()
 
     objRender.Clear();
     meshStorage.UnLoadAll();
-   // Object::EmptyObjectLists();
+    Object::EmptyObjectLists();
  
     joy.Shutdown();
     for (Object& object : sceneObjects)
