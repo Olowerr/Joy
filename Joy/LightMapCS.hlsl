@@ -4,7 +4,7 @@ Texture2DArray<unorm float> lightMapsSRV : register(t0);
 
 #define NumThreadX 16
 #define NumThreadY 16
-#define SearchRadius 3
+#define SearchRadius 1
 
 /*
 	Total texels searched = (radius * 2 + 1) ^ 2
