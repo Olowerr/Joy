@@ -72,7 +72,7 @@ public:
 	StoredData();
 	~StoredData();
 
-	bool StoreAll();
+	bool StoreAll(const std::string& fileName);
 
 
 
