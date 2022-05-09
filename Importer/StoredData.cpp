@@ -8,7 +8,7 @@ StoredData::~StoredData()
 {
 }
 
-bool StoredData::StoreAll()
+bool StoredData::StoreAll(const std::string& fileName)
 {
 
     std::vector<JOY::PropertyBase> propertiesInfoVec;
@@ -16,7 +16,7 @@ bool StoredData::StoreAll()
 
     std::ifstream reader;
 
-    reader.open("big3new.joy", std::ios::binary);
+    reader.open(fileName, std::ios::binary);
     if (!reader.is_open())
         return false;
 
@@ -314,13 +314,13 @@ bool StoredData::StoreAll()
             ObjectInfo* currentObj = nullptr;
             for (size_t i = 0; i < m_objectInfoVec.size(); i++)
             {
-                if (m_objectInfoVec[i].objHeader.skeletonIdx == morph.id)
+                if (m_objectInfoVec[i].objHeader.morphIdx == morph.id)
                 {
                     currentObj = &m_objectInfoVec[i];
                     i = m_objectInfoVec.size();
                 }
             }
-            //if (!currentObj)
+            if (!currentObj)
             {
             reader.ignore(header.totalByteSize-(sizeof(MorphHeader)-sizeof(header))); // if object not found, skip data until next header (totalByteSize - readBytes)
             break;
@@ -338,20 +338,20 @@ bool StoredData::StoreAll()
                 currentObj->mInfo.back().morphFrame.reserve(mTargetInfo.numFrames);
 
 
-                JOY::MorphVTX* mVTX = new JOY::MorphVTX[morph.numDeformers];
+                JOY::MorphVTX* mVTX = new JOY::MorphVTX[currentObj->indices.size()];
                 reader.read((char*)mVTX, sizeof(JOY::MorphVTX)* currentObj->indices.size());
-                currentObj->mInfo.back().morphVTX.reserve(currentObj->indices.size());
-                for (size_t i = 0; i < morph.numDeformers; i++)
+                /*currentObj->mInfo.back().morphVTX.reserve(currentObj->indices.size());*/
+                for (size_t i = 0; i < currentObj->indices.size(); i++)
                 {
                     currentObj->mInfo.back().morphVTX.emplace_back(mVTX[i]);
                 }
                 delete[]mVTX;
 
-
-                JOY::MorphFrame* mFrame = new JOY::MorphFrame[morph.numDeformers];
-                reader.read((char*)mFrame, sizeof(JOY::MorphFrame)* currentObj->indices.size());
-                currentObj->mInfo.back().morphFrame.reserve(currentObj->indices.size());
-                for (size_t i = 0; i < morph.numDeformers; i++)
+                
+                JOY::MorphFrame* mFrame = new JOY::MorphFrame[mTargetInfo.numFrames];
+                reader.read((char*)mFrame, sizeof(JOY::MorphFrame)* mTargetInfo.numFrames);
+                /*currentObj->mInfo.back().morphFrame.reserve(currentObj->indices.size());*/
+                for (size_t i = 0; i < mTargetInfo.numFrames; i++)
                 {
                     currentObj->mInfo.back().morphFrame.emplace_back(mFrame[i]);
                 }
