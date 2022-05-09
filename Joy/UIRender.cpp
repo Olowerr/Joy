@@ -129,4 +129,5 @@ void UIRenderer::Draw()
 
 	Backend::GetDeviceContext()->OMSetBlendState(nullptr, nullptr, 1);
 	Backend::GetDeviceContext()->OMSetDepthStencilState(nullptr, 0);
+	Backend::GetDeviceContext()->RSSetState(nullptr);
 }

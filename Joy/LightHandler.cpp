@@ -393,7 +393,7 @@ void HLight::DrawShadowMaps(MapDivider& sections)
 		deviceContext->VSSetConstantBuffers(1, 1, &lightViewProjectBuffer[i]);
 		deviceContext->OMSetRenderTargets(1, &nullRTV, shadowMapDSV[i]);
 
-		for (UINT o = 0; o < sections.GetNumSections(); o++)
+		/*for (UINT o = 0; o < sections.GetNumSections(); o++)
 		{
 			std::vector<Object*>& levelObjects = sections.GetSections()[i].levelObjects;
 			std::vector<Object*>& enviormentObjects = sections.GetSections()[i].enivormentObjects;
@@ -403,7 +403,7 @@ void HLight::DrawShadowMaps(MapDivider& sections)
 
 			for (UINT k = 0; k < enviormentObjects.size(); k++)
 				enviormentObjects.at(k)->DrawGeometry();
-		}
+		}*/
 
 	}
 
