@@ -18,3 +18,8 @@ ID3D11Buffer* const* Camera::GetMatrixBuffer() const
 {
     return &camMatrixBuffer;
 }
+
+DirectX::XMVECTOR Camera::GetPosition()
+{
+    return position;
+}

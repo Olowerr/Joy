@@ -27,4 +27,6 @@ private:
 	UINT instanceCount;
 
 	Object** ppObjects;
+
+	void ShrinkToFit();
 };

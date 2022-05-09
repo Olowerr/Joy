@@ -43,8 +43,8 @@ void Game::Run()
 {
 	SceneState activeState = SceneState::Unchanged;
 	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-	//Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
-	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
+	Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
+	//Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	effect1->Play();
 	Backend::ResetDeltaTime();
 
