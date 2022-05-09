@@ -15,15 +15,15 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 #endif
 	audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
 
-	soundEffect1 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"MenuLevelSound.wav");
+	soundEffect1 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/MenuLevelSound.wav");
 	effect1 = soundEffect1->CreateInstance();
 	effect1->SetVolume(0.1f);
 
-	soundEffect2 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"EasyLevelSound.wav");
+	soundEffect2 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/EasyLevelSound.wav");
 	effect2 = soundEffect2->CreateInstance();
 	effect2->SetVolume(0.1f);
 
-	soundEffect3 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"HighscoreLevelSound.wav");
+	soundEffect3 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/HighscoreLevelSound.wav");
 	effect3 = soundEffect3->CreateInstance();
 	effect3->SetVolume(0.1f);
 }
