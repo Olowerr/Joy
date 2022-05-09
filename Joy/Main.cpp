@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance
 #endif // CONSOLE_ENABLE
 
 
-    JOY::data.StoreAll("big3new.joy");
+    JOY::data.StoreAll("../Resources/JOYFiles/big3new.joy");
     JOY::data.StoreAll("big3new.joy");
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
