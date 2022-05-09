@@ -108,6 +108,17 @@ void Object::Scale(FLOAT amount)
 void Object::SetScale(FLOAT Scale)
 {
 	Transform::SetScale(Scale);
+	/*bBox.Extents.x = mesh->bBox.Extents.x * Scale;
+	bBox.Extents.y = mesh->bBox.Extents.y * Scale;
+	bBox.Extents.z = mesh->bBox.Extents.z * Scale;*/
+
+	using namespace DirectX;
+
+	XMVECTOR objectPos = DirectX::XMLoadFloat3(&GetPosition());
+	XMVECTOR scaledDelta = (DirectX::XMLoadFloat3(&bBox.Center) - objectPos) * Scale;
+
+	XMStoreFloat3(&bBox.Center, objectPos + scaledDelta);
+
 	bBox.Extents.x = mesh->bBox.Extents.x * Scale;
 	bBox.Extents.y = mesh->bBox.Extents.y * Scale;
 	bBox.Extents.z = mesh->bBox.Extents.z * Scale;
@@ -137,6 +148,8 @@ bool Object::GetIsInstanced() const
 {
 	return isInstanced;
 }
+
+
 
 
 

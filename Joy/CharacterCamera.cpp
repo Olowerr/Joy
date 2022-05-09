@@ -3,8 +3,8 @@
 CharacterCamera::CharacterCamera(const Character& object) //const Character& object?
 	:object(object), rotation()
 {
-	camPos = { 0.0f, 10.0f, -40.0f, 0.0f };
-	DirectX::XMStoreFloat3(&position, camPos);
+	position = { 0.0f, 10.0f, -40.0f, 0.0f };
+	DirectX::XMStoreFloat3(&positionFloat3, position);
 	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
 	camUpDir = { 0.0f, 1.0f, 0.0f, 1.0f };
 	rotation = { 0,0,0,0 };
@@ -32,25 +32,25 @@ void CharacterCamera::UpdateCam()
 	float camSpeedX = 3.0f;
 	float camSpeedZ = 3.0f;
 	float camStillZoneX = 5;
-	if (x > position.x + camStillZoneX)
+	if (x > positionFloat3.x + camStillZoneX)
 	{
 		diagonalX = true;
-		position.x += camSpeedX * dt;
+		positionFloat3.x += camSpeedX * dt;
 	}
-	if (x < position.x - camStillZoneX)
+	if (x < positionFloat3.x - camStillZoneX)
 	{
 		diagonalX = true;
-		position.x -= camSpeedX * dt;
+		positionFloat3.x -= camSpeedX * dt;
 	}
-	if (z > position.z + 35)
+	if (z > positionFloat3.z + 35)
 	{
 		diagonalZ = true;
-		position.z += camSpeedZ * dt;
+		positionFloat3.z += camSpeedZ * dt;
 	}
-	if (z < position.z + 30 )
+	if (z < positionFloat3.z + 30 )
 	{
 		diagonalZ = true;
-		position.z -= camSpeedZ * dt;
+		positionFloat3.z -= camSpeedZ * dt;
 	}
 
 //if (diagonalZ && diagonalX)
@@ -62,18 +62,18 @@ void CharacterCamera::UpdateCam()
 
 
 	DirectX::XMVECTOR positionChange = DirectX::XMVector3Rotate(DirectX::XMVectorSet(direction, 0.f, 0.f, 0.f), DirectX::XMLoadFloat4(&rotation));
-	DirectX::XMStoreFloat3(&position, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&position), positionChange));
+	DirectX::XMStoreFloat3(&positionFloat3, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&positionFloat3), positionChange));
 }
 
 void CharacterCamera::SetView()
 {
 
 	//	camFront = DirectX::XMVectorSet( object.GetPosition().x, object.GetPosition().y, object.GetPosition().z, 1);
-	position.y = object.GetPosition().y + 16;
+	positionFloat3.y = object.GetPosition().y + 16;
 	camFront = DirectX::XMVectorSet(0, -0.4, 1, 1);
-
+	position = DirectX::XMLoadFloat3(&positionFloat3);
 	//	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
-	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookToLH(XMLoadFloat3(&position), camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
+	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookToLH(position, camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
 	XMStoreFloat4x4(&viewProjMatrix, XMMatrixTranspose(viewAndProj));
 
 	Backend::UpdateBuffer(camMatrixBuffer, &viewProjMatrix, 64);

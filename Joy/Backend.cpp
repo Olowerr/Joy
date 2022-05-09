@@ -160,11 +160,11 @@ void Backend::Process()
     system->mouse.ReadEvents();
     system->keyboard.ReadEvents();
 
-    /*if (!system->window.IsActive())
+    if (!system->window.IsActive())
     {
         system->mouse.Lock(false);
-        ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
-    }*/
+        //ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
+    }
 }
 
 ID3D11Device* Backend::GetDevice()
@@ -242,6 +242,11 @@ const D3D11_VIEWPORT& Backend::GetDefaultViewport()
 FLOAT Backend::GetDeltaTime()
 {
     return system->deltaTime.count();
+}
+
+void Backend::ResetDeltaTime()
+{
+    system->deltaTime = std::chrono::duration<float>(0.0f);
 }
 
 bool Backend::InitiateShaders()
@@ -363,7 +368,7 @@ HRESULT Backend::CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT by
     inData.pSysMem = Data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
 
-    return system->device->CreateBuffer(&desc, &inData, buffer);
+    return Data ? system->device->CreateBuffer(&desc, &inData, buffer) : system->device->CreateBuffer(&desc, nullptr, buffer);
 }
 
 HRESULT Backend::UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth)

@@ -27,6 +27,10 @@ void DecalShadow::Shutdown()
 	decalSRV->Release();
 	decalCamDCBuff->Release();
 	frontFaceCullingRS->Release();
+	outlinePS->Release();
+	outlineVS->Release();
+	ccwRS->Release();
+	cwRS->Release();
 }
 
 void DecalShadow::SetActiveCamera(Camera* camera)

@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "Skybox.h"
 
 class testScene : public Scene
 {
@@ -31,4 +32,6 @@ private:
 	Collision coll3;
 
 	MapDivider divider;
+
+	Skybox sky;
 };

@@ -4,7 +4,7 @@ FreelookCamera::FreelookCamera()
 	:keyboard(Backend::GetKeyboard()), mouse(Backend::GetMouse())
 	, aspectRatio((float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight())
 	, rotMatrix(DirectX::XMMatrixIdentity())
-	, moveSpeed(2.f), turnSpeed(1.5f)
+	, moveSpeed(8.f), turnSpeed(1.5f)
 {
 
 	position = DirectX::XMVectorSet(0.f, 5.f, -5.f, 1.f);
@@ -24,7 +24,8 @@ FreelookCamera::~FreelookCamera()
 
 void FreelookCamera::UpdateCam()
 {
-	return;
+	if (!Backend::GetWindow().IsActive())
+		return;
 
 	const float DeltaTime = Backend::GetDeltaTime();
 	const INT MouseX = mouse.GetDeltaX();

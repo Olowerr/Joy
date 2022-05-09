@@ -15,7 +15,6 @@ private:
 	Mouse& mouse;
 
 	DirectX::XMMATRIX rotMatrix;
-	DirectX::XMVECTOR position;
 	DirectX::XMVECTOR lookDir;
 	DirectX::XMVECTOR upDir;
 	DirectX::XMVECTOR sideDir;

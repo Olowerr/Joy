@@ -14,17 +14,17 @@ public:
 	//	ID3D11Buffer* GetConstantBuffer() { return this->camCb; } idk if we need this
 	virtual void UpdateCam() override;
 	virtual void SetView();
+	
 
 private:
 	const Character& object;
 
-	DirectX::XMVECTOR camPos;
 	DirectX::XMVECTOR camFront;
 	DirectX::XMVECTOR camUpDir;
 	DirectX::XMVECTOR camTarget;
 	float camHeight;
 
 	DirectX::XMFLOAT4 rotation;
-	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT3 positionFloat3;
 	float direction;
 };

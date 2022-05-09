@@ -4,6 +4,8 @@
 #include "playground.h"
 #include "HighscoreLevel.h"
 
+#include "SpriteBatch.h"
+
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"
 #include "imgui\imgui_impl_win32.h"
@@ -35,4 +37,12 @@ private:
 	ObjectRender objRender;
 	DecalShadow decalShadow;
 	Window& window;
+
+	std::unique_ptr<DirectX::AudioEngine> audEngine;
+	std::unique_ptr<DirectX::SoundEffect> soundEffect1;
+	std::unique_ptr<DirectX::SoundEffect> soundEffect2;
+	std::unique_ptr<DirectX::SoundEffect> soundEffect3;
+	std::unique_ptr<DirectX::SoundEffectInstance> effect1;
+	std::unique_ptr<DirectX::SoundEffectInstance> effect2;
+	std::unique_ptr<DirectX::SoundEffectInstance> effect3;
 };

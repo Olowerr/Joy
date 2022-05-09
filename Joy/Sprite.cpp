@@ -2,15 +2,17 @@
 #include <iostream>
 
 Sprite::Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale)
-	:pos(xPos, yPos), size(), imageSRV(nullptr), initialSize(), immutable(true)
+	:UIElement(), size(), imageSRV(nullptr), initialSize(), immutable(true)
 {
+	UIElement::SetPosition(xPos, yPos);
+
 	bool succeeded = false;
 	HRESULT hr;
 
 	succeeded = Load(imagePath);
 	assert(succeeded);
 
-	float gpuVariables[4] = {xPos, -yPos, size.x, size.y };
+	float gpuVariables[4] = {xPos, -yPos, size.x * xScale, size.y * xScale };
 	hr = Backend::CreateConstCBuffer(&transformBuffer, gpuVariables, 16);
 	assert(SUCCEEDED(hr));
 	
@@ -25,7 +27,7 @@ Sprite::Sprite(const std::string& imagePath)
 	succeeded = Load(imagePath);
 	assert(succeeded);
 
-	float gpuVariables[4] = { pos.x, -pos.y, size.x, size.y };
+	float gpuVariables[4] = { position.x, -position.y, size.x, size.y };
 	hr = Backend::CreateDynamicCBuffer(&transformBuffer, gpuVariables, 16);
 	assert(SUCCEEDED(hr));
 }
@@ -46,8 +48,8 @@ void Sprite::SetPosition(FLOAT x, FLOAT y)
 	if (immutable)
 		return;
 
-	pos.x = x;
-	pos.y = y;
+	position.x = x;
+	position.y = y;
 }
 
 void Sprite::SetScale(FLOAT x, FLOAT y)
@@ -62,8 +64,8 @@ void Sprite::SetScale(FLOAT x, FLOAT y)
 bool Sprite::Hovered()
 {
 	const DirectX::XMFLOAT2 mPos((float)Backend::GetMouse().GetXPos(), (float)Backend::GetMouse().GetYPos());
-	return mPos.x > pos.x && mPos.x < pos.x + size.x
-		&& mPos.y > pos.y && mPos.y < pos.y + size.y;
+	return mPos.x > position.x && mPos.x < position.x + size.x
+		&& mPos.y > position.y && mPos.y < position.y + size.y;
 }
 
 bool Sprite::Clicked()
@@ -77,7 +79,7 @@ void Sprite::Draw()
 	
 	if (!immutable)
 	{
-		float gpuVariables[4] = { pos.x, -pos.y, size.x, size.y };
+		float gpuVariables[4] = { position.x, -position.y, size.x, size.y };
 		Backend::UpdateBuffer(transformBuffer, gpuVariables, 16);
 	}
 
