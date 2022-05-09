@@ -65,7 +65,7 @@ bool StoredData::StoreAll(const std::string& fileName)
                 reader.read((char*)camPtr, sizeof(JOY::Camera));
                 m_cameraInfo.cameras.emplace_back(*camPtr);
             }
-
+            delete[]camPtr;
             break;
         }
 
@@ -83,7 +83,7 @@ bool StoredData::StoreAll(const std::string& fileName)
                 reader.read((char*)grPtr, sizeof(JOY::Group));
                 m_groupInfo.groups.emplace_back(*grPtr);
             }
-
+            delete[]grPtr;
             break;
         }
         case BaseHeader::Light:
@@ -100,7 +100,7 @@ bool StoredData::StoreAll(const std::string& fileName)
                 reader.read((char*)liPtr, sizeof(JOY::Light));
                 m_lightInfo.lights.emplace_back(*liPtr);
             }
-
+            delete[]liPtr;
             break;
         }
         case BaseHeader::Material:
@@ -199,18 +199,36 @@ bool StoredData::StoreAll(const std::string& fileName)
         }
         case BaseHeader::Property:
         {
-            PropertiesHeader property;
+            PropertiesHeader propertyHeader;
+            
+            char* ptr = (char*)&propertyHeader + sizeof(Header);
+            reader.read(ptr, sizeof(PropertiesHeader) - sizeof(Header));
+
+            ObjectInfo* currentObj = nullptr;
+            for (size_t i = 0; i < m_objectInfoVec.size(); i++)
+            {
+                if (m_objectInfoVec[i].objHeader.propertyId == propertyHeader.propertyId)
+                {
+                    currentObj = &m_objectInfoVec[i];
+                    i = m_objectInfoVec.size();
+                }
+            }
+            if (!currentObj)
+            {
+                reader.ignore(header.totalByteSize - (sizeof(SkeletonHeader) - sizeof(header))); // if object not found, skip data until next header (totalByteSize - readBytes)
+                break;
+            }
+
+            currentObj->properties.reserve(propertyHeader.numProperties);
+
             JOY::PropertyType propertyType;
-            char* ptr = (char*)&property;
             char* type_ptr = (char*)&propertyType;
             ptr += sizeof(Header);
-            bool nextMesh = false;;
 
             std::vector<JOY::PropertyBase*> prapprapVec;
 
-            reader.read(ptr, sizeof(PropertiesHeader) - sizeof(Header));
 
-            for (int i = 0; i < property.numProperties; i++)
+            for (int i = 0; i < propertyHeader.numProperties; i++)
             {
                 reader.read(type_ptr, sizeof(JOY::PropertyType));
 
@@ -219,28 +237,28 @@ bool StoredData::StoreAll(const std::string& fileName)
                 case JOY::PropertyType::NONE:
                     break;
                 case JOY::PropertyType::VECTOR:
-                    prapprapVec.emplace_back(new JOY::Property<JOY::Float3>(JOY::PropertyType::VECTOR));
-                    reader.read((char*)prapprapVec.back() + 4, sizeof(JOY::Property<JOY::Float3>) - sizeof(JOY::PropertyBase));
+                    currentObj->properties.emplace_back(new JOY::Property<JOY::Float3>(JOY::PropertyType::VECTOR));
+                    reader.read((char*)currentObj->properties.back() + sizeof(propertyType), sizeof(JOY::Property<JOY::Float3>) - sizeof(JOY::PropertyBase));
                     break;
                 case JOY::PropertyType::FLOAT:
-                    prapprapVec.emplace_back(new JOY::Property<float>(JOY::PropertyType::FLOAT));
-                    reader.read((char*)prapprapVec.back() + 4, sizeof(JOY::Property<float>) - sizeof(JOY::PropertyBase));
+                    currentObj->properties.emplace_back(new JOY::Property<float>(JOY::PropertyType::FLOAT));
+                    reader.read((char*)currentObj->properties.back() + sizeof(propertyType), sizeof(JOY::Property<float>) - sizeof(JOY::PropertyBase));
                     break;
                 case JOY::PropertyType::INT:
-                    prapprapVec.emplace_back(new JOY::Property<int>(JOY::PropertyType::INT));
-                    reader.read((char*)prapprapVec.back() + 4, sizeof(JOY::Property<int>) - sizeof(JOY::PropertyBase));
+                    currentObj->properties.emplace_back(new JOY::Property<int>(JOY::PropertyType::INT));
+                    reader.read((char*)currentObj->properties.back() + sizeof(propertyType), sizeof(JOY::Property<int>) - sizeof(JOY::PropertyBase));
                     break;
                 case JOY::PropertyType::BOOL:
-                    prapprapVec.emplace_back(new JOY::Property<bool>(JOY::PropertyType::BOOL));
-                    reader.read((char*)prapprapVec.back() + 4, sizeof(JOY::Property<bool>) - sizeof(JOY::PropertyBase));
+                    currentObj->properties.emplace_back(new JOY::Property<bool>(JOY::PropertyType::BOOL));
+                    reader.read((char*)currentObj->properties.back() + sizeof(propertyType), sizeof(JOY::Property<bool>) - sizeof(JOY::PropertyBase));
                     break;
                 case JOY::PropertyType::STRING:
-                    prapprapVec.emplace_back(new JOY::Property<JOY::JoyString>(JOY::PropertyType::STRING));
-                    reader.read((char*)prapprapVec.back() + 4, sizeof(JOY::Property<JOY::JoyString>) - sizeof(JOY::PropertyBase));
+                    currentObj->properties.emplace_back(new JOY::Property<JOY::JoyString>(JOY::PropertyType::STRING));
+                    reader.read((char*)currentObj->properties.back() + sizeof(propertyType), sizeof(JOY::Property<JOY::JoyString>) - sizeof(JOY::PropertyBase));
                     break;
                 case JOY::PropertyType::ENUM:
-                    prapprapVec.emplace_back(new JOY::Property<int>(JOY::PropertyType::ENUM));
-                    reader.read((char*)prapprapVec.back() + 4, sizeof(JOY::Property<int>) - sizeof(JOY::PropertyBase));
+                    currentObj->properties.emplace_back(new JOY::Property<int>(JOY::PropertyType::ENUM));
+                    reader.read((char*)currentObj->properties.back() + sizeof(propertyType), sizeof(JOY::Property<int>) - sizeof(JOY::PropertyBase));
                     break;
                 default:
                     break;
@@ -373,6 +391,53 @@ bool StoredData::StoreAll(const std::string& fileName)
    
     return true;
 
+}
+
+void StoredData::UnloadAll()
+{
+    for (ObjectInfo& object : m_objectInfoVec)
+    {
+        for (JOY::PropertyBase* property : object.properties)
+            delete property;
+
+        object.properties.clear();
+        object.properties.shrink_to_fit();
+
+        object.children.clear();
+        object.children.shrink_to_fit();
+
+        object.vertex.clear();
+        object.vertex.shrink_to_fit();
+
+        object.biNormal.clear();
+        object.biNormal.shrink_to_fit();
+
+        object.weights.clear();
+        object.weights.shrink_to_fit();
+
+        object.indices.clear();
+        object.indices.shrink_to_fit();
+
+        object.mInfo.clear();
+        object.mInfo.shrink_to_fit();
+
+        object.joints.clear();
+        object.joints.shrink_to_fit();
+    }
+    m_objectInfoVec.clear();
+    m_objectInfoVec.shrink_to_fit();
+
+    m_lightInfo.lights.clear();
+    m_lightInfo.lights.shrink_to_fit();
+
+    m_cameraInfo.cameras.clear();
+    m_cameraInfo.cameras.shrink_to_fit();
+
+    m_groupInfo.groups.clear();
+    m_groupInfo.groups.shrink_to_fit();
+
+    m_materialInfo.material.clear();
+    m_materialInfo.material.shrink_to_fit();
 }
 
 //SkeletonInfo& StoredData::GetSkeletonInfo()

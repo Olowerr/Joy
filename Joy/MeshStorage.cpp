@@ -3,7 +3,44 @@
 TempMeshStorage::TempMeshStorage()
 	:meshes{}
 {
+	JOY::data.StoreAll("../Resources/JoyFiles/big3new.joy");
 
+	ObjectInfo& obj = JOY::data.m_objectInfoVec[0];
+
+	Backend::CreateVertexBuffer(&fbxMesh.vertexBuffer, 
+		obj.vertex.data(), obj.vertex.size() * sizeof(JOY::Vertex));
+
+	fbxMesh.indexCount = obj.indices.size();
+
+	D3D11_BUFFER_DESC desc{};
+	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	desc.Usage = D3D11_USAGE_IMMUTABLE;
+	desc.ByteWidth = sizeof(int) * obj.indices.size();;
+	desc.CPUAccessFlags = 0;
+	desc.StructureByteStride = 0;
+	desc.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA inData{};
+	inData.pSysMem = obj.indices.data();
+	inData.SysMemPitch = inData.SysMemSlicePitch = 0;
+
+	Backend::GetDevice()->CreateBuffer(&desc, &inData, &fbxMesh.indexBuffer);
+
+	std::string path = "../Resources/JoyFiles/";
+	path += JOY::data.m_materialInfo.material[0].diffuseTexturePath.string;
+
+	int x, y, c;
+	unsigned char* imgData = stbi_load(path.c_str(), &x, &y, &c, 4);
+	if (!imgData)
+		return;
+
+	ID3D11Texture2D* texture{};
+	HRESULT hr = Backend::CreateConstSRVTexture2D(&texture, imgData, x, y);
+	stbi_image_free(imgData);
+	if (FAILED(hr))
+		return;
+
+	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &fbxMesh.diffuseTextureSRV);
+	texture->Release();
 }
 
 TempMeshStorage::~TempMeshStorage()
@@ -27,6 +64,14 @@ void TempMeshStorage::UnLoadAll()
 		if (mesh.diffuseTextureSRV)
 			mesh.diffuseTextureSRV->Release();
 	}
+}
+
+void TempMeshStorage::LoadMenuObjects()
+{
+}
+
+void TempMeshStorage::LoadEasyObjects()
+{
 }
 
 Mesh* TempMeshStorage::GetMesh(const std::string& name)
@@ -54,7 +99,7 @@ void TempMeshStorage::import(UINT index)
 	std::vector<DirectX::XMFLOAT2> uv;
 	std::vector<DirectX::XMFLOAT3> norm;
 
-	std::vector<Vertex> verts;
+	std::vector<JOY::Vertex> verts;
 
 	std::string fileInfo;
 	std::ifstream reader;
@@ -109,7 +154,7 @@ void TempMeshStorage::import(UINT index)
 				reader.ignore(1);
 				reader >> faceN;
 
-				verts.emplace_back(pos[faceP - 1], norm[faceN - 1], uv[faceT - 1]);
+				verts.emplace_back(pos[faceP - 1], uv[faceT - 1], norm[faceN - 1]);
 			}
 		}
 
@@ -191,8 +236,8 @@ void TempMeshStorage::import(UINT index)
 		meshes[index].bBox.Extents.y += 1;
 	}
 
-	meshes[index].vertexCount = verts.size();
-	Backend::CreateVertexBuffer(&meshes[index].vertexBuffer, verts.data(), sizeof(Vertex)* verts.size());
+	meshes[index].indexCount = verts.size();
+	Backend::CreateVertexBuffer(&meshes[index].vertexBuffer, verts.data(), sizeof(JOY::Vertex)* verts.size());
 
 	if (!mtlFound)
 		return;

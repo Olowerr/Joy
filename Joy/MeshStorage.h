@@ -2,27 +2,13 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+#include "StoredData.h"
 
 #include "Backend.h"
 
-
-struct Vertex
-{
-	Vertex(float* Pos, float* Norm, float* Uv)
-		:pos(Pos), normal(Norm), uv(Uv)
-	{ }
-	Vertex(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 norm, DirectX::XMFLOAT2 uv)
-		:pos(pos), normal(norm), uv(uv)
-	{ }
-	
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 normal;
-	DirectX::XMFLOAT2 uv;
-};
-
 struct Mesh
 {
-	static const UINT Stirde = sizeof(Vertex);
+	static const UINT Stirde = sizeof(JOY::Vertex);
 	static const UINT Offset = 0;
 	DirectX::BoundingBox bBox;
 	void Shutdown()
@@ -34,8 +20,8 @@ struct Mesh
 	ID3D11ShaderResourceView* diffuseTextureSRV;
 
 	ID3D11Buffer* vertexBuffer;
-	//ID3D11Buffer* indexBuffer;
-	UINT vertexCount; // index count
+	ID3D11Buffer* indexBuffer = nullptr;
+	UINT indexCount;
 };
 
 /*
@@ -59,14 +45,18 @@ public:
 	void LoadAll();
 	void UnLoadAll();
 
+	void LoadMenuObjects();
+	void LoadEasyObjects();
+
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(const std::string& name);
 	Mesh* GetMesh(UINT index);
 
+	Mesh fbxMesh;
 private:
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 10;
+	static const UINT MeshCount = 11;
 	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
@@ -79,8 +69,11 @@ private:
 		"sphere.obj",
 		"FirstTree.obj",
 		"HighscoreScreen.obj",
-		"Frame.obj"
+		"Frame.obj",
+		"Future_Bench.obj"
 	};
+
+
 
 	void import(UINT index);
 };

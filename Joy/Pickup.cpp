@@ -187,7 +187,7 @@ void Pickup::DrawPickupInstances()
 
 
 
-	dc->DrawInstanced(pickupObjs[0]->GetMesh()->vertexCount, pickupsRendered, 0, 0);	
+	dc->DrawInstanced(pickupObjs[0]->GetMesh()->indexCount, pickupsRendered, 0, 0);	
 	
 	dc = nullptr;
 }

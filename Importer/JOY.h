@@ -92,8 +92,8 @@ namespace JOY
 		}
 
 		float pos[3];
-		float uv[2];
 		float normal[3];
+		float uv[2];
 	};
 
 	struct BiNormals

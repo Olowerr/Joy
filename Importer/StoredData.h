@@ -32,6 +32,7 @@ struct ObjectInfo
 
 	std::vector<ObjectJointToho> joints;
 
+	std::vector<JOY::PropertyBase*> properties;
 };
 
 struct MaterialInfo
@@ -73,7 +74,7 @@ public:
 	~StoredData();
 
 	bool StoreAll(const std::string& fileName);
-
+	void UnloadAll();
 
 
 	//Getters
@@ -88,7 +89,6 @@ public:
 
 //	SkeletonInfo m_skeletonInfo;
 	std::vector<ObjectInfo> m_objectInfoVec;
-	MorphInfo m_morphInfo;
 
 	LightInfo m_lightInfo;
 	CameraInfo m_cameraInfo;

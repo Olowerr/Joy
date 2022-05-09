@@ -109,7 +109,7 @@ void InstancedObject::Draw()
 	devContext->VSSetShaderResources(0, 1, &transformSRV);
 	devContext->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 
-	devContext->DrawInstanced(mesh->vertexCount, instanceCount, 0, 0);
+	devContext->DrawInstanced(mesh->indexCount, instanceCount, 0, 0);
 }
 
 void InstancedObject::ShrinkToFit()

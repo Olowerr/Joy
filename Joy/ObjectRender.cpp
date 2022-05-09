@@ -118,7 +118,7 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	//instances.emplace_back();
 
 	//instances.back().instanceCount = amount;
-	//instances.back().indexCount = obj[0].GetMesh()->vertexCount;
+	//instances.back().indexCount = obj[0].GetMesh()->indexCount;
 	//instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
 	//instances.back().transformSRV = tempSRV;
 	//instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;

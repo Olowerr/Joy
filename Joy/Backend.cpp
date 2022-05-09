@@ -388,7 +388,7 @@ HRESULT Backend::UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth)
 HRESULT Backend::CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth)
 {
     D3D11_BUFFER_DESC desc{};
-    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;;
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     desc.Usage = D3D11_USAGE_IMMUTABLE;
     desc.ByteWidth = byteWidth;
     desc.CPUAccessFlags = 0;
