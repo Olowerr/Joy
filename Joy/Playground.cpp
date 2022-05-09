@@ -13,20 +13,24 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    sceneObjects.emplace_back(&meshStorage.fbxMesh, true);
+    //sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
+    //sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
+    //sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
+    //sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    //sceneObjects.emplace_back(meshStorage.GetMesh(10), true);
+    //
+    //cube = &sceneObjects[0];
+    //ground = &sceneObjects[3];
+    //collTest = &sceneObjects[1];
+    //
+    //joy.SetPosition(0.f, 3.f, 0.f);
+    //ground->SetPosition(0.f, -2.0f, 0.f);
+    //sceneObjects[0].SetPosition(0.0f, 1.0f, 0.0f);
+    //sceneObjects[1].SetPosition(1.f, 3.f, -1.0f);
+    //sceneObjects[2].SetPosition(3.f, 1.0f, 1.f);
+    //sceneObjects[4].SetPosition(-3.f, 0.5f, -2.f);
 
-    cube = &sceneObjects[0];
-    ground = &sceneObjects[3];
-    collTest = &sceneObjects[1];
-    
-    joy.SetPosition(0.f, 3.f, 0.f);
-    ground->SetPosition(0.f, -2.0f, 0.f);
-    sceneObjects[0].SetPosition(0.0f, 1.0f, 0.0f);
-    sceneObjects[1].SetPosition(1.f, 3.f, -1.0f);
-    sceneObjects[2].SetPosition(3.f, 1.0f, 1.f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -35,16 +39,17 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
     
-    hLight.InitiateTools(divider);
-    hLight.GenerateLightMaps(divider);
+    //hLight.InitiateTools(divider);
+    //hLight.GenerateLightMaps(divider);
 
-    tast.AddObject(&sceneObjects[0]);
+  /*  tast.AddObject(&sceneObjects[0]);
     tast.AddObject(&sceneObjects[1]);
     tast.AddObject(&sceneObjects[2]);
-    hLight.GenerateLightMapsInstanced(divider, tast);
-    tast.Finalize();
+    hLight.GenerateLightMapsInstanced(divider, tast);*/
 
-    hLight.ShutdownTools();
+    //tast.Finalize();
+
+    //hLight.ShutdownTools();
 
 
     sky.init();
@@ -102,14 +107,14 @@ SceneState testScene::Update()
     //Collision
 
 
-    if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
+ /*   if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
         joy.SetCanJump(true);
     else
         joy.SetCanJump(false);
 
     coll.collided(&joy, collTest);
     coll2.collided(&joy, cube);
-    coll3.collided(&joy, ground);
+    coll3.collided(&joy, ground);*/
 
     return SceneState::Unchanged;
 }
@@ -118,7 +123,7 @@ void testScene::Render()
 {
     objRender.DrawAll();
     decalShadow.DrawAll(joy.GetPosition());
-    objRender.DrawCharacter(joy);
+    //objRender.DrawCharacter(joy);
     uiRender.Draw();
 
     sky.Draw(activeCamera);
