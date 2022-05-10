@@ -9,7 +9,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 {   
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     joy.CheckBB();
 

@@ -1,7 +1,8 @@
 #include "StoredData.h"
-
+#include <iostream>
 StoredData::StoredData()
 {
+    std::cout << "hi";
 }
 
 StoredData::~StoredData()

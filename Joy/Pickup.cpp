@@ -5,7 +5,7 @@ Pickup::Pickup(TempMeshStorage& meshStorage, UINT points_in)
 		pickupsRendered(0), charBB(DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))
 {
 	// Catch the pickup mesh and store it.
-	//meshStorage.LoadAll();
+	//meshStorage.LoadAllObj();
 	pickupMesh = meshStorage.GetMesh(0);
 	
 	// Reserve space.

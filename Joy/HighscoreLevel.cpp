@@ -7,7 +7,7 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
     , divider(joy)
     , activeCamera(&joyCamera)
 {
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     joy.CheckBB();
 

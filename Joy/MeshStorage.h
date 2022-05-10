@@ -50,7 +50,7 @@ public:
 	TempMeshStorage();
 	~TempMeshStorage();
 
-	void LoadAll();
+	void LoadAllObj();
 	void UnloadMeshes();
 
 	void UnloadDataBase();
@@ -69,7 +69,7 @@ private:
 
 	const std::string meshPath = "../Resources/Meshes/";
 	static const UINT MeshCount = 11;
-	//Mesh meshes[MeshCount];
+	Mesh objMeshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
 		"Joy.obj",

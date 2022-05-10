@@ -8,7 +8,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , divider(joy)
     , activeCamera(&joyCamera)
 {
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     uiRender.Add(&catButton);
     uiRender.Add(&thomas);
