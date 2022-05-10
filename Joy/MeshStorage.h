@@ -6,22 +6,30 @@
 
 #include "Backend.h"
 
-struct Mesh
+class Mesh
 {
+public:
 	static const UINT Stirde = sizeof(JOY::Vertex);
 	static const UINT Offset = 0;
-	DirectX::BoundingBox bBox;
+	
+	Mesh() = default;
 	void Shutdown()
 	{
 		diffuseTextureSRV->Release();
 		vertexBuffer->Release();
 	}
 
-	ID3D11ShaderResourceView* diffuseTextureSRV;
+	void Bind();
+	void BindGeometry();
 
-	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer = nullptr;
+//private:
 	UINT indexCount;
+	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
+	
+	ID3D11ShaderResourceView* diffuseTextureSRV;
+	
+	DirectX::BoundingBox bBox;
 };
 
 /*
@@ -43,7 +51,10 @@ public:
 	~TempMeshStorage();
 
 	void LoadAll();
-	void UnLoadAll();
+	void UnloadMeshes();
+
+	void UnloadDataBase();
+
 
 	void LoadMenuObjects();
 	void LoadEasyObjects();
@@ -51,13 +62,14 @@ public:
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(const std::string& name);
 	Mesh* GetMesh(UINT index);
+	size_t GetMeshCount() const;
 
 	Mesh fbxMesh;
 private:
 
 	const std::string meshPath = "../Resources/Meshes/";
 	static const UINT MeshCount = 11;
-	Mesh meshes[MeshCount];
+	//Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
 		"Joy.obj",
@@ -73,7 +85,24 @@ private:
 		"Future_Bench.obj"
 	};
 
+	std::vector<Mesh*> meshes;
+
+	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
+	static const UINT MenuCount = 1;
+	const std::string MenuFiles[MenuCount] =
+	{
+		"big3newnew.joy" // 4 meshes
+	};
+
+	static const UINT EasyCount = 1;
+	const std::string EasyFiles[MenuCount] =
+	{
+		// menu .joy files
+	};
+
+
 
 
 	void import(UINT index);
+	void import(const std::string& filePath);
 };

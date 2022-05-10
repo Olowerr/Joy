@@ -401,6 +401,22 @@ HRESULT Backend::CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byte
     return system->device->CreateBuffer(&desc, &inData, buffer);
 }
 
+HRESULT Backend::CreateIndexBuffer(ID3D11Buffer** buffer, void* data, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC desc{};
+    desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.ByteWidth = byteWidth;
+    desc.CPUAccessFlags = 0;
+    desc.StructureByteStride = 0;
+    desc.MiscFlags = 0;
+    D3D11_SUBRESOURCE_DATA inData{};
+    inData.pSysMem = data;
+    inData.SysMemPitch = inData.SysMemSlicePitch = 0;
+
+    return system->device->CreateBuffer(&desc, &inData, buffer);
+}
+
 HRESULT Backend::CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, UINT Width, UINT Height)
 {
     D3D11_TEXTURE2D_DESC desc{};
@@ -422,4 +438,26 @@ HRESULT Backend::CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, 
     inData.SysMemSlicePitch = 0;
 
     return system->device->CreateTexture2D(&desc, &inData, texture);
+}
+
+HRESULT Backend::CreateConstSRV(ID3D11ShaderResourceView** srv, const std::string& filePath)
+{
+    int width, height, channels;
+    HRESULT hr;
+    
+    unsigned char* imageData = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    if (!imageData)
+        return S_FALSE;
+
+    ID3D11Texture2D* resource;
+    hr = CreateConstSRVTexture2D(&resource, imageData, width, height);
+    stbi_image_free(imageData);
+
+    if (FAILED(hr))
+        return hr;
+
+    hr = system->device->CreateShaderResourceView(resource, nullptr, srv);
+    resource->Release();
+
+    return hr;
 }

@@ -150,7 +150,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 
 		for (UINT k = 0; k < enviormentObjects.size(); k++)
 		{
-			if (levelObjects[k]->GetIsInstanced())
+			if (enviormentObjects[k]->GetIsInstanced())
 				continue;
 
 			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;
@@ -205,6 +205,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
 	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
 	deviceContext->Dispatch(NumGroups, NumGroups, texDesc.ArraySize);
+
 	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
 	deviceContext->CSSetShader(nullptr, nullptr, 0);
@@ -305,8 +306,6 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& i
 		}
 	}
 	
-	// "blur"
-
 	deviceContext->RSSetState(nullptr);
 	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 

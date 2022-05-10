@@ -16,7 +16,7 @@ public:
 private:
 	InstancedObject tast;
 
-	Character joy;
+	Character* joy;
 	std::vector<Object> sceneObjects;
 	Object* ground;
 	Object* collTest;
@@ -25,13 +25,13 @@ private:
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
-	CharacterCamera joyCamera;
+	CharacterCamera* joyCamera;
 
 	Collision coll;
 	Collision coll2;
 	Collision coll3;
 
-	MapDivider divider;
+	MapDivider* divider;
 
 	Skybox sky;
 };

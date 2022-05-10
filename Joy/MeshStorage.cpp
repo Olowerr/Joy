@@ -3,7 +3,7 @@
 TempMeshStorage::TempMeshStorage()
 	:meshes{}
 {
-	JOY::data.StoreAll("../Resources/JoyFiles/big3new.joy");
+	/*JOY::data.StoreAll("../Resources/JoyFiles/big3new.joy");
 
 	ObjectInfo& obj = JOY::data.m_objectInfoVec[0];
 
@@ -40,7 +40,7 @@ TempMeshStorage::TempMeshStorage()
 		return;
 
 	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &fbxMesh.diffuseTextureSRV);
-	texture->Release();
+	texture->Release();*/
 }
 
 TempMeshStorage::~TempMeshStorage()
@@ -55,23 +55,33 @@ void TempMeshStorage::LoadAll()
 	}
 }
 
-void TempMeshStorage::UnLoadAll()
+void TempMeshStorage::UnloadMeshes()
 {
-	for (Mesh& mesh : meshes)
+	for (Mesh* mesh : meshes)
 	{
-		if (mesh.vertexBuffer)
-			mesh.vertexBuffer->Release();
-		if (mesh.diffuseTextureSRV)
-			mesh.diffuseTextureSRV->Release();
+		// remove if-statements
+		if (mesh->vertexBuffer)
+			mesh->vertexBuffer->Release();
+		if (mesh->diffuseTextureSRV)
+			mesh->diffuseTextureSRV->Release();
+		if (mesh->indexBuffer)
+			mesh->indexBuffer->Release();
+
+		delete mesh;
 	}
+	meshes.clear();
 }
 
 void TempMeshStorage::LoadMenuObjects()
 {
+	for (UINT i = 0; i < MenuCount; i++)
+		import(tastPath + MenuFiles[i]); // meshPath + MenuFiles[i]
 }
 
 void TempMeshStorage::LoadEasyObjects()
 {
+	for (UINT i = 0; i < EasyCount; i++)
+		import(meshPath + EasyFiles[i]);
 }
 
 Mesh* TempMeshStorage::GetMesh(const std::string& name)
@@ -79,10 +89,15 @@ Mesh* TempMeshStorage::GetMesh(const std::string& name)
 	for (UINT i = 0; i < MeshCount; i++)
 	{
 		if (name == meshNames[i])
-			return &meshes[i];
+			return meshes[i];
 	}
 
 	return nullptr;
+}
+
+void TempMeshStorage::UnloadDataBase()
+{
+	JOY::data.UnloadAll();
 }
 
 Mesh* TempMeshStorage::GetMesh(UINT index)
@@ -90,171 +105,252 @@ Mesh* TempMeshStorage::GetMesh(UINT index)
 	if (index >= MeshCount)
 		return nullptr;
 
-	return &meshes[index];
+	return meshes[index];
+}
+
+size_t TempMeshStorage::GetMeshCount() const
+{
+	return meshes.size();
 }
 
 void TempMeshStorage::import(UINT index)
 {
-	std::vector<DirectX::XMFLOAT3> pos;
-	std::vector<DirectX::XMFLOAT2> uv;
-	std::vector<DirectX::XMFLOAT3> norm;
+	//std::vector<DirectX::XMFLOAT3> pos;
+	//std::vector<DirectX::XMFLOAT2> uv;
+	//std::vector<DirectX::XMFLOAT3> norm;
 
-	std::vector<JOY::Vertex> verts;
+	//std::vector<JOY::Vertex> verts;
 
-	std::string fileInfo;
-	std::ifstream reader;
+	//std::string fileInfo;
+	//std::ifstream reader;
 
-	float vtxInfo[3]{};
+	//float vtxInfo[3]{};
 
-	int faceP;
-	int faceT;
-	int faceN;
+	//int faceP;
+	//int faceT;
+	//int faceN;
 
-	bool mtlFound = false;
-	std::string mtlInfo = "";
+	//bool mtlFound = false;
+	//std::string mtlInfo = "";
 
-	reader.open(meshPath + meshNames[index]);
-	if (!reader.is_open())
-		return;
+	//reader.open(meshPath + meshNames[index]);
+	//if (!reader.is_open())
+	//	return;
 
-	while (reader >> fileInfo)
-	{
+	//meshes.emplace_back(new Mesh);
 
-		if (fileInfo == "v")
-		{
-			reader >> vtxInfo[0];
-			reader >> vtxInfo[1];
-			reader >> vtxInfo[2];
-			pos.emplace_back(vtxInfo);
-		}
+	//while (reader >> fileInfo)
+	//{
 
-		else if (fileInfo == "vt")
-		{
-			reader >> vtxInfo[0];
-			reader >> vtxInfo[1];
-			vtxInfo[1] = 1.f - vtxInfo[1];
-			uv.emplace_back(vtxInfo);
-		}
+	//	if (fileInfo == "v")
+	//	{
+	//		reader >> vtxInfo[0];
+	//		reader >> vtxInfo[1];
+	//		reader >> vtxInfo[2];
+	//		pos.emplace_back(vtxInfo);
+	//	}
 
-		else if (fileInfo == "vn")
-		{
-			reader >> vtxInfo[0];
-			reader >> vtxInfo[1];
-			reader >> vtxInfo[2];
-			norm.emplace_back(vtxInfo);
-		}
+	//	else if (fileInfo == "vt")
+	//	{
+	//		reader >> vtxInfo[0];
+	//		reader >> vtxInfo[1];
+	//		vtxInfo[1] = 1.f - vtxInfo[1];
+	//		uv.emplace_back(vtxInfo);
+	//	}
 
-		else if (fileInfo == "f")
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				reader >> faceP;
-				reader.ignore(1);
-				reader >> faceT;
-				reader.ignore(1);
-				reader >> faceN;
+	//	else if (fileInfo == "vn")
+	//	{
+	//		reader >> vtxInfo[0];
+	//		reader >> vtxInfo[1];
+	//		reader >> vtxInfo[2];
+	//		norm.emplace_back(vtxInfo);
+	//	}
 
-				verts.emplace_back(pos[faceP - 1], uv[faceT - 1], norm[faceN - 1]);
-			}
-		}
+	//	else if (fileInfo == "f")
+	//	{
+	//		for (int i = 0; i < 3; i++)
+	//		{
+	//			reader >> faceP;
+	//			reader.ignore(1);
+	//			reader >> faceT;
+	//			reader.ignore(1);
+	//			reader >> faceN;
 
-		else if (fileInfo == "mtllib")
-			reader >> mtlInfo;
+	//			verts.emplace_back(pos[faceP - 1], uv[faceT - 1], norm[faceN - 1]);
+	//		}
+	//	}
 
-		else if (fileInfo == "usemtl")
-		{
-			if (mtlFound)
-				continue;
+	//	else if (fileInfo == "mtllib")
+	//		reader >> mtlInfo;
 
-			if (mtlInfo == "")
-				continue;
+	//	else if (fileInfo == "usemtl")
+	//	{
+	//		if (mtlFound)
+	//			continue;
 
-			std::ifstream mtlReader;
-			mtlReader.open(meshPath + mtlInfo); // open .mtl file
-			if (!reader.is_open())
-				continue;
+	//		if (mtlInfo == "")
+	//			continue;
 
-			reader >> fileInfo; // mtl name
+	//		std::ifstream mtlReader;
+	//		mtlReader.open(meshPath + mtlInfo); // open .mtl file
+	//		if (!reader.is_open())
+	//			continue;
 
-			bool found = false;
-			while (mtlReader >> mtlInfo && mtlReader.is_open()) // go through .mtl 
-			{
-				if (mtlInfo == "newmtl")
-				{
-					mtlReader >> mtlInfo;
-					if (mtlInfo == fileInfo) // look for the mtl
-						found = true;
-				}
+	//		reader >> fileInfo; // mtl name
 
-				if (found)
-				{
-					if (mtlInfo == "map_Kd")
-					{
-						mtlFound = true;
-						mtlReader >> mtlInfo;
-						mtlReader.close(); // close .mtl
-					}
-				}
-			}
-			mtlReader.close();
-		}
-	}
-	reader.close();
+	//		bool found = false;
+	//		while (mtlReader >> mtlInfo && mtlReader.is_open()) // go through .mtl 
+	//		{
+	//			if (mtlInfo == "newmtl")
+	//			{
+	//				mtlReader >> mtlInfo;
+	//				if (mtlInfo == fileInfo) // look for the mtl
+	//					found = true;
+	//			}
 
-	float tempXmax = -INFINITY;
-	float tempXmin = INFINITY;
-	float tempYmax = -INFINITY;
-	float tempYmin = INFINITY;
-	float tempZmax = -INFINITY;
-	float tempZmin = INFINITY;
-	for (size_t i = 0; i < pos.size(); i++)
-	{
-		if (pos[i].x > tempXmax)
-			tempXmax = pos[i].x;
-		if (pos[i].x < tempXmin)
-			tempXmin = pos[i].x;
-		if (pos[i].y > tempYmax)
-			tempYmax = pos[i].y;
-		if (pos[i].y < tempYmin)
-			tempYmin = pos[i].y;
-		if (pos[i].z > tempZmax)
-			tempZmax = pos[i].z;
-		if (pos[i].z < tempZmin)
-			tempZmin = pos[i].z;
-	}
+	//			if (found)
+	//			{
+	//				if (mtlInfo == "map_Kd")
+	//				{
+	//					mtlFound = true;
+	//					mtlReader >> mtlInfo;
+	//					mtlReader.close(); // close .mtl
+	//				}
+	//			}
+	//		}
+	//		mtlReader.close();
+	//	}
+	//}
+	//reader.close();
+
+	//float tempXmax = -INFINITY;
+	//float tempXmin = INFINITY;
+	//float tempYmax = -INFINITY;
+	//float tempYmin = INFINITY;
+	//float tempZmax = -INFINITY;
+	//float tempZmin = INFINITY;
+	//for (size_t i = 0; i < pos.size(); i++)
+	//{
+	//	if (pos[i].x > tempXmax)
+	//		tempXmax = pos[i].x;
+	//	if (pos[i].x < tempXmin)
+	//		tempXmin = pos[i].x;
+	//	if (pos[i].y > tempYmax)
+	//		tempYmax = pos[i].y;
+	//	if (pos[i].y < tempYmin)
+	//		tempYmin = pos[i].y;
+	//	if (pos[i].z > tempZmax)
+	//		tempZmax = pos[i].z;
+	//	if (pos[i].z < tempZmin)
+	//		tempZmin = pos[i].z;
+	//}
+	//
+	//meshes[index]->bBox.Center.x = (tempXmax + tempXmin) / 2;
+	//meshes[index]->bBox.Center.y = (tempYmax + tempYmin) / 2;
+	//meshes[index]->bBox.Center.z = (tempZmax + tempZmin) / 2;
+	//			 
+	//meshes[index]->bBox.Extents.x = (tempXmax - tempXmin)/2;
+	//meshes[index]->bBox.Extents.y = (tempYmax - tempYmin)/2;
+	//meshes[index]->bBox.Extents.z = (tempZmax - tempZmin)/2;
+
+	//if (index == 0)
+	//{
+	//	meshes[index]->bBox.Extents.y += 1;
+	//}
+
+	//meshes[index]->indexCount = verts.size();
+	//Backend::CreateVertexBuffer(&meshes[index]->vertexBuffer, verts.data(), sizeof(JOY::Vertex)* verts.size());
+
+	//if (!mtlFound)
+	//	return;
+
+	//mtlInfo = meshPath + mtlInfo;
+	//int x, y, c;
+	//unsigned char* imgData = stbi_load(mtlInfo.c_str(), &x, &y, &c, 4);
+	//if (!imgData)
+	//	return;
+	//
+	//ID3D11Texture2D* texture{};
+	//HRESULT hr = Backend::CreateConstSRVTexture2D(&texture, imgData, x, y);
+	//stbi_image_free(imgData);
+	//if (FAILED(hr))
+	//	return;
+
+	//Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &meshes[index]->diffuseTextureSRV);
+	//texture->Release();
+
+}
+
+void TempMeshStorage::import(const std::string& filePath)
+{
+	bool succeeded = false;
+	HRESULT hr{};
+
+	size_t sizeBefore = JOY::data.m_objectInfoVec.size();
 	
-	meshes[index].bBox.Center.x = (tempXmax + tempXmin) / 2;
-	meshes[index].bBox.Center.y = (tempYmax + tempYmin) / 2;
-	meshes[index].bBox.Center.z = (tempZmax + tempZmin) / 2;
+	succeeded = JOY::data.StoreAll(filePath);
+	if (!succeeded)
+		return; // fix better error handling
 
-	meshes[index].bBox.Extents.x = (tempXmax - tempXmin)/2;
-	meshes[index].bBox.Extents.y = (tempYmax - tempYmin)/2;
-	meshes[index].bBox.Extents.z = (tempZmax - tempZmin)/2;
+	size_t meshesFound = JOY::data.m_objectInfoVec.size() - sizeBefore;
+	if (!meshesFound)
+		return;
 
-	if (index == 0)
+	meshes.reserve(meshesFound);
+	for (size_t i = 0; i < meshesFound; i++)
 	{
-		meshes[index].bBox.Extents.y += 1;
+		meshes.emplace_back(new Mesh);
+
+		ObjectInfo& object = JOY::data.m_objectInfoVec.at(sizeBefore + i);
+
+		hr = Backend::CreateVertexBuffer(&meshes.back()->vertexBuffer, object.vertex.data(), sizeof(JOY::Vertex) * object.vertex.size());
+		if (FAILED(hr))
+			return;
+
+		hr = Backend::CreateIndexBuffer(&meshes.back()->indexBuffer, object.indices.data(), sizeof(int) * object.indices.size());
+		if (FAILED(hr))
+			return;
+
+		meshes.back()->indexCount = object.indices.size();
+		
+		Backend::CreateConstSRV(&meshes.back()->diffuseTextureSRV, tastPath + JOY::data.GetMaterial(object)->diffuseTexturePath.string);
+		// failed -> will be black
+
+		// bounding box
+		{   
+			float tempXmax = -INFINITY;
+			float tempXmin = INFINITY;
+			float tempYmax = -INFINITY;
+			float tempYmin = INFINITY;
+			float tempZmax = -INFINITY;
+			float tempZmin = INFINITY;
+			for (JOY::Vertex& vert : object.vertex)
+			{
+
+				if (vert.pos[0] > tempXmax)
+					tempXmax = vert.pos[0];
+				if (vert.pos[0] < tempXmin)
+					tempXmin = vert.pos[0];
+				if (vert.pos[1] > tempYmax)
+					tempYmax = vert.pos[1];
+				if (vert.pos[1] < tempYmin)
+					tempYmin = vert.pos[1];
+				if (vert.pos[2] > tempZmax)
+					tempZmax = vert.pos[2];
+				if (vert.pos[2] < tempZmin)
+					tempZmin = vert.pos[2];
+			}
+
+			meshes.back()->bBox.Center.x = (tempXmax + tempXmin) / 2;
+			meshes.back()->bBox.Center.y = (tempYmax + tempYmin) / 2;
+			meshes.back()->bBox.Center.z = (tempZmax + tempZmin) / 2;
+
+			meshes.back()->bBox.Extents.x = (tempXmax - tempXmin) / 2;
+			meshes.back()->bBox.Extents.y = (tempYmax - tempYmin) / 2;
+			meshes.back()->bBox.Extents.z = (tempZmax - tempZmin) / 2;
+		}
+		
 	}
 
-	meshes[index].indexCount = verts.size();
-	Backend::CreateVertexBuffer(&meshes[index].vertexBuffer, verts.data(), sizeof(JOY::Vertex)* verts.size());
-
-	if (!mtlFound)
-		return;
-
-	mtlInfo = meshPath + mtlInfo;
-	int x, y, c;
-	unsigned char* imgData = stbi_load(mtlInfo.c_str(), &x, &y, &c, 4);
-	if (!imgData)
-		return;
-	
-	ID3D11Texture2D* texture{};
-	HRESULT hr = Backend::CreateConstSRVTexture2D(&texture, imgData, x, y);
-	stbi_image_free(imgData);
-	if (FAILED(hr))
-		return;
-
-	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &meshes[index].diffuseTextureSRV);
-	texture->Release();
 
 }

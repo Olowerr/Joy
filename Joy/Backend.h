@@ -58,14 +58,15 @@ public:
 	static bool LoadShader(const std::string& path, std::string* const outData);
 
 	// Buffers
-	static HRESULT CreateConstCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
-	static HRESULT CreateDynamicCBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
-	static HRESULT UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth);
-	static HRESULT CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth);
+	static HRESULT CreateConstCBuffer(ID3D11Buffer** buffer, void* data, UINT byteWidth);
+	static HRESULT CreateDynamicCBuffer(ID3D11Buffer** buffer, void* data, UINT byteWidth);
+	static HRESULT UpdateBuffer(ID3D11Buffer* buffer, void* data, UINT byteWidth);
+	static HRESULT CreateVertexBuffer(ID3D11Buffer** buffer, void* data, UINT byteWidth);
+	static HRESULT CreateIndexBuffer(ID3D11Buffer** buffer, void* data, UINT byteWidth);
 
 	// Textures
 	static HRESULT CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, UINT Width, UINT Height);
-
+	static HRESULT CreateConstSRV(ID3D11ShaderResourceView** srv, const std::string& filePath);
 
 
 private:
