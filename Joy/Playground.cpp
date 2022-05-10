@@ -3,17 +3,27 @@
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
     :Scene(uiRender, objRender, decalShadow, meshStorage)
     // Joy should always be first in the array from mesh storage
-    , joy(meshStorage.GetMesh(0))
-    , joyCamera(joy)
+    /*, joyCamera(joy)
     , divider(joy)
-    , activeCamera(&joyCamera)
+    , activeCamera(&joyCamera)*/
 {
-    meshStorage.LoadAll();
+    meshStorage.LoadMenuObjects();
 
-    joy.CheckBB();
+    joy = new Character(meshStorage.GetMesh(0));
+    joyCamera = new CharacterCamera(*joy);
+    divider = new MapDivider(*joy);
+    activeCamera = &freeCamera;
+
+    //joy.CheckBB();
 
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(&meshStorage.fbxMesh, true);
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
+        sceneObjects.back().SetPosition(i * 5.f, 0.f, 0.f);
+    }
+
+    //sceneObjects.emplace_back(&meshStorage.fbxMesh, true);
     //sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
     //sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
     //sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
@@ -35,21 +45,21 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 15.f, 10.f);
-    objRender.SetMapDivier(&divider);
-    decalShadow.SetMapDivider(&divider);
+    divider->CreateSections(1, 50.f, 15.f, 10.f);
+    objRender.SetMapDivier(divider);
+    decalShadow.SetMapDivider(divider);
     
-    //hLight.InitiateTools(divider);
-    //hLight.GenerateLightMaps(divider);
+    hLight.InitiateTools(*divider);
+    hLight.GenerateLightMaps(*divider);
 
-  /*  tast.AddObject(&sceneObjects[0]);
+    tast.AddObject(&sceneObjects[0]);
     tast.AddObject(&sceneObjects[1]);
     tast.AddObject(&sceneObjects[2]);
-    hLight.GenerateLightMapsInstanced(divider, tast);*/
+    hLight.GenerateLightMapsInstanced(*divider, tast);
 
-    //tast.Finalize();
+    tast.Finalize();
 
-    //hLight.ShutdownTools();
+    hLight.ShutdownTools();
 
 
     sky.init();
@@ -63,17 +73,17 @@ void testScene::Shutdown()
     tast.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnLoadAll();
+    meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
  
-    joy.Shutdown();
+    //joy.Shutdown();
     for (Object& object : sceneObjects)
         object.Shutdown();
 
     freeCamera.Shutdown();
-    joyCamera.Shutdown();
+    joyCamera->Shutdown();
 
-    divider.Shutdown();
+    divider->Shutdown();
 }
 
 SceneState testScene::Update()
@@ -86,7 +96,7 @@ SceneState testScene::Update()
     }
     else if (Backend::GetKeyboard().KeyReleased(DIK_T))
     {
-        activeCamera = &joyCamera;
+        activeCamera = joyCamera;
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
@@ -96,9 +106,9 @@ SceneState testScene::Update()
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
 
-    joy.Jump();
-    joy.Move();
-    joy.Respawn();
+    //joy.Jump();
+    //joy.Move();
+    //joy.Respawn();
     
     //Camera functions
     activeCamera->UpdateCam();
@@ -122,7 +132,7 @@ SceneState testScene::Update()
 void testScene::Render()
 {
     objRender.DrawAll();
-    decalShadow.DrawAll(joy.GetPosition());
+    decalShadow.DrawAll(joy->GetPosition());
     //objRender.DrawCharacter(joy);
     uiRender.Draw();
 

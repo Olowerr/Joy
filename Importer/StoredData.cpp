@@ -440,6 +440,16 @@ void StoredData::UnloadAll()
     m_materialInfo.material.shrink_to_fit();
 }
 
+JOY::Material const * StoredData::GetMaterial(ObjectInfo& object)
+{
+    for (JOY::Material& material : m_materialInfo.material)
+    {
+        if (object.objHeader.materialName == material.matName)
+            return &material;
+    }
+    return nullptr;
+}
+
 //SkeletonInfo& StoredData::GetSkeletonInfo()
 //{
 //    return this->m_skeletonInfo;

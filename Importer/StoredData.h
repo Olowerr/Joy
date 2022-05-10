@@ -75,7 +75,7 @@ public:
 
 	bool StoreAll(const std::string& fileName);
 	void UnloadAll();
-
+	JOY::Material const * GetMaterial(ObjectInfo& object);
 
 	//Getters
 
