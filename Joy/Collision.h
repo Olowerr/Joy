@@ -10,9 +10,9 @@ class Collision
 {
 public:
 	Collision();
-	void collided(Object* charBbox, Object* targetBbox);
+	void collided(Object* character, Object* target, int index);
 	void distToComp(DX::XMVECTOR distToMove, Object& charBbox);
-	bool HitObject(Object* charBbox, Object* targetBbox);
+	bool HitObject(Object* charBbox, Object* targetBbox, int index);
 	bool hitItem(const DX::BoundingBox& charbBox, const DX::BoundingBox& itemBbox);
 	bool getCollidedY();
 

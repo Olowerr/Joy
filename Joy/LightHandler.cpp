@@ -286,7 +286,7 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& i
 	{
 		for (UINT s = 0; s < sections.GetNumSections(); s++)
 		{
-			if (objects[i]->GetBoundingBox().Intersects(sections.GetSections()[s].sectionBB))
+			if (objects[i]->GetBoundingBox(0).Intersects(sections.GetSections()[s].sectionBB))
 			{
 				rtvDesc.Texture2DArray.FirstArraySlice = i;
 				hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);

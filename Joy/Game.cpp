@@ -43,9 +43,9 @@ void Game::Run()
 {
 	SceneState activeState = SceneState::Unchanged;
 	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-	Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
-	//Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-	effect1->Play();
+	//Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
+	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
+	effect1->Play(true);
 	Backend::ResetDeltaTime();
 
 	while (window.IsOpen())
@@ -55,11 +55,11 @@ void Game::Run()
 		default:
 			break;
 		case SceneState::MainMenu:
-			effect3->Stop();
+			effect2->Stop();
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-			effect1->Play();
+			effect1->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 
@@ -68,17 +68,7 @@ void Game::Run()
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-			effect2->Play();
-			Backend::ResetDeltaTime();
-			break;
-
-		case SceneState::Highscore:
-			effect1->Stop();
-			effect2->Stop();
-			activeScene->Shutdown();
-			delete activeScene;
-			activeScene = new HighscoreLevel(uiRender, objRender, decalShadow, meshStorage);
-			effect3->Play();
+			effect2->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 		}

@@ -23,10 +23,15 @@ public:
 	void SetPosition(const DirectX::XMVECTOR& position) override;
 	void SetPosition(FLOAT X, FLOAT Y, FLOAT Z) override;
 
+	void AddBBox();
+	void SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, FLOAT scale);
+	void RemoveBBox();
+
 	void Scale(FLOAT amount) override;
 	void SetScale(FLOAT Scale) override;
 
-	const DirectX::BoundingBox& GetBoundingBox() const;
+	const DirectX::BoundingBox& GetBoundingBox(int index) const;
+	const int GetNumBboxes();
 
 	Mesh* GetMesh();
 	ID3D11ShaderResourceView** GetLightMapSRV();
@@ -37,8 +42,8 @@ public:
 
 private:
 	Mesh* mesh;
-	DirectX::BoundingBox bBox;
-	//hej
+	std::vector<DirectX::BoundingBox> bBox;
+
 	ID3D11ShaderResourceView* lightMap; // no use in joy
 	bool isInstanced;
 

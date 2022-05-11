@@ -3,7 +3,7 @@
 Object::Object(Mesh* mesh, bool levelObject)
 	:mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject), isInstanced(false)
 {
-	bBox = mesh->bBox;
+	bBox.emplace_back(mesh->bBox);
 
 	if (levelObject)
 		levelObjects.emplace_back(this);
@@ -14,13 +14,8 @@ Object::Object(Mesh* mesh, bool levelObject)
 Object::Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
 	:Transform(pos, rot, scale), mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject), isInstanced(false)
 {
-	bBox = mesh->bBox;
-	bBox.Center.x += pos.x;
-	bBox.Center.y += pos.y;
-	bBox.Center.z += pos.z;
-	bBox.Extents.x *= scale;
-	bBox.Extents.y *= scale;
-	bBox.Extents.z *= scale;
+	bBox.emplace_back(mesh->bBox);
+	SetBBox(0, pos, scale);
 
 	if (levelObject)
 		levelObjects.emplace_back(this);
@@ -42,7 +37,7 @@ Object::~Object()
 
 void Object::CheckBB()
 {
-	bBox = mesh->bBox;
+	bBox.at(0) = mesh->bBox;
 }
 
 void Object::Draw()
@@ -68,41 +63,76 @@ void Object::DrawGeometry()
 void Object::Translate(const DirectX::XMVECTOR& movement)
 {
 	Transform::Translate(movement);
-	bBox.Center.x += movement.m128_f32[0];
-	bBox.Center.y += movement.m128_f32[1];
-	bBox.Center.z += movement.m128_f32[2];
+	for (int i = 0; i < (int)bBox.size(); i++)
+	{
+		bBox.at(i).Center.x += movement.m128_f32[0];
+		bBox.at(i).Center.y += movement.m128_f32[1];
+		bBox.at(i).Center.z += movement.m128_f32[2];
+	}
 }
 
 void Object::Translate(FLOAT X, FLOAT Y, FLOAT Z)
 {
 	Transform::Translate(X, Y, Z);
-	bBox.Center.x += X;
-	bBox.Center.y += Y;
-	bBox.Center.z += Z;
+	for (int i = 0; i < (int)bBox.size(); i++)
+	{
+		bBox.at(i).Center.x += X;
+		bBox.at(i).Center.y += Y;
+		bBox.at(i).Center.z += Z;
+	}
 }
 
 void Object::SetPosition(const DirectX::XMVECTOR& position)
 {
 	Transform::SetPosition(position);
-	bBox.Center.x = mesh->bBox.Center.x + position.m128_f32[0];
-	bBox.Center.y = mesh->bBox.Center.y + position.m128_f32[1];
-	bBox.Center.z = mesh->bBox.Center.z + position.m128_f32[2];
+	for (int i = 0; i < (int)bBox.size(); i++)
+	{
+		bBox.at(i).Center.x = mesh->bBox.Center.x + position.m128_f32[0];
+		bBox.at(i).Center.y = mesh->bBox.Center.y + position.m128_f32[1];
+		bBox.at(i).Center.z = mesh->bBox.Center.z + position.m128_f32[2];
+	}
 }
 
 void Object::SetPosition(FLOAT X, FLOAT Y, FLOAT Z)
 {
 	Transform::SetPosition(X, Y, Z);
-	bBox.Center.x = mesh->bBox.Center.x + X;
-	bBox.Center.y = mesh->bBox.Center.y + Y;
-	bBox.Center.z = mesh->bBox.Center.z + Z;
+	for (int i = 0; i < (int)bBox.size(); i++)
+	{
+		bBox.at(i).Center.x = mesh->bBox.Center.x + X;
+		bBox.at(i).Center.y = mesh->bBox.Center.y + Y;
+		bBox.at(i).Center.z = mesh->bBox.Center.z + Z;
+	}
+}
+
+void Object::AddBBox()
+{
+	bBox.emplace_back(mesh->bBox);
+}
+
+void Object::SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, FLOAT scale)
+{
+	bBox.at(bBoxIndex).Center.x += pos.x;
+	bBox.at(bBoxIndex).Center.y += pos.y;
+	bBox.at(bBoxIndex).Center.z += pos.z;
+	bBox.at(bBoxIndex).Extents.x *= scale;
+	bBox.at(bBoxIndex).Extents.y *= scale;
+	bBox.at(bBoxIndex).Extents.z *= scale;
+}
+
+void Object::RemoveBBox()
+{
+	bBox.clear();
 }
 
 void Object::Scale(FLOAT amount)
 {
 	Transform::Scale(amount);
-	bBox.Extents.x *= amount;
-	bBox.Extents.y *= amount;
-	bBox.Extents.z *= amount;
+	for (int i = 0; i < (int)bBox.size(); i++)
+	{
+		bBox.at(i).Extents.x *= amount;
+		bBox.at(i).Extents.y *= amount;
+		bBox.at(i).Extents.z *= amount;
+	}
 }
 
 void Object::SetScale(FLOAT Scale)
@@ -115,18 +145,26 @@ void Object::SetScale(FLOAT Scale)
 	using namespace DirectX;
 
 	XMVECTOR objectPos = DirectX::XMLoadFloat3(&GetPosition());
-	XMVECTOR scaledDelta = (DirectX::XMLoadFloat3(&bBox.Center) - objectPos) * Scale;
+	for (int i = 0; i < (int)bBox.size(); i++)
+	{
+		XMVECTOR scaledDelta = (DirectX::XMLoadFloat3(&bBox.at(i).Center) - objectPos) * Scale;
 
-	XMStoreFloat3(&bBox.Center, objectPos + scaledDelta);
+		XMStoreFloat3(&bBox[i].Center, objectPos + scaledDelta);
 
-	bBox.Extents.x = mesh->bBox.Extents.x * Scale;
-	bBox.Extents.y = mesh->bBox.Extents.y * Scale;
-	bBox.Extents.z = mesh->bBox.Extents.z * Scale;
+		bBox.at(i).Extents.x = mesh->bBox.Extents.x * Scale;
+		bBox.at(i).Extents.y = mesh->bBox.Extents.y * Scale;
+		bBox.at(i).Extents.z = mesh->bBox.Extents.z * Scale;
+	}
 }
 
-const DirectX::BoundingBox& Object::GetBoundingBox() const
+const DirectX::BoundingBox& Object::GetBoundingBox(int index) const
 {
-	return bBox;
+	return bBox.at(index);
+}
+
+const int Object::GetNumBboxes()
+{
+	return bBox.size();
 }
 
 Mesh* Object::GetMesh()
@@ -148,11 +186,6 @@ bool Object::GetIsInstanced() const
 {
 	return isInstanced;
 }
-
-
-
-
-
 
 // --- Static Functions ---
 

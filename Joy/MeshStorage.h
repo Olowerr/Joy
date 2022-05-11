@@ -66,20 +66,35 @@ public:
 private:
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 10;
+	static const UINT MeshCount = 25;
 	Mesh meshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
-		"Joy.obj",
-		"Kub.obj",
-		"Ground.obj",
-		"Portal.obj",
-		"Wall.obj",
-		"Wall2.obj",
-		"sphere.obj",
-		"FirstTree.obj",
-		"HighscoreScreen.obj",
-		"Frame.obj"
+		"Joy.obj",						//0
+		"Kub.obj",						//1
+		"Ground.obj",					//2
+		"Portal.obj",					//3
+		"Wall.obj",						//4
+		"Wall2.obj",					//5
+		"sphere.obj",					//6
+		"FirstTree.obj",				//7
+		"HighscoreScreen.obj",			//8
+		"Frame.obj",					//9
+		"MenuScene/MenuIsland.obj",		//10
+		"MenuScene/Portal.obj",			//11
+		"MenuScene/CompScreen.obj",		//12
+		"MenuScene/Computer.obj",		//13
+		"MenuScene/Engine.obj",			//14
+		"MenuScene/FlaskStand.obj",		//15
+		"MenuScene/Keyboard.obj",		//16
+		"MenuScene/Book.obj",			//17
+		"MenuScene/MenuTable.obj",		//18
+		"MenuScene/Mouse.obj",			//19
+		"MenuScene/Bottle.obj",			//20
+		"MenuScene/StairBlock1.obj",	//21
+		"MenuScene/StairBlock2.obj",	//22
+		"MenuScene/StairBlock3.obj",	//23
+		"MenuScene/TV.obj"				//24
 	};
 
 	void import(UINT index);
