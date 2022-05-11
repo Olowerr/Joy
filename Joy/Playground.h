@@ -18,18 +18,13 @@ private:
 
 	Character joy;
 	std::vector<Object> sceneObjects;
-	Object* ground;
-	Object* collTest;
-	Object* cube;
 
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
-	Collision coll;
-	Collision coll2;
-	Collision coll3;
+	std::vector<Collision> coll;
 
 	MapDivider divider;
 
