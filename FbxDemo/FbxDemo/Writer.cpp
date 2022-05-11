@@ -191,14 +191,14 @@ void Writer::WriteFile(cStringR filePath)
 		int deformerSize = 0;
 		for (MeshDeformer* deformer : mesh.deformers)
 		{
-			deformerSize += sizeof(MorphFrame) * deformer->frames.size();
-			deformerSize += sizeof(MorphVTX) * deformer->vertices.size();
+			deformerSize += sizeof(MorphFrame) * (int)deformer->frames.size();
+			deformerSize += sizeof(MorphVTX) * (int)deformer->vertices.size();
 		}
 
 
 		morphHeader.id = mesh.morphId;
-		morphHeader.numDeformers = mesh.deformers.size();
-		morphHeader.totalByteSize = int(sizeof(MorphHeader) - sizeof(Header)) + sizeof(MorphTargetInfo) * mesh.deformers.size()
+		morphHeader.numDeformers = (int)mesh.deformers.size();
+		morphHeader.totalByteSize = int(sizeof(MorphHeader) - sizeof(Header)) + sizeof(MorphTargetInfo) * (int)mesh.deformers.size()
 			+ deformerSize;
 		
 		// don't care about Header size since already read
@@ -215,10 +215,10 @@ void Writer::WriteFile(cStringR filePath)
 			bytesIncoming += sizeof(MorphTargetInfo);
 
 			writer.write(CCP deformer->vertices.data(), sizeof(MorphVTX) * deformer->vertices.size());
-			bytesIncoming += sizeof(MorphVTX) * deformer->vertices.size();
+			bytesIncoming += sizeof(MorphVTX) * (int)deformer->vertices.size();
 			
 			writer.write(CCP deformer->frames.data(), sizeof(MorphFrame) * deformer->frames.size());
-			bytesIncoming += sizeof(MorphFrame) * deformer->frames.size();
+			bytesIncoming += sizeof(MorphFrame) * (int)deformer->frames.size();
 
 		}
 	}
@@ -234,7 +234,7 @@ void Writer::WriteFile(cStringR filePath)
 		for (PropertyBase* prop : mesh.props)
 			praprap.totalByteSize += (int)_msize(prop);
 		
-		praprap.numProperties = mesh.props.size();
+		praprap.numProperties = (int)mesh.props.size();
 		praprap.propertyId = mesh.propertyId;
 		
 		writer.write(CCP& praprap, sizeof(PropertiesHeader));
@@ -1086,13 +1086,13 @@ bool Writer::SetTexture(const char* materialName, const char* name)
 	return false;
 }
 
-void Writer::CopyTextureFile(const char* texturePath, cStringR fbxPath)
+void Writer::CopyTextureFile(const char* texturePath)
 {
-	std::string charString = texturePath;
+	std::string path = texturePath;
+	int pos = (int)path.find_last_of('/') + 1;
+	path = path.substr(path.size() - (path.size() - pos));
 
-	int pos = (int)fbxPath.find_last_of('/');
-	std::string path = fbxPath.substr(0, pos != -1 ? pos : 0);
-	path += charString.substr(charString.find_last_of('/') + int(pos == -1));
+	path = "../../Resources/JOYFiles/" + path;
 
 	CopyFile(texturePath, path.c_str(), TRUE);
 }

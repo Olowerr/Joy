@@ -154,7 +154,7 @@ int main(int argc, char** argv)
 
         if (lFileTexture)
             if (Writer::SetTexture(material->GetName(), lFileTexture->GetFileName()))
-                Writer::CopyTextureFile(lFileTexture->GetFileName(), fileName);
+                Writer::CopyTextureFile(lFileTexture->GetFileName());
         
     }
 

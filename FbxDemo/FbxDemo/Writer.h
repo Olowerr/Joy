@@ -156,7 +156,7 @@ public:
 	// Texture Data
 	static void AddTexture(const char* path);
 	static bool SetTexture(const char* materialName, const char* name);
-	static void CopyTextureFile(const char* texturePath, cStringR fbxPath);
+	static void CopyTextureFile(const char* texturePath);
 
 	// Camera Data
 	static void AddCamera();
