@@ -76,7 +76,7 @@ private:
 		"Portal.obj",
 		"Wall.obj",
 		"Wall2.obj",
-		"sphere.obj",
+		"Future_Bench.obj",
 		"FirstTree.obj",
 		"HighscoreScreen.obj",
 		"Frame.obj"

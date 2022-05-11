@@ -45,7 +45,7 @@ private:
 	Collision coll9;
 	Collision coll10;
 
-	Sprite catButton;
+	Sprite pickUpUI;
 	Text thomas;
 	float time = 0.f;
 

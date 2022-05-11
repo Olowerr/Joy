@@ -267,12 +267,14 @@ void DecalShadow::DrawWithOutline()
 		obj->Draw();
 
 
-	devContext->RSSetState(nullptr);
+	devContext->RSSetState(cwRS);
 	devContext->VSSetShader(storage.objectVS, nullptr, 0);
 	devContext->PSSetShader(decalPS, nullptr, 0);
 
 	for (Object* obj : Object::GetLevelObjects())
 		obj->Draw();
+
+	devContext->RSSetState(nullptr);
 
 }
 

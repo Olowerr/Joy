@@ -3,14 +3,14 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetMesh(0))
-    , catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+    , pickUpUI("../Resources/Images/BoltForJoy.png", 100.f, (float)Backend::GetWindowHeight() - 175.f, 0.7f, 0.7f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
 {
     meshStorage.LoadAll();
 
-    uiRender.Add(&catButton);
+    uiRender.Add(&pickUpUI);
     uiRender.Add(&thomas);
     thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
@@ -96,7 +96,7 @@ void EasyLevel::Shutdown()
 
     divider.Shutdown();
     uiRender.Clear();
-    catButton.Shutdown();
+    pickUpUI.Shutdown();
     thomas.Shutdown();
 }
 
