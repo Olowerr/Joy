@@ -33,12 +33,11 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
     
+
     hLight.InitiateTools(divider);
 
     InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
-
     hLight.GenerateLightMaps(divider);
-    
 
     hLight.ShutdownTools();
 
