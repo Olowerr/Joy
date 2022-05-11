@@ -55,6 +55,21 @@ void TempMeshStorage::LoadAllObj()
 	}
 }
 
+void TempMeshStorage::UnloadObjMeshes()
+{
+	for (Mesh& mesh : objMeshes)
+	{
+		// remove if-statements
+		if (mesh.vertexBuffer)
+			mesh.vertexBuffer->Release();
+		if (mesh.diffuseTextureSRV)
+			mesh.diffuseTextureSRV->Release();
+		if (mesh.indexBuffer)
+			mesh.indexBuffer->Release();
+
+	}
+}
+
 void TempMeshStorage::UnloadMeshes()
 {
 	for (Mesh* mesh : meshes)
@@ -84,15 +99,12 @@ void TempMeshStorage::LoadEasyObjects()
 		import(meshPath + EasyFiles[i]);
 }
 
-Mesh* TempMeshStorage::GetMesh(const std::string& name)
+Mesh* TempMeshStorage::GetObjMesh(UINT index)
 {
-	for (UINT i = 0; i < MeshCount; i++)
-	{
-		if (name == meshNames[i])
-			return meshes[i];
-	}
+	if (index >= MeshCount)
+		return nullptr;
 
-	return nullptr;
+	return &objMeshes[index];
 }
 
 void TempMeshStorage::UnloadDataBase()
@@ -102,7 +114,7 @@ void TempMeshStorage::UnloadDataBase()
 
 Mesh* TempMeshStorage::GetMesh(UINT index)
 {
-	if (index >= MeshCount)
+	if (index >= meshes.size())
 		return nullptr;
 
 	return meshes[index];
@@ -273,7 +285,7 @@ void TempMeshStorage::import(UINT index)
 	if (FAILED(hr))
 		return;
 
-	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &meshes[index]->diffuseTextureSRV);
+	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &objMeshes[index].diffuseTextureSRV);
 	texture->Release();
 
 }

@@ -51,20 +51,20 @@ public:
 	~TempMeshStorage();
 
 	void LoadAllObj();
-	void UnloadMeshes();
-
-	void UnloadDataBase();
-
+	void UnloadObjMeshes();
 
 	void LoadMenuObjects();
 	void LoadEasyObjects();
-
+	void UnloadMeshes();
+	void UnloadDataBase();
+	
+	
 	// ptrs or reference? ( nullptr or ERROR mesh? )
-	Mesh* GetMesh(const std::string& name);
 	Mesh* GetMesh(UINT index);
+	Mesh* GetObjMesh(UINT index);
+
 	size_t GetMeshCount() const;
 
-	Mesh fbxMesh;
 private:
 
 	const std::string meshPath = "../Resources/Meshes/";

@@ -56,7 +56,11 @@ void Object::Draw()
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 	dc->PSSetShaderResources(2, 1, &lightMap);
-	dc->DrawIndexed(mesh->indexCount, 0, 0);
+
+	if (mesh->indexBuffer)
+		dc->DrawIndexed(mesh->indexCount, 0, 0);
+	else
+		dc->Draw(mesh->indexCount, 0);
 }
 
 void Object::DrawGeometry()
@@ -68,7 +72,11 @@ void Object::DrawGeometry()
 	//mesh->BindGeometry();
 
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
-	dc->DrawIndexed(mesh->indexCount, 0, 0);
+
+	if (mesh->indexBuffer)
+		dc->DrawIndexed(mesh->indexCount, 0, 0);
+	else
+		dc->Draw(mesh->indexCount, 0);
 }
 
 void Object::Translate(const DirectX::XMVECTOR& movement)

@@ -63,7 +63,7 @@ void HighscoreLevel::Shutdown()
     hLight.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnloadMeshes();
+    meshStorage.UnloadObjMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
