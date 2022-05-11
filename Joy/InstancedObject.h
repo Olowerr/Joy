@@ -11,7 +11,7 @@ public:
 
 	void AddObject(Object* pObject);
 	bool Finalize();
-	
+
 	ID3D11ShaderResourceView** GetLightMaps();
 	Object** GetObjects();
 	UINT GetNumObjects();

@@ -52,6 +52,9 @@
     <FxCompile Include="UI_VS.hlsl">
       <Filter>UI</Filter>
     </FxCompile>
+    <FxCompile Include="PosOnlyInstanceVS.hlsl">
+      <Filter>3D Rendering\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
@@ -273,7 +276,7 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>System</Filter>
+      <Filter>Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

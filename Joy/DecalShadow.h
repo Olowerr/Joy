@@ -53,6 +53,9 @@ private:
 	DirectX::XMFLOAT4X4 viewOrtMtrx;
 	ID3D11RasterizerState* frontFaceCullingRS;
 
+	// Instanced
+	const std::vector<InstancedObject*>& levelInstanced;
+
 	// Normal shaders
 	ID3D11PixelShader* decalPS;
 

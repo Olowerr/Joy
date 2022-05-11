@@ -267,11 +267,11 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
     
-    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyVS);
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyVS);
     if (FAILED(hr))
         return false;
 
-    hr = system->device->CreateInputLayout(inputDesc, 1, shaderData.c_str(), shaderData.length(), &storage.posOnlyInputLayout);
+    hr = device->CreateInputLayout(inputDesc, 1, shaderData.c_str(), shaderData.length(), &storage.posOnlyInputLayout);
     if (FAILED(hr))
         return false;
 
@@ -281,11 +281,11 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
 
-    hr = system->device->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &storage.objectInputLayout);
+    hr = device->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &storage.objectInputLayout);
     if (FAILED(hr))
         return false;
 
-    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectVS);
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectVS);
     if (FAILED(hr))
         return false;
 
@@ -295,7 +295,7 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
     
-    hr = system->device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectPS);
+    hr = device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectPS);
     if (FAILED(hr))
         return false;
 
@@ -304,7 +304,15 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
 
-    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectInstancedVS);
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectInstancedVS);
+    if (FAILED(hr))
+        return false;
+
+    succeeded = LoadShader(ShaderPath + "PosOnlyInstanceVS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyInstancedVS);
     if (FAILED(hr))
         return false;
 
@@ -314,7 +322,7 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
 
-    hr = system->device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.JoyPS);
+    hr = device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.JoyPS);
     if (FAILED(hr))
         return false;
 

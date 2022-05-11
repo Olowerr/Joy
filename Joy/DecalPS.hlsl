@@ -4,6 +4,7 @@ struct PS_IN
     float3 normal : NORMAL;
     float2 uv : UV;
     float3 worldPos : WORLDPOS;
+    uint id : SV_InstanceID;
 };
 
 Texture2D image : register(t0);
@@ -25,6 +26,8 @@ cbuffer decalCam : register(b1)
     float4x4 decalViewOrtMtrx;
 }
 
+static const float3 LightDir = normalize(float3(1.f, 1.f, -1.f));
+
 float4 main(PS_IN input) : SV_TARGET
 {
     //return float4(input.normal, 1.f);
@@ -34,7 +37,7 @@ float4 main(PS_IN input) : SV_TARGET
     //lightMap.GetDimensions(dimensions.x, dimensions.y, q);
     //float lightValue = lightMap.Load(int4(input.uv * dimensions, 0.f, 0.f)).r;
 
-    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv, 0.f));
+    float lightValue = lightMap.Sample(defaultSampler, float3(input.uv, input.id)).r;
 
     float2 decal = float2(decalPosX, decalPosZ);
     float2 pixelXZ = float2(input.worldPos.x, input.worldPos.z);
@@ -55,19 +58,15 @@ float4 main(PS_IN input) : SV_TARGET
         }
     }
 
-    const float3 lightDirection = normalize(float3(1.f, 1.f, -1.f));
     const float3 Normal = normalize(input.normal);
 
-    float intensity = dot(normalize(lightDirection), Normal);
+    float intensity = dot(normalize(LightDir), Normal);
 
-    if (intensity < 0)
-        intensity = 0;
-
-    if (intensity > 0.4)
+    if (intensity > 0.5)
         intensity = 1.0f;
-    else if (intensity > 0.3)
+    else if (intensity > 0.4)
         intensity = 0.7f;
-    else if (intensity > 0.2)
+    else if (intensity > 0.3)
         intensity = 0.3f;
     else
         intensity = 0.2f;

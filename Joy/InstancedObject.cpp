@@ -6,7 +6,7 @@ std::vector<InstancedObject*> InstancedObject::enviormentInstanced;
 InstancedObject::InstancedObject(UINT capacity)
 	:Capacity(capacity), instanceCount(0), transformSRV(nullptr), mesh(nullptr), lightMapsSRV(nullptr)
 {
-	ppObjects = new Object*[Capacity];
+	ppObjects = new Object * [Capacity];
 }
 
 InstancedObject::~InstancedObject()
@@ -111,6 +111,7 @@ void InstancedObject::Draw()
 	devContext->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
 	devContext->VSSetShaderResources(0, 1, &transformSRV);
 	devContext->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
+	devContext->PSSetShaderResources(2, 1, &lightMapsSRV);
 
 	if (mesh->indexBuffer)
 		devContext->DrawIndexedInstanced(mesh->indexCount, instanceCount, 0, 0, 0);
@@ -160,19 +161,25 @@ void InstancedObject::DestroyInstancedObjects()
 		inst->Shutdown();
 		delete inst;
 	}
+
+	for (InstancedObject* inst : enviormentInstanced)
+	{
+		inst->Shutdown();
+		delete inst;
+	}
 }
 
 bool InstancedObject::CreateInstancedObjects(TempMeshStorage& meshStorage, MapDivider& sections, HLight& hLight)
 {
 	const std::vector<Object*>& levelObjects = Object::GetLevelObjects();
 	const std::vector<Object*>& enviormentObjects = Object::GetEnviormentObjects();
-	
+
 	Generate(meshStorage, levelObjects, levelInstanced);
 	Generate(meshStorage, enviormentObjects, enviormentInstanced);
-	
+
 	for (InstancedObject* inst : levelInstanced)
 		hLight.GenerateLightMapsInstanced(sections, inst->GetObjects(), inst->GetNumObjects(), inst->GetLightMaps());
-	
+
 	for (InstancedObject* inst : enviormentInstanced)
 		hLight.GenerateLightMapsInstanced(sections, inst->GetObjects(), inst->GetNumObjects(), inst->GetLightMaps());
 

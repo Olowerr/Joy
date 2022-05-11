@@ -21,7 +21,7 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
 
     cube = &sceneObjects[0];
-    ground = &sceneObjects[3];
+    ground = &sceneObjects[4];
     collTest = &sceneObjects[1];
     
     joy.SetPosition(0.f, 3.f, 0.f);
@@ -40,7 +40,6 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     hLight.GenerateLightMaps(divider);
 
     hLight.ShutdownTools();
-
 
     sky.init();
 }

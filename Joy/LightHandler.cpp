@@ -101,11 +101,11 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
 	const std::vector<Object*>& levelObjs = Object::GetLevelObjects();
 	const std::vector<Object*>& enviormentObjs = Object::GetEnviormentObjects();
-	/*for (size_t i = 0; i < levelObjs.size(); i++)
+	for (size_t i = 0; i < levelObjs.size(); i++)
 		texDesc.ArraySize += !levelObjs[i]->GetIsInstanced();
 	for (size_t i = 0; i < enviormentObjs.size(); i++)
-		texDesc.ArraySize += !enviormentObjs[i]->GetIsInstanced();*/
-	texDesc.ArraySize = levelObjs.size() + enviormentObjs.size(); // temp
+		texDesc.ArraySize += !enviormentObjs[i]->GetIsInstanced();
+
 	ID3D11Texture2D* resource{};
 	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
 	if (FAILED(hr))

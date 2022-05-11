@@ -2,7 +2,6 @@
 
 ObjectRender::ObjectRender()
 	:bbRTV(nullptr), storage(Backend::GetShaderStorage())
-	, levelInstanced(InstancedObject::GetLevelInstancedObjects())
 	, enviormentInstanced(InstancedObject::GetEnviormentInstancedObjects())
 {
 	CreateSamplerState(); // << temporary
@@ -63,7 +62,7 @@ void ObjectRender::DrawAll()
 
 	devContext->VSSetShader(storage.objectVS, nullptr, 0);
 
-	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+	devContext->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -71,41 +70,17 @@ void ObjectRender::DrawAll()
 
 	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
 	
+
 	for (Object* obj : Object::GetEnviormentObjects())
 	{
 		if (!obj->GetIsInstanced())
 			obj->Draw();
 	}
 
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	//vs - ps
-	
-	//devContext->VSSetShader(storage.objectInstancedVS, nullptr, 0);
-	//// ps..?
+	devContext->VSSetShader(storage.objectInstancedVS, nullptr, 0);
 
-	//for (InstancedObject* inst : levelInstanced)
-	//	inst->Draw();
-	//
-	//for (InstancedObject* inst : enviormentInstanced)
-	//	inst->Draw();
-	
-
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-	devContext->PSSetShaderResources(1, 1, nullSRV);
-	devContext->OMSetRenderTargets(0, nullptr, nullptr);
+	for (InstancedObject* inst : enviormentInstanced)
+		inst->Draw();
 }
 
 void ObjectRender::DrawCharacter(Character& character)
@@ -116,7 +91,7 @@ void ObjectRender::DrawCharacter(Character& character)
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	devContext->VSSetShader(storage.objectVS, nullptr, 0);
-	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+	devContext->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
