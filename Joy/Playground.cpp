@@ -12,37 +12,33 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
     joy.CheckBB();
 
+    typedef DirectX::XMFLOAT3 F3;
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(0.f, 1.f, 0.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(1.f, 3.f, -1.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(3.f, 1.f, 1.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(6.f, 1.f, 40.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
 
     cube = &sceneObjects[0];
     ground = &sceneObjects[3];
     collTest = &sceneObjects[1];
     
     joy.SetPosition(0.f, 3.f, 0.f);
-    ground->SetPosition(0.f, -2.0f, 0.f);
-    sceneObjects[0].SetPosition(0.0f, 1.0f, 0.0f);
-    sceneObjects[1].SetPosition(1.f, 3.f, -1.0f);
-    sceneObjects[2].SetPosition(3.f, 1.0f, 1.f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 15.f, 10.f);
+    divider.CreateSections(2, 50.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
     
     hLight.InitiateTools(divider);
-    hLight.GenerateLightMaps(divider);
 
-    tast.AddObject(&sceneObjects[0]);
-    tast.AddObject(&sceneObjects[1]);
-    tast.AddObject(&sceneObjects[2]);
-    hLight.GenerateLightMapsInstanced(divider, tast);
-    tast.Finalize();
+    InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
+
+    hLight.GenerateLightMaps(divider);
+    
 
     hLight.ShutdownTools();
 
@@ -55,12 +51,13 @@ void testScene::Shutdown()
     sky.Shutdown();
 
     hLight.Shutdown();
-    tast.Shutdown();
-
+ 
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+
     Object::EmptyObjectLists();
- 
+    InstancedObject::DestroyInstancedObjects();
+
     joy.Shutdown();
     for (Object& object : sceneObjects)
         object.Shutdown();
