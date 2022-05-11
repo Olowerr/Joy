@@ -394,8 +394,8 @@ void HLight::DrawShadowMaps(MapDivider& sections)
 
 		for (UINT o = 0; o < sections.GetNumSections(); o++)
 		{
-			std::vector<Object*>& levelObjects = sections.GetSections()[i].levelObjects;
-			std::vector<Object*>& enviormentObjects = sections.GetSections()[i].enivormentObjects;
+			std::vector<Object*>& levelObjects = sections.GetSections()[o].levelObjects;
+			std::vector<Object*>& enviormentObjects = sections.GetSections()[o].enivormentObjects;
 
 			for (UINT k = 0; k < levelObjects.size(); k++)
 				levelObjects.at(k)->DrawGeometry();
