@@ -2,7 +2,7 @@
 
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
-    , joy(meshStorage.GetMesh(0))
+    , joy(meshStorage.GetObjMesh(0))
     , catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
@@ -20,17 +20,17 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     sceneObjects.reserve(20);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(7), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(7), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
 
     ground = &sceneObjects[0];
     ground1 = &sceneObjects[1];

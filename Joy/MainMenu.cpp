@@ -2,7 +2,7 @@
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
-    , joy(meshStorage.GetMesh(0))
+    , joy(meshStorage.GetObjMesh(0))
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
@@ -14,12 +14,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     joy.CheckBB();
 
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(5), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(5), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(4), true);
 
     ground1 = &sceneObjects[0];
     portal1 = &sceneObjects[1];

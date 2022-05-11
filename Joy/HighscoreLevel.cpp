@@ -2,7 +2,7 @@
 
 HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
     :Scene(uiRender, objRender, decalShadow, meshStorage)
-    , joy(meshStorage.GetMesh(0))
+    , joy(meshStorage.GetObjMesh(0))
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
@@ -12,13 +12,13 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
     joy.CheckBB();
 
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(5), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(4), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(8), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(9), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(5), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(5), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(4), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(8), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(9), true);
 
     ground1 = &sceneObjects[0];
     portal = &sceneObjects[1];
