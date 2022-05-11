@@ -29,4 +29,10 @@ private:
 	Object** ppObjects;
 
 	void ShrinkToFit();
+
+	static std::vector<InstancedObject*> levelObjects;
+	static std::vector<InstancedObject*> enviormentObjects;
+public:
+	static const std::vector<InstancedObject*>& GetLevelInstancedObjects();
+	static const std::vector<InstancedObject*>& GetEnviormentInstancedObjects();
 };
