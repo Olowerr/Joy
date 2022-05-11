@@ -24,9 +24,9 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     
     joy.SetPosition(0.f, 3.f, 0.f);
     ground->SetPosition(0.f, -2.0f, 0.f);
-    sceneObjects[0].SetPosition(0.0f, 1.0f, 0.0f);
-    sceneObjects[1].SetPosition(1.f, 3.f, -1.0f);
-    sceneObjects[2].SetPosition(3.f, 1.0f, 1.f);
+    sceneObjects[0].SetPosition(-10.0f, 1.0f, 0.0f);
+    sceneObjects[1].SetPosition(100.f, 3.f, -1.0f);
+    sceneObjects[2].SetPosition(300.f, 1.0f, 1.f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
