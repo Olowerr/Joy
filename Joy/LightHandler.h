@@ -1,6 +1,5 @@
 #pragma once
 #include "MapSections.h"
-#include "InstancedObject.h"
 
 class HLight
 {
@@ -12,7 +11,7 @@ public:
 
 	bool InitiateTools(MapDivider& sections);
 	bool GenerateLightMaps(MapDivider& sections);
-	bool GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs);
+	bool GenerateLightMapsInstanced(MapDivider& sections, Object** objects, UINT numObjects, ID3D11ShaderResourceView** lightMapsSRV);
 
 	const UINT ShadowMapXY = 2048; // Can be large since only used during load
 	const UINT LightMapXY = 512;

@@ -61,9 +61,10 @@ public:
 	
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(UINT index);
-	Mesh* GetObjMesh(UINT index);
-
 	size_t GetMeshCount() const;
+
+	Mesh* GetObjMesh(UINT index);
+	size_t GetObjMeshCount() { return MeshCount; }
 
 private:
 
