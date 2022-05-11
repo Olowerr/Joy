@@ -28,7 +28,7 @@ private:
 	Collision coll3;
 	Collision coll4;
 
-	Text highscore;
+
 
 	HLight hLight;
 	Camera* activeCamera;

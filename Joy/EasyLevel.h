@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "HighscoreClass.h"
 
 class EasyLevel : public Scene
 {
@@ -15,6 +16,10 @@ public:
 
 
 private:
+
+	HighscoreClass m_highscore;
+
+
 	std::vector<Object> sceneObjects;
 	Character joy;
 	Object* ground;

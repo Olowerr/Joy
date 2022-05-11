@@ -10,9 +10,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
     meshStorage.LoadAll();
-    uiRender.Add(&highscore);
-    highscore.SetText("HIGHSCORE");
-    highscore.SetPosition(10.f, 10.f);
+
 
 
     joy.CheckBB();
@@ -78,7 +76,7 @@ void MainMenu::Shutdown()
     divider.Shutdown();
 	
     uiRender.Clear();
-    highscore.Shutdown();
+ 
 }
 
 SceneState MainMenu::Update()
@@ -120,7 +118,7 @@ SceneState MainMenu::Update()
     coll2.collided(&joy, wall1);
     coll3.collided(&joy, wall2);
     coll4.collided(&joy, wall3);
-
+    
     if (joy.GetBoundingBox().Intersects(portal1->GetBoundingBox()))
     {
         return SceneState::Easy;

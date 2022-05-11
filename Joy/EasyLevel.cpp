@@ -1,13 +1,19 @@
 #include "EasyLevel.h"
 
+
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, decalShadow, meshStorage)
+    :Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetMesh(0))
     , pickUpUI("../Resources/Images/BoltForJoy.png", 100.f, (float)Backend::GetWindowHeight() - 175.f, 0.7f, 0.7f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
+    , m_highscore(uiRender)
 {
+
+
+  
+
     meshStorage.LoadAll();
 
     uiRender.Add(&pickUpUI);
@@ -154,8 +160,15 @@ SceneState EasyLevel::Update()
     coll9.collided(&joy, tree1);
     coll10.collided(&joy, tree2);
 
+
+    
+
     if (joy.GetBoundingBox().Intersects(portal->GetBoundingBox()))
     {
+        
+        m_highscore.RenderInputScreen(time);
+
+
         return SceneState::Highscore;
     }
 
