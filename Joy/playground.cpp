@@ -3,20 +3,20 @@
 testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
     :Scene(uiRender, objRender, decalShadow, meshStorage)
     // Joy should always be first in the array from mesh storage
-    , joy(meshStorage.GetMesh(0))
+    , joy(meshStorage.GetObjMesh(0))
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
 {
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     joy.CheckBB();
 
     sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(6), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
 
     cube = &sceneObjects[0];
     ground = &sceneObjects[3];
@@ -58,7 +58,7 @@ void testScene::Shutdown()
     tast.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnLoadAll();
+    meshStorage.UnloadObjMeshes();
     Object::EmptyObjectLists();
  
     joy.Shutdown();
