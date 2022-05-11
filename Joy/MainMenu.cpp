@@ -10,6 +10,10 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
     meshStorage.LoadAll();
+    uiRender.Add(&highscore);
+    highscore.SetText("HIGHSCORE");
+    highscore.SetPosition(10.f, 10.f);
+
 
     joy.CheckBB();
 
@@ -74,6 +78,7 @@ void MainMenu::Shutdown()
     divider.Shutdown();
 	
     uiRender.Clear();
+    highscore.Shutdown();
 }
 
 SceneState MainMenu::Update()
