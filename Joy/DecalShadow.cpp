@@ -259,12 +259,12 @@ void DecalShadow::DrawWithOutline()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
-	devContext->RSSetState(ccwRS);
+	/*devContext->RSSetState(ccwRS);
 	devContext->VSSetShader(outlineVS, nullptr, 0);
 	devContext->PSSetShader(outlinePS, nullptr, 0);
 
 	for (Object* obj : Object::GetLevelObjects())
-		obj->Draw();
+		obj->Draw();*/
 
 
 	devContext->RSSetState(nullptr);

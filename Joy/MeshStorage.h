@@ -2,40 +2,34 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+#include "StoredData.h"
 
 #include "Backend.h"
 
-
-struct Vertex
+class Mesh
 {
-	Vertex(float* Pos, float* Norm, float* Uv)
-		:pos(Pos), normal(Norm), uv(Uv)
-	{ }
-	Vertex(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 norm, DirectX::XMFLOAT2 uv)
-		:pos(pos), normal(norm), uv(uv)
-	{ }
-	
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 normal;
-	DirectX::XMFLOAT2 uv;
-};
-
-struct Mesh
-{
-	static const UINT Stirde = sizeof(Vertex);
+public:
+	static const UINT Stirde = sizeof(JOY::Vertex);
 	static const UINT Offset = 0;
-	DirectX::BoundingBox bBox;
+	
+	Mesh() = default;
 	void Shutdown()
 	{
 		diffuseTextureSRV->Release();
 		vertexBuffer->Release();
 	}
 
-	ID3D11ShaderResourceView* diffuseTextureSRV;
+	void Bind();
+	void BindGeometry();
 
+//private:
+	UINT indexCount;
 	ID3D11Buffer* vertexBuffer;
-	//ID3D11Buffer* indexBuffer;
-	UINT vertexCount; // index count
+	ID3D11Buffer* indexBuffer;
+	
+	ID3D11ShaderResourceView* diffuseTextureSRV;
+	
+	DirectX::BoundingBox bBox;
 };
 
 /*
@@ -56,18 +50,26 @@ public:
 	TempMeshStorage();
 	~TempMeshStorage();
 
-	void LoadAll();
-	void UnLoadAll();
+	void LoadAllObj();
+	void UnloadObjMeshes();
 
+	void LoadMenuObjects();
+	void LoadEasyObjects();
+	void UnloadMeshes();
+	void UnloadDataBase();
+	
+	
 	// ptrs or reference? ( nullptr or ERROR mesh? )
-	Mesh* GetMesh(const std::string& name);
 	Mesh* GetMesh(UINT index);
+	Mesh* GetObjMesh(UINT index);
+
+	size_t GetMeshCount() const;
 
 private:
 
 	const std::string meshPath = "../Resources/Meshes/";
-	static const UINT MeshCount = 10;
-	Mesh meshes[MeshCount];
+	static const UINT MeshCount = 11;
+	Mesh objMeshes[MeshCount];
 	const std::string meshNames[MeshCount] =
 	{
 		"Joy.obj",
@@ -79,8 +81,28 @@ private:
 		"sphere.obj",
 		"FirstTree.obj",
 		"HighscoreScreen.obj",
-		"Frame.obj"
+		"Frame.obj",
+		"Future_Bench.obj"
 	};
 
+	std::vector<Mesh*> meshes;
+
+	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
+	static const UINT MenuCount = 1;
+	const std::string MenuFiles[MenuCount] =
+	{
+		"big3newnew.joy" // 4 meshes
+	};
+
+	static const UINT EasyCount = 1;
+	const std::string EasyFiles[MenuCount] =
+	{
+		// menu .joy files
+	};
+
+
+
+
 	void import(UINT index);
+	void import(const std::string& filePath);
 };

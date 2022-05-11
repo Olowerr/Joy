@@ -8,7 +8,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , divider(joy)
     , activeCamera(&joyCamera)
 {
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     uiRender.Add(&catButton);
     uiRender.Add(&thomas);
@@ -83,7 +83,7 @@ void EasyLevel::Shutdown()
     hLight.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnLoadAll();
+    meshStorage.UnloadObjMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();

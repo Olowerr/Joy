@@ -9,7 +9,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 {   
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     joy.CheckBB();
 
@@ -60,7 +60,7 @@ void MainMenu::Shutdown()
     hLight.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnLoadAll();
+    meshStorage.UnloadObjMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();

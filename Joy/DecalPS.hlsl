@@ -26,7 +26,9 @@ cbuffer decalCam : register(b1)
 }
 
 float4 main(PS_IN input) : SV_TARGET
-{ 
+{
+    //return float4(input.normal, 1.f);
+    //return image.Sample(defaultSampler, input.uv);
     //float2 dimensions;
     //float q;
     //lightMap.GetDimensions(dimensions.x, dimensions.y, q);

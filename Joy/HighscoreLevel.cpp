@@ -7,7 +7,7 @@ HighscoreLevel::HighscoreLevel(UIRenderer& uiRender, ObjectRender& objRender, De
     , divider(joy)
     , activeCamera(&joyCamera)
 {
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     joy.CheckBB();
 
@@ -63,7 +63,7 @@ void HighscoreLevel::Shutdown()
     hLight.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnLoadAll();
+    meshStorage.UnloadObjMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
