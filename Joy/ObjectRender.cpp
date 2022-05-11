@@ -2,6 +2,8 @@
 
 ObjectRender::ObjectRender()
 	:bbRTV(nullptr), storage(Backend::GetShaderStorage())
+	, levelInstanced(InstancedObject::GetLevelInstancedObjects())
+	, enviormentInstanced(InstancedObject::GetEnviormentInstancedObjects())
 {
 	CreateSamplerState(); // << temporary
 	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
@@ -17,9 +19,7 @@ void ObjectRender::Shutdown()
 
 void ObjectRender::Clear()
 {
-	for (InstancedObject& inst : instances)
-		inst.Shutdown();
-	instances.clear();
+
 }
 
 void ObjectRender::CreateSamplerState()
@@ -71,21 +71,37 @@ void ObjectRender::DrawAll()
 
 	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
 	
-	// temp
-
-
 	for (Object* obj : Object::GetEnviormentObjects())
-		obj->Draw();
+	{
+		if (!obj->GetIsInstanced())
+			obj->Draw();
+	}
 
-	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	//vs - ps
+	
+	//devContext->VSSetShader(storage.objectInstancedVS, nullptr, 0);
+	//// ps..?
 
-	//for (InstancedObject& inst : instances)
-	//{
-	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
-
-	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	//}
+	//for (InstancedObject* inst : levelInstanced)
+	//	inst->Draw();
+	//
+	//for (InstancedObject* inst : enviormentInstanced)
+	//	inst->Draw();
+	
 
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	devContext->PSSetShaderResources(1, 1, nullSRV);
