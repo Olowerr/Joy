@@ -19,10 +19,6 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(3.f, 1.f, 1.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(6.f, 1.f, 40.f));
-    for (int i = 0; i < 3; i++)
-    {
-        coll.emplace_back();
-    }
 
     meshStorage.LoadMenuObjects();
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
@@ -31,13 +27,11 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     }
     meshStorage.UnloadDataBase();
 
-    
+
     collisions.reserve(110);
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
         collisions.emplace_back();
 
-
-    
     joy.SetPosition(0.f, 3.f, 0.f);
 
     objRender.SetActiveCamera(activeCamera);
@@ -46,7 +40,7 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     divider.CreateSections(2, 50.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
-    
+
 
     hLight.InitiateTools(divider);
 
@@ -63,7 +57,7 @@ void testScene::Shutdown()
     sky.Shutdown();
 
     hLight.Shutdown();
- 
+
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
     meshStorage.UnloadMeshes();
@@ -104,20 +98,12 @@ SceneState testScene::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
-    
+
     //Camera functions
     activeCamera->UpdateCam();
     activeCamera->SetView();
 
     //Collision
-
-
-    for (int i = 0; i < 3; i++)
-    {
-        if (coll.at(i).getCollidedY())
-        {
-            joy.SetCanJump(true);
-            i = sceneObjects.size();
 
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
@@ -130,26 +116,13 @@ SceneState testScene::Update()
             joy.SetCanJump(false);
     }
 
-
-    for (int i = 0; i < 3; i++)
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
-            coll.at(i).collided(&joy, &sceneObjects.at(i), k);
+            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
         }
     }
-    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
-        collisions.at(i).collided(&joy, &sceneObjects.at(i));
-
-
-    //if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
-    //    joy.SetCanJump(true);
-    //else
-    //    joy.SetCanJump(false);
-
-    //coll.collided(&joy, collTest);
-    //coll2.collided(&joy, cube);
-    //coll3.collided(&joy, ground);
 
     return SceneState::Unchanged;
 }

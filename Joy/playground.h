@@ -16,8 +16,6 @@ private:
 	Character joy;
 	std::vector<Object> sceneObjects;
 
-	std::vector<Collision> coll;
-
 	std::vector<Collision> collisions;
 
 
