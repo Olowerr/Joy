@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include "Skybox.h"
 
 class testScene : public Scene
 {
@@ -16,15 +15,13 @@ public:
 private:
 	Character joy;
 	std::vector<Object> sceneObjects;
+	std::vector<Collision> coll;
 
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
-	std::vector<Collision> coll;
-
 	MapDivider divider;
-
 	Skybox sky;
 };
