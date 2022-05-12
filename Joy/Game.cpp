@@ -30,6 +30,7 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 
 void Game::Shutdown()
 {
+	smolpp.Shutdown();
 	uiRender.Shutdown();
 	objRender.Shutdown();
 	decalShadow.Shutdown();

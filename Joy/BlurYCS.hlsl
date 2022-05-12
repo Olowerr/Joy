@@ -1,34 +1,20 @@
-RWTexture2D<unorm float4> bbUAV : register(u0);
-Texture2D<unorm float4> bbCopy : register(t0);
+RWTexture2D<unorm float4> target : register(u0);
+Texture2D<unorm float4> mainSource : register(t0);
+Texture2D<unorm float> blurSource : register(t1);
 
 #define Range 10
+#define Factor 2.f
 
 [numthreads(16, 9, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
-	const float4 colour = bbCopy.Load(DTid);
-	float result = 0.f;
+	float glow = 0.f;
 
 	for (int y = -Range; y <= Range; y++)
-		result += bbCopy.Load(int3(DTid.x, DTid.y + y, 0)).a;
+		glow += blurSource.Load(int3(DTid.x, DTid.y + y, 0)) * ((Range - uint(abs(y))) / (float)Range) * Factor;
 
-	//for (int y = -Range; y <= Range; y++)
-	//	result += bbCopy.Load(int3(DTid.x, DTid.y + y, 0)).a;
-	//
+	glow /= float(Range * 2 + 1);
+
 	AllMemoryBarrier();
-
-	result /= (Range * 2 + 1);
-	result *= 0.2f;
-	bbUAV[DTid.xy] = colour + float4(result, result, result, result);
-
-	//AllMemoryBarrier();
-
-	//result = 0.f;
-
-	//AllMemoryBarrier();
-
-	//result /= (Range * 2 + 1);
-	//result *= 0.2f;
-	//bbUAV[DTid.xy] = bbCopy.Load(DTid) + float4(result, result, result, 0.f);
-
+	target[DTid.xy] = float4(mainSource.Load(DTid).rgb + float3(glow, glow, glow) * (mainSource.Load(DTid).a < 0.5f), 0.f);
 }

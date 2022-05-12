@@ -49,7 +49,7 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     swapDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     swapDesc.SampleDesc.Count = 1;
     swapDesc.SampleDesc.Quality = 0;
-    swapDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
     swapDesc.BufferCount = 1;
     swapDesc.OutputWindow = system->window.GetHWND();
     swapDesc.Windowed = true;
@@ -72,6 +72,7 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
 
     hr = system->device->CreateUnorderedAccessView(system->backBuffer, nullptr, &system->bbUAV);
     assert(SUCCEEDED(hr));
+    
 
     succeeded = system->InitiateShaders();
     assert(succeeded);
@@ -97,6 +98,20 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     }
     hr = system->device->CreateDepthStencilView(resource, nullptr, &system->standardDSV);
     resource->Release();
+    assert(SUCCEEDED(hr));
+
+
+    texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    hr = system->device->CreateTexture2D(&texDesc, nullptr, &system->mainBuffer);
+    if (FAILED(hr))
+    {
+        assert(SUCCEEDED(hr));
+        return *system;
+    }
+
+    hr = system->device->CreateRenderTargetView(system->mainBuffer, nullptr, &system->mainRTV);
+    hr = system->device->CreateShaderResourceView(system->mainBuffer, nullptr, &system->mainSRV);
     assert(SUCCEEDED(hr));
 
 
@@ -131,11 +146,16 @@ void Backend::Destroy()
         return;
 
     system->backBuffer->Release();
+    system->bbUAV->Release();
+    system->bbRTV->Release();
     system->storage.Shutdown();
     system->swapChain->Release();
     system->deviceContext->Release();
-    system->bbRTV->Release();
     system->standardDSV->Release();
+
+    system->mainBuffer->Release();
+    system->mainRTV->Release();
+    system->mainSRV->Release();
 
 #ifdef _DEBUG
     ID3D11Debug* debugger = nullptr;
@@ -202,10 +222,26 @@ ID3D11UnorderedAccessView* const* Backend::GetBackBufferUAV()
     return &system->bbUAV;
 }
 
+ID3D11Texture2D* const* Backend::GetMainBuffer()
+{
+    return &system->mainBuffer;
+}
+
+ID3D11RenderTargetView* const* Backend::GetMainRTV()
+{
+    return &system->mainRTV;
+}
+
+ID3D11ShaderResourceView* const* Backend::GetMainSRV()
+{
+    return &system->mainSRV;
+}
+
 void Backend::Clear()
 {
     static const float clearColour[4] = { 0.2f, 0.2f, 0.2f, 0.f };
     system->deviceContext->ClearRenderTargetView(system->bbRTV, clearColour);
+    system->deviceContext->ClearRenderTargetView(system->mainRTV, clearColour);
     system->deviceContext->ClearDepthStencilView(system->standardDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
 

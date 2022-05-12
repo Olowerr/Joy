@@ -1,7 +1,7 @@
 #include "JoyPostProcess.h"
 
 JoyPostProcess::JoyPostProcess()
-	:bbUAV(Backend::GetBackBufferUAV())
+	:blurXCS(nullptr), blurYCS(nullptr), blurUAV(nullptr), blurSRV(nullptr)
 {
 	bool succeeded = false;
 	HRESULT hr;
@@ -19,8 +19,7 @@ JoyPostProcess::JoyPostProcess()
 	hr = Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurYCS);
 	assert(SUCCEEDED(hr));
 
-	/*
-		D3D11_TEXTURE2D_DESC texDesc{};
+	/*D3D11_TEXTURE2D_DESC texDesc{};
 	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	texDesc.Format = DXGI_FORMAT_R8_UNORM;
 	texDesc.ArraySize = 1;
@@ -33,52 +32,61 @@ JoyPostProcess::JoyPostProcess()
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;*/
 
-	(*bbUAV)->GetResource( reinterpret_cast<ID3D11Resource**>(& bbCopy));
 	D3D11_TEXTURE2D_DESC texDesc;
-	bbCopy->GetDesc(&texDesc);
-	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	bbCopy->Release();
+	(*Backend::GetBackBuffer())->GetDesc(&texDesc);
+	texDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.Format = DXGI_FORMAT_R8_UNORM;
 
-	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &bbCopy);
-	assert(SUCCEEDED(hr));
+	ID3D11Texture2D* resource;
+	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+	{
+		assert(SUCCEEDED(hr));
+		return;
+	}
 
-	hr = Backend::GetDevice()->CreateShaderResourceView(bbCopy, nullptr, &bbCopySRV);
-	assert(SUCCEEDED(hr));
+	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &blurUAV);
+	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &blurSRV);
+	resource->Release();
 }
 
 void JoyPostProcess::Shutdown()
 {
 	blurXCS->Release();
-	bbCopy->Release();
-	bbCopySRV->Release();
+	blurYCS->Release();
+
+	blurUAV->Release();
+	blurSRV->Release();
 }
 
 void JoyPostProcess::ApplyGlow()
 {
-	return;
+	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), Backend::system->renderTexture);
+	//return;
 
 	static ID3D11RenderTargetView* nullRTV{};
 	static ID3D11UnorderedAccessView* nullUAV{};
+	static ID3D11ShaderResourceView* nullSRV[2]{};
 
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	
+	// Unbind MainRTV
 	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
-	devContext->CopyResource(bbCopy, *Backend::GetBackBuffer());
-	
+	// Horisontal Blur
 	devContext->CSSetShader(blurXCS, nullptr, 0);
-	devContext->CSSetUnorderedAccessViews(0, 1, bbUAV, nullptr);
-	devContext->CSSetShaderResources(0, 1, &bbCopySRV);
+	devContext->CSSetUnorderedAccessViews(0, 1, &blurUAV, nullptr);
+	devContext->CSSetShaderResources(0, 1, Backend::GetMainSRV());
 	devContext->Dispatch(Backend::GetWindowWidth() / NumThreadX, Backend::GetWindowHeight() / NumThreadY, 1);
 
-	
-	devContext->CopyResource(bbCopy, *Backend::GetBackBuffer());
-	
+	// Vertical Blur
 	devContext->CSSetShader(blurYCS, nullptr, 0);
-	devContext->CSSetUnorderedAccessViews(0, 1, bbUAV, nullptr);
-	devContext->CSSetShaderResources(0, 1, &bbCopySRV);
+	devContext->CSSetUnorderedAccessViews(0, 1, Backend::GetBackBufferUAV(), nullptr);
+	devContext->CSSetShaderResources(1, 1, &blurSRV);
 	devContext->Dispatch(Backend::GetWindowWidth() / NumThreadX, Backend::GetWindowHeight() / NumThreadY, 1);
 
-
+	// Unbind
+	devContext->CSSetShaderResources(0, 2, nullSRV);
 	devContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
+
 }

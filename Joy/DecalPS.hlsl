@@ -54,7 +54,7 @@ float4 main(PS_IN input) : SV_TARGET
     {
         if (dot(isInside, isInside) < 1.0f - (distance * 0.2f) || dot(isInside, isInside) < 0.01f)
         {
-            return clamp((distance * 0.05f), joyShadow, image.Sample(defaultSampler, input.uv) * (joyShadow + 0.5f)) * lightValue;
+            return float4(clamp((distance * 0.05f), joyShadow.rgb, image.Sample(defaultSampler, input.uv).rgb * (joyShadow.rgb + 0.5f)) * lightValue, 0.f);
         }
     }
 
@@ -73,5 +73,5 @@ float4 main(PS_IN input) : SV_TARGET
 
     intensity = clamp(intensity * lightValue, 0.2f, 1.f);
 
-    return float4(image.Sample(defaultSampler, input.uv).rbg * intensity, 0.f);
+    return float4(image.Sample(defaultSampler, input.uv).rgb * intensity, 0.f);
 }
