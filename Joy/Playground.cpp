@@ -13,13 +13,19 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
-    sceneObjects.reserve(10);
+    sceneObjects.reserve(110);
     sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(0.f, 1.f, 0.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(1.f, 3.f, -1.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(3.f, 1.f, 1.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(6.f, 1.f, 40.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
 
+    meshStorage.LoadMenuObjects();
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
+    }
+    meshStorage.UnloadDataBase();
     cube = &sceneObjects[0];
     ground = &sceneObjects[4];
     collTest = &sceneObjects[1];
@@ -52,6 +58,7 @@ void testScene::Shutdown()
  
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+    meshStorage.UnloadMeshes();
 
     Object::EmptyObjectLists();
     InstancedObject::DestroyInstancedObjects();
