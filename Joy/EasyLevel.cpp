@@ -28,11 +28,9 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(12), true);
     sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
     sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true, DirectX::XMFLOAT3(0.f, 2.f, 50.f));
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true, DirectX::XMFLOAT3(0.f, 2.f, 55.f));
     for (int i = 0; i < (int)sceneObjects.size(); i++)
     {
         coll.emplace_back();
@@ -43,7 +41,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects[1].SetPosition(0.0f, -0.2f, 27.3f);
     sceneObjects[2].SetPosition(5.1f, 2.4f, 64.2f);
     sceneObjects[2].SetScale(2.8f);
-    sceneObjects[3].SetPosition(-2.4f, 0.6f, 16.3f);
+    sceneObjects[3].SetPosition(0.0f, 0.0f, 0.0f);
     sceneObjects[3].SetRotation(0.0f, 0.5f, 0.4f);
     sceneObjects[3].SetScale(0.4f);
     sceneObjects[4].SetPosition(1.8f, -0.2f, 11.1f);
@@ -67,12 +65,18 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     decalShadow.SetMapDivider(&divider);
 
     hLight.InitiateTools(divider);
+
+    InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
     hLight.GenerateLightMaps(divider);
+
     hLight.ShutdownTools();
+
+    sky.init();
 }
 
 void EasyLevel::Shutdown()
 {
+    sky.Shutdown();
     hLight.Shutdown();
 
     objRender.Clear();
@@ -165,4 +169,5 @@ void EasyLevel::Render()
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
     uiRender.Draw();
+    sky.Draw(activeCamera);
 }

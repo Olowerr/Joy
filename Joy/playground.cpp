@@ -14,7 +14,7 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
     typedef DirectX::XMFLOAT3 F3;
     sceneObjects.reserve(110);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(0.f, 1.f, 0.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(11), true, F3(0.f, 1.f, 0.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(1.f, 3.f, -1.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(3.f, 1.f, 1.f));

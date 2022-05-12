@@ -15,19 +15,19 @@ public:
 
 
 private:
-	std::vector<Object> sceneObjects;
 	Character joy;
+	std::vector<Object> sceneObjects;
+	std::vector<Collision> coll;
 
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
-	std::vector<Collision> coll;
-
 	Sprite catButton;
 	Text thomas;
 	float time = 0.f;
 
 	MapDivider divider;
+	Skybox sky;
 };

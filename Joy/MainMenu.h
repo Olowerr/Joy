@@ -13,10 +13,8 @@ public:
 	virtual void Render() override;
 
 private:
-
-	std::vector<Object> sceneObjects;
 	Character joy;
-
+	std::vector<Object> sceneObjects;
 	std::vector<Collision> coll;
 
 	HLight hLight;
@@ -25,4 +23,5 @@ private:
 	CharacterCamera joyCamera;
 
 	MapDivider divider;
+	Skybox sky;
 };

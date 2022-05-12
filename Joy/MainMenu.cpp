@@ -13,22 +13,23 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     joy.CheckBB();
 
-    sceneObjects.reserve(20);
-    sceneObjects.emplace_back(meshStorage.GetMesh(10), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(11), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(13), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(12), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(14), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(15), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(16), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(17), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(18), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(19), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(20), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(21), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(22), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(23), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(24), true);
+    typedef DirectX::XMFLOAT3 F3;
+    sceneObjects.reserve(110);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(11), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(12), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(13), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(14), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(15), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(16), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(17), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(18), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(19), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(20), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(21), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(22), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(23), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(24), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(25), true);
     for (int i = 0; i < (int)sceneObjects.size(); i++)
     {
         coll.emplace_back();
@@ -39,18 +40,23 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 50.f, 50.);
+    divider.CreateSections(1, 50.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
     hLight.InitiateTools(divider);
+
+    InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
     hLight.GenerateLightMaps(divider);
+
     hLight.ShutdownTools();
 
+    sky.init();
 }
 
 void MainMenu::Shutdown()
 {
+    sky.Shutdown();
     hLight.Shutdown();
 
     objRender.Clear();
@@ -137,5 +143,5 @@ void MainMenu::Render()
     decalShadow.DrawAll(joy.GetPosition());
     objRender.DrawCharacter(joy);
 	uiRender.Draw();
-
+    sky.Draw(activeCamera);
 }
