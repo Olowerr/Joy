@@ -101,11 +101,11 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
 	const std::vector<Object*>& levelObjs = Object::GetLevelObjects();
 	const std::vector<Object*>& enviormentObjs = Object::GetEnviormentObjects();
-	/*for (size_t i = 0; i < levelObjs.size(); i++)
+	for (size_t i = 0; i < levelObjs.size(); i++)
 		texDesc.ArraySize += !levelObjs[i]->GetIsInstanced();
 	for (size_t i = 0; i < enviormentObjs.size(); i++)
-		texDesc.ArraySize += !enviormentObjs[i]->GetIsInstanced();*/
-	texDesc.ArraySize = levelObjs.size() + enviormentObjs.size(); // temp
+		texDesc.ArraySize += !enviormentObjs[i]->GetIsInstanced();
+
 	ID3D11Texture2D* resource{};
 	hr = device->CreateTexture2D(&texDesc, nullptr, &resource);
 	if (FAILED(hr))
@@ -150,7 +150,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 
 		for (UINT k = 0; k < enviormentObjects.size(); k++)
 		{
-			if (levelObjects[k]->GetIsInstanced())
+			if (enviormentObjects[k]->GetIsInstanced())
 				continue;
 
 			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;
@@ -205,6 +205,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &tempUAV, nullptr);
 	deviceContext->CSSetShaderResources(0, 1, &tempSRV);
 	deviceContext->Dispatch(NumGroups, NumGroups, texDesc.ArraySize);
+
 	deviceContext->CSSetShaderResources(0, 1, &nullSRV);
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
 	deviceContext->CSSetShader(nullptr, nullptr, 0);
@@ -233,7 +234,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	return true;
 }
 
-bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& instststs)
+bool HLight::GenerateLightMapsInstanced(MapDivider& sections, Object** objects, UINT numObjects, ID3D11ShaderResourceView** lightMapsSRV)
 {
 	ID3D11Device* device = Backend::GetDevice();
 	ID3D11DeviceContext* deviceContext = Backend::GetDeviceContext();
@@ -264,9 +265,6 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& i
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 
-	const UINT numObjects = instststs.GetNumObjects();
-	Object** objects = instststs.GetObjects();
-
 	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
 	texDesc.ArraySize = numObjects;
 	
@@ -275,7 +273,7 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& i
 	if (FAILED(hr))
 		return false;
 
-	hr = device->CreateShaderResourceView(resource, nullptr, instststs.GetLightMaps());
+	hr = device->CreateShaderResourceView(resource, nullptr, lightMapsSRV);
 	if (FAILED(hr))
 	{
 		resource->Release();
@@ -284,11 +282,11 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& i
 
 	for (UINT i = 0; i < numObjects; i++)
 	{
+		rtvDesc.Texture2DArray.FirstArraySlice = i;
 		for (UINT s = 0; s < sections.GetNumSections(); s++)
 		{
 			if (objects[i]->GetBoundingBox().Intersects(sections.GetSections()[s].sectionBB))
 			{
-				rtvDesc.Texture2DArray.FirstArraySlice = i;
 				hr = device->CreateRenderTargetView(resource, &rtvDesc, &tempRTV);
 				if (SUCCEEDED(hr))
 				{
@@ -305,8 +303,6 @@ bool HLight::GenerateLightMapsInstanced(MapDivider& sections, InstancedObject& i
 		}
 	}
 	
-	// "blur"
-
 	deviceContext->RSSetState(nullptr);
 	deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
@@ -395,8 +391,8 @@ void HLight::DrawShadowMaps(MapDivider& sections)
 
 		for (UINT o = 0; o < sections.GetNumSections(); o++)
 		{
-			std::vector<Object*>& levelObjects = sections.GetSections()[i].levelObjects;
-			std::vector<Object*>& enviormentObjects = sections.GetSections()[i].enivormentObjects;
+			std::vector<Object*>& levelObjects = sections.GetSections()[o].levelObjects;
+			std::vector<Object*>& enviormentObjects = sections.GetSections()[o].enivormentObjects;
 
 			for (UINT k = 0; k < levelObjects.size(); k++)
 				levelObjects.at(k)->DrawGeometry();

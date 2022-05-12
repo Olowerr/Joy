@@ -30,7 +30,7 @@ void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidt
 	{
 		DirectX::BoundingBox& currentBB = sections[i].sectionBB;
 
-		currentBB.Center.z = (sectionZSize - sectionZSize * 0.5f) * (i + 1);
+		currentBB.Center.z = (sectionZSize - sectionZSize * 0.5f) + sectionZSize * i;
 		currentBB.Center.y = mapHeight * 0.5f;
 		currentBB.Extents.x = mapWidth;		// Can be large just incase ;))))))
 		currentBB.Extents.y = mapHeight;	// Can be large just incase ;))))))

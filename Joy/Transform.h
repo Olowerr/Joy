@@ -29,6 +29,8 @@ public:
 	ID3D11Buffer* const* GetTransformBuffer() const;
 	const DirectX::XMFLOAT4X4& GetWorldMatrix() const;
 
+	bool GetIsImmutable() const;
+
 private:
 	const bool immutable;
 

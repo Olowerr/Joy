@@ -52,6 +52,9 @@
     <FxCompile Include="UI_VS.hlsl">
       <Filter>UI</Filter>
     </FxCompile>
+    <FxCompile Include="PosOnlyInstanceVS.hlsl">
+      <Filter>3D Rendering\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
@@ -228,9 +231,6 @@
     <ClInclude Include="HighscoreLevel.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Playground.h">
       <Filter>Scenes</Filter>
     </ClInclude>
@@ -276,7 +276,9 @@
     <ClInclude Include="MeshStorage.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="HighscoreClass.h" />
+    <ClInclude Include="Scene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
@@ -312,10 +314,5 @@
     <Filter Include="System\Backend">
       <UniqueIdentifier>{ec43fe4e-b6af-496e-9e3c-83eb8b919ab5}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <Filter>System</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <iostream>
 
+
 #define CONSOLE_ENABLE
 
 #ifdef CONSOLE_ENABLE
@@ -53,12 +54,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance
     RedirectIOToConsole();
 #endif // CONSOLE_ENABLE
 
-
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	Game game(hInstance, showCmd);
 	game.Run();
-
+    
 	game.Shutdown();
 
 	return 0;

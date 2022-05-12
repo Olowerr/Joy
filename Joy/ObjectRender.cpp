@@ -2,6 +2,7 @@
 
 ObjectRender::ObjectRender()
 	:bbRTV(nullptr), storage(Backend::GetShaderStorage())
+	, enviormentInstanced(InstancedObject::GetEnviormentInstancedObjects())
 {
 	CreateSamplerState(); // << temporary
 	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
@@ -17,9 +18,7 @@ void ObjectRender::Shutdown()
 
 void ObjectRender::Clear()
 {
-	for (InstancedObject& inst : instances)
-		inst.Shutdown();
-	instances.clear();
+
 }
 
 void ObjectRender::CreateSamplerState()
@@ -63,7 +62,7 @@ void ObjectRender::DrawAll()
 
 	devContext->VSSetShader(storage.objectVS, nullptr, 0);
 
-	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+	devContext->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -71,25 +70,17 @@ void ObjectRender::DrawAll()
 
 	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
 	
-	// temp
-
 
 	for (Object* obj : Object::GetEnviormentObjects())
-		obj->Draw();
+	{
+		if (!obj->GetIsInstanced())
+			obj->Draw();
+	}
 
-	//devContext->VSSetShader(objInstanceVS, nullptr, 0);
+	devContext->VSSetShader(storage.objectInstancedVS, nullptr, 0);
 
-	//for (InstancedObject& inst : instances)
-	//{
-	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
-
-	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	//}
-
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-	devContext->PSSetShaderResources(1, 1, nullSRV);
-	devContext->OMSetRenderTargets(0, nullptr, nullptr);
+	for (InstancedObject* inst : enviormentInstanced)
+		inst->Draw();
 }
 
 void ObjectRender::DrawCharacter(Character& character)
@@ -100,7 +91,7 @@ void ObjectRender::DrawCharacter(Character& character)
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	devContext->VSSetShader(storage.objectVS, nullptr, 0);
-	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+	devContext->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -118,7 +109,7 @@ bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
 	//instances.emplace_back();
 
 	//instances.back().instanceCount = amount;
-	//instances.back().indexCount = obj[0].GetMesh()->vertexCount;
+	//instances.back().indexCount = obj[0].GetMesh()->indexCount;
 	//instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
 	//instances.back().transformSRV = tempSRV;
 	//instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;

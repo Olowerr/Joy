@@ -2,6 +2,7 @@
 
 DecalShadow::DecalShadow()
 	:storage(Backend::GetShaderStorage())
+	, levelInstanced(InstancedObject::GetLevelInstancedObjects())
 {
 	decalViewPort.TopLeftX = 0.0f;
 	decalViewPort.TopLeftY = 0.0f;
@@ -202,6 +203,9 @@ void DecalShadow::DrawDecalShadowDepth(DirectX::XMFLOAT3 joyPos)
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	devContext->ClearDepthStencilView(decalDSView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	devContext->IASetInputLayout(storage.posOnlyInputLayout);
+
+	devContext->VSSetShader(storage.posOnlyVS, nullptr, 0);
 	devContext->VSSetConstantBuffers(1, 1, &decalCamDCBuff);
 
 	devContext->RSSetState(frontFaceCullingRS);
@@ -211,17 +215,15 @@ void DecalShadow::DrawDecalShadowDepth(DirectX::XMFLOAT3 joyPos)
 	devContext->OMSetRenderTargets(0, nullptr, decalDSView);
 
 	for (Object* obj : Object::GetLevelObjects())
-		obj->Draw();
+	{
+		if (!obj->GetIsInstanced())
+			obj->Draw();
+	}
 
-	//devContext->VSSetShader(decalInstanceVS, nullptr, 0);
 
-	//for (InstancedObject& inst : instancedObjects)
-	//{
-	//	devContext->IASetVertexBuffers(0, 1, &inst.vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	//	devContext->VSSetShaderResources(0, 1, &inst.transformSRV);
-
-	//	devContext->DrawInstanced(inst.indexCount, inst.instanceCount, 0, 0);
-	//}
+	devContext->VSSetShader(storage.posOnlyInstancedVS, nullptr, 0);
+	for (InstancedObject* inst : levelInstanced)
+		inst->Draw();
 
 	devContext->OMSetRenderTargets(0, nullptr, nullptr);
 	devContext->RSSetState(nullptr);
@@ -235,7 +237,10 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 
 	DrawDecalShadowDepth(joyPos);
 
-	Backend::GetDeviceContext()->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
+	devContext->IASetInputLayout(storage.objectInputLayout);
+
+	devContext->VSSetShader(storage.objectVS, nullptr, 0);
+	devContext->VSSetConstantBuffers(1, 1, activeCamera->GetMatrixBuffer());
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -248,9 +253,8 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 
 	DrawWithOutline();
 
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-	devContext->PSSetShaderResources(1, 1, nullSRV);
-	devContext->OMSetRenderTargets(0, nullptr, nullptr);
+	static ID3D11ShaderResourceView* nullSRV{};
+	devContext->PSSetShaderResources(1, 1, &nullSRV);
 
 	ImGuiModifyTransform(Object::GetLevelObjects());
 }
@@ -259,12 +263,12 @@ void DecalShadow::DrawWithOutline()
 {
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
-	devContext->RSSetState(ccwRS);
+	/*devContext->RSSetState(ccwRS);
 	devContext->VSSetShader(outlineVS, nullptr, 0);
 	devContext->PSSetShader(outlinePS, nullptr, 0);
 
 	for (Object* obj : Object::GetLevelObjects())
-		obj->Draw();
+		obj->Draw();*/
 
 
 	devContext->RSSetState(cwRS);
@@ -272,10 +276,15 @@ void DecalShadow::DrawWithOutline()
 	devContext->PSSetShader(decalPS, nullptr, 0);
 
 	for (Object* obj : Object::GetLevelObjects())
-		obj->Draw();
+	{
+		if (!obj->GetIsInstanced())
+			obj->Draw();
+	}
 
-	devContext->RSSetState(nullptr);
+	devContext->VSSetShader(storage.objectInstancedVS, nullptr, 0);
 
+	for (InstancedObject* inst : levelInstanced)
+		inst->Draw();
 }
 
 bool DecalShadow::InitiateToonShaders()

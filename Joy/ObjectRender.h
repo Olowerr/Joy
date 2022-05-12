@@ -31,7 +31,7 @@ private:
 	ID3D11RenderTargetView* const* bbRTV;
 
 	// Instanced
-	std::vector<InstancedObject> instances;
+	const std::vector<InstancedObject*>& enviormentInstanced;
 
 	// Sampler
 	ID3D11SamplerState* sampler;  // << temporary

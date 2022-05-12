@@ -1,5 +1,5 @@
 #pragma once
-#include "Object.h"
+#include "LightHandler.h"
 
 class InstancedObject
 {
@@ -11,7 +11,7 @@ public:
 
 	void AddObject(Object* pObject);
 	bool Finalize();
-	
+
 	ID3D11ShaderResourceView** GetLightMaps();
 	Object** GetObjects();
 	UINT GetNumObjects();
@@ -29,4 +29,16 @@ private:
 	Object** ppObjects;
 
 	void ShrinkToFit();
+
+	static std::vector<InstancedObject*> levelInstanced;
+	static std::vector<InstancedObject*> enviormentInstanced;
+
+	static void Generate(TempMeshStorage& meshStorage,
+		const std::vector<Object*>& objects, std::vector<InstancedObject*>& target);
+
+public:
+	static void DestroyInstancedObjects();
+	static bool CreateInstancedObjects(TempMeshStorage& meshStorage, MapDivider& sections, HLight& hLight);
+	static const std::vector<InstancedObject*>& GetLevelInstancedObjects();
+	static const std::vector<InstancedObject*>& GetEnviormentInstancedObjects();
 };

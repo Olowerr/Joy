@@ -14,8 +14,6 @@ public:
 	virtual void Render() override;
 
 private:
-	InstancedObject tast;
-
 	Character joy;
 	std::vector<Object> sceneObjects;
 	Object* ground;

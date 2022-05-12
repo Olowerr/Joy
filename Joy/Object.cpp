@@ -50,10 +50,17 @@ void Object::Draw()
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	dc->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
+	//mesh->Bind();
+
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 	dc->PSSetShaderResources(2, 1, &lightMap);
-	dc->Draw(mesh->vertexCount, 0);
+
+	if (mesh->indexBuffer)
+		dc->DrawIndexed(mesh->indexCount, 0, 0);
+	else
+		dc->Draw(mesh->indexCount, 0);
 }
 
 void Object::DrawGeometry()
@@ -61,8 +68,15 @@ void Object::DrawGeometry()
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	dc->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
+	//mesh->BindGeometry();
+
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
-	dc->Draw(mesh->vertexCount, 0);
+
+	if (mesh->indexBuffer)
+		dc->DrawIndexed(mesh->indexCount, 0, 0);
+	else
+		dc->Draw(mesh->indexCount, 0);
 }
 
 void Object::Translate(const DirectX::XMVECTOR& movement)

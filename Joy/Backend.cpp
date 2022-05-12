@@ -267,11 +267,11 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
     
-    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyVS);
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyVS);
     if (FAILED(hr))
         return false;
 
-    hr = system->device->CreateInputLayout(inputDesc, 1, shaderData.c_str(), shaderData.length(), &storage.posOnlyInputLayout);
+    hr = device->CreateInputLayout(inputDesc, 1, shaderData.c_str(), shaderData.length(), &storage.posOnlyInputLayout);
     if (FAILED(hr))
         return false;
 
@@ -281,11 +281,11 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
 
-    hr = system->device->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &storage.objectInputLayout);
+    hr = device->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &storage.objectInputLayout);
     if (FAILED(hr))
         return false;
 
-    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectVS);
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectVS);
     if (FAILED(hr))
         return false;
 
@@ -295,7 +295,7 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
     
-    hr = system->device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectPS);
+    hr = device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectPS);
     if (FAILED(hr))
         return false;
 
@@ -304,7 +304,15 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
 
-    hr = system->device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectInstancedVS);
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.objectInstancedVS);
+    if (FAILED(hr))
+        return false;
+
+    succeeded = LoadShader(ShaderPath + "PosOnlyInstanceVS.cso", &shaderData);
+    if (!succeeded)
+        return false;
+
+    hr = device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.posOnlyInstancedVS);
     if (FAILED(hr))
         return false;
 
@@ -314,7 +322,7 @@ bool Backend::InitiateShaders()
     if (!succeeded)
         return false;
 
-    hr = system->device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.JoyPS);
+    hr = device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &storage.JoyPS);
     if (FAILED(hr))
         return false;
 
@@ -388,7 +396,7 @@ HRESULT Backend::UpdateBuffer(ID3D11Buffer* buffer, void* Data, UINT byteWidth)
 HRESULT Backend::CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byteWidth)
 {
     D3D11_BUFFER_DESC desc{};
-    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;;
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     desc.Usage = D3D11_USAGE_IMMUTABLE;
     desc.ByteWidth = byteWidth;
     desc.CPUAccessFlags = 0;
@@ -396,6 +404,22 @@ HRESULT Backend::CreateVertexBuffer(ID3D11Buffer** buffer, void* Data, UINT byte
     desc.MiscFlags = 0;
     D3D11_SUBRESOURCE_DATA inData{};
     inData.pSysMem = Data;
+    inData.SysMemPitch = inData.SysMemSlicePitch = 0;
+
+    return system->device->CreateBuffer(&desc, &inData, buffer);
+}
+
+HRESULT Backend::CreateIndexBuffer(ID3D11Buffer** buffer, void* data, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC desc{};
+    desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.ByteWidth = byteWidth;
+    desc.CPUAccessFlags = 0;
+    desc.StructureByteStride = 0;
+    desc.MiscFlags = 0;
+    D3D11_SUBRESOURCE_DATA inData{};
+    inData.pSysMem = data;
     inData.SysMemPitch = inData.SysMemSlicePitch = 0;
 
     return system->device->CreateBuffer(&desc, &inData, buffer);
@@ -422,4 +446,26 @@ HRESULT Backend::CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, 
     inData.SysMemSlicePitch = 0;
 
     return system->device->CreateTexture2D(&desc, &inData, texture);
+}
+
+HRESULT Backend::CreateConstSRV(ID3D11ShaderResourceView** srv, const std::string& filePath)
+{
+    int width, height, channels;
+    HRESULT hr;
+    
+    unsigned char* imageData = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    if (!imageData)
+        return S_FALSE;
+
+    ID3D11Texture2D* resource;
+    hr = CreateConstSRVTexture2D(&resource, imageData, width, height);
+    stbi_image_free(imageData);
+
+    if (FAILED(hr))
+        return hr;
+
+    hr = system->device->CreateShaderResourceView(resource, nullptr, srv);
+    resource->Release();
+
+    return hr;
 }

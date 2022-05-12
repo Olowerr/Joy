@@ -148,6 +148,11 @@ const DirectX::XMFLOAT4X4& Transform::GetWorldMatrix() const
     return matrix4x4;
 }
 
+bool Transform::GetIsImmutable() const
+{
+    return immutable;
+}
+
 void Transform::UpdateMatrix() const
 {
     DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixTranspose(

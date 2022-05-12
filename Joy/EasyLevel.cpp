@@ -26,17 +26,19 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     sceneObjects.reserve(20);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(7), true);
-    sceneObjects.emplace_back(meshStorage.GetMesh(7), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true, DirectX::XMFLOAT3(0.f, 2.f, 50.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true, DirectX::XMFLOAT3(0.f, 2.f, 55.f));
 
     ground = &sceneObjects[0];
     ground1 = &sceneObjects[1];
@@ -75,7 +77,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 100.0f, 50.f, 50.);
+    divider.CreateSections(2, 100.0f, 50.f, 50.);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
@@ -89,7 +91,7 @@ void EasyLevel::Shutdown()
     hLight.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnLoadAll();
+    meshStorage.UnloadObjMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
