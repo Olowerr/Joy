@@ -15,9 +15,7 @@ public:
 private:
 	Character joy;
 	std::vector<Object> sceneObjects;
-
 	std::vector<Collision> collisions;
-
 
 	HLight hLight;
 	Camera* activeCamera;
