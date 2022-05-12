@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 
+
 struct MorphInfo
 {
 	std::vector<JOY::MorphFrame> morphFrame;
@@ -70,6 +71,12 @@ class StoredData
 {
 
 public:
+	static StoredData& GetInstance()
+	{
+		static StoredData data;
+		return data;
+	}
+
 	StoredData();
 	~StoredData();
 
@@ -97,8 +104,3 @@ public:
 	MaterialInfo m_materialInfo;
 
 };
-
-namespace JOY
-{
-	static StoredData data;
-}
