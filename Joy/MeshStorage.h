@@ -104,10 +104,13 @@ private:
 	std::vector<Mesh*> meshes;
 
 	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
-	static const UINT MenuCount = 1;
+	static const UINT MenuCount = 3;
 	const std::string MenuFiles[MenuCount] =
 	{
-		"Blockout_Test.joy" // 4 meshes
+		//"Blockout_Test.joy" // 4 meshes
+		"Portal.joy",
+		"SmallEngine.joy",
+		"MenuScene.joy"
 	};
 
 	static const UINT EasyCount = 1;

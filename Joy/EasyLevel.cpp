@@ -19,43 +19,21 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
     joy.CheckBB();
 
-    sceneObjects.reserve(20);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(12), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
-    for (int i = 0; i < (int)sceneObjects.size(); i++)
+    typedef DirectX::XMFLOAT3 F3;
+    sceneObjects.reserve(110);
+
+    meshStorage.LoadMenuObjects();
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
-        coll.emplace_back();
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
     }
+    meshStorage.UnloadDataBase();
+
+    collisions.reserve(110);
+    for (size_t i = 0; i < (int)sceneObjects.size(); i++)
+        collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    sceneObjects[0].SetPosition(0.0f, -2.0f, 0.0f);
-    sceneObjects[1].SetPosition(0.0f, -0.2f, 27.3f);
-    sceneObjects[2].SetPosition(5.1f, 2.4f, 64.2f);
-    sceneObjects[2].SetScale(2.8f);
-    sceneObjects[3].SetPosition(0.0f, 0.0f, 0.0f);
-    sceneObjects[3].SetRotation(0.0f, 0.5f, 0.4f);
-    sceneObjects[3].SetScale(0.4f);
-    sceneObjects[4].SetPosition(1.8f, -0.2f, 11.1f);
-    sceneObjects[4].SetScale(2.5f);
-    sceneObjects[5].SetPosition(1.5f, 3.0f, 15.5f);
-    sceneObjects[5].SetRotation(0.7f, 0.6f, 0.0f);
-    sceneObjects[5].SetScale(1.3f);
-    sceneObjects[6].SetPosition(2.8f, 2.5f, 31.4f);
-    sceneObjects[6].SetScale(4.4f);
-    sceneObjects[7].SetPosition(3.1f, 1.2f, 28.3f);
-    sceneObjects[7].SetScale(1.8f);
-    sceneObjects[8].SetPosition(-2.8f, -2.3f, 62.5f);
-    sceneObjects[9].SetPosition(17.2f, 4.8f, 68.2f);
-    sceneObjects[10].SetPosition(-7.1f, 4.8f, 58.7f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -132,30 +110,26 @@ SceneState EasyLevel::Update()
 
     //Collision
 
-    for (int i = 0; i < (int)sceneObjects.size(); i++)
+    for (size_t i = 0; i < (int)collisions.size(); i++)
     {
-        if (coll.at(i).getCollidedY())
+        if (collisions.at(i).getCollidedY())
         {
             joy.SetCanJump(true);
-            i = sceneObjects.size();
+            break;
         }
         else
             joy.SetCanJump(false);
     }
 
-    for (int i = 0; i < (int)sceneObjects.size(); i++)
+    for (size_t i = 1; i < (int)collisions.size(); i++)
     {
-        if (i == 8)
-        {
-            continue;
-        }
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
-            coll.at(i).collided(&joy, &sceneObjects.at(i), k);
+            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
         }
     }
 
-    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(8).GetBoundingBox(0)))
+    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
         return SceneState::MainMenu;
     }

@@ -15,27 +15,29 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     typedef DirectX::XMFLOAT3 F3;
     sceneObjects.reserve(110);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(11), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(12), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(13), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(14), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(15), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(16), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(17), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(18), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(19), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(20), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(21), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(22), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(23), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(24), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(25), true);
-    for (int i = 0; i < (int)sceneObjects.size(); i++)
+
+    meshStorage.LoadMenuObjects();
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
-        coll.emplace_back();
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
+        if (i == 1)
+        {
+            for (size_t i = 0; i < 2; i++)
+            {
+                sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+            }
+        }
     }
 
+    meshStorage.UnloadDataBase();
+
+    collisions.reserve(110);
+    for (size_t i = 0; i < (int)sceneObjects.size(); i++)
+        collisions.emplace_back();
+
     joy.SetPosition(0.0f, 5.0f, 0.0f);
+    sceneObjects[1].SetPosition(11.7f, 0.0f, -8.2f);
+    sceneObjects[2].SetPosition(22.1f, 0.0f, 0.0f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -61,6 +63,7 @@ void MainMenu::Shutdown()
 
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+    meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
@@ -106,30 +109,26 @@ SceneState MainMenu::Update()
 
     //Collision
 
-    for (int i = 0; i < (int)sceneObjects.size(); i++)
+    for (size_t i = 0; i < (int)collisions.size(); i++)
     {
-        if (coll.at(i).getCollidedY())
+        if (collisions.at(i).getCollidedY())
         {
             joy.SetCanJump(true);
-            i = sceneObjects.size();
+            break;
         }
         else
             joy.SetCanJump(false);
     }
 
-    for (int i = 0; i < (int)sceneObjects.size(); i++)
+    for (size_t i = 1; i < (int)collisions.size(); i++)
     {
-        if (i == 1)
-        {
-            continue;
-        }
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
-            coll.at(i).collided(&joy, &sceneObjects.at(i), k);
+            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
         }
     }
 
-    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(1).GetBoundingBox(0)))
+    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
         return SceneState::Easy;
     }
