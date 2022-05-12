@@ -44,7 +44,7 @@ void HighscoreClass::SetHighscore(float score, std::string user)
 
 }
 
-void HighscoreClass::GetHighscore(float &scoreList, std::string &nameList)
+void HighscoreClass::LoadFromFile()
 {
 
 	m_myFile.open("../Resources/Highscore/highscore.txt");
@@ -64,11 +64,12 @@ void HighscoreClass::GetHighscore(float &scoreList, std::string &nameList)
 
 }
 
-void HighscoreClass::RenderInputScreen(float score)
+void HighscoreClass::DoAllTheHighscoreStuff(float score)
 {
-	std::string hsText = "New High Score: " + std::to_string(score);
+	std::string hsText = "New High Score: " + std::to_string(score) + "\nEnter you name:";
 	m_text.SetText(hsText);
-	m_nameText.SetPosition(200, 10);
+	m_text.SetPosition(Backend::GetWindowWidth() / 2 - 100, Backend::GetWindowHeight() / 2 - 200);
+	m_nameText.SetPosition(Backend::GetWindowWidth() / 2 - 100, Backend::GetWindowHeight() / 2);
 	ui->Add(&m_nameText);
 	ui->Add(&m_text);
 	
@@ -200,8 +201,10 @@ void HighscoreClass::RenderInputScreen(float score)
 		
 		if (m_key.KeyDown(DIK_RETURN))
 		{
-			SetHighscore(score, finalName);
+			LoadFromFile();
 			SortScores();
+			SetHighscore(score, finalName);
+		
 			doInput = false;
 		}
 	}

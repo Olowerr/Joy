@@ -166,7 +166,7 @@ SceneState EasyLevel::Update()
     if (joy.GetBoundingBox().Intersects(portal->GetBoundingBox()))
     {
         
-        m_highscore.RenderInputScreen(time);
+        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
 
 
         return SceneState::Highscore;

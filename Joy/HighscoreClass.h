@@ -16,8 +16,8 @@ public:
 	~HighscoreClass();
 
 	void SetHighscore(float score, std::string name);
-	void GetHighscore(float& scoreList, std::string& nameList);
-	void RenderInputScreen(float score);
+	void LoadFromFile();
+	void DoAllTheHighscoreStuff(float score);
 	void SortScores();
 
 private:
