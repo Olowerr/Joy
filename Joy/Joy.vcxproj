@@ -159,7 +159,6 @@
     <ClCompile Include="DecalShadow.cpp" />
     <ClCompile Include="FreelookCamera.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HighscoreLevel.cpp" />
     <ClCompile Include="ImguiSetup.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -198,7 +197,6 @@
     <ClInclude Include="DecalShadow.h" />
     <ClInclude Include="FreelookCamera.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="HighscoreLevel.h" />
     <ClInclude Include="ImguiSetup.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

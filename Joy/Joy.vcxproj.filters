@@ -116,9 +116,6 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="HighscoreLevel.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Playground.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
@@ -226,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="HighscoreLevel.h">
-      <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Playground.h">
       <Filter>Scenes</Filter>

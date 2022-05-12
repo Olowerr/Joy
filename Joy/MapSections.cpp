@@ -40,7 +40,7 @@ void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidt
 		{
 			if (object->IsLevelObject)
 			{
-				if (currentBB.Intersects(object->GetBoundingBox()))
+				if (currentBB.Intersects(object->GetBoundingBox(0)))
 					sections[i].levelObjects.emplace_back(object);
 			}
 		}
@@ -49,7 +49,7 @@ void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidt
 		{
 			if (!object->IsLevelObject)
 			{
-				if (currentBB.Intersects(object->GetBoundingBox()))
+				if (currentBB.Intersects(object->GetBoundingBox(0)))
 					sections[i].enivormentObjects.emplace_back(object);
 			}
 		}
@@ -65,7 +65,7 @@ void MapDivider::Update()
 
 	for (UINT i = 0; i < numSections; i++)
 	{
-		if (sections[i].sectionBB.Intersects(joy.GetBoundingBox()))
+		if (sections[i].sectionBB.Intersects(joy.GetBoundingBox(0)))
 		{
 			activeSection = &sections[i];
 			return;
