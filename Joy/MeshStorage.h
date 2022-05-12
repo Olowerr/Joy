@@ -117,6 +117,7 @@ private:
 	const std::string EasyFiles[MenuCount] =
 	{
 		// menu .joy files
+		"Portal.joy"
 	};
 
 
