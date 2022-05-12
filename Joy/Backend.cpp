@@ -60,16 +60,17 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
         &swapDesc, &system->swapChain, &system->device, nullptr, &system->deviceContext);
     assert(SUCCEEDED(hr));
 
-    ID3D11Texture2D* backBuffer{};
-    hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
+    hr = system->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&system->backBuffer));
     if (FAILED(hr)) //fixes warning on create RTV
     {
         assert(SUCCEEDED(hr));
         return *system;
     }
 
-    hr = system->device->CreateRenderTargetView(backBuffer, nullptr, &system->bbRTV);
-    backBuffer->Release();
+    hr = system->device->CreateRenderTargetView(system->backBuffer, nullptr, &system->bbRTV);
+    assert(SUCCEEDED(hr));
+
+    hr = system->device->CreateUnorderedAccessView(system->backBuffer, nullptr, &system->bbUAV);
     assert(SUCCEEDED(hr));
 
     succeeded = system->InitiateShaders();
@@ -112,8 +113,6 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     system->swapChain->SetFullscreenState(TRUE, nullptr);
 #endif // _DEBUG
 
-    
-
     system->defaultViewport.TopLeftX = 0;
     system->defaultViewport.TopLeftY = 0;
     system->defaultViewport.Width = (float)width;
@@ -131,6 +130,7 @@ void Backend::Destroy()
     if (!system)
         return;
 
+    system->backBuffer->Release();
     system->storage.Shutdown();
     system->swapChain->Release();
     system->deviceContext->Release();
@@ -182,6 +182,11 @@ IDXGISwapChain* Backend::GetSwapChain()
     return system->swapChain;
 }
 
+ID3D11Texture2D* const* Backend::GetBackBuffer()
+{
+    return &system->backBuffer;
+}
+
 ID3D11RenderTargetView* const* Backend::GetBackBufferRTV()
 {
     return &system->bbRTV;
@@ -190,6 +195,11 @@ ID3D11RenderTargetView* const* Backend::GetBackBufferRTV()
 ID3D11DepthStencilView* const* Backend::GetStandardDSV()
 {
     return &system->standardDSV;
+}
+
+ID3D11UnorderedAccessView* const* Backend::GetBackBufferUAV()
+{
+    return &system->bbUAV;
 }
 
 void Backend::Clear()

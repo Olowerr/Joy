@@ -3,6 +3,7 @@
 #include "EasyLevel.h"
 #include "playground.h"
 #include "HighscoreLevel.h"
+#include "JoyPostProcess.h"
 
 #include "SpriteBatch.h"
 
@@ -37,6 +38,7 @@ private:
 	ObjectRender objRender;
 	DecalShadow decalShadow;
 	Window& window;
+	JoyPostProcess smolpp;
 
 	std::unique_ptr<DirectX::AudioEngine> audEngine;
 	std::unique_ptr<DirectX::SoundEffect> soundEffect1;

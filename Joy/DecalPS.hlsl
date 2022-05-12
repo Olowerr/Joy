@@ -73,5 +73,5 @@ float4 main(PS_IN input) : SV_TARGET
 
     intensity = clamp(intensity * lightValue, 0.2f, 1.f);
 
-    return image.Sample(defaultSampler, input.uv) * intensity;
+    return float4(image.Sample(defaultSampler, input.uv).rbg * intensity, 0.f);
 }

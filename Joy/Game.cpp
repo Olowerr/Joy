@@ -93,6 +93,7 @@ void Game::Run()
 
 		EndImGuiFrame();
 
+		smolpp.ApplyGlow();
 		Backend::Display();
 
 		// temp --
