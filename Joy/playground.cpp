@@ -26,9 +26,11 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
     }
     meshStorage.UnloadDataBase();
-    cube = &sceneObjects[0];
-    ground = &sceneObjects[4];
-    collTest = &sceneObjects[1];
+    
+    collisions.reserve(110);
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+        collisions.emplace_back();
+
     
     joy.SetPosition(0.f, 3.f, 0.f);
 
@@ -103,15 +105,29 @@ SceneState testScene::Update()
 
     //Collision
 
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        if (collisions.at(i).getCollidedY())
+        {
+            joy.SetCanJump(true);
+            break;
+        }
+        else
+            joy.SetCanJump(false);
+    }
 
-    if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
-        joy.SetCanJump(true);
-    else
-        joy.SetCanJump(false);
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+        collisions.at(i).collided(&joy, &sceneObjects.at(i));
 
-    coll.collided(&joy, collTest);
-    coll2.collided(&joy, cube);
-    coll3.collided(&joy, ground);
+
+    //if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
+    //    joy.SetCanJump(true);
+    //else
+    //    joy.SetCanJump(false);
+
+    //coll.collided(&joy, collTest);
+    //coll2.collided(&joy, cube);
+    //coll3.collided(&joy, ground);
 
     return SceneState::Unchanged;
 }

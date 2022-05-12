@@ -30,6 +30,8 @@ static const float3 LightDir = normalize(float3(1.f, 1.f, -1.f));
 
 float4 main(PS_IN input) : SV_TARGET
 {
+    return float4(input.normal, 0.f);
+
     //return float4(input.normal, 1.f);
     //return image.Sample(defaultSampler, input.uv);
     //float2 dimensions;
