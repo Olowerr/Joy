@@ -92,7 +92,7 @@ private:
 	static const UINT MenuCount = 1;
 	const std::string MenuFiles[MenuCount] =
 	{
-		"big3newnew.joy" // 4 meshes
+		"Blockout_Test.joy" // 4 meshes
 	};
 
 	static const UINT EasyCount = 1;

@@ -1,4 +1,5 @@
 #include "Object.h"
+#include <iostream>
 
 Object::Object(Mesh* mesh, bool levelObject)
 	:mesh(mesh), lightMap(nullptr), IsLevelObject(levelObject), isInstanced(false)
@@ -38,6 +39,7 @@ void Object::Shutdown()
 
 Object::~Object()
 {
+	std::cout << "called\n";
 }
 
 void Object::CheckBB()
