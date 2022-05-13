@@ -1,5 +1,6 @@
 #include "EasyLevel.h"
 
+
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
@@ -8,9 +9,15 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
+    , m_highscore(uiRender)
 {
+
+
+  
+
     meshStorage.LoadAllObj();
-    uiRender.Add(&catButton);
+
+    uiRender.Add(&pickUpUI);
     uiRender.Add(&thomas);
     thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
@@ -80,8 +87,10 @@ void EasyLevel::Shutdown()
 SceneState EasyLevel::Update()
 {
     time += Backend::GetDeltaTime();
+
     auto asd = std::to_string(time);
     asd.erase(asd.find_first_of('.') + 3, std::string::npos);
+    
     thomas.SetText(asd);
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
@@ -135,6 +144,11 @@ SceneState EasyLevel::Update()
     {
         uiRender.Clear();
         uiRender.Add(&loadingScreen);
+        return SceneState::MainMenu;
+        
+        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
+
+
         return SceneState::MainMenu;
     }
 
