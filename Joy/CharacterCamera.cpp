@@ -30,7 +30,7 @@ void CharacterCamera::UpdateCam()
 	bool diagonalX = false;
 	bool diagonalZ = false;
 	float camSpeedX = 3.0f;
-	float camSpeedZ = 3.0f;
+	float camSpeedZ = 9.0f;
 	float camStillZoneX = 5;
 	if (x > positionFloat3.x + camStillZoneX)
 	{
