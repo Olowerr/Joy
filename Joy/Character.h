@@ -27,6 +27,10 @@ private:
 	Keyboard& key;
 	Mesh joy;
 
+
+	float maxSpeed = 15.0f;
+	float speed = 0.2f;
+	float counterForce = 0.01f;
 	bool stopMovement;
 	bool collidedY;
 
