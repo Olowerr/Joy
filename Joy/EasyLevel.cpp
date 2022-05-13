@@ -25,7 +25,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     typedef DirectX::XMFLOAT3 F3;
     sceneObjects.reserve(110);
 
-    meshStorage.LoadMenuObjects();
+    meshStorage.LoadEasyObjects();
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
