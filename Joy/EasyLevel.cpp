@@ -14,7 +14,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
   
 
-    meshStorage.LoadAll();
+    meshStorage.LoadAllObj();
 
     uiRender.Add(&pickUpUI);
     uiRender.Add(&thomas);

@@ -202,7 +202,6 @@ void HighscoreClass::DoAllTheHighscoreStuff(float score)
 		if (m_key.KeyDown(DIK_RETURN))
 		{
 			LoadFromFile();
-			SortScores();
 			SetHighscore(score, finalName);
 		
 			doInput = false;
