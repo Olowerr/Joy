@@ -1,7 +1,7 @@
 RWTexture2D<unorm float> target : register(u0);
 Texture2D<unorm float4> source : register(t0);
 
-#define Range 10
+#define Range 5
 #define Factor 2.f
 
 [numthreads(16, 9, 1)]

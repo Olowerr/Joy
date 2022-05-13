@@ -61,8 +61,8 @@ void JoyPostProcess::Shutdown()
 
 void JoyPostProcess::ApplyGlow()
 {
-	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), Backend::system->renderTexture);
-	//return;
+	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
+	return;
 
 	static ID3D11RenderTargetView* nullRTV{};
 	static ID3D11UnorderedAccessView* nullUAV{};

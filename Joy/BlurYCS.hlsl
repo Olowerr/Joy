@@ -2,7 +2,7 @@ RWTexture2D<unorm float4> target : register(u0);
 Texture2D<unorm float4> mainSource : register(t0);
 Texture2D<unorm float> blurSource : register(t1);
 
-#define Range 10
+#define Range 5
 #define Factor 2.f
 
 [numthreads(16, 9, 1)]
