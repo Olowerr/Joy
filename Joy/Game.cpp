@@ -41,11 +41,11 @@ void Game::Shutdown()
 void Game::Run()
 {
 	SceneState activeState = SceneState::Unchanged;
-	Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
+	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
 	//Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Draw();
 	Backend::Display();
-	//Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
+	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Clear();
 	effect1->Play(true);
 	Backend::ResetDeltaTime();
