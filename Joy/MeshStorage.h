@@ -11,7 +11,7 @@ class Mesh
 public:
 	static const UINT Stirde = sizeof(JOY::Vertex);
 	static const UINT Offset = 0;
-	
+
 	Mesh() = default;
 	void Shutdown()
 	{
@@ -22,13 +22,13 @@ public:
 	void Bind();
 	void BindGeometry();
 
-//private:
+	//private:
 	UINT indexCount;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
-	
+
 	ID3D11ShaderResourceView* diffuseTextureSRV;
-	
+
 	DirectX::BoundingBox bBox;
 };
 
@@ -57,8 +57,8 @@ public:
 	void LoadEasyObjects();
 	void UnloadMeshes();
 	void UnloadDataBase();
-	
-	
+
+
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(UINT index);
 	size_t GetMeshCount() const;
@@ -122,9 +122,6 @@ private:
 		"Portal.joy",
 		"TestSceneUpdated.joy"
 	};
-
-
-
 
 	void import(UINT index);
 	void import(const std::string& filePath);

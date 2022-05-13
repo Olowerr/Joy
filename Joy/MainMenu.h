@@ -17,8 +17,6 @@ private:
 	std::vector<Object> sceneObjects;
 	std::vector<Collision> collisions;
 
-
-
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;

@@ -3,11 +3,14 @@
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
 	, window(Backend::GetWindow()) 
+	, loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr))
 		return;
+
+	uiRender.Add(&loadingScreen);
 
 	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
 #ifdef _DEBUG

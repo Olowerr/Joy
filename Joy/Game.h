@@ -37,6 +37,8 @@ private:
 	DecalShadow decalShadow;
 	Window& window;
 
+	Sprite loadingScreen;
+
 	std::unique_ptr<DirectX::AudioEngine> audEngine;
 	std::unique_ptr<DirectX::SoundEffect> soundEffect1;
 	std::unique_ptr<DirectX::SoundEffect> soundEffect2;
