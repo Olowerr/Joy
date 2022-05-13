@@ -34,7 +34,7 @@ VS_OUT main(VS_IN input)
 	output.normal = mul(float4(input.normal, 0.f), viewProj).xyz;
 	float3 Normal = normalize(output.normal);
 
-	output.pos = output.pos + float4(mul(0.15, Normal),0);
+	output.pos = output.pos + float4(mul(0.06, Normal),0);
 
 
 	
