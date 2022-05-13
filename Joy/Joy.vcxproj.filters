@@ -273,6 +273,7 @@
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="HighscoreClass.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">

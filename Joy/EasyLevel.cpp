@@ -4,17 +4,13 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
-    , catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+    , pickUpUI("../Resources/Images/BoltForJoy.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
 {
-
-
-  
-
     meshStorage.LoadAllObj();
 
     uiRender.Add(&pickUpUI);
@@ -80,7 +76,7 @@ void EasyLevel::Shutdown()
     divider.Shutdown();
     uiRender.Clear();
     loadingScreen.Shutdown();
-    catButton.Shutdown();
+    pickUpUI.Shutdown();
     thomas.Shutdown();
 }
 
@@ -142,12 +138,9 @@ SceneState EasyLevel::Update()
 
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
+        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
         uiRender.Clear();
         uiRender.Add(&loadingScreen);
-        return SceneState::MainMenu;
-        
-        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
-
 
         return SceneState::MainMenu;
     }

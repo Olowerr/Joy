@@ -21,15 +21,14 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
-        //if (i == 1)
-        //{
-        //    for (size_t i = 0; i < 2; i++)
-        //    {
-        //        sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-        //    }
-        //}
+        if (i == 1)
+        {
+            for (size_t i = 0; i < 2; i++)
+            {
+                sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+            }
+        }
     }
-
     meshStorage.UnloadDataBase();
 
     collisions.reserve(110);
@@ -37,8 +36,8 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
         collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    //sceneObjects[1].SetPosition(11.7f, 0.0f, -8.2f);
-    //sceneObjects[2].SetPosition(22.1f, 0.0f, 0.0f);
+    sceneObjects[1].SetPosition(11.7f, 0.0f, -8.2f);
+    sceneObjects[2].SetPosition(22.1f, 0.0f, 0.0f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);

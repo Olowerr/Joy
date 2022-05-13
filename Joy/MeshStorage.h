@@ -103,23 +103,27 @@ private:
 
 	std::vector<Mesh*> meshes;
 
-	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
+	const std::string tastPath = "../Resources/JoyFiles/"; //MenuStuff
 	static const UINT MenuCount = 3;
 	const std::string MenuFiles[MenuCount] =
 	{
 		//"Blockout_Test.joy" // 4 meshes
 		"Portal.joy",
-		//"SmallEngine.joy",
-		"TestSceneUpdated.joy"
-		//"MainMenuScene.joy"
+		"SmallEngine.joy",
+		//"TestSceneUpdated.joy"
+		"MenuScene.joy"
 		//"MenuScene.joy"
 	};
 
-	static const UINT EasyCount = 1;
-	const std::string EasyFiles[MenuCount] =
+	static const UINT EasyCount = 2;
+	const std::string EasyFiles[EasyCount] =
 	{
 		// menu .joy files
-		"Portal.joy"
+		//"Blockout_Test.joy" // 4 meshes
+		"Portal.joy",
+		"TestSceneUpdated.joy"
+		//"MainMenuScene.joy"
+		//"MenuScene.joy"
 	};
 
 

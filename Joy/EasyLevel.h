@@ -19,8 +19,6 @@ private:
 
 	HighscoreClass m_highscore;
 
-
-	std::vector<Object> sceneObjects;
 	Character joy;
 	std::vector<Object> sceneObjects;
 	std::vector<Collision> collisions;
@@ -31,7 +29,7 @@ private:
 	CharacterCamera joyCamera;
 
 	Sprite loadingScreen;
-	Sprite catButton;
+	Sprite pickUpUI;
 	Text thomas;
 	float time = 0.f;
 

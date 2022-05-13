@@ -60,7 +60,7 @@ void TempMeshStorage::LoadMenuObjects()
 void TempMeshStorage::LoadEasyObjects()
 {
 	for (UINT i = 0; i < EasyCount; i++)
-		import(meshPath + EasyFiles[i]);
+		import(meshPath + EasyFiles[i]); // Was meshPath
 }
 
 Mesh* TempMeshStorage::GetObjMesh(UINT index)
