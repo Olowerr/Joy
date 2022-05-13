@@ -293,7 +293,7 @@ void TempMeshStorage::import(const std::string& filePath)
 			return;
 
 		meshes.back()->indexCount = object.indices.size();
-		
+
 		Backend::CreateConstSRV(&meshes.back()->diffuseTextureSRV, tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string);
 		// failed -> will be black
 

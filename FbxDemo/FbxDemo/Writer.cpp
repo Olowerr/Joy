@@ -1072,7 +1072,12 @@ void Writer::AddTexture(const char* path)
 bool Writer::SetTexture(const char* materialName, const char* name)
 {
 	std::string charString = name;
-	charString = charString.substr(charString.find_last_of('/') + 1);
+
+	int pos = (int)charString.find_last_of('/') + 1;
+	pos = pos == 0 ? (int)charString.find_last_of('\\') + 1 : pos;
+	charString = charString.substr(charString.size() - (charString.size() - pos));
+
+	//charString = charString.substr(charString.find_last_of('/') + 1);
 
 	for (Material& mat : materials)
 	{
@@ -1090,6 +1095,7 @@ void Writer::CopyTextureFile(const char* texturePath)
 {
 	std::string path = texturePath;
 	int pos = (int)path.find_last_of('/') + 1;
+	pos = pos == 0 ? (int)path.find_last_of('\\') + 1 : pos;
 	path = path.substr(path.size() - (path.size() - pos));
 
 	path = "../../Resources/JOYFiles/" + path;

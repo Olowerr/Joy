@@ -36,8 +36,8 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
         collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    sceneObjects[1].SetPosition(11.7f, 0.0f, -8.2f);
-    sceneObjects[2].SetPosition(22.1f, 0.0f, 0.0f);
+    sceneObjects[2].SetPosition(11.2f, 0.0f, 8.1f);
+    sceneObjects[3].SetPosition(-10.8f, 0.0f, 8.1f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
