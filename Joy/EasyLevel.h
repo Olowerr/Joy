@@ -24,6 +24,7 @@ private:
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
+	Sprite loadingScreen;
 	Sprite catButton;
 	Text thomas;
 	float time = 0.f;

@@ -3,6 +3,7 @@
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
+    , loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
@@ -20,13 +21,13 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
     {
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
-        if (i == 1)
-        {
-            for (size_t i = 0; i < 2; i++)
-            {
-                sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-            }
-        }
+        //if (i == 1)
+        //{
+        //    for (size_t i = 0; i < 2; i++)
+        //    {
+        //        sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+        //    }
+        //}
     }
 
     meshStorage.UnloadDataBase();
@@ -36,8 +37,8 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
         collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    sceneObjects[1].SetPosition(11.7f, 0.0f, -8.2f);
-    sceneObjects[2].SetPosition(22.1f, 0.0f, 0.0f);
+    //sceneObjects[1].SetPosition(11.7f, 0.0f, -8.2f);
+    //sceneObjects[2].SetPosition(22.1f, 0.0f, 0.0f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -75,8 +76,8 @@ void MainMenu::Shutdown()
     joyCamera.Shutdown();
 
     divider.Shutdown();
-	
     uiRender.Clear();
+    loadingScreen.Shutdown();
 }
 
 SceneState MainMenu::Update()
@@ -130,6 +131,8 @@ SceneState MainMenu::Update()
 
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
+        uiRender.Clear();
+        uiRender.Add(&loadingScreen);
         return SceneState::Easy;
     }
 
@@ -138,9 +141,16 @@ SceneState MainMenu::Update()
 
 void MainMenu::Render()
 {
-    objRender.DrawAll();
-    decalShadow.DrawAll(joy.GetPosition());
-    objRender.DrawCharacter(joy);
-	uiRender.Draw();
-    sky.Draw(activeCamera);
+    if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    {
+        objRender.DrawAll();
+        decalShadow.DrawAll(joy.GetPosition());
+        objRender.DrawCharacter(joy);
+        uiRender.Draw();
+        sky.Draw(activeCamera);
+    }
+    else
+    {
+        uiRender.Draw();
+    }
 }

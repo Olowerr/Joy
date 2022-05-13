@@ -4,12 +4,12 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
     , catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+    , loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
 {
     meshStorage.LoadAllObj();
-
     uiRender.Add(&catButton);
     uiRender.Add(&thomas);
     thomas.SetPosition(10.f, 10.f);
@@ -59,6 +59,7 @@ void EasyLevel::Shutdown()
 
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+    meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
@@ -71,6 +72,7 @@ void EasyLevel::Shutdown()
 
     divider.Shutdown();
     uiRender.Clear();
+    loadingScreen.Shutdown();
     catButton.Shutdown();
     thomas.Shutdown();
 }
@@ -131,6 +133,8 @@ SceneState EasyLevel::Update()
 
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
+        uiRender.Clear();
+        uiRender.Add(&loadingScreen);
         return SceneState::MainMenu;
     }
 
@@ -139,9 +143,16 @@ SceneState EasyLevel::Update()
 
 void EasyLevel::Render()
 {
-	objRender.DrawAll();
-    decalShadow.DrawAll(joy.GetPosition());
-    objRender.DrawCharacter(joy);
-    uiRender.Draw();
-    sky.Draw(activeCamera);
+    if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    {
+        objRender.DrawAll();
+        decalShadow.DrawAll(joy.GetPosition());
+        objRender.DrawCharacter(joy);
+        uiRender.Draw();
+        sky.Draw(activeCamera);
+    }
+    else
+    {
+        uiRender.Draw();
+    }
 }

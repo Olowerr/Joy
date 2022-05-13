@@ -109,8 +109,10 @@ private:
 	{
 		//"Blockout_Test.joy" // 4 meshes
 		"Portal.joy",
-		"SmallEngine.joy",
-		"MenuScene.joy"
+		//"SmallEngine.joy",
+		"TestSceneUpdated.joy"
+		//"MainMenuScene.joy"
+		//"MenuScene.joy"
 	};
 
 	static const UINT EasyCount = 1;

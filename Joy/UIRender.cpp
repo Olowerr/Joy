@@ -100,6 +100,7 @@ void UIRenderer::Draw()
 	static const UINT offset = 0;
 
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	devContext->IASetInputLayout(UI_IL);

@@ -22,6 +22,8 @@ private:
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
+	Sprite loadingScreen;
+
 	MapDivider divider;
 	Skybox sky;
 };
