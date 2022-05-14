@@ -2,7 +2,7 @@
 #include<iostream>
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
-	, window(Backend::GetWindow()) 
+	, window(Backend::GetWindow())
 	, loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
@@ -75,7 +75,7 @@ void Game::Run()
 			Backend::ResetDeltaTime();
 			break;
 		}
-		
+
 		Backend::Process();
 
 		Backend::Clear();
@@ -107,7 +107,7 @@ void Game::Run()
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_M))
 			Backend::GetMouse().Lock(true);
-		
+
 		else if (Backend::GetKeyboard().KeyReleased(DIK_N))
 			Backend::GetMouse().Lock(false);
 		// --

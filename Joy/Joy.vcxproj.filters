@@ -282,6 +282,10 @@
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="HighscoreClass.h" />
+    <ClInclude Include="JoyPostProcess.h">
+      <Filter>PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
@@ -320,5 +324,8 @@
     <Filter Include="PostProcess">
       <UniqueIdentifier>{8dd173c8-c6bb-4e7a-8c22-3400483df0cc}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
