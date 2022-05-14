@@ -3,7 +3,7 @@
 Character::Character(Mesh* mesh)
 	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
 {
-	Object::DropLevelPtr(this);
+	Object::DropPtr(this);
 
 	//Basic
 	//maxSpeed = 0.1f;

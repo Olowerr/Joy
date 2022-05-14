@@ -48,7 +48,7 @@ UINT Pickup::getPoints()
 void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 {
 	pickupObjs.emplace_back(new Object(pickupMesh, true));
-	Object::DropLevelPtr(pickupObjs.back());
+	Object::DropPtr(pickupObjs.back());
 
 	pickupObjs.back()->Translate(pX_in, pY_in, pZ_in);
 	itemsBB.emplace_back(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f)); // TODO : Add support for actual Boundign boxes.
