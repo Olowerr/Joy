@@ -3,6 +3,7 @@
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
+    , loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
@@ -13,54 +14,56 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     joy.CheckBB();
 
-    sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(5), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(5), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(4), true);
+    typedef DirectX::XMFLOAT3 F3;
+    sceneObjects.reserve(110);
 
-    ground1 = &sceneObjects[0];
-    portal1 = &sceneObjects[1];
-    portal2 = &sceneObjects[2];
-    wall1 = &sceneObjects[3];
-    wall2 = &sceneObjects[4];
-    wall3 = &sceneObjects[5];
+    meshStorage.LoadMenuObjects();
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
+        if (i == 1)
+        {
+            for (size_t i = 0; i < 2; i++)
+            {
+                sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
+            }
+        }
+    }
+    meshStorage.UnloadDataBase();
+
+    collisions.reserve(110);
+    for (size_t i = 0; i < (int)sceneObjects.size(); i++)
+        collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    ground1->SetPosition(0.0f, 0.0f, 0.0f);
-    ground1->SetScale(2.0f);
-    portal1->SetPosition(-3.1f, 1.5f, 10.0f);
-    portal1->SetScale(2.0f);
-    portal2->SetPosition(4.3f, 1.5f, 10.0f);
-    portal2->SetScale(2.0f);
-    wall1->SetPosition(10.0f, 1.9f, 0.0f);
-    wall1->SetScale(2.0f);
-    wall2->SetPosition(-10.0f, 1.9f, 0.0f);
-    wall2->SetScale(2.0f);
-    wall3->SetPosition(0.0f, 1.9f, 10.0f);
-    wall3->SetScale(2.0f);
+    sceneObjects[2].SetPosition(11.2f, 0.0f, 8.1f);
+    sceneObjects[3].SetPosition(-10.8f, 0.0f, 8.1f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 50.f, 50.);
+    divider.CreateSections(1, 50.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
     hLight.InitiateTools(divider);
+
+    InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
     hLight.GenerateLightMaps(divider);
+
     hLight.ShutdownTools();
 
+    sky.init();
 }
 
 void MainMenu::Shutdown()
 {
+    sky.Shutdown();
     hLight.Shutdown();
 
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+    meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
@@ -72,8 +75,8 @@ void MainMenu::Shutdown()
     joyCamera.Shutdown();
 
     divider.Shutdown();
-	
     uiRender.Clear();
+    loadingScreen.Shutdown();
 }
 
 SceneState MainMenu::Update()
@@ -106,24 +109,30 @@ SceneState MainMenu::Update()
 
     //Collision
 
-    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY())
-        joy.SetCanJump(true);
-    else
-        joy.SetCanJump(false);
-
-    coll1.collided(&joy, ground1);
-    coll2.collided(&joy, wall1);
-    coll3.collided(&joy, wall2);
-    coll4.collided(&joy, wall3);
-
-    if (joy.GetBoundingBox().Intersects(portal1->GetBoundingBox()))
+    for (size_t i = 0; i < (int)collisions.size(); i++)
     {
-        return SceneState::Easy;
+        if (collisions.at(i).getCollidedY())
+        {
+            joy.SetCanJump(true);
+            break;
+        }
+        else
+            joy.SetCanJump(false);
     }
 
-    if (joy.GetBoundingBox().Intersects(portal2->GetBoundingBox()))
+    for (size_t i = 1; i < (int)collisions.size(); i++)
     {
-        return SceneState::Highscore;
+        for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
+        {
+            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
+        }
+    }
+
+    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    {
+        uiRender.Clear();
+        uiRender.Add(&loadingScreen);
+        return SceneState::Easy;
     }
 
     return SceneState::Unchanged;
@@ -131,9 +140,16 @@ SceneState MainMenu::Update()
 
 void MainMenu::Render()
 {
-    objRender.DrawAll();
-    decalShadow.DrawAll(joy.GetPosition());
-    objRender.DrawCharacter(joy);
-	uiRender.Draw();
-
+    if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    {
+        objRender.DrawAll();
+        decalShadow.DrawAll(joy.GetPosition());
+        objRender.DrawCharacter(joy);
+        uiRender.Draw();
+        sky.Draw(activeCamera);
+    }
+    else
+    {
+        uiRender.Draw();
+    }
 }

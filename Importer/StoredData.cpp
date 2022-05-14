@@ -1,3 +1,4 @@
+
 #include "StoredData.h"
 #include <iostream>
 StoredData::StoredData()
@@ -389,7 +390,8 @@ bool StoredData::StoreAll(const std::string& fileName)
 
         }
     }
-   
+    reader.close();
+
     return true;
 
 }

@@ -9,6 +9,7 @@
 #include "LightHandler.h"
 #include "MapSections.h"
 #include "Audio.h"
+#include "Skybox.h"
 
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"

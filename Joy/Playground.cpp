@@ -13,17 +13,25 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
-    sceneObjects.reserve(10);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(0.f, 1.f, 0.f));
+    sceneObjects.reserve(110);
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(11), true, F3(0.f, 1.f, 0.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(6), true, F3(1.f, 3.f, -1.f));
+    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(3.f, 1.f, 1.f));
     sceneObjects.emplace_back(meshStorage.GetObjMesh(1), false, F3(6.f, 1.f, 40.f));
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true, F3(0.f, -2.f, 0.f));
 
-    cube = &sceneObjects[0];
-    ground = &sceneObjects[4];
-    collTest = &sceneObjects[1];
-    
+    meshStorage.LoadMenuObjects();
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
+    }
+    meshStorage.UnloadDataBase();
+
+
+    collisions.reserve(110);
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+        collisions.emplace_back();
+
     joy.SetPosition(0.f, 3.f, 0.f);
 
     objRender.SetActiveCamera(activeCamera);
@@ -32,7 +40,7 @@ testScene::testScene(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     divider.CreateSections(2, 50.f, 15.f, 10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
-    
+
 
     hLight.InitiateTools(divider);
 
@@ -49,9 +57,10 @@ void testScene::Shutdown()
     sky.Shutdown();
 
     hLight.Shutdown();
- 
+
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+    meshStorage.UnloadMeshes();
 
     Object::EmptyObjectLists();
     InstancedObject::DestroyInstancedObjects();
@@ -89,22 +98,31 @@ SceneState testScene::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
-    
+
     //Camera functions
     activeCamera->UpdateCam();
     activeCamera->SetView();
 
     //Collision
 
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        if (collisions.at(i).getCollidedY())
+        {
+            joy.SetCanJump(true);
+            break;
+        }
+        else
+            joy.SetCanJump(false);
+    }
 
-    if (coll.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY())
-        joy.SetCanJump(true);
-    else
-        joy.SetCanJump(false);
-
-    coll.collided(&joy, collTest);
-    coll2.collided(&joy, cube);
-    coll3.collided(&joy, ground);
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
+        {
+            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
+        }
+    }
 
     return SceneState::Unchanged;
 }

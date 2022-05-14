@@ -40,7 +40,7 @@ void ImGuiModifyTransform(std::vector<Object*> object)
 	if (begun)
 	{
 		ImGui::InputInt("Object to change", &imguiObjCounter, 1);
-		if (imguiObjCounter > object.size() - 1)
+		if (imguiObjCounter > (int)object.size() - 1)
 		{
 			imguiObjCounter = object.size() - 1;
 		}

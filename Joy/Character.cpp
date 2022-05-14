@@ -20,10 +20,14 @@ Character::Character(Mesh* mesh)
 	//Jump
 	jumpVelocity = 0;
 	gravity;
-	fallSpeed = -8;
-	jumpHeight = 3;
+	fallSpeed = -20;
+	jumpHeight = 6;
 	canJump = false;
+	gravity = 300;
 
+	maxSpeed = 15.0f;
+	speed = 0.2f;
+	counterForce = 0.01f;
 	//Boost
 	fuel = 10.0f;
 	canBoost = false;
@@ -38,9 +42,7 @@ Character::~Character()
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
-	float maxSpeed = 10.0f;
-	float speed = 0.1f;
-	float counterForce = 0.01f;
+
 	bool wsPressed = false;
 	bool adPressed = false;
 
@@ -128,7 +130,7 @@ void Character::Jump()
 {
 	float dt = Backend::GetDeltaTime();
 
-	gravity = 300;
+
 	jumpVelocity -= gravity * dt;
 	if (isOnGround)
 	{
@@ -162,9 +164,9 @@ void Character::Jump()
 	{
 		jumpVelocity += 325 * dt;
 	}
-	else if (jumpVelocity < -5)
+	else if (jumpVelocity < fallSpeed)
 	{
-		jumpVelocity = -5;
+		jumpVelocity = fallSpeed;
 	}
 
 	this->Translate(0, jumpVelocity * dt, 0);

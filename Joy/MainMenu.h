@@ -13,25 +13,17 @@ public:
 	virtual void Render() override;
 
 private:
-
-	std::vector<Object> sceneObjects;
 	Character joy;
-	Object* ground1;
-	Object* portal1;
-	Object* portal2;
-	Object* wall1;
-	Object* wall2;
-	Object* wall3;
-
-	Collision coll1;
-	Collision coll2;
-	Collision coll3;
-	Collision coll4;
+	std::vector<Object> sceneObjects;
+	std::vector<Collision> collisions;
 
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
 	CharacterCamera joyCamera;
 
+	Sprite loadingScreen;
+
 	MapDivider divider;
+	Skybox sky;
 };

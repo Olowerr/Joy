@@ -122,9 +122,6 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="HighscoreLevel.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Playground.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
@@ -164,6 +161,7 @@
     <ClCompile Include="MeshStorage.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="HighscoreClass.cpp" />
     <ClCompile Include="JoyPostProcess.cpp">
       <Filter>PostProcess</Filter>
     </ClCompile>
@@ -236,9 +234,6 @@
     <ClInclude Include="Sprite.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="HighscoreLevel.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Playground.h">
       <Filter>Scenes</Filter>
     </ClInclude>
@@ -286,9 +281,6 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="JoyPostProcess.h">
-      <Filter>PostProcess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

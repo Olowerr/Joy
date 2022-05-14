@@ -1,16 +1,19 @@
 #include "EasyLevel.h"
 
+
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
-    , catButton("../Resources/Images/cat.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+    , pickUpUI("../Resources/Images/BoltForJoy.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+    , loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
+    , m_highscore(uiRender)
 {
     meshStorage.LoadAllObj();
 
-    uiRender.Add(&catButton);
+    uiRender.Add(&pickUpUI);
     uiRender.Add(&thomas);
     thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
@@ -19,54 +22,21 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
     joy.CheckBB();
 
-    sceneObjects.reserve(20);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(2), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(1), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(7), true);
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true, DirectX::XMFLOAT3(0.f, 2.f, 50.f));
-    sceneObjects.emplace_back(meshStorage.GetObjMesh(3), true, DirectX::XMFLOAT3(0.f, 2.f, 55.f));
+    typedef DirectX::XMFLOAT3 F3;
+    sceneObjects.reserve(110);
 
-    ground = &sceneObjects[0];
-    ground1 = &sceneObjects[1];
-    ground2 = &sceneObjects[2];
-    obstacle = &sceneObjects[3];
-    obstacle1 = &sceneObjects[4];
-    obstacle2 = &sceneObjects[5];
-    obstacle3 = &sceneObjects[6];
-    obstacle4 = &sceneObjects[7];
-    portal = &sceneObjects[8];
-    tree1 = &sceneObjects[9];
-    tree2 = &sceneObjects[10];
+    meshStorage.LoadEasyObjects();
+    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+    {
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
+    }
+    meshStorage.UnloadDataBase();
+
+    collisions.reserve(110);
+    for (size_t i = 0; i < (int)sceneObjects.size(); i++)
+        collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    ground->SetPosition(0.0f, -2.0f, 0.0f);
-    ground1->SetPosition(0.0f, -0.2f, 27.3f);
-    ground2->SetPosition(5.1f, 2.4f, 64.2f);
-    ground2->SetScale(2.8f);
-    obstacle->SetPosition(-2.4f, 0.6f, 16.3f);
-    obstacle->SetRotation(0.0f, 0.5f, 0.4f);
-    obstacle->SetScale(0.4f);
-    obstacle1->SetPosition(1.8f, -0.2f, 11.1f);
-    obstacle1->SetScale(2.5f);
-    obstacle2->SetPosition(1.5f, 3.0f, 15.5f);
-    obstacle2->SetRotation(0.7f, 0.6f, 0.0f);
-    obstacle2->SetScale(1.3f);
-    obstacle3->SetPosition(2.8f, 2.5f, 31.4f);
-    obstacle3->SetScale(4.4f);
-    obstacle4->SetPosition(3.1f, 1.2f, 28.3f);
-    obstacle4->SetScale(1.8f);
-    portal->SetPosition(6.1f, 4.3f, 78.099f);
-    portal->Scale(2.0f);
-    tree1->SetPosition(17.2f, 4.8f, 68.2f);
-    tree2->SetPosition(-7.1f, 4.8f, 58.7f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -76,16 +46,23 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     decalShadow.SetMapDivider(&divider);
 
     hLight.InitiateTools(divider);
+
+    InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
     hLight.GenerateLightMaps(divider);
+
     hLight.ShutdownTools();
+
+    sky.init();
 }
 
 void EasyLevel::Shutdown()
 {
+    sky.Shutdown();
     hLight.Shutdown();
 
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
+    meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
@@ -98,15 +75,18 @@ void EasyLevel::Shutdown()
 
     divider.Shutdown();
     uiRender.Clear();
-    catButton.Shutdown();
+    loadingScreen.Shutdown();
+    pickUpUI.Shutdown();
     thomas.Shutdown();
 }
 
 SceneState EasyLevel::Update()
 {
     time += Backend::GetDeltaTime();
+
     auto asd = std::to_string(time);
     asd.erase(asd.find_first_of('.') + 3, std::string::npos);
+    
     thomas.SetText(asd);
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
@@ -137,26 +117,32 @@ SceneState EasyLevel::Update()
 
     //Collision
 
-    if (coll1.getCollidedY() || coll2.getCollidedY() || coll3.getCollidedY() || coll4.getCollidedY() || coll5.getCollidedY() || 
-        coll6.getCollidedY() || coll7.getCollidedY() || coll8.getCollidedY() || coll9.getCollidedY() || coll9.getCollidedY())
-        joy.SetCanJump(true);
-    else
-        joy.SetCanJump(false);
-
-    coll1.collided(&joy, ground);
-    coll2.collided(&joy, ground1);
-    coll3.collided(&joy, ground2);
-    coll4.collided(&joy, obstacle);
-    coll5.collided(&joy, obstacle1);
-    coll6.collided(&joy, obstacle2);
-    coll7.collided(&joy, obstacle3);
-    coll8.collided(&joy, obstacle4);
-    coll9.collided(&joy, tree1);
-    coll10.collided(&joy, tree2);
-
-    if (joy.GetBoundingBox().Intersects(portal->GetBoundingBox()))
+    for (size_t i = 0; i < (int)collisions.size(); i++)
     {
-        return SceneState::Highscore;
+        if (collisions.at(i).getCollidedY())
+        {
+            joy.SetCanJump(true);
+            break;
+        }
+        else
+            joy.SetCanJump(false);
+    }
+
+    for (size_t i = 1; i < (int)collisions.size(); i++)
+    {
+        for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
+        {
+            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
+        }
+    }
+
+    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    {
+        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
+        uiRender.Clear();
+        uiRender.Add(&loadingScreen);
+
+        return SceneState::MainMenu;
     }
 
     return SceneState::Unchanged;
@@ -164,8 +150,16 @@ SceneState EasyLevel::Update()
 
 void EasyLevel::Render()
 {
-	objRender.DrawAll();
-    decalShadow.DrawAll(joy.GetPosition());
-    objRender.DrawCharacter(joy);
-    uiRender.Draw();
+    if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    {
+        objRender.DrawAll();
+        decalShadow.DrawAll(joy.GetPosition());
+        objRender.DrawCharacter(joy);
+        uiRender.Draw();
+        sky.Draw(activeCamera);
+    }
+    else
+    {
+        uiRender.Draw();
+    }
 }

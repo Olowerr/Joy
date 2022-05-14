@@ -3,11 +3,14 @@
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
 	, window(Backend::GetWindow()) 
+	, loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr))
 		return;
+
+	uiRender.Add(&loadingScreen);
 
 	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
 #ifdef _DEBUG
@@ -22,10 +25,6 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 	soundEffect2 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/EasyLevelSound.wav");
 	effect2 = soundEffect2->CreateInstance();
 	effect2->SetVolume(0.1f);
-
-	soundEffect3 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/HighscoreLevelSound.wav");
-	effect3 = soundEffect3->CreateInstance();
-	effect3->SetVolume(0.1f);
 }
 
 void Game::Shutdown()
@@ -44,9 +43,12 @@ void Game::Run()
 {
 	SceneState activeState = SceneState::Unchanged;
 	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-	Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
-	//Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-	effect1->Play();
+	//Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
+	uiRender.Draw();
+	Backend::Display();
+	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
+	uiRender.Clear();
+	effect1->Play(true);
 	Backend::ResetDeltaTime();
 
 	while (window.IsOpen())
@@ -56,11 +58,11 @@ void Game::Run()
 		default:
 			break;
 		case SceneState::MainMenu:
-			effect3->Stop();
+			effect2->Stop();
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-			effect1->Play();
+			effect1->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 
@@ -69,17 +71,7 @@ void Game::Run()
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-			effect2->Play();
-			Backend::ResetDeltaTime();
-			break;
-
-		case SceneState::Highscore:
-			effect1->Stop();
-			effect2->Stop();
-			activeScene->Shutdown();
-			delete activeScene;
-			activeScene = new HighscoreLevel(uiRender, objRender, decalShadow, meshStorage);
-			effect3->Play();
+			effect2->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 		}

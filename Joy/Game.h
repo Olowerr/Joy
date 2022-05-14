@@ -2,7 +2,7 @@
 #include "MainMenu.h"
 #include "EasyLevel.h"
 #include "playground.h"
-#include "HighscoreLevel.h"
+
 #include "JoyPostProcess.h"
 
 #include "SpriteBatch.h"
@@ -39,6 +39,8 @@ private:
 	DecalShadow decalShadow;
 	Window& window;
 	JoyPostProcess smolpp;
+
+	Sprite loadingScreen;
 
 	std::unique_ptr<DirectX::AudioEngine> audEngine;
 	std::unique_ptr<DirectX::SoundEffect> soundEffect1;

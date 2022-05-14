@@ -1,46 +1,10 @@
 #include "MeshStorage.h"
+#include <iostream>
 
 TempMeshStorage::TempMeshStorage()
 	:meshes{}
 {
-	/*JOY::data.StoreAll("../Resources/JoyFiles/big3new.joy");
 
-	ObjectInfo& obj = JOY::data.m_objectInfoVec[0];
-
-	Backend::CreateVertexBuffer(&fbxMesh.vertexBuffer, 
-		obj.vertex.data(), obj.vertex.size() * sizeof(JOY::Vertex));
-
-	fbxMesh.indexCount = obj.indices.size();
-
-	D3D11_BUFFER_DESC desc{};
-	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	desc.Usage = D3D11_USAGE_IMMUTABLE;
-	desc.ByteWidth = sizeof(int) * obj.indices.size();;
-	desc.CPUAccessFlags = 0;
-	desc.StructureByteStride = 0;
-	desc.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA inData{};
-	inData.pSysMem = obj.indices.data();
-	inData.SysMemPitch = inData.SysMemSlicePitch = 0;
-
-	Backend::GetDevice()->CreateBuffer(&desc, &inData, &fbxMesh.indexBuffer);
-
-	std::string path = "../Resources/JoyFiles/";
-	path += JOY::data.m_materialInfo.material[0].diffuseTexturePath.string;
-
-	int x, y, c;
-	unsigned char* imgData = stbi_load(path.c_str(), &x, &y, &c, 4);
-	if (!imgData)
-		return;
-
-	ID3D11Texture2D* texture{};
-	HRESULT hr = Backend::CreateConstSRVTexture2D(&texture, imgData, x, y);
-	stbi_image_free(imgData);
-	if (FAILED(hr))
-		return;
-
-	Backend::GetDevice()->CreateShaderResourceView(texture, nullptr, &fbxMesh.diffuseTextureSRV);
-	texture->Release();*/
 }
 
 TempMeshStorage::~TempMeshStorage()
@@ -96,7 +60,7 @@ void TempMeshStorage::LoadMenuObjects()
 void TempMeshStorage::LoadEasyObjects()
 {
 	for (UINT i = 0; i < EasyCount; i++)
-		import(meshPath + EasyFiles[i]);
+		import(tastPath + EasyFiles[i]); // Was meshPath
 }
 
 Mesh* TempMeshStorage::GetObjMesh(UINT index)
@@ -109,7 +73,7 @@ Mesh* TempMeshStorage::GetObjMesh(UINT index)
 
 void TempMeshStorage::UnloadDataBase()
 {
-	JOY::data.UnloadAll();
+	StoredData::GetInstance().UnloadAll();
 }
 
 Mesh* TempMeshStorage::GetMesh(UINT index)
@@ -295,13 +259,13 @@ void TempMeshStorage::import(const std::string& filePath)
 	bool succeeded = false;
 	HRESULT hr{};
 
-	size_t sizeBefore = JOY::data.m_objectInfoVec.size();
+	size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
 	
-	succeeded = JOY::data.StoreAll(filePath);
+	succeeded = StoredData::GetInstance().StoreAll(filePath);
 	if (!succeeded)
 		return; // fix better error handling
 
-	size_t meshesFound = JOY::data.m_objectInfoVec.size() - sizeBefore;
+	size_t meshesFound = StoredData::GetInstance().m_objectInfoVec.size() - sizeBefore;
 	if (!meshesFound)
 		return;
 
@@ -310,19 +274,27 @@ void TempMeshStorage::import(const std::string& filePath)
 	{
 		meshes.emplace_back(new Mesh);
 
-		ObjectInfo& object = JOY::data.m_objectInfoVec.at(sizeBefore + i);
+		ObjectInfo& object = StoredData::GetInstance().m_objectInfoVec.at(sizeBefore + i);
 
 		hr = Backend::CreateVertexBuffer(&meshes.back()->vertexBuffer, object.vertex.data(), sizeof(JOY::Vertex) * object.vertex.size());
 		if (FAILED(hr))
 			return;
+
+	/*	std::cout << "\n\n\nMesh "<<i << "\n";
+		for (size_t k = 0; k < object.vertex.size(); k++)
+		{
+			std::cout << "V " << object.vertex.at(k).pos[0] << " " << object.vertex.at(k).pos[1] << " "  << object.vertex.at(k).pos[2] << "\n";
+			std::cout << "VN " << object.vertex.at(k).normal[0] << " " << object.vertex.at(k).normal[1] << " "  << object.vertex.at(k).normal[2] << "\n";
+			std::cout << "VT " << object.vertex.at(k).uv[0] << " " << object.vertex.at(k).uv[1] << "\n\n";
+		}*/
 
 		hr = Backend::CreateIndexBuffer(&meshes.back()->indexBuffer, object.indices.data(), sizeof(int) * object.indices.size());
 		if (FAILED(hr))
 			return;
 
 		meshes.back()->indexCount = object.indices.size();
-		
-		Backend::CreateConstSRV(&meshes.back()->diffuseTextureSRV, tastPath + JOY::data.GetMaterial(object)->diffuseTexturePath.string);
+
+		Backend::CreateConstSRV(&meshes.back()->diffuseTextureSRV, tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string);
 		// failed -> will be black
 
 		// bounding box
