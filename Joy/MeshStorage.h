@@ -44,10 +44,7 @@ public:
 class TempMeshStorage
 {
 public:
-	static TempMeshStorage* me;
-	static int ASD;
 	TempMeshStorage();
-	TempMeshStorage(const TempMeshStorage& other) = delete;
 	~TempMeshStorage();
 
 	void LoadAllObj();
