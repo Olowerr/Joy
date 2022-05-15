@@ -256,7 +256,6 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 	static ID3D11ShaderResourceView* nullSRV{};
 	devContext->PSSetShaderResources(1, 1, &nullSRV);
 
-	ImGuiModifyTransform(Object::GetLevelObjects());
 }
 
 void DecalShadow::DrawWithOutline()

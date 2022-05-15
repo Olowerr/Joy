@@ -26,8 +26,11 @@ void StartImGuiFrame()
 	ImGui::NewFrame();
 }
 
-void ImGuiModifyTransform(std::vector<Object*> object)
+void ImGuiModifyTransform(std::vector<Object*> object, Camera* camera)
 {
+	static bool highLight = true, lines = true;
+	static int currentBB = 0;
+
 	float xPos = object[imguiObjCounter]->GetPosition().x;
 	float yPos = object[imguiObjCounter]->GetPosition().y;
 	float zPos = object[imguiObjCounter]->GetPosition().z;
@@ -44,6 +47,10 @@ void ImGuiModifyTransform(std::vector<Object*> object)
 		{
 			imguiObjCounter = object.size() - 1;
 		}
+		imguiObjCounter = imguiObjCounter < 0 ? 0 : imguiObjCounter;
+
+		ImGui::Checkbox("HighLight", &highLight);
+
 		xPos = object[imguiObjCounter]->GetPosition().x;
 		yPos = object[imguiObjCounter]->GetPosition().y;
 		zPos = object[imguiObjCounter]->GetPosition().z;
@@ -61,9 +68,69 @@ void ImGuiModifyTransform(std::vector<Object*> object)
 	}
 	ImGui::End();
 
+
+	if (ImGui::Begin("BBox"))
+	{
+		ImGui::Checkbox("Show BB", &lines);
+		if (ImGui::Button("Add BB"))
+		{
+			object[imguiObjCounter]->AddBBox();
+			currentBB = object[imguiObjCounter]->GetNumBboxes();
+		}
+
+		ImGui::InputInt("Current BB", &currentBB, 1);
+
+		int numBox = object[imguiObjCounter]->GetNumBboxes();
+		if (!numBox)
+		{
+			currentBB = -1;
+			goto elgato;
+		}
+		else
+			currentBB = currentBB < 0 ? 0 : currentBB;
+
+		currentBB = currentBB >= numBox ? numBox - 1 : currentBB;
+
+		if (ImGui::Button("Remove BB"))
+			object[imguiObjCounter]->RemoveBBox(currentBB);
+
+
+		DirectX::XMFLOAT3 center = object[imguiObjCounter]->GetBoundingBox(currentBB).Center;
+		DirectX::XMFLOAT3 extents = object[imguiObjCounter]->GetBoundingBox(currentBB).Extents;
+
+		ImGui::InputFloat("Center X", &center.x, 0.1f);
+		ImGui::InputFloat("Center Y", &center.y, 0.1f);
+		ImGui::InputFloat("Center Z", &center.z, 0.1f);
+		ImGui::InputFloat("Extent X", &extents.x, 0.1f);
+		ImGui::InputFloat("Extent Y", &extents.y, 0.1f);
+		ImGui::InputFloat("Extent Z", &extents.z, 0.1f);
+
+		object[imguiObjCounter]->SetBBox(currentBB, center, extents);
+
+		if (ImGui::Button("Print"))
+		{
+			for (UINT i = 0; i < object[imguiObjCounter]->GetNumBboxes(); i++)
+			{
+				center = object[imguiObjCounter]->GetBoundingBox(i).Center;
+				extents = object[imguiObjCounter]->GetBoundingBox(i).Extents;
+
+				printf("\nsceneObjects.at(%d).AddBBox(F3(%.3ff, %.3ff, %.3ff), F3(%.3ff, %.3ff, %.3ff));",
+					imguiObjCounter, center.x, center.y, center.z, extents.x, extents.y, extents.z);
+			}
+		}
+
+	}
+	elgato:
+	ImGui::End();
+
 	object[imguiObjCounter]->SetPosition(xPos, yPos, zPos);
 	object[imguiObjCounter]->SetRotation(xRot, yRot, zRot);
-	object[imguiObjCounter]->SetScale(scale);
+	//object[imguiObjCounter]->SetScale(scale); // idk how to solve
+
+	if (currentBB < 0)
+		lines = false;
+
+	HObject::GetInstance().Draw(object[imguiObjCounter], camera, highLight, lines, currentBB);
 }
 
 void EndImGuiFrame()

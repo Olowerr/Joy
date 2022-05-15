@@ -29,6 +29,9 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 
 void Game::Shutdown()
 {
+	HObject::GetInstance().Shutdown();
+
+	loadingScreen.Shutdown();
 	smolpp.Shutdown();
 	uiRender.Shutdown();
 	objRender.Shutdown();
@@ -44,8 +47,11 @@ void Game::Run()
 	SceneState activeState = SceneState::Unchanged;
 	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
 	//Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
+
 	uiRender.Draw();
+	Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 	Backend::Display();
+
 	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Clear();
 	effect1->Play(true);
@@ -79,9 +85,9 @@ void Game::Run()
 		Backend::Process();
 
 		Backend::Clear();
+		StartImGuiFrame();
 
 		activeState = activeScene->Update();
-		StartImGuiFrame();
 		activeScene->Render();
 
 		EndImGuiFrame();
@@ -92,7 +98,7 @@ void Game::Run()
 		// temp --
 		if (Backend::GetKeyboard().KeyReleased(DIK_DELETE))
 			break;
-
+		
 		else if (Backend::GetKeyboard().KeyReleased(DIK_F))
 			Backend::GetSwapChain()->SetFullscreenState(TRUE, nullptr);
 
@@ -112,6 +118,7 @@ void Game::Run()
 			Backend::GetMouse().Lock(false);
 		// --
 	}
+	Backend::GetSwapChain()->SetFullscreenState(FALSE, nullptr);
 
 	activeScene->Shutdown();
 	delete activeScene;

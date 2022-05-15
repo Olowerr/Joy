@@ -24,8 +24,10 @@ public:
 	void SetPosition(FLOAT X, FLOAT Y, FLOAT Z) override;
 
 	void AddBBox();
+	void AddBBox(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
 	void SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, FLOAT scale);
-	void RemoveBBox();
+	void SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 extents);
+	void RemoveBBox(int bBoxIndex);
 
 	void Scale(FLOAT amount) override;
 	void SetScale(FLOAT Scale) override;
@@ -51,7 +53,7 @@ private:
 	static std::vector<Object*> levelObjects;
 	static std::vector<Object*> enviormentObjects;
 public:
-	static void DropLevelPtr(Object* pObject); // maybe temp
+	static void DropPtr(Object* pObject); // maybe temp
 	static void EmptyObjectLists();
 	static const std::vector<Object*>& GetLevelObjects();
 	static const std::vector<Object*>& GetEnviormentObjects();

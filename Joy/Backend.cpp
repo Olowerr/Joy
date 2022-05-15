@@ -111,6 +111,7 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     }
 
     hr = system->device->CreateRenderTargetView(system->mainBuffer, nullptr, &system->mainRTV);
+    assert(SUCCEEDED(hr));
     hr = system->device->CreateShaderResourceView(system->mainBuffer, nullptr, &system->mainSRV);
     assert(SUCCEEDED(hr));
 

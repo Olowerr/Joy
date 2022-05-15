@@ -61,6 +61,12 @@
     <FxCompile Include="BlurYCS.hlsl">
       <Filter>PostProcess</Filter>
     </FxCompile>
+    <FxCompile Include="LineVS.hlsl">
+      <Filter>System\HObject</Filter>
+    </FxCompile>
+    <FxCompile Include="ColourPS.hlsl">
+      <Filter>System\HObject</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
@@ -286,6 +292,9 @@
     <ClInclude Include="JoyPostProcess.h">
       <Filter>PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectHelper.h">
+      <Filter>System\HObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
@@ -323,6 +332,9 @@
     </Filter>
     <Filter Include="PostProcess">
       <UniqueIdentifier>{8dd173c8-c6bb-4e7a-8c22-3400483df0cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\HObject">
+      <UniqueIdentifier>{5eaaa1b0-4834-4e32-806d-1ce636f61c93}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

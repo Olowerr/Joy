@@ -32,13 +32,9 @@ float4 main(PS_IN input) : SV_TARGET
 {
     //return float4(input.normal, 1.f);
     //return image.Sample(defaultSampler, input.uv);
-    //float2 dimensions;
-    //float q;
-    //lightMap.GetDimensions(dimensions.x, dimensions.y, q);
-    //float lightValue = lightMap.Load(int4(input.uv * dimensions, 0.f, 0.f)).r;
 
     float lightValue = lightMap.Sample(defaultSampler, float3(input.uv, input.id)).r;
-
+    
     float2 decal = float2(decalPosX, decalPosZ);
     float2 pixelXZ = float2(input.worldPos.x, input.worldPos.z);
     float2 isInside = decal - pixelXZ;

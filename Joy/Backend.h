@@ -78,8 +78,8 @@ public:
 	static HRESULT CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, UINT Width, UINT Height);
 	static HRESULT CreateConstSRV(ID3D11ShaderResourceView** srv, const std::string& filePath);
 
-	static Backend* system;
 private:
+	static Backend* system;
 	Backend();
 
 	UINT width, height;
