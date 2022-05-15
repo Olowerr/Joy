@@ -135,4 +135,6 @@ void testScene::Render()
 
     sky.Draw(activeCamera);
     uiRender.Draw();
+
+    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
 }
