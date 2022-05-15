@@ -32,8 +32,4 @@ private:
 	ID3D11VertexShader* UI_VS;
 	ID3D11RasterizerState* UI_RS;
 	ID3D11PixelShader* UI_PS;
-
-	ID3D11RenderTargetView* const* bbRTV;
-
-
 };

@@ -1,7 +1,7 @@
 #include "MapSections.h"
 
 MapDivider::MapDivider(Character& joy)
-	:numSections(0), joy(joy), activeSection(&nullSection)
+	:numSections(0), joy(joy), activeSection(&nullSection), sections(nullptr)
 {
 
 }
@@ -16,7 +16,7 @@ void MapDivider::Shutdown()
 	delete[] sections;
 }
 
-void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight)
+void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight, float offset)
 {
 	float sectionZSize = (mapLength / (float)(numSections));
 	const std::vector<Object*>& levelObjects = Object::GetLevelObjects();
@@ -30,7 +30,7 @@ void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidt
 	{
 		DirectX::BoundingBox& currentBB = sections[i].sectionBB;
 
-		currentBB.Center.z = (sectionZSize - sectionZSize * 0.5f) + sectionZSize * i;
+		currentBB.Center.z = (sectionZSize - sectionZSize * 0.5f) + sectionZSize * i + offset;
 		currentBB.Center.y = mapHeight * 0.5f;
 		currentBB.Extents.x = mapWidth;		// Can be large just incase ;))))))
 		currentBB.Extents.y = mapHeight;	// Can be large just incase ;))))))

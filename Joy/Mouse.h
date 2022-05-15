@@ -11,6 +11,7 @@ public:
 	void ReadEvents();
 
 	void Lock(bool lock);
+	bool IsLocked() const;
 
 	bool LeftDown() const;
 	bool RightDown() const;

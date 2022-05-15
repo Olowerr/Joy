@@ -55,6 +55,18 @@
     <FxCompile Include="PosOnlyInstanceVS.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="BlurXCS.hlsl">
+      <Filter>PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurYCS.hlsl">
+      <Filter>PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="LineVS.hlsl">
+      <Filter>System\HObject</Filter>
+    </FxCompile>
+    <FxCompile Include="ColourPS.hlsl">
+      <Filter>System\HObject</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
@@ -156,6 +168,9 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="HighscoreClass.cpp" />
+    <ClCompile Include="JoyPostProcess.cpp">
+      <Filter>PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -274,6 +289,12 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="HighscoreClass.h" />
+    <ClInclude Include="JoyPostProcess.h">
+      <Filter>PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectHelper.h">
+      <Filter>System\HObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
@@ -309,5 +330,14 @@
     <Filter Include="System\Backend">
       <UniqueIdentifier>{ec43fe4e-b6af-496e-9e3c-83eb8b919ab5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PostProcess">
+      <UniqueIdentifier>{8dd173c8-c6bb-4e7a-8c22-3400483df0cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\HObject">
+      <UniqueIdentifier>{5eaaa1b0-4834-4e32-806d-1ce636f61c93}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

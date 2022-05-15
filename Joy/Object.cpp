@@ -26,6 +26,8 @@ Object::Object(Mesh* mesh, bool levelObject, DirectX::XMFLOAT3 pos, DirectX::XMF
 
 void Object::Shutdown()
 {
+	DropPtr(this);
+
 	Transform::Shutdown();
 
 	if (lightMap)
@@ -34,7 +36,7 @@ void Object::Shutdown()
 
 Object::~Object()
 {
-	std::cout << "called\n";
+	DropPtr(this);
 }
 
 void Object::CheckBB()
@@ -100,23 +102,41 @@ void Object::Translate(FLOAT X, FLOAT Y, FLOAT Z)
 
 void Object::SetPosition(const DirectX::XMVECTOR& position)
 {
+	using namespace DirectX;
+	const XMFLOAT3 prevPos = GetPosition();
+
 	Transform::SetPosition(position);
+
+	XMFLOAT3 delta;
 	for (int i = 0; i < (int)bBox.size(); i++)
 	{
-		bBox.at(i).Center.x = mesh->bBox.Center.x + position.m128_f32[0];
-		bBox.at(i).Center.y = mesh->bBox.Center.y + position.m128_f32[1];
-		bBox.at(i).Center.z = mesh->bBox.Center.z + position.m128_f32[2];
+		delta.x = bBox.at(i).Center.x - prevPos.x;
+		delta.y = bBox.at(i).Center.y - prevPos.y;
+		delta.z = bBox.at(i).Center.z - prevPos.z;
+
+		bBox.at(i).Center.x = delta.x + position.m128_f32[0];
+		bBox.at(i).Center.y = delta.y + position.m128_f32[1];
+		bBox.at(i).Center.z = delta.z + position.m128_f32[2];
 	}
 }
 
 void Object::SetPosition(FLOAT X, FLOAT Y, FLOAT Z)
 {
+	using namespace DirectX;
+	const XMFLOAT3 prevPos = GetPosition();
+
 	Transform::SetPosition(X, Y, Z);
+
+	XMFLOAT3 delta;
 	for (int i = 0; i < (int)bBox.size(); i++)
 	{
-		bBox.at(i).Center.x = mesh->bBox.Center.x + X;
-		bBox.at(i).Center.y = mesh->bBox.Center.y + Y;
-		bBox.at(i).Center.z = mesh->bBox.Center.z + Z;
+		delta.x = bBox.at(i).Center.x - prevPos.x;
+		delta.y = bBox.at(i).Center.y - prevPos.y;
+		delta.z = bBox.at(i).Center.z - prevPos.z;
+
+		bBox.at(i).Center.x = delta.x + X;
+		bBox.at(i).Center.y = delta.y + Y;
+		bBox.at(i).Center.z = delta.z + Z;
 	}
 }
 
@@ -125,19 +145,37 @@ void Object::AddBBox()
 	bBox.emplace_back(mesh->bBox);
 }
 
+void Object::AddBBox(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
+{
+	bBox.emplace_back(center, extents);
+}
+
+void Object::SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 extents)
+{
+	if (bBoxIndex < 0 || bBoxIndex >= bBox.size())
+		return;
+
+	bBox.at(bBoxIndex).Center = pos;
+	bBox.at(bBoxIndex).Extents = extents;
+}
+
 void Object::SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, FLOAT scale)
 {
-	bBox.at(bBoxIndex).Center.x += pos.x;
-	bBox.at(bBoxIndex).Center.y += pos.y;
-	bBox.at(bBoxIndex).Center.z += pos.z;
+	if (bBoxIndex < 0 || bBoxIndex >= bBox.size())
+		return;
+
+	bBox.at(bBoxIndex).Center = pos;
 	bBox.at(bBoxIndex).Extents.x *= scale;
 	bBox.at(bBoxIndex).Extents.y *= scale;
 	bBox.at(bBoxIndex).Extents.z *= scale;
 }
 
-void Object::RemoveBBox()
+void Object::RemoveBBox(int bBoxIndex)
 {
-	bBox.clear();
+	if (bBoxIndex < 0 || bBoxIndex >= bBox.size())
+		return;
+
+	bBox.erase(bBox.begin() + bBoxIndex);
 }
 
 void Object::Scale(FLOAT amount)
@@ -163,7 +201,7 @@ void Object::SetScale(FLOAT Scale)
 	XMVECTOR objectPos = DirectX::XMLoadFloat3(&GetPosition());
 	for (int i = 0; i < (int)bBox.size(); i++)
 	{
-		XMVECTOR scaledDelta = (DirectX::XMLoadFloat3(&bBox.at(i).Center) - objectPos) * Scale;
+		XMVECTOR scaledDelta = (DirectX::XMLoadFloat3(&mesh->bBox.Center) - objectPos) * Scale;
 
 		XMStoreFloat3(&bBox[i].Center, objectPos + scaledDelta);
 
@@ -175,6 +213,9 @@ void Object::SetScale(FLOAT Scale)
 
 const DirectX::BoundingBox& Object::GetBoundingBox(int index) const
 {
+	if (index < 0 || index >= bBox.size())
+		return mesh->bBox; // need to return something, can't be local variable
+
 	return bBox.at(index);
 }
 
@@ -209,9 +250,10 @@ std::vector<Object*> Object::levelObjects;
 std::vector<Object*> Object::enviormentObjects;
 
 // maybe temp
-void Object::DropLevelPtr(Object* pObject)
+void Object::DropPtr(Object* pObject)
 {
 	levelObjects.erase(std::remove(levelObjects.begin(), levelObjects.end(), pObject), levelObjects.end());
+	enviormentObjects.erase(std::remove(enviormentObjects.begin(), enviormentObjects.end(), pObject), enviormentObjects.end());
 }
 
 void Object::EmptyObjectLists()

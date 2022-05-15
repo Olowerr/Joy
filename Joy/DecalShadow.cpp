@@ -249,14 +249,13 @@ void DecalShadow::DrawAll(DirectX::XMFLOAT3 joyPos)
 	devContext->PSSetConstantBuffers(1, 1, &decalCamDCBuff);
 	devContext->PSSetShaderResources(1, 1, &decalSRV);
 
-	devContext->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), *Backend::GetStandardDSV());
+	devContext->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
 
 	DrawWithOutline();
 
 	static ID3D11ShaderResourceView* nullSRV{};
 	devContext->PSSetShaderResources(1, 1, &nullSRV);
 
-	ImGuiModifyTransform(Object::GetLevelObjects());
 }
 
 void DecalShadow::DrawWithOutline()

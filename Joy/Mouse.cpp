@@ -63,6 +63,11 @@ void Mouse::Lock(bool lock)
 		while (ShowCursor(TRUE) <= 0);
 }
 
+bool Mouse::IsLocked() const
+{
+	return locked;
+}
+
 bool Mouse::LeftDown() const
 {
 	return lastState.rgbButtons[0];

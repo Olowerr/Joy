@@ -14,5 +14,5 @@ float4 main(PS_IN input) : SV_TARGET
 
 	// fancy lightning
 
-	return image.Sample(defaultSampler, input.uv);
+	return float4(image.Sample(defaultSampler, input.uv).rgb, 1.f);
 }

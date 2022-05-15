@@ -18,7 +18,7 @@ public:
 	~MapDivider();
 	void Shutdown();
 
-	void CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight);
+	void CreateSections(UINT numSections, float mapLength, float mapWidth, float mapHeight, float offset = 0.f);
 	void Update();
 
 	UINT GetNumSections() const;

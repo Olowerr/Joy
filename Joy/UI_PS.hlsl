@@ -10,7 +10,5 @@ float4 main(float4 pos : SV_POSITION, float2 uv : TEXTURECOORD) : SV_TARGET
 		discard;
 	}
 
-
-
-	return color;
+	return float4(color.rgb, 0.f);
 }

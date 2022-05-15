@@ -3,12 +3,16 @@
 #include "EasyLevel.h"
 #include "playground.h"
 
+#include "JoyPostProcess.h"
+
 #include "SpriteBatch.h"
 
 #include "ImguiSetup.h"
 #include "imgui\imgui.h"
 #include "imgui\imgui_impl_win32.h"
 #include "imgui\imgui_impl_dx11.h"
+
+#include "ObjectHelper.h"
 
 class Game
 {
@@ -36,6 +40,7 @@ private:
 	ObjectRender objRender;
 	DecalShadow decalShadow;
 	Window& window;
+	JoyPostProcess smolpp;
 
 	Sprite loadingScreen;
 

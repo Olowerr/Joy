@@ -33,14 +33,17 @@ void FreelookCamera::UpdateCam()
 
 	using namespace DirectX;
 
-	//x
-	rotMatrix = XMMatrixRotationY(MouseX * DeltaTime * turnSpeed);
-	lookDir = XMVector3Transform(lookDir, rotMatrix);
-	sideDir = XMVector3Transform(sideDir, rotMatrix);
+	if (Backend::GetMouse().IsLocked())
+	{
+		//x
+		rotMatrix = XMMatrixRotationY(MouseX * DeltaTime * turnSpeed);
+		lookDir = XMVector3Transform(lookDir, rotMatrix);
+		sideDir = XMVector3Transform(sideDir, rotMatrix);
 
-	//y
-	lookDir = XMVector3Transform(lookDir, XMMatrixRotationAxis(sideDir, -MouseY * DeltaTime * turnSpeed));
-	upDir = XMVector3Cross(sideDir, lookDir);
+		//y
+		lookDir = XMVector3Transform(lookDir, XMMatrixRotationAxis(sideDir, -MouseY * DeltaTime * turnSpeed));
+		upDir = XMVector3Cross(sideDir, lookDir);
+	}
 	
 
 

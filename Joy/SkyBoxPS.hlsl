@@ -9,5 +9,5 @@ SamplerState sampy : register(s0);
 
 float4 main(input vs_out) : SV_TARGET
 {
-	return skyTexture.Sample(sampy, vs_out.uv);
+	return float4(skyTexture.Sample(sampy, vs_out.uv).rgb, 0.f);
 }

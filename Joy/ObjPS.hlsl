@@ -36,5 +36,5 @@ float4 main(PS_IN input) : SV_TARGET
 	lightMap.GetDimensions(textureDims.x, textureDims.y);
 	float lightValue = lightMap.Load(int3(input.uv * textureDims, 0)).r;*/
 
-	return image.Sample(defaultSampler, input.uv) * intensity;
+	return float4(image.Sample(defaultSampler, input.uv).rgb * intensity, 0.f);
 }

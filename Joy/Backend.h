@@ -23,8 +23,9 @@ public:
 	static ID3D11Device* GetDevice();
 	static ID3D11DeviceContext* GetDeviceContext();
 	static IDXGISwapChain* GetSwapChain();
-	static ID3D11RenderTargetView* const* GetBackBufferRTV();
+	static const D3D11_VIEWPORT& GetDefaultViewport();
 	static ID3D11DepthStencilView* const* GetStandardDSV();
+
 	static void Clear();
 	static void Display();
 
@@ -37,7 +38,16 @@ public:
 	static UINT GetWindowWidth();
 	static UINT GetWindowHeight();
 
-	static const D3D11_VIEWPORT& GetDefaultViewport();
+	// BackBuffer
+	static ID3D11Texture2D* const* GetBackBuffer();
+	static ID3D11RenderTargetView* const* GetBackBufferRTV();
+	static ID3D11UnorderedAccessView* const* GetBackBufferUAV();
+	
+	// Main Render Resource
+	static ID3D11Texture2D* const* GetMainBuffer();
+	static ID3D11RenderTargetView* const* GetMainRTV();
+	static ID3D11ShaderResourceView* const* GetMainSRV();
+
 
 	static FLOAT GetDeltaTime();
 	static void ResetDeltaTime();
@@ -68,7 +78,6 @@ public:
 	static HRESULT CreateConstSRVTexture2D(ID3D11Texture2D** texture, void* Data, UINT Width, UINT Height);
 	static HRESULT CreateConstSRV(ID3D11ShaderResourceView** srv, const std::string& filePath);
 
-
 private:
 	static Backend* system;
 	Backend();
@@ -82,9 +91,18 @@ private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
 	IDXGISwapChain* swapChain;
-	ID3D11RenderTargetView* bbRTV;
 	ID3D11DepthStencilView* standardDSV;
 	D3D11_VIEWPORT defaultViewport;
+
+	// BackBuffer
+	ID3D11Texture2D* backBuffer;
+	ID3D11RenderTargetView* bbRTV;
+	ID3D11UnorderedAccessView* bbUAV;
+
+	// Main Render Resource
+	ID3D11Texture2D* mainBuffer;
+	ID3D11RenderTargetView* mainRTV;
+	ID3D11ShaderResourceView* mainSRV;
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
 	std::chrono::duration<float> deltaTime;

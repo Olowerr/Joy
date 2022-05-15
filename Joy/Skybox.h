@@ -160,7 +160,8 @@ public:
 
 		dc->OMSetDepthStencilState(dsState, 0);
 
-		dc->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), *Backend::GetStandardDSV());
+		dc->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
+
 		dc->DrawIndexed(idxCount, 0, 0);
 
 		dc->OMSetDepthStencilState(nullptr, 0);
