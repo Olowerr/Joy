@@ -7,13 +7,7 @@
     <FxCompile Include="ObjPS.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="ObjPsOutline.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="ObjVS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjVsOutline.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="JoyPS.hlsl">
@@ -66,6 +60,12 @@
     </FxCompile>
     <FxCompile Include="ColourPS.hlsl">
       <Filter>System\HObject</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjVsOutline.hlsl">
+      <Filter>3D Rendering\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjPsOutline.hlsl">
+      <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +295,7 @@
     <ClInclude Include="ObjectHelper.h">
       <Filter>System\HObject</Filter>
     </ClInclude>
+    <ClInclude Include="SoundSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">

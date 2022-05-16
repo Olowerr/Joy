@@ -11,8 +11,10 @@ SamplerState defaultSampler : register(s0);
 
 float4 main(PS_IN input) : SV_TARGET
 {
+	uint2 textureDims;
+	image.GetDimensions(textureDims.x, textureDims.y);
 
 	// fancy lightning
 
-	return float4(image.Sample(defaultSampler, input.uv).rgb, 1.f);
+	return float4(image.Load(int3(input.uv * textureDims, 0)).rgb, 1.f);
 }

@@ -14,20 +14,6 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 		return;
 
 	uiRender.Add(&loadingScreen);
-
-	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
-#ifdef _DEBUG
-	eflags |= DirectX::AudioEngine_Debug;
-#endif
-	audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
-
-	soundEffect1 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/MenuLevelSound.wav");
-	effect1 = soundEffect1->CreateInstance();
-	effect1->SetVolume(0.1f);
-
-	soundEffect2 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/EasyLevelSound.wav");
-	effect2 = soundEffect2->CreateInstance();
-	effect2->SetVolume(0.1f);
 }
 
 void Game::Shutdown()
@@ -60,7 +46,6 @@ void Game::Run()
 
 	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Clear();
-	effect1->Play(true);
 	Backend::ResetDeltaTime();
 
 	while (window.IsOpen())
@@ -70,20 +55,18 @@ void Game::Run()
 		default:
 			break;
 		case SceneState::MainMenu:
-			effect2->Stop();
+			SoundSystem::getInstance().GetEffect(1)->Stop();
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-			effect1->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 
 		case SceneState::Easy:
-			effect1->Stop();
+			SoundSystem::getInstance().GetEffect(0)->Stop();
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-			effect2->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 		}

@@ -32,7 +32,8 @@ float4 main(PS_IN input) : SV_TARGET
 {
     //return float4(input.normal, 1.f);
     //return image.Sample(defaultSampler, input.uv);
-
+    uint2 textureDims;
+    image.GetDimensions(textureDims.x, textureDims.y);
     float lightValue = lightMap.Sample(defaultSampler, float3(input.uv, input.id)).r;
     
     float2 decal = float2(decalPosX, decalPosZ);
@@ -69,5 +70,5 @@ float4 main(PS_IN input) : SV_TARGET
 
     intensity = clamp(intensity * lightValue, 0.2f, 1.f);
 
-    return float4(image.Sample(defaultSampler, input.uv).rgb * intensity, 0.f);
+    return float4(image.Load(int3(input.uv * textureDims, 0)).rgb * intensity, 0.f);
 }
