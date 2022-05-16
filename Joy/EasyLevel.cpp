@@ -82,6 +82,7 @@ void EasyLevel::Shutdown()
 
 SceneState EasyLevel::Update()
 {
+
     time += Backend::GetDeltaTime();
 
     auto asd = std::to_string(time);
@@ -162,4 +163,7 @@ void EasyLevel::Render()
     {
         uiRender.Draw();
     }
+
+    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+
 }

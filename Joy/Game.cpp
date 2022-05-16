@@ -2,7 +2,7 @@
 #include<iostream>
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
-	, window(Backend::GetWindow()) 
+	, window(Backend::GetWindow())
 	, loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
 {
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
@@ -29,6 +29,10 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 
 void Game::Shutdown()
 {
+	HObject::GetInstance().Shutdown();
+
+	loadingScreen.Shutdown();
+	smolpp.Shutdown();
 	uiRender.Shutdown();
 	objRender.Shutdown();
 	decalShadow.Shutdown();
@@ -43,8 +47,11 @@ void Game::Run()
 	SceneState activeState = SceneState::Unchanged;
 	//Scene* activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
 	//Scene* activeScene = new testScene(uiRender, objRender, decalShadow, meshStorage);
+
 	uiRender.Draw();
+	Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 	Backend::Display();
+
 	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Clear();
 	effect1->Play(true);
@@ -74,23 +81,24 @@ void Game::Run()
 			Backend::ResetDeltaTime();
 			break;
 		}
-		
+
 		Backend::Process();
 
 		Backend::Clear();
+		StartImGuiFrame();
 
 		activeState = activeScene->Update();
-		StartImGuiFrame();
 		activeScene->Render();
 
 		EndImGuiFrame();
 
+		smolpp.ApplyGlow();
 		Backend::Display();
 
 		// temp --
 		if (Backend::GetKeyboard().KeyReleased(DIK_DELETE))
 			break;
-
+		
 		else if (Backend::GetKeyboard().KeyReleased(DIK_F))
 			Backend::GetSwapChain()->SetFullscreenState(TRUE, nullptr);
 
@@ -105,11 +113,12 @@ void Game::Run()
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_M))
 			Backend::GetMouse().Lock(true);
-		
+
 		else if (Backend::GetKeyboard().KeyReleased(DIK_N))
 			Backend::GetMouse().Lock(false);
 		// --
 	}
+	Backend::GetSwapChain()->SetFullscreenState(FALSE, nullptr);
 
 	activeScene->Shutdown();
 	delete activeScene;

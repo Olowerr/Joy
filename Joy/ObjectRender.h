@@ -18,17 +18,12 @@ public:
 	void DrawAll();
 	void DrawCharacter(Character& character);
 
-	// Add Instanced Objects
-	bool GiveInstancedObjects(Object* objArr, UINT amount);
-
 private:
 
 	MapDivider* sections;
 	const Section* const* activeSection;
 
 	GraphicsStorage& storage;
-
-	ID3D11RenderTargetView* const* bbRTV;
 
 	// Instanced
 	const std::vector<InstancedObject*>& enviormentInstanced;
@@ -38,8 +33,4 @@ private:
 
 	Camera* activeCamera;
 
-	//temp
-//	CharacterCamera* camera;
-//	ID3D11Buffer* camCb;
-//	DirectX::XMFLOAT4X4 viewAndProj;
 };

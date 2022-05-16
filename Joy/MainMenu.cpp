@@ -42,7 +42,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(1, 50.f, 15.f, 10.f);
+    divider.CreateSections(1, 20.f, 15.f, 10.f, -10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
@@ -152,4 +152,6 @@ void MainMenu::Render()
     {
         uiRender.Draw();
     }
+
+    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
 }

@@ -63,8 +63,6 @@ UIRenderer::UIRenderer()
 	};
 	hr = Backend::CreateVertexBuffer(&quadBuffer, quadPos, sizeof(quadPos));
 	assert(SUCCEEDED(hr));
-
-	bbRTV = Backend::GetBackBufferRTV();
 }
 
 void UIRenderer::Shutdown()
@@ -113,7 +111,7 @@ void UIRenderer::Draw()
 
 	devContext->PSSetShader(UI_PS, nullptr, 0);
 
-	devContext->OMSetRenderTargets(1, bbRTV, nullptr);
+	devContext->OMSetRenderTargets(1, Backend::GetMainRTV(), nullptr);
 
 	for (Sprite* element : sprites)
 		element->Draw();

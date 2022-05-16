@@ -1,13 +1,11 @@
 #include "ObjectRender.h"
 
 ObjectRender::ObjectRender()
-	:bbRTV(nullptr), storage(Backend::GetShaderStorage())
+	:storage(Backend::GetShaderStorage())
 	, enviormentInstanced(InstancedObject::GetEnviormentInstancedObjects())
 {
 	CreateSamplerState(); // << temporary
 	Backend::GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
-
-	bbRTV = Backend::GetBackBufferRTV();
 }
 
 void ObjectRender::Shutdown()
@@ -68,7 +66,8 @@ void ObjectRender::DrawAll()
 
 	devContext->PSSetShader(storage.objectPS, nullptr, 0);
 
-	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
+	devContext->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
+
 	
 
 	for (Object* obj : Object::GetEnviormentObjects())
@@ -97,22 +96,8 @@ void ObjectRender::DrawCharacter(Character& character)
 
 	devContext->PSSetShader(storage.JoyPS, nullptr, 0);
 
-	devContext->OMSetRenderTargets(1, bbRTV, *Backend::GetStandardDSV());
+	devContext->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
+
 
 	character.Draw();
-}
-
-bool ObjectRender::GiveInstancedObjects(Object* obj, const UINT amount)
-{
-	
-
-	//instances.emplace_back();
-
-	//instances.back().instanceCount = amount;
-	//instances.back().indexCount = obj[0].GetMesh()->indexCount;
-	//instances.back().vertexBuffer = obj[0].GetMesh()->vertexBuffer;
-	//instances.back().transformSRV = tempSRV;
-	//instances.back().mtl = obj[0].GetMesh()->diffuseTextureSRV;
-
-	return true;
 }

@@ -13,14 +13,12 @@ public:
 	static const UINT Offset = 0;
 
 	Mesh() = default;
+	~Mesh() = default;
 	void Shutdown()
 	{
 		diffuseTextureSRV->Release();
 		vertexBuffer->Release();
 	}
-
-	void Bind();
-	void BindGeometry();
 
 	//private:
 	UINT indexCount;
@@ -46,7 +44,6 @@ public:
 class TempMeshStorage
 {
 public:
-
 	TempMeshStorage();
 	~TempMeshStorage();
 
