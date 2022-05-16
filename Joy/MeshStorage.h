@@ -6,6 +6,15 @@
 
 #include "Backend.h"
 
+struct DiffTextures
+{
+	DiffTextures(std::string path, ID3D11ShaderResourceView* textureSRV)
+		:path(path), textureSRV(textureSRV) {};
+
+	std::string path;
+	ID3D11ShaderResourceView* textureSRV;
+};
+
 class Mesh
 {
 public:
@@ -16,7 +25,6 @@ public:
 	~Mesh() = default;
 	void Shutdown()
 	{
-		diffuseTextureSRV->Release();
 		vertexBuffer->Release();
 	}
 
@@ -64,6 +72,9 @@ public:
 	size_t GetObjMeshCount() { return MeshCount; }
 
 private:
+	
+	std::vector<DiffTextures> diffTextures;
+	bool sameTexture;
 
 	const std::string meshPath = "../Resources/Meshes/";
 	static const UINT MeshCount = 26;
