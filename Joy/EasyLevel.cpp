@@ -163,7 +163,7 @@ void EasyLevel::Render()
     {
         uiRender.Draw();
     }
-
+#ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-
+#endif // DEBUG
 }

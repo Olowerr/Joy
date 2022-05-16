@@ -152,6 +152,7 @@ void MainMenu::Render()
     {
         uiRender.Draw();
     }
-
+#ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+#endif // DEBUG
 }

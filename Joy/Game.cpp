@@ -5,7 +5,10 @@ Game::Game(HINSTANCE hInstance, int cmdShow)
 	, window(Backend::GetWindow())
 	, loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
 {
+#ifdef _DEBUG
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
+#endif // DEBUG
+
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr))
 		return;
@@ -36,9 +39,12 @@ void Game::Shutdown()
 	uiRender.Shutdown();
 	objRender.Shutdown();
 	decalShadow.Shutdown();
+#ifdef _DEBUG
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+#endif // DEBUG
+
 	Backend::Destroy();
 }
 
@@ -85,12 +91,16 @@ void Game::Run()
 		Backend::Process();
 
 		Backend::Clear();
+#ifdef _DEBUG
 		StartImGuiFrame();
+#endif // DEBUG
 
 		activeState = activeScene->Update();
 		activeScene->Render();
 
+#ifdef _DEBUG
 		EndImGuiFrame();
+#endif // DEBUG
 
 		smolpp.ApplyGlow();
 		Backend::Display();
