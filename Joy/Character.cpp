@@ -16,6 +16,11 @@ Character::Character(Mesh* mesh)
 
 	//Movement
 
+	//Slide
+	canSlide = true;
+	isSliding = false;
+	slideSpeed = 0;
+
 
 	//Jump
 	jumpVelocity = 0;
@@ -43,8 +48,16 @@ void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
 
+	maxSpeed = 10.0f;
+	speed = 0.1;
+	counterForce = 0.01f;
+	timer += dt;
+
+
 	bool wsPressed = false;
 	bool adPressed = false;
+
+	slideSpeed = 1.2f;
 
 	if (key.KeyDown(DIK_W))
 	{
@@ -56,47 +69,38 @@ void Character::Move()
 		velocity.y -= counterForce;
 		wsPressed = false;
 	}
-
-
 	if (key.KeyDown(DIK_S))
 	{
 		velocity.y -= speed;
 		wsPressed = true;
 	}
-
 	else if (velocity.y < 0.f)
 	{
 		velocity.y += counterForce;
 		wsPressed = false;
 	}
-
 	if (key.KeyDown(DIK_D))
 	{
 		velocity.x += speed;
 		adPressed = true;
 	}
-
 	else if (velocity.x > 0.f)
 	{
 		velocity.x -= counterForce;
 		adPressed = false;
 	}
-
-
 	if (key.KeyDown(DIK_A))
 	{
 		adPressed = true;
 		velocity.x -= speed;
 	}
-
 	else if (velocity.x < 0.f)
 	{
 		velocity.x += counterForce;
 		adPressed = false;
 	}
 
-	/*std::cout << velocity.x << "===";
-	std::cout << velocity.y<< std::endl;*/
+
 	velocity.x *= 0.99f;
 	velocity.y *= 0.99f;
 
@@ -113,7 +117,27 @@ void Character::Move()
 		maxSpeed = 5.0f;
 	}
 	else
+	{
 		maxSpeed = 10.0f;
+	}
+
+
+	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f)
+	{
+		isSliding = true;
+		canSlide = false;
+		timer = 0;
+	}
+	if (timer < 0.5f && isSliding == true)
+	{
+		slideSpeed += 1.7f;
+	}
+	else
+	{
+		isSliding = false;
+	}
+
+
 
 	if (std::abs(velocity.x) > maxSpeed)
 		velocity.x *= 0.99f;
@@ -122,7 +146,7 @@ void Character::Move()
 		velocity.y *= 0.99f;
 
 
-	Translate(velocity.x * dt, 0.0f, velocity.y * dt);
+	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
 
 }
 
