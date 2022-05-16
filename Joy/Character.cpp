@@ -16,6 +16,11 @@ Character::Character(Mesh* mesh)
 
 	//Movement
 
+	//Slide
+	canSlide = true;
+	isSliding = false;
+	slideSpeed = 0;
+
 
 	//Jump
 	jumpVelocity = 0;
@@ -45,6 +50,8 @@ void Character::Move()
 
 	bool wsPressed = false;
 	bool adPressed = false;
+
+	slideSpeed = 1.f;
 
 	if (key.KeyDown(DIK_W))
 	{
@@ -113,7 +120,27 @@ void Character::Move()
 		maxSpeed = 5.0f;
 	}
 	else
+	{
 		maxSpeed = 10.0f;
+	}
+
+
+	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f)
+	{
+		isSliding = true;
+		canSlide = false;
+		timer = 0;
+	}
+	if (timer < 0.5f && isSliding == true)
+	{
+		slideSpeed += 1.7f;
+	}
+	else
+	{
+		isSliding = false;
+	}
+
+
 
 	if (std::abs(velocity.x) > maxSpeed)
 		velocity.x *= 0.99f;
