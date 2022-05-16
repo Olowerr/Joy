@@ -49,7 +49,7 @@ void Character::Move()
 	float dt = Backend::GetDeltaTime();
 
 	maxSpeed = 10.0f;
-	speed = 0.1;
+	speed = 0.1f;
 	counterForce = 0.01f;
 	timer += dt;
 
