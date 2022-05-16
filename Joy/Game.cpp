@@ -58,8 +58,8 @@ void Game::Run()
 	Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 	Backend::Display();
 
-	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Clear();
+	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	effect1->Play(true);
 	Backend::ResetDeltaTime();
 

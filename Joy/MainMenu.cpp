@@ -1,12 +1,13 @@
 #include "MainMenu.h"
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, decalShadow, meshStorage)
+    :Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
     , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
+    , highscore(uiRender)
 {   
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -54,6 +55,9 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     hLight.ShutdownTools();
 
     sky.init();
+
+    highscore.AddRend();
+
 }
 
 void MainMenu::Shutdown()
@@ -81,6 +85,10 @@ void MainMenu::Shutdown()
 
 SceneState MainMenu::Update()
 {
+
+   
+
+
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -140,6 +148,9 @@ SceneState MainMenu::Update()
 
 void MainMenu::Render()
 {
+    highscore.RenderHighScoreText();
+
+
     if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
         objRender.DrawAll();

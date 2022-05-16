@@ -1,7 +1,7 @@
 #include "HighscoreClass.h"
 
 HighscoreClass::HighscoreClass(UIRenderer& uiRenderer)
-	:m_scores(), m_names(), m_key(Backend::GetKeyboard()), doInput(true)
+	:m_scores(), m_names(), m_key(Backend::GetKeyboard()), doInput(true), m_screenRend()
 {
 	ui = &uiRenderer;
 }
@@ -62,7 +62,6 @@ void HighscoreClass::LoadFromFile()
 	}
 
 	m_myFile.close();
-	m_myFile.close();
 
 }
 
@@ -74,6 +73,9 @@ void HighscoreClass::DoAllTheHighscoreStuff(float score)
 	m_nameText.SetPosition((float)Backend::GetWindowWidth() / 2.f - 100.f, (float)Backend::GetWindowHeight() / 2.f);
 	ui->Add(&m_nameText);
 	ui->Add(&m_text);
+
+
+
 
 	std::string finalName;
 
@@ -236,4 +238,18 @@ void HighscoreClass::SortScores()
 
 	}
 
+}
+
+void HighscoreClass::RenderHighScoreText()
+{
+
+	std::string hsList = "hosadjiodi";
+	m_screenRend.SetText(hsList);
+	m_screenRend.SetPosition((float)Backend::GetWindowWidth() / 2.f - 100.f, (float)Backend::GetWindowHeight() / 2.f - 200.f);
+	
+}
+
+void HighscoreClass::AddRend()
+{
+	ui->Add(&m_screenRend);
 }

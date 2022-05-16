@@ -120,8 +120,6 @@ void Character::Move()
 	{
 		maxSpeed = 10.0f;
 	}
-
-
 	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f)
 	{
 		isSliding = true;
@@ -136,7 +134,6 @@ void Character::Move()
 	{
 		isSliding = false;
 	}
-
 
 
 	if (std::abs(velocity.x) > maxSpeed)
