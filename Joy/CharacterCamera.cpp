@@ -3,15 +3,15 @@
 CharacterCamera::CharacterCamera(const Character& object) //const Character& object?
 	:object(object), rotation()
 {
-	position = { 0.0f, 10.0f, -40.0f, 0.0f };
+	position = { 0.0f, 10.0f, 200.0f, 0.0f };
 	DirectX::XMStoreFloat3(&positionFloat3, position);
 	camFront = { 0.0f, 0.0f, 1.0f, 1.0f };
 	camUpDir = { 0.0f, 1.0f, 0.0f, 1.0f };
 	rotation = { 0,0,0,0 };
-	//DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(camPos, camFront, camUpDir) *
+	DirectX::XMMATRIX temp = DirectX::XMMatrixLookAtLH(position, camFront, camUpDir) *
 	DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
 	camHeight = 10;
-	//DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(temp));
+	DirectX::XMStoreFloat4x4(&viewProjMatrix, DirectX::XMMatrixTranspose(temp));
 
 	Backend::CreateDynamicCBuffer(&camMatrixBuffer, &viewProjMatrix, sizeof(DirectX::XMFLOAT4X4));
 
@@ -50,15 +50,8 @@ void CharacterCamera::UpdateCam()
 	if (z < positionFloat3.z + 30 )
 	{
 		diagonalZ = true;
-		positionFloat3.z -= camSpeedZ * dt;
+		positionFloat3.z -= (camSpeedZ + 15)* dt;
 	}
-
-//if (diagonalZ && diagonalX)
-//{
-//	camSpeedX /= 2;
-//	camSpeedZ /= 2;
-//}
-//
 
 
 	DirectX::XMVECTOR positionChange = DirectX::XMVector3Rotate(DirectX::XMVectorSet(direction, 0.f, 0.f, 0.f), DirectX::XMLoadFloat4(&rotation));
