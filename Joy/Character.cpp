@@ -52,6 +52,9 @@ Character::~Character()
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
+	head.Rotate(0.f, 1.f * dt, 0.f);
+	leftArm.Rotate(1.f * dt, 0.f, 0.f);
+	rightArm.Rotate(-1.f * dt, 0.f, 0.f);
 
 	bool wsPressed = false;
 	bool adPressed = false;

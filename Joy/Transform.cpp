@@ -3,7 +3,7 @@
 Transform::Transform()
     :immutable(false), update(false), position(), rotation(), scale(1.f), matrix4x4()
 {
-    DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixIdentity());
+    UpdateMatrix();
     Backend::CreateDynamicCBuffer(&worldMatrixBuffer, &matrix4x4, sizeof(DirectX::XMFLOAT4X4));
 
 }
@@ -173,6 +173,9 @@ void Transform::ApplyParentTransform(const DirectX::XMMATRIX& parentMatrix)
         UpdateMatrix();
 
     DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixTranspose(matrixXM * parentMatrix));
+    Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DirectX::XMFLOAT4X4));
+
+    update = false;
 }
 
 void Transform::UpdateMatrix() const
