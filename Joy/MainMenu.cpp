@@ -7,8 +7,9 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
-{   
+{
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
+    SoundSystem::getInstance().StopSounds();
 
     meshStorage.LoadAllObj();
 
@@ -54,6 +55,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     hLight.ShutdownTools();
 
     sky.init();
+    SoundSystem::getInstance().GetEffect(0)->Play(true);
 }
 
 void MainMenu::Shutdown()
@@ -81,6 +83,7 @@ void MainMenu::Shutdown()
 
 SceneState MainMenu::Update()
 {
+#ifdef _DEBUG
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -93,6 +96,8 @@ SceneState MainMenu::Update()
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
+#endif // _DEBUG
+
     activeCamera->UpdateCam();
     activeCamera->SetView();
 
@@ -127,7 +132,6 @@ SceneState MainMenu::Update()
             collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
         }
     }
-
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
         uiRender.Clear();

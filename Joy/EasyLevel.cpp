@@ -11,6 +11,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
 {
+    SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
 
     uiRender.Add(&pickUpUI);
@@ -53,6 +54,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     hLight.ShutdownTools();
 
     sky.init();
+    SoundSystem::getInstance().GetEffect(1)->Play(true);
 }
 
 void EasyLevel::Shutdown()
@@ -90,6 +92,7 @@ SceneState EasyLevel::Update()
     
     thomas.SetText(asd);
 
+#ifdef _DEBUG
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -102,6 +105,8 @@ SceneState EasyLevel::Update()
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
+#endif // _DEBUG
+
     activeCamera->UpdateCam();
     activeCamera->SetView();
 

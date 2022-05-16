@@ -16,6 +16,9 @@ static const float3 LightDir = normalize(float3(1.f, 1.f, -1.f));
 
 float4 main(PS_IN input) : SV_TARGET
 {
+	uint2 textureDims;
+	image.GetDimensions(textureDims.x, textureDims.y);
+
 	const float lightValue = lightMap.Sample(defaultSampler, float3(input.uv, input.id)).r;
 
 	const float3 Normal = normalize(input.normal);
@@ -36,5 +39,5 @@ float4 main(PS_IN input) : SV_TARGET
 	lightMap.GetDimensions(textureDims.x, textureDims.y);
 	float lightValue = lightMap.Load(int3(input.uv * textureDims, 0)).r;*/
 
-	return float4(image.Sample(defaultSampler, input.uv).rgb * intensity, 0.f);
+	return float4(image.Load(int3(input.uv * textureDims, 0)).rgb * intensity, 0.f);
 }
