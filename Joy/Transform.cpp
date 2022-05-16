@@ -148,16 +148,38 @@ const DirectX::XMFLOAT4X4& Transform::GetWorldMatrix() const
     return matrix4x4;
 }
 
+const DirectX::XMMATRIX& Transform::GetWorldMatrixXM() const
+{
+    if (immutable)
+        return matrixXM;
+
+    if (update)
+    {
+        UpdateMatrix();
+        update = FAILED(Backend::UpdateBuffer(worldMatrixBuffer, &matrix4x4, sizeof(DirectX::XMFLOAT4X4)));
+    }
+
+    return matrixXM;
+}
+
 bool Transform::GetIsImmutable() const
 {
     return immutable;
 }
 
+void Transform::ApplyParentTransform(const DirectX::XMMATRIX& parentMatrix)
+{
+    if (update)
+        UpdateMatrix();
+
+    DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixTranspose(matrixXM * parentMatrix));
+}
+
 void Transform::UpdateMatrix() const
 {
-    DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixTranspose(
-        DirectX::XMMatrixScaling(scale, scale, scale) *
+    matrixXM = DirectX::XMMatrixScaling(scale, scale, scale) *
         DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
-        DirectX::XMMatrixTranslation(position.x, position.y, position.z)
-    ));
+        DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+
+    DirectX::XMStoreFloat4x4(&matrix4x4, DirectX::XMMatrixTranspose(matrixXM));
 }

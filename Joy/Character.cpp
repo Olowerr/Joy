@@ -1,9 +1,19 @@
 #include "Character.h"
 
 Character::Character(Mesh* mesh)
-	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
+	:Object(mesh, false), key(Backend::GetKeyboard()), velocity()
+	, head(mesh/*->GetChild()*/, false)
+	, leftArm(mesh/*->GetChild()*/, false)
+	, rightArm(mesh/*->GetChild()*/, false)
 {
 	Object::DropPtr(this);
+	Object::DropPtr(&head);
+	Object::DropPtr(&leftArm);
+	Object::DropPtr(&rightArm);
+
+	head.SetPosition(0.f, 1.f, 0.f);
+	rightArm.SetPosition(1.f, 0.f, 0.f);
+	leftArm.SetPosition(-1.f, 0.f, 0.f);
 
 	//Basic
 	//maxSpeed = 0.1f;
@@ -179,19 +189,42 @@ void Character::Respawn()
 		SetPosition(0.0f, 0.0f, 0.0f);
 }
 
-
-
 bool Character::SetCanJump(bool canJump)
 {
 	isOnGround = canJump;
 	return isOnGround;
 }
 
+void Character::Draw()
+{
+	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
+	Mesh* mesh = GetMesh();
 
+	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
+	dc->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
+	//mesh->Bind();
 
+	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
+	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 
+	if (mesh->indexBuffer)
+		dc->DrawIndexed(mesh->indexCount, 0, 0);
+	else
+		dc->Draw(mesh->indexCount, 0);
 
+	DrawChildren();
+}
 
+void Character::DrawChildren()
+{
+	const DirectX::XMMATRIX& matrix = GetWorldMatrixXM();
 
+	head.ApplyParentTransform(matrix);
+	leftArm.ApplyParentTransform(matrix);
+	rightArm.ApplyParentTransform(matrix);
 
+	head.DrawGeometry();
+	leftArm.DrawGeometry();
+	rightArm.DrawGeometry();
+}
