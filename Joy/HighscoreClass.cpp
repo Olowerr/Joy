@@ -68,17 +68,17 @@ void HighscoreClass::DoAllTheHighscoreStuff(float score)
 {
 	std::string hsText = "New High Score: " + std::to_string(score) + "\nEnter you name:";
 	m_text.SetText(hsText);
-	m_text.SetPosition(Backend::GetWindowWidth() / 2 - 100, Backend::GetWindowHeight() / 2 - 200);
-	m_nameText.SetPosition(Backend::GetWindowWidth() / 2 - 100, Backend::GetWindowHeight() / 2);
+	m_text.SetPosition((float)Backend::GetWindowWidth() / 2.f - 100.f, (float)Backend::GetWindowHeight() / 2.f - 200.f);
+	m_nameText.SetPosition((float)Backend::GetWindowWidth() / 2.f - 100.f, (float)Backend::GetWindowHeight() / 2.f);
 	ui->Add(&m_nameText);
 	ui->Add(&m_text);
-	
+
 	std::string finalName;
 
 	while (doInput)
 	{
 
-		#pragma region //INPUT KEYS
+#pragma region //INPUT KEYS
 		if (m_key.KeyReleased(DIK_A))
 		{
 			finalName.append("A");
@@ -135,7 +135,7 @@ void HighscoreClass::DoAllTheHighscoreStuff(float score)
 		{
 			finalName.append("N");
 		}
-		if (m_key.KeyReleased(DIK_O))		
+		if (m_key.KeyReleased(DIK_O))
 		{
 			finalName.append("O");
 		}
@@ -196,19 +196,20 @@ void HighscoreClass::DoAllTheHighscoreStuff(float score)
 
 		ui->Draw();
 
+		Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 		Backend::Display();
-		
-		
+
+
 		if (m_key.KeyDown(DIK_RETURN))
 		{
 			LoadFromFile();
 			SetHighscore(score, finalName);
-		
+
+			m_nameText.Shutdown();
+			m_text.Shutdown();
 			doInput = false;
 		}
 	}
-
-
 }
 
 
@@ -221,7 +222,7 @@ void HighscoreClass::SortScores()
 	{
 		max = i;
 
-		for (int j = i+1; j < 3; j++)
+		for (int j = i + 1; j < 3; j++)
 		{
 			if (m_scores[j] > m_scores[max])
 			{
