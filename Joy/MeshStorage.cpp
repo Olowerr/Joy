@@ -2,7 +2,7 @@
 #include <iostream>
 
 TempMeshStorage::TempMeshStorage()
-	:meshes{}
+	:meshes{}, sameTexture(false)
 {
 
 }
@@ -27,10 +27,11 @@ void TempMeshStorage::UnloadObjMeshes()
 		if (mesh.vertexBuffer)
 			mesh.vertexBuffer->Release();
 		if (mesh.diffuseTextureSRV)
+		{
 			mesh.diffuseTextureSRV->Release();
+		}
 		if (mesh.indexBuffer)
 			mesh.indexBuffer->Release();
-
 	}
 }
 
@@ -41,13 +42,19 @@ void TempMeshStorage::UnloadMeshes()
 		// remove if-statements
 		if (mesh->vertexBuffer)
 			mesh->vertexBuffer->Release();
-		if (mesh->diffuseTextureSRV)
-			mesh->diffuseTextureSRV->Release();
 		if (mesh->indexBuffer)
 			mesh->indexBuffer->Release();
 
 		delete mesh;
 	}
+	for (size_t i = 0; i < diffTextures.size(); i++)
+	{
+		if (diffTextures[i].textureSRV)
+		{
+				diffTextures[i].textureSRV->Release();
+		}
+	}
+	diffTextures.clear();
 	meshes.clear();
 }
 
@@ -294,7 +301,23 @@ void TempMeshStorage::import(const std::string& filePath)
 
 		meshes.back()->indexCount = object.indices.size();
 
-		Backend::CreateConstSRV(&meshes.back()->diffuseTextureSRV, tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string);
+		sameTexture = false;
+		for (size_t k = 0; k < diffTextures.size(); k++)
+		{
+			if (diffTextures[k].path == tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string)
+			{
+				meshes.back()->diffuseTextureSRV = diffTextures[k].textureSRV;
+				sameTexture = true;
+			}
+		}
+		if (!sameTexture)
+		{
+			diffTextures.emplace_back(tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string, meshes.back()->diffuseTextureSRV);
+			Backend::CreateConstSRV(&diffTextures.back().textureSRV, diffTextures.back().path);
+			meshes.back()->diffuseTextureSRV = diffTextures.back().textureSRV;
+			sameTexture = false;
+		}
+
 		// failed -> will be black
 
 		// bounding box

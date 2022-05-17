@@ -8,7 +8,7 @@
 #include "FreelookCamera.h"
 #include "LightHandler.h"
 #include "MapSections.h"
-#include "Audio.h"
+#include "SoundSystem.h"
 #include "Skybox.h"
 
 #include "ImguiSetup.h"

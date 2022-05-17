@@ -3,28 +3,17 @@
 Game::Game(HINSTANCE hInstance, int cmdShow)
 	:system(Backend::Create(hInstance, cmdShow, Win_Width, Win_Height))
 	, window(Backend::GetWindow())
-	, loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
+	, loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
 {
+#ifdef _DEBUG
 	SetupImGui(window.GetHWND(), Backend::GetDevice(), Backend::GetDeviceContext());
+#endif // DEBUG
+
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr))
 		return;
 
 	uiRender.Add(&loadingScreen);
-
-	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
-#ifdef _DEBUG
-	eflags |= DirectX::AudioEngine_Debug;
-#endif
-	audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
-
-	soundEffect1 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/MenuLevelSound.wav");
-	effect1 = soundEffect1->CreateInstance();
-	effect1->SetVolume(0.1f);
-
-	soundEffect2 = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/EasyLevelSound.wav");
-	effect2 = soundEffect2->CreateInstance();
-	effect2->SetVolume(0.1f);
 }
 
 void Game::Shutdown()
@@ -36,9 +25,12 @@ void Game::Shutdown()
 	uiRender.Shutdown();
 	objRender.Shutdown();
 	decalShadow.Shutdown();
+#ifdef _DEBUG
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+#endif // DEBUG
+
 	Backend::Destroy();
 }
 
@@ -54,7 +46,6 @@ void Game::Run()
 
 	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	uiRender.Clear();
-	effect1->Play(true);
 	Backend::ResetDeltaTime();
 
 	while (window.IsOpen())
@@ -64,20 +55,18 @@ void Game::Run()
 		default:
 			break;
 		case SceneState::MainMenu:
-			effect2->Stop();
+			SoundSystem::getInstance().GetEffect(1)->Stop();
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-			effect1->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 
 		case SceneState::Easy:
-			effect1->Stop();
+			SoundSystem::getInstance().GetEffect(0)->Stop();
 			activeScene->Shutdown();
 			delete activeScene;
 			activeScene = new EasyLevel(uiRender, objRender, decalShadow, meshStorage);
-			effect2->Play(true);
 			Backend::ResetDeltaTime();
 			break;
 		}
@@ -85,12 +74,16 @@ void Game::Run()
 		Backend::Process();
 
 		Backend::Clear();
+#ifdef _DEBUG
 		StartImGuiFrame();
+#endif // DEBUG
 
 		activeState = activeScene->Update();
 		activeScene->Render();
 
+#ifdef _DEBUG
 		EndImGuiFrame();
+#endif // DEBUG
 
 		smolpp.ApplyGlow();
 		Backend::Display();
