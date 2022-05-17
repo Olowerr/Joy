@@ -92,7 +92,7 @@ SceneState MainMenu::Update()
 {
 #ifdef _DEBUG
 
-#endif // DEBUG
+
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -147,6 +147,7 @@ SceneState MainMenu::Update()
     }
 
     return SceneState::Unchanged;
+#endif // DEBUG
 }
 
 void MainMenu::Render()

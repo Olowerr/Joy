@@ -25,6 +25,7 @@ Character::Character(Mesh* mesh)
 	maxSpeed = 15.0f;
 	speed = 0.2f;
 	counterForce = 0.01f;
+
 	//Boost
 	fuel = 10.0f;
 	canBoost = false;
@@ -176,8 +177,6 @@ void Character::Jump()
 		canBoost = true;
 	}
 
-	//add fuel system ( basicaly remove from fuel variable while boosting )
-
 	//Boost
 	if (canBoost && key.KeyDown(DIK_SPACE))
 	{
@@ -190,7 +189,14 @@ void Character::Jump()
 	}
 
 	fuel += 0.5 * dt;
+
+	if (fuel > 10.f)
+	{
+		fuel = 10.f;
+	}
 	this->Translate(0, jumpVelocity * dt, 0);
+
+	std::cout << fuel << std::endl;
 }
 
 void Character::Respawn()
