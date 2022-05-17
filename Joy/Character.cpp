@@ -181,19 +181,20 @@ void Character::Jump()
 	if (canBoost && key.KeyDown(DIK_SPACE))
 	{
 		jumpVelocity += 325 * dt;
-		fuel -= 1 * dt;
+		fuel -= 1 * dt;  // how much fuel used
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
 		jumpVelocity = fallSpeed;
 	}
 
-	fuel += 0.5 * dt;
+	fuel += 0.5 * dt; // how much increases
 
-	if (fuel > 10.f)
+	if (fuel > 10.f) // max fuel sett
 	{
 		fuel = 10.f;
 	}
+
 	this->Translate(0, jumpVelocity * dt, 0);
 
 	std::cout << fuel << std::endl;
