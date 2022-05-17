@@ -24,7 +24,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
-    sceneObjects.reserve(110);
+    sceneObjects.reserve(200);
 
     meshStorage.LoadEasyObjects();
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
@@ -42,7 +42,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(2, 100.0f, 50.f, 50.);
+    divider.CreateSections(2, 500.0f, 50.f, 50.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
