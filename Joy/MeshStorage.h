@@ -29,6 +29,8 @@ public:
 	}
 
 	//private:
+	std::string name;
+
 	UINT indexCount;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
@@ -36,6 +38,8 @@ public:
 	ID3D11ShaderResourceView* diffuseTextureSRV;
 
 	DirectX::BoundingBox bBox;
+
+	std::vector<Mesh*> children;
 };
 
 /*
@@ -63,6 +67,7 @@ public:
 	void UnloadMeshes();
 	void UnloadDataBase();
 
+	Mesh* GetMeshByName(const std::string& name);
 
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(UINT index);
@@ -133,4 +138,5 @@ private:
 
 	void import(UINT index);
 	void import(const std::string& filePath);
+
 };

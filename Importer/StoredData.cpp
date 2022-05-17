@@ -469,6 +469,17 @@ ObjectInfo* StoredData::GetChild(ObjectInfo& parent, size_t index)
     return nullptr;
 }
 
+ObjectInfo* StoredData::GetObjectByName(const std::string& name)
+{
+    for (ObjectInfo& object : m_objectInfoVec)
+    {
+        if (object.objHeader.meshName == name)
+            return &object;
+    }
+
+    return nullptr;
+}
+
 //SkeletonInfo& StoredData::GetSkeletonInfo()
 //{
 //    return this->m_skeletonInfo;
