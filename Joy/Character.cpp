@@ -5,14 +5,6 @@ Character::Character(Mesh* mesh)
 {
 	Object::DropPtr(this);
 
-	//Basic
-	//maxSpeed = 0.1f;
-	//minSpeed = -0.1f;
-	//zSpeed = 0.0f;
-	//xSpeed = 0.0f;
-	//decreaseZSpeed = false;
-	//decreaseXSpeed = false;
-	//diagMove = false;
 
 	//Movement
 
@@ -142,6 +134,12 @@ void Character::Move()
 	if (std::abs(velocity.y) > maxSpeed)
 		velocity.y *= 0.99f;
 
+	if (isSliding)
+	{
+		fuel -= 1 * dt;
+	}
+
+
 
 	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
 
@@ -184,12 +182,14 @@ void Character::Jump()
 	if (canBoost && key.KeyDown(DIK_SPACE))
 	{
 		jumpVelocity += 325 * dt;
+		fuel -= 1 * dt;
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
 		jumpVelocity = fallSpeed;
 	}
 
+	fuel += 0.5 * dt;
 	this->Translate(0, jumpVelocity * dt, 0);
 }
 

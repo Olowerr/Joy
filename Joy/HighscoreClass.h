@@ -17,7 +17,7 @@ public:
 
 	void SetHighscore(float score, std::string name);
 	void LoadFromFile();
-	void DoAllTheHighscoreStuff(float score);
+	void RenderHighScoreText(float score);
 	void SortScores();
 
 private:
@@ -29,6 +29,7 @@ private:
 	float m_scores[3];
 	std::string m_names[3];
 
+	float finScore;	
 	float highscore;
 	FILE* filePtr;
 	bool doInput;
