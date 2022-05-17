@@ -1,7 +1,7 @@
 #include "Character.h"
 
 Character::Character(Mesh* mesh)
-	:Object(mesh, true), key(Backend::GetKeyboard()), velocity()
+	:Object(mesh, true), key(Backend::GetKeyboard()), velocity(), isRotating(false), rotateBack(0.f)
 {
 	Object::DropPtr(this);
 
@@ -52,6 +52,7 @@ void Character::Move()
 	speed = 0.1f;
 	counterForce = 0.01f;
 	timer += dt;
+	rotTimer += dt;
 
 
 	bool wsPressed = false;
@@ -100,7 +101,6 @@ void Character::Move()
 		adPressed = false;
 	}
 
-
 	velocity.x *= 0.99f;
 	velocity.y *= 0.99f;
 
@@ -121,14 +121,14 @@ void Character::Move()
 		maxSpeed = 10.0f;
 	}
 
-
+	//SLIDE
 	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f)
 	{
 		isSliding = true;
 		canSlide = false;
 		timer = 0;
 	}
-	if (timer < 0.5f && isSliding == true)
+	if ((timer < 0.5f && isSliding == true) || (key.KeyReleased(DIK_LSHIFT) && isSliding == true))
 	{
 		slideSpeed += 1.7f;
 	}
@@ -136,8 +136,65 @@ void Character::Move()
 	{
 		isSliding = false;
 	}
-
-
+	//
+	//ROTATE WHILE SLIDING
+	rotateVal = 6.f;
+	if (isSliding && rotTimer > 2.5f)
+	{
+		rotTimer = 0.f;
+	}
+	if (key.KeyDown(DIK_LSHIFT) && GetRotation().x < 1.3 && key.KeyDown(DIK_W) && rotTimer < 0.25f)
+	{
+		rotateVal *= dt;
+		Rotate(rotateVal, 0.f, 0.f);
+		isRotating = true;
+		rotateBack += rotateVal;
+	}
+	if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
+	{
+		SetRotation(GetRotation().x, -0.5f, GetRotation().z);
+	}
+	if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
+	{
+		SetRotation(GetRotation().x, 0.5f, GetRotation().z);
+	}
+	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
+	{
+		rotateVal *= dt;
+		Rotate(-rotateVal, 0.f, 0.f);
+		isRotating = true;
+		rotateBack += rotateVal;
+	}
+	if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
+	{
+		SetRotation(GetRotation().x, 0.5f, GetRotation().z);
+	}
+	if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
+	{
+		SetRotation(GetRotation().x, -0.5f, GetRotation().z);
+	}
+	else if (isSliding && GetRotation().z < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
+	{
+		rotateVal *= dt;
+		Rotate(0.f, 0.f, rotateVal);
+		isRotating = true;
+		rotateBack += rotateVal;
+	}
+	else if (isSliding && GetRotation().z < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
+	{
+		rotateVal *= dt;
+		Rotate(0.f, 0.f, -rotateVal);
+		isRotating = true;
+		rotateBack += rotateVal;
+	}
+	//
+	// ROTATE BACK
+	if (isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
+	{
+		SetRotation(0.f, 0.f, 0.f);
+		isRotating = false;
+	}
+	//
 
 	if (std::abs(velocity.x) > maxSpeed)
 		velocity.x *= 0.99f;

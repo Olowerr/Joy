@@ -45,6 +45,12 @@ private:
 	bool canSlide;
 	float timer;
 
+	//Rotate in slide
+	bool isRotating;
+	float rotateVal;
+	float rotateBack;
+	float rotTimer;
+
 	//jump
 	float jumpVelocity;
 	float jumpDecc;

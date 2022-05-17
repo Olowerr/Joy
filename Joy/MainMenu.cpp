@@ -103,7 +103,7 @@ SceneState MainMenu::Update()
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
-
+    
     joy.Jump();
     joy.Move();
     joy.Respawn();
