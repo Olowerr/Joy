@@ -82,7 +82,6 @@ public:
 
 	bool StoreAll(const std::string& fileName);
 	void UnloadAll();
-	JOY::Material const * GetMaterial(ObjectInfo& object);
 
 	//Getters
 
@@ -103,4 +102,8 @@ public:
 	//TextureInfo m_textureInfo;
 	MaterialInfo m_materialInfo;
 
+
+	JOY::Material const * GetMaterial(ObjectInfo& object);
+
+	ObjectInfo* GetChild(ObjectInfo& parent, size_t index);
 };
