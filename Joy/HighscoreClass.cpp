@@ -274,5 +274,5 @@ void HighscoreClass::HighScoreSetPos()
 {
 	m_screenRend.SetPosition(519.f, 307.f);
 	m_screenRend.SetScale(0.5f, 0.5f);
-	m_screenRend.SetColour({ 0.2,0.8,0.33,0.2 });
+	m_screenRend.SetColour({ 0.2f ,0.8f ,0.33f , 0.2f });
 }
