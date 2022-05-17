@@ -210,7 +210,7 @@ void Character::Jump()
 
 	this->Translate(0, jumpVelocity * dt, 0);
 
-	std::cout << fuel << std::endl;
+	//std::cout << fuel << std::endl;
 }
 
 void Character::Respawn()
