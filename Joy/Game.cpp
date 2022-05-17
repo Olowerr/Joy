@@ -43,9 +43,9 @@ void Game::Run()
 	uiRender.Draw();
 	Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 	Backend::Display();
+	uiRender.Clear();
 
 	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
-	uiRender.Clear();
 	Backend::ResetDeltaTime();
 
 	while (window.IsOpen())
