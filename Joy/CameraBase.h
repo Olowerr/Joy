@@ -13,6 +13,7 @@ public:
 	virtual void UpdateCam() = 0;
 	virtual void SetView() = 0;
 
+
 	ID3D11Buffer* const* GetMatrixBuffer() const;
 	DirectX::XMVECTOR GetPosition();
 

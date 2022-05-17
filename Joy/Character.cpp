@@ -5,14 +5,6 @@ Character::Character(Mesh* mesh)
 {
 	Object::DropPtr(this);
 
-	//Basic
-	//maxSpeed = 0.1f;
-	//minSpeed = -0.1f;
-	//zSpeed = 0.0f;
-	//xSpeed = 0.0f;
-	//decreaseZSpeed = false;
-	//decreaseXSpeed = false;
-	//diagMove = false;
 
 	//Movement
 
@@ -33,6 +25,7 @@ Character::Character(Mesh* mesh)
 	maxSpeed = 15.0f;
 	speed = 0.2f;
 	counterForce = 0.01f;
+
 	//Boost
 	fuel = 10.0f;
 	canBoost = false;
@@ -202,6 +195,12 @@ void Character::Move()
 	if (std::abs(velocity.y) > maxSpeed)
 		velocity.y *= 0.99f;
 
+	if (isSliding)
+	{
+		fuel -= 1 * dt;
+	}
+
+
 
 	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
 
@@ -238,19 +237,27 @@ void Character::Jump()
 		canBoost = true;
 	}
 
-	//add fuel system ( basicaly remove from fuel variable while boosting )
-
 	//Boost
 	if (canBoost && key.KeyDown(DIK_SPACE))
 	{
 		jumpVelocity += 325 * dt;
+		fuel -= 1 * dt;  // how much fuel used
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
 		jumpVelocity = fallSpeed;
 	}
 
+	fuel += 0.5 * dt; // how much increases
+
+	if (fuel > 10.f) // max fuel sett
+	{
+		fuel = 10.f;
+	}
+
 	this->Translate(0, jumpVelocity * dt, 0);
+
+	std::cout << fuel << std::endl;
 }
 
 void Character::Respawn()

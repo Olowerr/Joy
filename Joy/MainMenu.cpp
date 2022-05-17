@@ -1,13 +1,14 @@
 #include "MainMenu.h"
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
-	:Scene(uiRender, objRender, decalShadow, meshStorage)
+    :Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
     , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
-{
+    , highscore(uiRender)
+{   
 	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
     SoundSystem::getInstance().StopSounds();
 
@@ -55,6 +56,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     hLight.ShutdownTools();
 
     sky.init();
+
+
+    highscore.AddRend();
+    highscore.HighScoreSetPos();
+    activeCamera->UpdateCam();
+
     SoundSystem::getInstance().GetEffect(0)->Play(true);
 }
 
@@ -84,6 +91,8 @@ void MainMenu::Shutdown()
 SceneState MainMenu::Update()
 {
 #ifdef _DEBUG
+
+
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -95,11 +104,11 @@ SceneState MainMenu::Update()
         activeCamera = &joyCamera;
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
+      
     }
-#endif // _DEBUG
 
-    activeCamera->UpdateCam();
-    activeCamera->SetView();
+
+   activeCamera->SetView();
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
@@ -108,9 +117,7 @@ SceneState MainMenu::Update()
     joy.Move();
     joy.Respawn();
 
-    //Camera functions
-    activeCamera->UpdateCam();
-    activeCamera->SetView();
+    
 
     //Collision
 
@@ -140,10 +147,14 @@ SceneState MainMenu::Update()
     }
 
     return SceneState::Unchanged;
+#endif // DEBUG
 }
 
 void MainMenu::Render()
 {
+    highscore.RenderHighScoreText();
+
+
     if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
         objRender.DrawAll();
