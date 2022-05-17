@@ -189,6 +189,13 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 		{
 			finalName.append("X69");
 		}
+		if (m_key.KeyReleased(DIK_BACKSPACE))
+		{
+			if (finalName.size() > 0)
+			{
+				finalName.pop_back();
+			}
+		}
 #pragma endregion
 
 		m_nameText.SetText(finalName);
