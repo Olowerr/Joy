@@ -5,12 +5,13 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(meshStorage.GetObjMesh(0))
     , pickUpUI("../Resources/Images/BoltForJoy.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
-    , loadingScreen("../Resources/Images/loadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
+    , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
 {
+    SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
 
     uiRender.Add(&pickUpUI);
@@ -53,6 +54,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     hLight.ShutdownTools();
 
     sky.init();
+    SoundSystem::getInstance().GetEffect(1)->Play(true);
 }
 
 void EasyLevel::Shutdown()
@@ -90,6 +92,7 @@ SceneState EasyLevel::Update()
     
     thomas.SetText(asd);
 
+#ifdef _DEBUG
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -102,6 +105,8 @@ SceneState EasyLevel::Update()
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
+#endif // _DEBUG
+
     activeCamera->UpdateCam();
     activeCamera->SetView();
 
@@ -156,14 +161,14 @@ void EasyLevel::Render()
         objRender.DrawAll();
         decalShadow.DrawAll(joy.GetPosition());
         objRender.DrawCharacter(joy);
-        uiRender.Draw();
         sky.Draw(activeCamera);
+        uiRender.Draw();
     }
     else
     {
         uiRender.Draw();
     }
-
+#ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-
+#endif // DEBUG
 }
