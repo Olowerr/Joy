@@ -106,4 +106,5 @@ public:
 	JOY::Material const * GetMaterial(ObjectInfo& object);
 
 	ObjectInfo* GetChild(ObjectInfo& parent, size_t index);
+	ObjectInfo* GetObjectByName(const std::string& name);
 };

@@ -28,9 +28,11 @@ public:
 
 	ID3D11Buffer* const* GetTransformBuffer() const;
 	const DirectX::XMFLOAT4X4& GetWorldMatrix() const;
+	const DirectX::XMMATRIX& GetWorldMatrixXM() const;
 
 	bool GetIsImmutable() const;
 
+	void ApplyParentTransform(const DirectX::XMMATRIX& parentMatrix);
 private:
 	const bool immutable;
 
@@ -39,6 +41,7 @@ private:
 	FLOAT scale;
 
 	mutable DirectX::XMFLOAT4X4 matrix4x4;
+	mutable DirectX::XMMATRIX matrixXM;
 
 	ID3D11Buffer* worldMatrixBuffer;
 	mutable bool update;

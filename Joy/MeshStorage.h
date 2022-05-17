@@ -29,6 +29,8 @@ public:
 	}
 
 	//private:
+	std::string name;
+
 	UINT indexCount;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
@@ -36,6 +38,8 @@ public:
 	ID3D11ShaderResourceView* diffuseTextureSRV;
 
 	DirectX::BoundingBox bBox;
+
+	std::vector<Mesh*> children;
 };
 
 /*
@@ -63,6 +67,7 @@ public:
 	void UnloadMeshes();
 	void UnloadDataBase();
 
+	Mesh* GetMeshByName(const std::string& name);
 
 	// ptrs or reference? ( nullptr or ERROR mesh? )
 	Mesh* GetMesh(UINT index);
@@ -112,14 +117,13 @@ private:
 	std::vector<Mesh*> meshes;
 
 	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
-	static const UINT MenuCount = 3;
+	static const UINT MenuCount = 2;
 	const std::string MenuFiles[MenuCount] =
 	{
 		//"Blockout_Test.joy" // 4 meshes
 		"Portal.joy",
-		"SmallEngine.joy",
 		//"TestSceneUpdated.joy"
-		"MainMenuScene.joy"
+		"MainMenuFix.joy"
 		//"MenuScene.joy"
 	};
 
@@ -133,4 +137,5 @@ private:
 
 	void import(UINT index);
 	void import(const std::string& filePath);
+
 };

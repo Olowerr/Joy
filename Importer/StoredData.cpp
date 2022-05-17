@@ -3,7 +3,7 @@
 #include <iostream>
 StoredData::StoredData()
 {
-    std::cout << "hi";
+
 }
 
 StoredData::~StoredData()
@@ -450,6 +450,33 @@ JOY::Material const * StoredData::GetMaterial(ObjectInfo& object)
         if (object.objHeader.materialName == material.matName)
             return &material;
     }
+    return nullptr;
+}
+
+ObjectInfo* StoredData::GetChild(ObjectInfo& parent, size_t index)
+{
+    if (index >= parent.children.size())
+        return nullptr;
+    
+    const JOY::JoyString& childName = parent.children.at(index);
+
+    for (ObjectInfo& object : m_objectInfoVec)
+    {
+        if (object.objHeader.meshName == childName)
+            return &object;
+    }
+
+    return nullptr;
+}
+
+ObjectInfo* StoredData::GetObjectByName(const std::string& name)
+{
+    for (ObjectInfo& object : m_objectInfoVec)
+    {
+        if (object.objHeader.meshName == name)
+            return &object;
+    }
+
     return nullptr;
 }
 

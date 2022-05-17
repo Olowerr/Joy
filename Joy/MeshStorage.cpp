@@ -83,6 +83,17 @@ void TempMeshStorage::UnloadDataBase()
 	StoredData::GetInstance().UnloadAll();
 }
 
+Mesh* TempMeshStorage::GetMeshByName(const std::string& name)
+{
+	for (Mesh* pMesh : meshes)
+	{
+		if (pMesh->name == name)
+			return pMesh;
+	}
+
+	return nullptr;
+}
+
 Mesh* TempMeshStorage::GetMesh(UINT index)
 {
 	if (index >= meshes.size())
@@ -266,7 +277,7 @@ void TempMeshStorage::import(const std::string& filePath)
 	bool succeeded = false;
 	HRESULT hr{};
 
-	size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
+	const size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
 	
 	succeeded = StoredData::GetInstance().StoreAll(filePath);
 	if (!succeeded)
@@ -276,12 +287,14 @@ void TempMeshStorage::import(const std::string& filePath)
 	if (!meshesFound)
 		return;
 
+	const size_t meshSizeBefore = meshes.size();
 	meshes.reserve(meshesFound);
 	for (size_t i = 0; i < meshesFound; i++)
 	{
 		meshes.emplace_back(new Mesh);
 
 		ObjectInfo& object = StoredData::GetInstance().m_objectInfoVec.at(sizeBefore + i);
+		meshes.back()->name = object.objHeader.meshName.string;
 
 		hr = Backend::CreateVertexBuffer(&meshes.back()->vertexBuffer, object.vertex.data(), sizeof(JOY::Vertex) * object.vertex.size());
 		if (FAILED(hr))
@@ -354,6 +367,24 @@ void TempMeshStorage::import(const std::string& filePath)
 			meshes.back()->bBox.Extents.z = (tempZmax - tempZmin) / 2;
 		}
 		
+	}
+
+	for (size_t i = meshSizeBefore - 1; i < meshes.size(); i++)
+	{
+		ObjectInfo* object = StoredData::GetInstance().GetObjectByName(meshes.at(i)->name);
+		if (!object)
+			continue;
+
+
+		const size_t numChilds = object->children.size();
+		meshes.at(i)->children.reserve(numChilds);
+
+		for (size_t k = 0; k < numChilds; k++)
+		{
+			Mesh* tempMesh = GetMeshByName(object->children.at(k).string);
+			if (tempMesh)
+				meshes.at(i)->children.emplace_back(tempMesh);
+		}
 	}
 
 
