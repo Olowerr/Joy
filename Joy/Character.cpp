@@ -57,9 +57,9 @@ Character::~Character()
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
-	head.Rotate(0.f, 1.f * dt, 0.f);
-	leftArm.Rotate(1.f * dt, 0.f, 0.f);
-	rightArm.Rotate(-1.f * dt, 0.f, 0.f);
+	head.Rotate(0.f, 20.f * dt, 0.f);
+	leftArm.Rotate(50.f * dt, 0.f, 0.f);
+	rightArm.Rotate(-50.f * dt, 0.f, 0.f);
 
 	maxSpeed = 10.0f;
 	speed = 0.1f;
