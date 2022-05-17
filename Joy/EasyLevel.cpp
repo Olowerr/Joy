@@ -139,7 +139,7 @@ SceneState EasyLevel::Update()
 
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
-        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
+        m_highscore.InputNameAndSetHighscore(time); // send in the final score here
         uiRender.Clear();
         uiRender.Add(&loadingScreen);
 

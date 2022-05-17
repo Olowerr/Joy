@@ -17,10 +17,11 @@ public:
 
 	void SetHighscore(float score, std::string name);
 	void LoadFromFile();
-	void DoAllTheHighscoreStuff(float score);
+	void InputNameAndSetHighscore(float score);
 	void SortScores();
 	void RenderHighScoreText();
 	void AddRend();
+	void HighScoreSetPos();
 private:
 	
 	Keyboard& m_key;

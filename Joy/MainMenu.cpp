@@ -56,7 +56,10 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     sky.init();
 
+
     highscore.AddRend();
+    highscore.HighScoreSetPos();
+    activeCamera->UpdateCam();
 
 }
 
@@ -86,9 +89,6 @@ void MainMenu::Shutdown()
 SceneState MainMenu::Update()
 {
 
-   
-
-
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
@@ -100,9 +100,11 @@ SceneState MainMenu::Update()
         activeCamera = &joyCamera;
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
+      
     }
-    activeCamera->UpdateCam();
-    activeCamera->SetView();
+
+
+   activeCamera->SetView();
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
@@ -111,9 +113,7 @@ SceneState MainMenu::Update()
     joy.Move();
     joy.Respawn();
 
-    //Camera functions
-    activeCamera->UpdateCam();
-    activeCamera->SetView();
+    
 
     //Collision
 

@@ -10,10 +10,12 @@ public:
 
 	CharacterCamera(const Character& object);
 	~CharacterCamera();
+
 	DirectX::XMFLOAT4X4 GetViewAndProj() { return viewProjMatrix; }
-	//	ID3D11Buffer* GetConstantBuffer() { return this->camCb; } idk if we need this
+
 	virtual void UpdateCam() override;
 	virtual void SetView();
+
 	
 
 private:
