@@ -19,6 +19,7 @@ public:
 	void Respawn();
 	bool SetCanJump(bool canJump);
 
+	void Draw() override;
 
 	
 private:
@@ -66,4 +67,10 @@ private:
 	bool canBoost;
 	float fuel;
 
+
+	Object head;
+	Object leftArm;
+	Object rightArm;
+
+	void DrawChildren();
 };

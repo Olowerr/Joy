@@ -15,7 +15,7 @@ public:
 
 	void CheckBB();
 
-	void Draw();
+	virtual void Draw();
 	void DrawGeometry();
 
 	void Translate(const DirectX::XMVECTOR& movement) override;
