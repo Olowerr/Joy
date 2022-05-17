@@ -17,28 +17,22 @@ public:
 
 	void SetHighscore(float score, std::string name);
 	void LoadFromFile();
-	void InputNameAndSetHighscore(float score);
+	void DoAllTheHighscoreStuff(float score);
 	void SortScores();
-	void RenderHighScoreText();
-	void AddRend();
-	void HighScoreSetPos();
+
 private:
 	
 	Keyboard& m_key;
 	UIRenderer* ui;
 	std::ifstream m_myFile;
 	std::fstream m_myWrite;
-
 	float m_scores[3];
-	
 	std::string m_names[3];
 
 	float highscore;
 	FILE* filePtr;
 	bool doInput;
-
 	Text m_text;
 	Text m_nameText;
-	Text m_screenRend;
 };
 
