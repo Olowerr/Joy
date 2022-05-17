@@ -31,14 +31,16 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
         }
     }
     meshStorage.UnloadDataBase();
+    sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3);
 
     collisions.reserve(110);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)
         collisions.emplace_back();
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
-    sceneObjects[2].SetPosition(11.2f, 0.0f, 8.1f);
-    sceneObjects[3].SetPosition(-10.8f, 0.0f, 8.1f);
+
+    //sceneObjects[2].SetPosition(11.2f, 0.0f, 8.1f);
+    //sceneObjects[3].SetPosition(-10.8f, 0.0f, 8.1f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
