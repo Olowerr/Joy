@@ -1,9 +1,10 @@
 #include "HighscoreClass.h"
 
 HighscoreClass::HighscoreClass(UIRenderer& uiRenderer)
-	:m_scores(), m_names(), m_key(Backend::GetKeyboard()), doInput(true)
+	:m_scores(), m_names(), m_key(Backend::GetKeyboard()), doInput(true), m_screenRend()
 {
 	ui = &uiRenderer;
+
 }
 
 HighscoreClass::~HighscoreClass()
@@ -13,21 +14,21 @@ HighscoreClass::~HighscoreClass()
 void HighscoreClass::SetHighscore(float score, std::string user)
 {
 
-	finScore = 1000 - score;
+	score = 1000 - score;
 
-	if (finScore > m_scores[0])
+	if (score > m_scores[0])
 	{
-		m_scores[0] = finScore;
+		m_scores[0] = score;
 		m_names[0] = user;
 	}
-	else if (finScore > m_scores[1])
+	else if (score > m_scores[1])
 	{
-		m_scores[1] = finScore;
+		m_scores[1] = score;
 		m_names[1] = user;
 	}
-	else if (finScore > m_scores[2])
+	else if (score > m_scores[2])
 	{
-		m_scores[2] = finScore;
+		m_scores[2] = score;
 		m_names[2] = user;
 	}
 
@@ -62,15 +63,14 @@ void HighscoreClass::LoadFromFile()
 	}
 
 	m_myFile.close();
-	m_myFile.close();
 
 }
 
-void HighscoreClass::RenderHighScoreText(float score)
+void HighscoreClass::InputNameAndSetHighscore(float score)
 {
-	std::string hsText = "New High Score: " + std::to_string(finScore) + "\nEnter you name:";
+	std::string hsText = "New High Score: " + std::to_string(score).erase(std::to_string(score).find_first_of('.') + 3, std::string::npos) + "\nEnter you name:";
 	m_text.SetText(hsText);
-	m_text.SetPosition((float)Backend::GetWindowWidth() / 2.f - 100.f, (float)Backend::GetWindowHeight() / 2.f - 200.f);
+	m_text.SetPosition((float)Backend::GetWindowWidth() / 2.f - 220.f, (float)Backend::GetWindowHeight() / 2.f - 200.f);
 	m_nameText.SetPosition((float)Backend::GetWindowWidth() / 2.f - 100.f, (float)Backend::GetWindowHeight() / 2.f);
 	ui->Add(&m_nameText);
 	ui->Add(&m_text);
@@ -80,116 +80,116 @@ void HighscoreClass::RenderHighScoreText(float score)
 	while (doInput)
 	{
 
-	#pragma region //INPUT KEYS
-			if (m_key.KeyReleased(DIK_A))
-			{
-				finalName.append("A");
-			}
-			if (m_key.KeyReleased(DIK_B))
-			{
-				finalName.append("B");
-			}
-			if (m_key.KeyReleased(DIK_C))
-			{
-				finalName.append("C");
-			}
-			if (m_key.KeyReleased(DIK_D))
-			{
-				finalName.append("D");
-			}
-			if (m_key.KeyReleased(DIK_E))
-			{
-				finalName.append("E");
-			}
-			if (m_key.KeyReleased(DIK_F))
-			{
-				finalName.append("F");
-			}
-			if (m_key.KeyReleased(DIK_G))
-			{
-				finalName.append("G");
-			}
-			if (m_key.KeyReleased(DIK_H))
-			{
-				finalName.append("H");
-			}
-			if (m_key.KeyReleased(DIK_I))
-			{
-				finalName.append("I");
-			}
-			if (m_key.KeyReleased(DIK_J))
-			{
-				finalName.append("J");
-			}
-			if (m_key.KeyReleased(DIK_K))
-			{
-				finalName.append("K");
-			}
-			if (m_key.KeyReleased(DIK_L))
-			{
-				finalName.append("L");
-			}
-			if (m_key.KeyReleased(DIK_M))
-			{
-				finalName.append("M");
-			}
-			if (m_key.KeyReleased(DIK_N))
-			{
-				finalName.append("N");
-			}
-			if (m_key.KeyReleased(DIK_O))
-			{
-				finalName.append("O");
-			}
-			if (m_key.KeyReleased(DIK_P))
-			{
-				finalName.append("P");
-			}
-			if (m_key.KeyReleased(DIK_Q))
-			{
-				finalName.append("Q");
-			}
-			if (m_key.KeyReleased(DIK_C))
-			{
-				finalName.append("R");
-			}
-			if (m_key.KeyReleased(DIK_S))
-			{
-				finalName.append("S");
-			}
-			if (m_key.KeyReleased(DIK_T))
-			{
-				finalName.append("T");
-			}
-			if (m_key.KeyReleased(DIK_U))
-			{
-				finalName.append("U");
-			}
-			if (m_key.KeyReleased(DIK_V))
-			{
-				finalName.append("V");
-			}
-			if (m_key.KeyReleased(DIK_X))
-			{
-				finalName.append("X");
-			}
-			if (m_key.KeyReleased(DIK_Y))
-			{
-				finalName.append("Y");
-			}
-			if (m_key.KeyReleased(DIK_Z))
-			{
-				finalName.append("Z");
-			}
-			if (m_key.KeyReleased(DIK_4))
-			{
-				finalName.append("420");
-			}
-			if (m_key.KeyReleased(DIK_6))
-			{
-				finalName.append("X69");
-			}
-	#pragma endregion
+#pragma region //INPUT KEYS
+		if (m_key.KeyReleased(DIK_A))
+		{
+			finalName.append("A");
+		}
+		if (m_key.KeyReleased(DIK_B))
+		{
+			finalName.append("B");
+		}
+		if (m_key.KeyReleased(DIK_C))
+		{
+			finalName.append("C");
+		}
+		if (m_key.KeyReleased(DIK_D))
+		{
+			finalName.append("D");
+		}
+		if (m_key.KeyReleased(DIK_E))
+		{
+			finalName.append("E");
+		}
+		if (m_key.KeyReleased(DIK_F))
+		{
+			finalName.append("F");
+		}
+		if (m_key.KeyReleased(DIK_G))
+		{
+			finalName.append("G");
+		}
+		if (m_key.KeyReleased(DIK_H))
+		{
+			finalName.append("H");
+		}
+		if (m_key.KeyReleased(DIK_I))
+		{
+			finalName.append("I");
+		}
+		if (m_key.KeyReleased(DIK_J))
+		{
+			finalName.append("J");
+		}
+		if (m_key.KeyReleased(DIK_K))
+		{
+			finalName.append("K");
+		}
+		if (m_key.KeyReleased(DIK_L))
+		{
+			finalName.append("L");
+		}
+		if (m_key.KeyReleased(DIK_M))
+		{
+			finalName.append("M");
+		}
+		if (m_key.KeyReleased(DIK_N))
+		{
+			finalName.append("N");
+		}
+		if (m_key.KeyReleased(DIK_O))
+		{
+			finalName.append("O");
+		}
+		if (m_key.KeyReleased(DIK_P))
+		{
+			finalName.append("P");
+		}
+		if (m_key.KeyReleased(DIK_Q))
+		{
+			finalName.append("Q");
+		}
+		if (m_key.KeyReleased(DIK_C))
+		{
+			finalName.append("R");
+		}
+		if (m_key.KeyReleased(DIK_S))
+		{
+			finalName.append("S");
+		}
+		if (m_key.KeyReleased(DIK_T))
+		{
+			finalName.append("T");
+		}
+		if (m_key.KeyReleased(DIK_U))
+		{
+			finalName.append("U");
+		}
+		if (m_key.KeyReleased(DIK_V))
+		{
+			finalName.append("V");
+		}
+		if (m_key.KeyReleased(DIK_X))
+		{
+			finalName.append("X");
+		}
+		if (m_key.KeyReleased(DIK_Y))
+		{
+			finalName.append("Y");
+		}
+		if (m_key.KeyReleased(DIK_Z))
+		{
+			finalName.append("Z");
+		}
+		if (m_key.KeyReleased(DIK_4))
+		{
+			finalName.append("420");
+		}
+		if (m_key.KeyReleased(DIK_6))
+		{
+			finalName.append("X69");
+		}
+#pragma endregion
 
 		m_nameText.SetText(finalName);
 
@@ -204,6 +204,7 @@ void HighscoreClass::RenderHighScoreText(float score)
 
 		if (m_key.KeyDown(DIK_RETURN))
 		{
+			finalName.erase(+10, std::string::npos);
 			LoadFromFile();
 			SetHighscore(score, finalName);
 
@@ -217,6 +218,7 @@ void HighscoreClass::RenderHighScoreText(float score)
 
 void HighscoreClass::SortScores()
 {
+
 	int max = 0;
 
 	for (int i = 0; i < 2; i++)
@@ -233,4 +235,37 @@ void HighscoreClass::SortScores()
 			std::swap(m_names[i], m_names[max]);
 		}
 	}
+}
+
+void HighscoreClass::RenderHighScoreText()
+{
+	m_myFile.open("../Resources/Highscore/highscore.txt");
+
+	if (m_myFile.is_open())
+	{
+		m_myFile >> m_names[0];
+		m_myFile >> m_scores[0];
+		m_myFile >> m_names[1];
+		m_myFile >> m_scores[1];
+		m_myFile >> m_names[2];
+		m_myFile >> m_scores[2];
+	}
+
+	m_myFile.close();
+
+	std::string hsList = m_names[0] + ": " + std::to_string(m_scores[0]).erase(std::to_string(m_scores[0]).find_first_of('.') + 3, std::string::npos) + "\n\n" + m_names[1] + ": " + std::to_string(m_scores[1]).erase(std::to_string(m_scores[1]).find_first_of('.') + 3, std::string::npos) + "\n\n" + m_names[2] + ": " + std::to_string(m_scores[2]).erase(std::to_string(m_scores[2]).find_first_of('.') + 3, std::string::npos);
+
+	m_screenRend.SetText(hsList);
+}
+
+void HighscoreClass::AddRend()
+{
+	ui->Add(&m_screenRend);
+}
+
+void HighscoreClass::HighScoreSetPos()
+{
+	m_screenRend.SetPosition(519.f, 307.f);
+	m_screenRend.SetScale(0.5f, 0.5f);
+	m_screenRend.SetColour({ 0.2,0.8,0.33,0.2 });
 }

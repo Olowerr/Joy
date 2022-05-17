@@ -91,6 +91,8 @@ void MainMenu::Shutdown()
 SceneState MainMenu::Update()
 {
 #ifdef _DEBUG
+
+#endif // DEBUG
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
         activeCamera = &freeCamera;
