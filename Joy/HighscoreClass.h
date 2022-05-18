@@ -16,7 +16,7 @@ public:
 	~HighscoreClass();
 
 	void SetHighscore(float score, std::string name);
-	void LoadFromFile();
+	bool LoadFromFile();
 	void InputNameAndSetHighscore(float score);
 	void RenderHighScoreText(float score);
 	void SortScores();

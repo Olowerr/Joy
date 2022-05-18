@@ -1,6 +1,6 @@
-NameOne
-800.21
-NameTwo
-400.20
-NameThree
-201.20
+Adam
+1.3
+Rasmus
+1.2
+Oliver
+1.1
