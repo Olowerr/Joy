@@ -84,7 +84,7 @@ void MainMenu::Shutdown()
 
     freeCamera.Shutdown();
     joyCamera.Shutdown();
-
+    
     divider.Shutdown();
     uiRender.Clear();
     loadingScreen.Shutdown();

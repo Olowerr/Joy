@@ -9,6 +9,7 @@ HighscoreClass::HighscoreClass(UIRenderer& uiRenderer)
 
 HighscoreClass::~HighscoreClass()
 {
+	Backend::Clear();
 }
 
 void HighscoreClass::SetHighscore(float score, std::string user)
