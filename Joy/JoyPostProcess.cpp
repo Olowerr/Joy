@@ -99,15 +99,15 @@ void JoyPostProcess::ApplyGlow()
 {
 	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 	//return;
-	
-	DownSample();
 
 	auto frameStart = std::chrono::system_clock::now();
+	
+	DownSample();
 
 	static ID3D11RenderTargetView* nullRTV[2]{};
 	static ID3D11UnorderedAccessView* nullUAV{};
 	static ID3D11ShaderResourceView* nullSRV[2]{};
-	static float data[2] = { 0.f, 1.f };
+	static float data[2] = { 0.f, 2.f };
 
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	
@@ -117,9 +117,8 @@ void JoyPostProcess::ApplyGlow()
 #ifdef _DEBUG
 	if (ImGui::Begin("Glow"))
 	{
-		data[1] = data[1] < 0.f ? 0.f : data[1];
-
 		ImGui::InputFloat("Glow Strength", &data[1], 0.1f);
+		data[1] = data[1] < 0.f ? 0.f : data[1];
 	}
 	ImGui::End();
 #endif // _DEBUG
