@@ -10,7 +10,7 @@ struct DiffTextures
 {
 	DiffTextures(std::string path, ID3D11ShaderResourceView* textureSRV)
 		:path(path), textureSRV(textureSRV) {};
-	DiffTextures() = default;
+
 	std::string path;
 	ID3D11ShaderResourceView* textureSRV;
 };
@@ -23,7 +23,6 @@ public:
 
 	Mesh() = default;
 	~Mesh() = default;
-	void Shutdown()
 	{
 		if (vertexBuffer)
 			vertexBuffer->Release();
@@ -64,7 +63,7 @@ public:
 
 	void LoadAllObj();
 	void UnloadObjMeshes();
-	void UnloadJoy();
+
 	void LoadMenuObjects();
 	void LoadEasyObjects();
 	void UnloadMeshes();
@@ -80,7 +79,7 @@ public:
 	size_t GetObjMeshCount() { return MeshCount; }
 
 	Mesh joy[3];
-	DiffTextures joyDiff;
+
 
 private:
 	
@@ -137,7 +136,7 @@ private:
 	{
 		// menu .joy files
 		"Portal.joy",
-		"TestSceneUpdated.joy"
+		"Litet_Spel_Level.joy"
 	};
 
 	void import(UINT index);
