@@ -23,6 +23,7 @@ public:
 
 	Mesh() = default;
 	~Mesh() = default;
+	void Shutdown()
 	{
 		if (vertexBuffer)
 			vertexBuffer->Release();
