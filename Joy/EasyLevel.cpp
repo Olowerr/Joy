@@ -10,7 +10,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , divider(joy)
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
-{
+ {
     SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
 

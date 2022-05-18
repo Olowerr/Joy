@@ -47,9 +47,9 @@ float4 main(PS_IN input) : SV_TARGET
     float2 uvs = float2(shadowCamPos.x * 0.5f + 0.5f, shadowCamPos.y * -0.0f + 0.5f);
     float sampledUvs = decalDepth.Sample(defaultSampler, uvs).r;
 	
-    if (sampledUvs > shadowCamPos.z + 0.001f && shadowCamPos.z > 0 && (dot(float3(0.0f, 1.0f, 0.0f), input.normal) > 0.1f))
+    if (sampledUvs > shadowCamPos.z + 0.001f && shadowCamPos.z > -0.01 && (dot(float3(0.0f, 1.0f, 0.0f), input.normal) > 0.1f))
     {
-        if (dot(isInside, isInside) < 1.0f - (distance * 0.2f) || dot(isInside, isInside) < 0.01f)
+        if (dot(isInside, isInside) < 0.5f - (distance * 0.04f) || dot(isInside, isInside) < 0.01f)
         {
             return float4(clamp((distance * 0.05f), joyShadow.rgb, image.Sample(defaultSampler, input.uv).rgb * (joyShadow.rgb + 0.5f)) * lightValue, 0.f);
         }

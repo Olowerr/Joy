@@ -109,7 +109,7 @@ void ImGuiModifyTransform(std::vector<Object*> object, Camera* camera)
 
 		if (ImGui::Button("Print"))
 		{
-			for (UINT i = 0; i < object[imguiObjCounter]->GetNumBboxes(); i++)
+			for (UINT i = 0; i < (UINT)object[imguiObjCounter]->GetNumBboxes(); i++)
 			{
 				center = object[imguiObjCounter]->GetBoundingBox(i).Center;
 				extents = object[imguiObjCounter]->GetBoundingBox(i).Extents;
@@ -118,7 +118,6 @@ void ImGuiModifyTransform(std::vector<Object*> object, Camera* camera)
 					imguiObjCounter, center.x, center.y, center.z, extents.x, extents.y, extents.z);
 			}
 		}
-
 	}
 	elgato:
 	ImGui::End();

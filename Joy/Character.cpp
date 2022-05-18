@@ -4,7 +4,6 @@ Character::Character(Mesh* mesh)
 	:Object(mesh, false), key(Backend::GetKeyboard()), velocity()
 	, head(mesh->children[1], false)
 	, arms(mesh->children[0], false)
-	//, rightArm(mesh/*->GetChild()*/, false)
 	, isRotating(false)
 	, rotateBack(0.f)
 	, charRotation(5.f)
@@ -12,12 +11,15 @@ Character::Character(Mesh* mesh)
 	Object::DropPtr(this);
 	Object::DropPtr(&head);
 	Object::DropPtr(&arms);
-	//Object::DropPtr(&rightArm);
 
+<<<<<<< HEAD
 	//head.SetPosition(0.f, 1.f, 0.f);
 	//arms.SetPosition(1.f, 0.f, 0.f);
 	//leftArm.SetPosition(-1.f, 0.f, 0.f);
 	LoadGlowMap();
+=======
+	arms.SetPosition(0.f, 1.2f, 0.f);
+>>>>>>> master
 
 	//Movement
 	//Slide
@@ -52,9 +54,8 @@ Character::~Character()
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
-	//head.Rotate(0.f, 20.f * dt, 0.f);
-	//arms.Rotate(50.f * dt, 0.f, 0.f);
-	//rightArm.Rotate(-50.f * dt, 0.f, 0.f);
+
+	arms.Rotate(0.1f, 0.f, 0.f);
 
 	maxSpeed = 10.0f;
 	speed = 0.1f;
@@ -75,7 +76,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_W) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
 	{
-		if (GetRotation().y < 0.f)
+		if (GetRotation().y > -0.01 && GetRotation().y < 0.01)
+		{
+			SetRotation(GetRotation().x, 0.f, GetRotation().z);
+		}
+		else if (GetRotation().y < 0.f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -96,7 +101,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
 	{
-		if (GetRotation().y < 3.14f && GetRotation().y >= 0.f)
+		if (GetRotation().y > 3.139 && GetRotation().y < 3.141f)
+		{
+			SetRotation(GetRotation().x, 3.14f, GetRotation().z);
+		}
+		else if (GetRotation().y < 3.14f && GetRotation().y >= 0.f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -117,7 +126,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_W))
 	{
-		if (GetRotation().y < 0.785)
+		if (GetRotation().y > 0.784 && GetRotation().y < 0.786f)
+		{
+			SetRotation(GetRotation().x, 0.785f, GetRotation().z);
+		}
+		else if (GetRotation().y < 0.785)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -128,7 +141,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_S))
 	{
-		if (GetRotation().y < 2.35f)
+		if (GetRotation().y > 2.34 && GetRotation().y < 2.36f)
+		{
+			SetRotation(GetRotation().x, 2.35f, GetRotation().z);
+		}
+		else if (GetRotation().y < 2.35f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -156,6 +173,10 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_W))
 	{
+		if (GetRotation().y < -0.780 && GetRotation().y > -0.790f)
+		{
+			SetRotation(GetRotation().x, -0.785f, GetRotation().z);
+		}
 		if (GetRotation().y > -0.785f)
 		{
 			Rotate(0.f, -charRotation * dt, 0.f);
@@ -167,6 +188,10 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_S))
 	{
+		if (GetRotation().y < -2.34 && GetRotation().y > 2.36f)
+		{
+			SetRotation(GetRotation().x, -2.35f, GetRotation().z);
+		}
 		if (GetRotation().y > -2.35f)
 		{
 			Rotate(0.f, -charRotation * dt, 0.f);
@@ -237,15 +262,8 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		//GetBoundingBox(0)
 	}
-	//if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
-	//{
-	//	SetRotation(GetRotation().x, -0.5f, GetRotation().z);
-	//}
-	//if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
-	//{
-	//	SetRotation(GetRotation().x, 0.5f, GetRotation().z);
-	//}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
 	{
 		rotateVal *= dt;
@@ -253,22 +271,14 @@ void Character::Move()
 		isRotating = true;
 		rotateBack += rotateVal;
 	}
-	//if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
-	//{
-	//	SetRotation(GetRotation().x, 0.5f, GetRotation().z);
-	//}
-	//if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
-	//{
-	//	SetRotation(GetRotation().x, -0.5f, GetRotation().z);
-	//}
-	else if (isSliding && GetRotation().z < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
+	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
 	{
 		rotateVal *= dt;
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
 	}
-	else if (isSliding && GetRotation().z < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
+	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
 	{
 		rotateVal *= dt;
 		Rotate(rotateVal, 0.f, 0.f);
@@ -375,6 +385,7 @@ void Character::Draw()
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
 	Mesh* mesh = GetMesh();
+	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 	dc->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
@@ -382,8 +393,11 @@ void Character::Draw()
 
 
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
+<<<<<<< HEAD
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 	dc->PSSetShaderResources(1, 1, &glowMapSRV);
+=======
+>>>>>>> master
 
 	if (mesh->indexBuffer)
 		dc->DrawIndexed(mesh->indexCount, 0, 0);
