@@ -24,6 +24,9 @@ public:
 	
 private:
 
+	ID3D11ShaderResourceView* glowMapSRV;
+	void LoadGlowMap();
+
 	//movement
 	Keyboard& key;
 	Mesh joy;

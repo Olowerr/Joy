@@ -14,6 +14,8 @@ Character::Character(Mesh* mesh)
 	Object::DropPtr(&arms);
 	//Object::DropPtr(&rightArm);
 
+	LoadGlowMap();
+
 	//head.SetPosition(0.f, 1.f, 0.f);
 	//arms.SetPosition(1.f, 0.f, 0.f);
 	//leftArm.SetPosition(-1.f, 0.f, 0.f);
@@ -379,6 +381,7 @@ void Character::Draw()
 
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
+	dc->PSSetShaderResources(1, 1, &glowMapSRV);
 
 	if (mesh->indexBuffer)
 		dc->DrawIndexed(mesh->indexCount, 0, 0);
@@ -399,4 +402,38 @@ void Character::DrawChildren()
 	head.DrawGeometry();
 	arms.DrawGeometry();
 	//rightArm.DrawGeometry();
+}
+
+void Character::LoadGlowMap()
+{
+	int width, height, channels;
+
+	unsigned char* imageData = stbi_load("../Resources/JOYFiles/JoyGlowMap.png", &width, &height, &channels, 1);
+	if (!imageData)
+		return;
+
+	D3D11_TEXTURE2D_DESC desc{};
+	desc.Format = DXGI_FORMAT_R8_UNORM;
+	desc.ArraySize = 1;
+	desc.MipLevels = 1;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = 0;
+	desc.Height = height;
+	desc.Width = width;
+	desc.MiscFlags = 0;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_IMMUTABLE;
+
+	D3D11_SUBRESOURCE_DATA inData{};
+	inData.pSysMem = imageData;
+	inData.SysMemPitch = width * 4;
+	inData.SysMemSlicePitch = 0;
+
+	ID3D11Texture2D* resource;
+	if (FAILED(Backend::GetDevice()->CreateTexture2D(&desc, &inData, &resource)))
+		return;
+
+	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &glowMapSRV);
+	resource->Release();
 }
