@@ -2,7 +2,7 @@
 
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
     :Scene(uiRender, objRender, decalShadow, meshStorage)
-    , joy(meshStorage.GetObjMesh(0))
+    , joy(&meshStorage.joy[0])
     , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
@@ -109,7 +109,6 @@ SceneState MainMenu::Update()
 
     }
 
-
     activeCamera->SetView();
 
     if (activeCamera == &freeCamera)
@@ -170,6 +169,7 @@ void MainMenu::Render()
         uiRender.Draw();
     }
 #ifdef _DEBUG
-    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+    //ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }

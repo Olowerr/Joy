@@ -76,8 +76,8 @@ private:
 
 
 	Object head;
-	Object leftArm;
-	Object rightArm;
+	Object arms;
+	//Object rightArm;
 
 	void DrawChildren();
 };

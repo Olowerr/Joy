@@ -2,21 +2,21 @@
 
 Character::Character(Mesh* mesh)
 	:Object(mesh, false), key(Backend::GetKeyboard()), velocity()
-	, head(mesh/*->GetChild()*/, false)
-	, leftArm(mesh/*->GetChild()*/, false)
-	, rightArm(mesh/*->GetChild()*/, false)
+	, head(mesh->children[1], false)
+	, arms(mesh->children[0], false)
+	//, rightArm(mesh/*->GetChild()*/, false)
 	, isRotating(false)
 	, rotateBack(0.f)
 	, charRotation(5.f)
 {
 	Object::DropPtr(this);
 	Object::DropPtr(&head);
-	Object::DropPtr(&leftArm);
-	Object::DropPtr(&rightArm);
+	Object::DropPtr(&arms);
+	//Object::DropPtr(&rightArm);
 
-	head.SetPosition(0.f, 1.f, 0.f);
-	rightArm.SetPosition(1.f, 0.f, 0.f);
-	leftArm.SetPosition(-1.f, 0.f, 0.f);
+	//head.SetPosition(0.f, 1.f, 0.f);
+	//arms.SetPosition(1.f, 0.f, 0.f);
+	//leftArm.SetPosition(-1.f, 0.f, 0.f);
 
 	//Movement
 	//Slide
@@ -51,9 +51,9 @@ Character::~Character()
 void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
-	head.Rotate(0.f, 20.f * dt, 0.f);
-	leftArm.Rotate(50.f * dt, 0.f, 0.f);
-	rightArm.Rotate(-50.f * dt, 0.f, 0.f);
+	//head.Rotate(0.f, 20.f * dt, 0.f);
+	//arms.Rotate(50.f * dt, 0.f, 0.f);
+	//rightArm.Rotate(-50.f * dt, 0.f, 0.f);
 
 	maxSpeed = 10.0f;
 	speed = 0.1f;
@@ -393,10 +393,10 @@ void Character::DrawChildren()
 	const DirectX::XMMATRIX& matrix = GetWorldMatrixXM();
 
 	head.ApplyParentTransform(matrix);
-	leftArm.ApplyParentTransform(matrix);
-	rightArm.ApplyParentTransform(matrix);
+	arms.ApplyParentTransform(matrix);
+	//rightArm.ApplyParentTransform(matrix);
 
 	head.DrawGeometry();
-	leftArm.DrawGeometry();
-	rightArm.DrawGeometry();
+	arms.DrawGeometry();
+	//rightArm.DrawGeometry();
 }
