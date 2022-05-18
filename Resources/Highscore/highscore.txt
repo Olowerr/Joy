@@ -1,12 +1,6 @@
-SASDAD4204
-123.1
-Kakaka
-<<<<<<< HEAD
-233.2
-ABCRGHFHJH
-344.3
-=======
-2239.22
-DDASDEASD
-17.1528
->>>>>>> parent of 886712f (asd)
+NameOne
+800.21
+NameTwo
+400.20
+NameThree
+201.20
