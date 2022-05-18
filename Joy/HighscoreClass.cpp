@@ -225,23 +225,26 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 
 void HighscoreClass::SortScores()
 {
-
+	int min = 0;
 	int max = 0;
 
 	for (int i = 0; i < 2; i++)
 	{
-		max = i;
+		min = i;
 
 		for (int j = i + 1; j < 3; j++)
 		{
-			if (m_scores[j] > m_scores[max])
+			if (m_scores[j] < m_scores[min])
 			{
-				max = j;
+				min = j;
 			}
-			std::swap(m_scores[i], m_scores[max]);
-			std::swap(m_names[i], m_names[max]);
+
 		}
+
+		std::swap(m_scores[i], m_scores[min]);
+		std::swap(m_names[i], m_names[min]);
 	}
+
 }
 
 void HighscoreClass::RenderHighScoreText()
