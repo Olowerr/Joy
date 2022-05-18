@@ -7,6 +7,7 @@ struct PS_IN
 };
 
 Texture2D image : register(t0);
+Texture2D glow : register(t1);
 SamplerState defaultSampler : register(s0);
 
 float4 main(PS_IN input) : SV_TARGET
@@ -16,5 +17,9 @@ float4 main(PS_IN input) : SV_TARGET
 
 	// fancy lightning
 
-	return float4(image.Load(int3(input.uv * textureDims, 0)).rgb, 1.f);
+	float4 final;
+	final.rgb = image.Sample(defaultSampler, input.uv).rgb;
+	final.a = glow.Sample(defaultSampler, input.uv).a;
+
+	return final;
 }

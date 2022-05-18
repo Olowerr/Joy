@@ -18,18 +18,32 @@ private:
 	ID3D11ComputeShader* blurXCS;
 	ID3D11ComputeShader* blurYCS;
 
-	ID3D11UnorderedAccessView* blurUAV;
-	ID3D11ShaderResourceView* blurSRV;
+	// tex 0
+	ID3D11RenderTargetView* sampleRTV; // Render to Smol tex
+	ID3D11ShaderResourceView* sampleSRV; // Read from SMolTex
+	
+	// tex 1
+	ID3D11UnorderedAccessView* xBlurUAV; // XBlur Target
+	ID3D11ShaderResourceView* xBlurSRV; // Read XBLur
+	
+	// tex 2
+	ID3D11UnorderedAccessView* yBlurUAV; // YBLUr Target
+	ID3D11ShaderResourceView* yBlurSRV; // Read YBLUR
+
 
 	// Down/Up sampling
 	ID3D11VertexShader* sampleVS;
 	ID3D11PixelShader* samplePS;
+	ID3D11PixelShader* upSamplePS;
 	D3D11_VIEWPORT viewport;
-	ID3D11RenderTargetView* sampleRTV;
 
 	ID3D11Buffer* quadBuffer;
 	const UINT VertexCount = 4;
+	UINT XGroups;
+	UINT YGroups;
 
+	void DownSample();
+	void UpSample();
 
 	bool LoadShaders();
 

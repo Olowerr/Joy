@@ -48,6 +48,8 @@ Character::Character(Mesh* mesh)
 	canBoost = false;
 
 	joy.bBox = mesh->bBox;
+
+	Backend::CreateConstSRV(&glowMap, "../Resources/JOYFiles/JoyGlowMap.png");
 }
 
 void Character::Shutdown()
@@ -242,6 +244,7 @@ void Character::Draw()
 
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
+	dc->PSSetShaderResources(1, 1, &glowMap);
 
 	if (mesh->indexBuffer)
 		dc->DrawIndexed(mesh->indexCount, 0, 0);
