@@ -151,7 +151,7 @@ void JoyPostProcess::ApplyGlow()
 	UpSample();
 
 	std::chrono::duration<float> time = std::chrono::system_clock::now() - frameStart;
-	std::cout << time.count() << "\n";
+	//std::cout << time.count() << "\n";
 
 }
 
