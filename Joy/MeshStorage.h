@@ -10,7 +10,7 @@ struct DiffTextures
 {
 	DiffTextures(std::string path, ID3D11ShaderResourceView* textureSRV)
 		:path(path), textureSRV(textureSRV) {};
-
+	DiffTextures() = default;
 	std::string path;
 	ID3D11ShaderResourceView* textureSRV;
 };
@@ -46,14 +46,12 @@ public:
 };
 
 /*
-
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
-
 */
 
 class TempMeshStorage
@@ -64,7 +62,7 @@ public:
 
 	void LoadAllObj();
 	void UnloadObjMeshes();
-
+	void UnloadJoy();
 	void LoadMenuObjects();
 	void LoadEasyObjects();
 	void UnloadMeshes();
@@ -80,10 +78,10 @@ public:
 	size_t GetObjMeshCount() { return MeshCount; }
 
 	Mesh joy[3];
-
+	DiffTextures joyDiff;
 
 private:
-	
+
 	std::vector<DiffTextures> diffTextures;
 	bool sameTexture;
 
@@ -137,7 +135,7 @@ private:
 	{
 		// menu .joy files
 		"Portal.joy",
-		"Litet_Spel_Level.joy"
+		"TestSceneUpdated.joy"
 	};
 
 	void import(UINT index);
