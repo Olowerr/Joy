@@ -49,12 +49,6 @@
     <FxCompile Include="PosOnlyInstanceVS.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="BlurXCS.hlsl">
-      <Filter>PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="BlurYCS.hlsl">
-      <Filter>PostProcess</Filter>
-    </FxCompile>
     <FxCompile Include="LineVS.hlsl">
       <Filter>System\HObject</Filter>
     </FxCompile>
@@ -67,14 +61,20 @@
     <FxCompile Include="ObjPsOutline.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="BlurYCS.hlsl">
+      <Filter>PostProcess\Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="BlurVS.hlsl">
-      <Filter>PostProcess</Filter>
+      <Filter>PostProcess\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurCS.hlsl">
+      <Filter>PostProcess\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="BlurPS.hlsl">
-      <Filter>PostProcess</Filter>
+      <Filter>PostProcess\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="UpSamplePS.hlsl">
-      <Filter>PostProcess</Filter>
+      <Filter>PostProcess\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -345,6 +345,9 @@
     </Filter>
     <Filter Include="System\HObject">
       <UniqueIdentifier>{5eaaa1b0-4834-4e32-806d-1ce636f61c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcess\Shaders">
+      <UniqueIdentifier>{939aa8d9-1d17-4b6c-af32-533a5def99d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

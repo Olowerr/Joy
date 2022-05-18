@@ -15,8 +15,7 @@ public:
 	const UINT NumThreadY = 9;
 
 private:
-	ID3D11ComputeShader* blurXCS;
-	ID3D11ComputeShader* blurYCS;
+	ID3D11ComputeShader* blurCS;
 
 	// tex 0
 	ID3D11RenderTargetView* sampleRTV; // Render to Smol tex
@@ -30,6 +29,7 @@ private:
 	ID3D11UnorderedAccessView* yBlurUAV; // YBLUr Target
 	ID3D11ShaderResourceView* yBlurSRV; // Read YBLUR
 
+	ID3D11Buffer* blurSwitch;
 
 	// Down/Up sampling
 	ID3D11VertexShader* sampleVS;

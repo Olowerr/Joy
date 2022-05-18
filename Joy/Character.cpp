@@ -380,6 +380,7 @@ void Character::Draw()
 	dc->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
 	//mesh->Bind();
 
+
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 	dc->PSSetShaderResources(1, 1, &glowMapSRV);
@@ -428,7 +429,7 @@ void Character::LoadGlowMap()
 
 	D3D11_SUBRESOURCE_DATA inData{};
 	inData.pSysMem = imageData;
-	inData.SysMemPitch = width * 4;
+	inData.SysMemPitch = width * 1;
 	inData.SysMemSlicePitch = 0;
 
 	ID3D11Texture2D* resource;

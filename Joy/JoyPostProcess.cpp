@@ -2,7 +2,7 @@
 #include <iostream>
 
 JoyPostProcess::JoyPostProcess()
-	:blurXCS(nullptr), blurYCS(nullptr), xBlurUAV(nullptr), sampleSRV(nullptr)
+	:blurCS(nullptr), xBlurUAV(nullptr), sampleSRV(nullptr)
 {
 	bool succeeded = false;
 	HRESULT hr;
@@ -50,6 +50,9 @@ JoyPostProcess::JoyPostProcess()
 		return;
 	}
 
+	int data[4] = { 0, 0, 0, 0 };
+	Backend::CreateDynamicCBuffer(&blurSwitch, data, 16);
+
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &sampleSRV);
 	Backend::GetDevice()->CreateRenderTargetView(resource, nullptr, &sampleRTV);
 	resource->Release();
@@ -76,8 +79,7 @@ JoyPostProcess::JoyPostProcess()
 
 void JoyPostProcess::Shutdown()
 {
-	blurXCS->Release();
-	blurYCS->Release();
+	blurCS->Release();
 
 	xBlurUAV->Release();
 	sampleSRV->Release();
@@ -85,10 +87,10 @@ void JoyPostProcess::Shutdown()
 
 void JoyPostProcess::ApplyGlow()
 {
-	DownSample();
-
 	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
 	//return;
+	
+	DownSample();
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart = std::chrono::system_clock::now();
 
@@ -101,16 +103,23 @@ void JoyPostProcess::ApplyGlow()
 	// Unbind sampleRTV
 	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
+	int dir = 0;
+	Backend::UpdateBuffer(blurSwitch, &dir, 4);
+
+	devContext->CSSetShader(blurCS, nullptr, 0);
+	devContext->CSSetConstantBuffers(0, 1, &blurSwitch);
+
 	// Horisontal Blur
-	devContext->CSSetShader(blurXCS, nullptr, 0);
 	devContext->CSSetUnorderedAccessViews(0, 1, &xBlurUAV, nullptr);
 	devContext->CSSetShaderResources(0, 1, &sampleSRV);
 	devContext->Dispatch(XGroups, YGroups, 1);
 
+
 	// Vertical Blur
-	devContext->CSSetShader(blurYCS, nullptr, 0);
+	dir = 1;
+	Backend::UpdateBuffer(blurSwitch, &dir, 4);
 	devContext->CSSetUnorderedAccessViews(0, 1, &yBlurUAV, nullptr);
-	devContext->CSSetShaderResources(1, 1, &xBlurSRV);
+	devContext->CSSetShaderResources(0, 1, &xBlurSRV);
 	devContext->Dispatch(XGroups, YGroups, 1);
 
 	// Unbind
@@ -123,12 +132,6 @@ void JoyPostProcess::ApplyGlow()
 	std::chrono::duration<float> time = std::chrono::system_clock::now() - frameStart;
 	std::cout << time.count() << "\n";
 
-	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
-}
-
-void JoyPostProcess::ApplyGlow2()
-{
-	
 }
 
 void JoyPostProcess::DownSample()
@@ -193,18 +196,12 @@ bool JoyPostProcess::LoadShaders()
 {
 	std::string shaderData;
 	
-	if (!Backend::LoadShader(Backend::ShaderPath + "BlurXCS.cso", &shaderData))
+	if (!Backend::LoadShader(Backend::ShaderPath + "BlurCS.cso", &shaderData))
 		return false;
 
-	if (FAILED(Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurXCS)))
+	if (FAILED(Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurCS)))
 		return false;
 		
-	if (!Backend::LoadShader(Backend::ShaderPath + "BlurYCS.cso", &shaderData))
-		return false;
-
-	if (FAILED(Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurYCS)))
-		return false;
-	
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "BlurVS.cso", &shaderData))
 		return false;

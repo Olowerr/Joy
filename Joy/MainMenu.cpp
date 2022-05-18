@@ -105,6 +105,9 @@ SceneState MainMenu::Update()
 
     }
 
+    if (activeCamera == &freeCamera)
+        activeCamera->UpdateCam();
+
     activeCamera->SetView();
 
     if (activeCamera == &freeCamera)
@@ -165,7 +168,7 @@ void MainMenu::Render()
         uiRender.Draw();
     }
 #ifdef _DEBUG
-    //ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+    //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }
