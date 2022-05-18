@@ -57,14 +57,4 @@ public:
 	static void EmptyObjectLists();
 	static const std::vector<Object*>& GetLevelObjects();
 	static const std::vector<Object*>& GetEnviormentObjects();
-
-
-	void* operator new(size_t i)
-	{
-		return _aligned_malloc(i, 16);
-	}
-	void operator delete(void* ptr)
-	{
-		_aligned_free(ptr);
-	}
 };

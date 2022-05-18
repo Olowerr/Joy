@@ -13,7 +13,6 @@ class Character: public Object
 {
 public:
 	Character(Mesh* mesh);
-	void Shutdown() override;
 	~Character();
 	void Move();
 	void Jump();
@@ -25,7 +24,6 @@ public:
 	
 private:
 
-	ID3D11ShaderResourceView* glowMap;
 	//movement
 	Keyboard& key;
 	Mesh joy;
@@ -47,6 +45,13 @@ private:
 	bool isSliding;
 	bool canSlide;
 	float timer;
+
+	//Rotate in slide
+	bool isRotating;
+	float charRotation;
+	float rotateVal;
+	float rotateBack;
+	float rotTimer;
 
 	//jump
 	float jumpVelocity;
@@ -71,8 +76,8 @@ private:
 
 
 	Object head;
-	Object leftArm;
-	Object rightArm;
+	Object arms;
+	//Object rightArm;
 
 	void DrawChildren();
 };
