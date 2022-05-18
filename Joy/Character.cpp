@@ -7,6 +7,7 @@ Character::Character(Mesh* mesh)
 	, rightArm(mesh/*->GetChild()*/, false)
 	, isRotating(false)
 	, rotateBack(0.f)
+	, charRotation(5.f)
 {
 	Object::DropPtr(this);
 	Object::DropPtr(&head);
@@ -17,9 +18,7 @@ Character::Character(Mesh* mesh)
 	rightArm.SetPosition(1.f, 0.f, 0.f);
 	leftArm.SetPosition(-1.f, 0.f, 0.f);
 
-
 	//Movement
-
 	//Slide
 	canSlide = true;
 	isSliding = false;
@@ -73,6 +72,17 @@ void Character::Move()
 		velocity.y += speed;
 		wsPressed = true;
 	}
+	if (key.KeyDown(DIK_W) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
+	{
+		if (GetRotation().y < 0.f)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y > 0.f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
+	}
 	else if (velocity.y > 0.f)
 	{
 		velocity.y -= counterForce;
@@ -82,6 +92,17 @@ void Character::Move()
 	{
 		velocity.y -= speed;
 		wsPressed = true;
+	}
+	if (key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
+	{
+		if (GetRotation().y < 3.14f && GetRotation().y >= 0.f)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y > -3.14f && GetRotation().y < 0.f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
 	}
 	else if (velocity.y < 0.f)
 	{
@@ -93,6 +114,35 @@ void Character::Move()
 		velocity.x += speed;
 		adPressed = true;
 	}
+	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_W))
+	{
+		if (GetRotation().y < 0.785)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y > 0.785)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
+	}
+	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_S))
+	{
+		if (GetRotation().y < 2.35f)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y > 2.35f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
+	}
+	if (key.KeyDown(DIK_D) && !key.KeyDown(DIK_W))
+	{
+		if (GetRotation().y < 1.57f)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+	}
 	else if (velocity.x > 0.f)
 	{
 		velocity.x -= counterForce;
@@ -102,6 +152,35 @@ void Character::Move()
 	{
 		adPressed = true;
 		velocity.x -= speed;
+	}
+	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_W))
+	{
+		if (GetRotation().y > -0.785f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y < -0.785f)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+	}
+	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_S))
+	{
+		if (GetRotation().y > -2.35f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y < -2.35f)
+		{
+			Rotate(0.f, charRotation * dt, 0.f);
+		}
+	}
+	if (key.KeyDown(DIK_A) && !key.KeyDown(DIK_W))
+	{
+		if (GetRotation().y > -1.57f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
+		}
 	}
 	else if (velocity.x < 0.f)
 	{
@@ -158,40 +237,40 @@ void Character::Move()
 		isRotating = true;
 		rotateBack += rotateVal;
 	}
-	if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
-	{
-		SetRotation(GetRotation().x, -0.5f, GetRotation().z);
-	}
-	if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
-	{
-		SetRotation(GetRotation().x, 0.5f, GetRotation().z);
-	}
+	//if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
+	//{
+	//	SetRotation(GetRotation().x, -0.5f, GetRotation().z);
+	//}
+	//if (isSliding && (key.KeyDown(DIK_W) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
+	//{
+	//	SetRotation(GetRotation().x, 0.5f, GetRotation().z);
+	//}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
 	{
 		rotateVal *= dt;
-		Rotate(-rotateVal, 0.f, 0.f);
+		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
 	}
-	if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
-	{
-		SetRotation(GetRotation().x, 0.5f, GetRotation().z);
-	}
-	if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
-	{
-		SetRotation(GetRotation().x, -0.5f, GetRotation().z);
-	}
+	//if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_A)) && rotTimer < 0.25f)
+	//{
+	//	SetRotation(GetRotation().x, 0.5f, GetRotation().z);
+	//}
+	//if (isSliding && (key.KeyDown(DIK_S) && key.KeyDown(DIK_D)) && rotTimer < 0.25f)
+	//{
+	//	SetRotation(GetRotation().x, -0.5f, GetRotation().z);
+	//}
 	else if (isSliding && GetRotation().z < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
 	{
 		rotateVal *= dt;
-		Rotate(0.f, 0.f, rotateVal);
+		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
 	}
 	else if (isSliding && GetRotation().z < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
 	{
 		rotateVal *= dt;
-		Rotate(0.f, 0.f, -rotateVal);
+		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
 	}

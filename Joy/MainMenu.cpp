@@ -8,8 +8,8 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , divider(joy)
     , activeCamera(&joyCamera)
     , highscore(uiRender)
-{   
-	Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
+{
+    Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
     SoundSystem::getInstance().StopSounds();
 
     meshStorage.LoadAllObj();
@@ -106,20 +106,20 @@ SceneState MainMenu::Update()
         activeCamera = &joyCamera;
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
-      
+
     }
 
 
-   activeCamera->SetView();
+    activeCamera->SetView();
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
-    
+
     joy.Jump();
     joy.Move();
     joy.Respawn();
 
-    
+
 
     //Collision
 

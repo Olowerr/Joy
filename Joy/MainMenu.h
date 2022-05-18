@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "HighscoreClass.h"
+
 class MainMenu : public Scene
 {
 public:

@@ -48,6 +48,7 @@ private:
 
 	//Rotate in slide
 	bool isRotating;
+	float charRotation;
 	float rotateVal;
 	float rotateBack;
 	float rotTimer;
