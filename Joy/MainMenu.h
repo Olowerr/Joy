@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "HighscoreClass.h"
 
 class MainMenu : public Scene
 {
@@ -23,6 +24,8 @@ private:
 	CharacterCamera joyCamera;
 
 	Sprite loadingScreen;
+
+	HighscoreClass highscore;
 
 	MapDivider divider;
 	Skybox sky;

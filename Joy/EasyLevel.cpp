@@ -3,7 +3,7 @@
 
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
-    , joy(meshStorage.GetObjMesh(0))
+    , joy(&meshStorage.joy[0])
     , pickUpUI("../Resources/Images/BoltForJoy.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
     , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
@@ -144,7 +144,7 @@ SceneState EasyLevel::Update()
 
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
-        m_highscore.DoAllTheHighscoreStuff(time); // send in the final score here
+        m_highscore.InputNameAndSetHighscore(time); // send in the final score here
         uiRender.Clear();
         uiRender.Add(&loadingScreen);
 

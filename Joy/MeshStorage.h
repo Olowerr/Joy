@@ -76,6 +76,9 @@ public:
 	Mesh* GetObjMesh(UINT index);
 	size_t GetObjMeshCount() { return MeshCount; }
 
+	Mesh joy[3];
+
+
 private:
 	
 	std::vector<DiffTextures> diffTextures;
@@ -115,7 +118,6 @@ private:
 	};
 
 	std::vector<Mesh*> meshes;
-
 	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
 	static const UINT MenuCount = 2;
 	const std::string MenuFiles[MenuCount] =

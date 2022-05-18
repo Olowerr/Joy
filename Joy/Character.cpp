@@ -14,11 +14,10 @@ Character::Character(Mesh* mesh)
 	Object::DropPtr(&arms);
 	//Object::DropPtr(&rightArm);
 
-	LoadGlowMap();
-
 	//head.SetPosition(0.f, 1.f, 0.f);
 	//arms.SetPosition(1.f, 0.f, 0.f);
 	//leftArm.SetPosition(-1.f, 0.f, 0.f);
+	LoadGlowMap();
 
 	//Movement
 	//Slide
@@ -295,6 +294,8 @@ void Character::Move()
 	{
 		fuel -= 1 * dt;
 	}
+
+
 
 
 

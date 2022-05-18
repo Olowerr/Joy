@@ -4,6 +4,83 @@
 TempMeshStorage::TempMeshStorage()
 	:meshes{}, sameTexture(false)
 {
+	HRESULT hr;
+
+	StoredData::GetInstance().StoreAll("../Resources/JoyFiles/JoyModell.joy");
+
+	for (UINT i = 0; i < 3; i++)
+	{
+		ObjectInfo& object = StoredData::GetInstance().m_objectInfoVec.at(i);
+
+		joy[i].name = object.objHeader.meshName.string;
+
+		hr = Backend::CreateVertexBuffer(&joy[i].vertexBuffer, object.vertex.data(), sizeof(JOY::Vertex) * object.vertex.size());
+		if (FAILED(hr))
+			return;
+
+		hr = Backend::CreateIndexBuffer(&joy[i].indexBuffer, object.indices.data(), sizeof(int) * object.indices.size());
+		if (FAILED(hr))
+			return;
+
+		joy[i].indexCount = object.indices.size();
+
+		sameTexture = false;
+		for (size_t k = 0; k < diffTextures.size(); k++)
+		{
+			if (diffTextures[k].path == tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string)
+			{
+				joy[i].diffuseTextureSRV = diffTextures[k].textureSRV;
+				sameTexture = true;
+			}
+		}
+		if (!sameTexture)
+		{
+			diffTextures.emplace_back(tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string, joy[i].diffuseTextureSRV);
+			Backend::CreateConstSRV(&diffTextures.back().textureSRV, diffTextures.back().path);
+			joy[i].diffuseTextureSRV = diffTextures.back().textureSRV;
+			sameTexture = false;
+		}
+
+		// bounding box for body only
+		if (i != 0)
+			continue;
+		{
+			float tempXmax = -INFINITY;
+			float tempXmin = INFINITY;
+			float tempYmax = -INFINITY;
+			float tempYmin = INFINITY;
+			float tempZmax = -INFINITY;
+			float tempZmin = INFINITY;
+			for (JOY::Vertex& vert : object.vertex)
+			{
+
+				if (vert.pos[0] > tempXmax)
+					tempXmax = vert.pos[0];
+				if (vert.pos[0] < tempXmin)
+					tempXmin = vert.pos[0];
+				if (vert.pos[1] > tempYmax)
+					tempYmax = vert.pos[1];
+				if (vert.pos[1] < tempYmin)
+					tempYmin = vert.pos[1];
+				if (vert.pos[2] > tempZmax)
+					tempZmax = vert.pos[2];
+				if (vert.pos[2] < tempZmin)
+					tempZmin = vert.pos[2];
+			}
+
+			joy[0].bBox.Center.x = (tempXmax + tempXmin) / 2.f;
+			joy[0].bBox.Center.y = (tempYmax + tempYmin) / 2.f;
+			joy[0].bBox.Center.z = (tempZmax + tempZmin) / 2.f;
+				  
+			joy[0].bBox.Extents.x = (tempXmax - tempXmin) / 2.f;
+			joy[0].bBox.Extents.y = (tempYmax - tempYmin) / 2.f + 1.f;
+			joy[0].bBox.Extents.z = (tempZmax - tempZmin) / 2.f;
+		}
+
+	}
+
+	joy[0].children.emplace_back(&joy[1]);
+	joy[0].children.emplace_back(&joy[2]);
 
 }
 
