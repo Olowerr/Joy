@@ -53,15 +53,27 @@ JoyPostProcess::JoyPostProcess()
 	int data[4] = { 0, 0, 0, 0 };
 	Backend::CreateDynamicCBuffer(&blurSwitch, data, 16);
 
+
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &sampleSRV);
 	Backend::GetDevice()->CreateRenderTargetView(resource, nullptr, &sampleRTV);
 	resource->Release();
 
-	Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
+	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+	{
+		assert(SUCCEEDED(hr));
+		return;
+	}
 	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &xBlurUAV);
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &xBlurSRV);
 	resource->Release();
-	
+
+	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+	{
+		assert(SUCCEEDED(hr));
+		return;
+	}
 	Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
 	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &yBlurUAV);
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &yBlurSRV);
@@ -144,7 +156,7 @@ void JoyPostProcess::DownSample()
 
 	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
-	devContext->IASetInputLayout(il);
+	devContext->IASetInputLayout(Backend::GetShaderStorage().posOnlyInputLayout);
 	devContext->IASetVertexBuffers(0, 1, &quadBuffer, &Stride, &Offset);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -172,7 +184,6 @@ void JoyPostProcess::UpSample()
 
 	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
-	devContext->IASetInputLayout(il);
 	devContext->IASetVertexBuffers(0, 1, &quadBuffer, &Stride, &Offset);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -209,13 +220,6 @@ bool JoyPostProcess::LoadShaders()
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &sampleVS)))
 		return false;
 
-	D3D11_INPUT_ELEMENT_DESC desc[1] =
-	{
-		{"SV_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,0, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-	if (FAILED(Backend::GetDevice()->CreateInputLayout(desc, 1, shaderData.c_str(), shaderData.length(), &il)))
-		return false;
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "BlurPS.cso", &shaderData))
 		return false;

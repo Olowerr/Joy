@@ -2,7 +2,7 @@ RWTexture2D<unorm float> target : register(u0);
 Texture2D<unorm float> source : register(t0);
 
 #define Range 10
-#define Factor 1.f
+#define Factor 2.f
 
 cbuffer dirData : register(b0)
 {

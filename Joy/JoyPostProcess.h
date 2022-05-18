@@ -9,7 +9,6 @@ public:
 	void Shutdown();
 
 	void ApplyGlow();
-	void ApplyGlow2();
 
 	const UINT NumThreadX = 16;
 	const UINT NumThreadY = 9;
@@ -17,6 +16,11 @@ public:
 private:
 	ID3D11ComputeShader* blurCS;
 
+	// could optimize
+	// could optimize
+	// could optimize
+	// could optimize
+	
 	// tex 0
 	ID3D11RenderTargetView* sampleRTV; // Render to Smol tex
 	ID3D11ShaderResourceView* sampleSRV; // Read from SMolTex
@@ -46,7 +50,4 @@ private:
 	void UpSample();
 
 	bool LoadShaders();
-
-	// temp
-	ID3D11InputLayout* il;
 };
