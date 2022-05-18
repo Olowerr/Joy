@@ -12,14 +12,7 @@ Character::Character(Mesh* mesh)
 	Object::DropPtr(&head);
 	Object::DropPtr(&arms);
 
-<<<<<<< HEAD
-	//head.SetPosition(0.f, 1.f, 0.f);
-	//arms.SetPosition(1.f, 0.f, 0.f);
-	//leftArm.SetPosition(-1.f, 0.f, 0.f);
-	LoadGlowMap();
-=======
 	arms.SetPosition(0.f, 1.2f, 0.f);
->>>>>>> master
 
 	//Movement
 	//Slide
@@ -393,11 +386,10 @@ void Character::Draw()
 
 
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
-<<<<<<< HEAD
+
 	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 	dc->PSSetShaderResources(1, 1, &glowMapSRV);
-=======
->>>>>>> master
+
 
 	if (mesh->indexBuffer)
 		dc->DrawIndexed(mesh->indexCount, 0, 0);

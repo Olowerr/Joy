@@ -27,10 +27,9 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     sceneObjects.at(9).RemoveBBox(0);
 
     meshStorage.UnloadDataBase();
-<<<<<<< HEAD
-=======
+
     sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3f);
->>>>>>> master
+
 
     collisions.reserve(110);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)
@@ -169,11 +168,10 @@ void MainMenu::Render()
         uiRender.Draw();
     }
 #ifdef _DEBUG
-<<<<<<< HEAD
+
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-=======
+
     //ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
->>>>>>> master
     //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }
