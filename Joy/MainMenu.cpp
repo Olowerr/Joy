@@ -19,19 +19,15 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     sceneObjects.reserve(110);
 
     meshStorage.LoadMenuObjects();
-    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(1.6f, 1.9f, 2.3));
+    for (size_t i = 1; i < meshStorage.GetMeshCount(); i++)
     {
-        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
-        if (i == 1)
-        {
-            for (size_t i = 0; i < 2; i++)
-            {
-                sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-            }
-        }
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true, F3()); 
     }
+    sceneObjects.at(9).RemoveBBox(0);
+
     meshStorage.UnloadDataBase();
-    sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3);
 
     collisions.reserve(110);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)

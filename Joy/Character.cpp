@@ -50,6 +50,14 @@ Character::Character(Mesh* mesh)
 	joy.bBox = mesh->bBox;
 }
 
+void Character::Shutdown()
+{
+	Object::Shutdown();
+	head.Shutdown();
+	leftArm.Shutdown();
+	rightArm.Shutdown();
+}
+
 Character::~Character()
 {
 }

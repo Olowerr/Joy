@@ -164,7 +164,10 @@ void Object::SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, FLOAT scale)
 	if (bBoxIndex < 0 || bBoxIndex >= bBox.size())
 		return;
 
-	bBox.at(bBoxIndex).Center = pos;
+	bBox.at(bBoxIndex).Center.x = mesh->bBox.Center.x + pos.x;////////
+	bBox.at(bBoxIndex).Center.y = mesh->bBox.Center.y + pos.y;
+	bBox.at(bBoxIndex).Center.z = mesh->bBox.Center.z + pos.z;
+
 	bBox.at(bBoxIndex).Extents.x *= scale;
 	bBox.at(bBoxIndex).Extents.y *= scale;
 	bBox.at(bBoxIndex).Extents.z *= scale;

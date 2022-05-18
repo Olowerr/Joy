@@ -67,6 +67,12 @@
     <FxCompile Include="ObjPsOutline.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="BlurVS.hlsl">
+      <Filter>PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurPS.hlsl">
+      <Filter>PostProcess</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />

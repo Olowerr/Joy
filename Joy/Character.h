@@ -13,6 +13,7 @@ class Character: public Object
 {
 public:
 	Character(Mesh* mesh);
+	void Shutdown() override;
 	~Character();
 	void Move();
 	void Jump();
