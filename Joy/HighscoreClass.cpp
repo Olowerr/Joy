@@ -9,26 +9,26 @@ HighscoreClass::HighscoreClass(UIRenderer& uiRenderer)
 
 HighscoreClass::~HighscoreClass()
 {
+	Backend::Clear();
 }
 
 void HighscoreClass::SetHighscore(float score, std::string user)
 {
+	float finalScore = 1000 - score;
 
-	score = 1000 - score;
-
-	if (score > m_scores[0])
+	if (finalScore > m_scores[0])
 	{
-		m_scores[0] = score;
+		m_scores[0] = finalScore;
 		m_names[0] = user;
 	}
-	else if (score > m_scores[1])
+	else if (finalScore > m_scores[1])
 	{
-		m_scores[1] = score;
+		m_scores[1] = finalScore;
 		m_names[1] = user;
 	}
-	else if (score > m_scores[2])
+	else if (finalScore > m_scores[2])
 	{
-		m_scores[2] = score;
+		m_scores[2] = finalScore;
 		m_names[2] = user;
 	}
 
@@ -47,27 +47,36 @@ void HighscoreClass::SetHighscore(float score, std::string user)
 
 }
 
-void HighscoreClass::LoadFromFile()
+bool HighscoreClass::LoadFromFile()
 {
-
-	m_myFile.open("../Resources/Highscore/highscore.txt");
-
-	if (m_myFile.is_open())
+	try
 	{
-		m_myFile >> m_names[0];
-		m_myFile >> m_scores[0];
-		m_myFile >> m_names[1];
-		m_myFile >> m_scores[1];
-		m_myFile >> m_names[2];
-		m_myFile >> m_scores[2];
-	}
+		m_myFile.open("../Resources/Highscore/highscore.txt");
 
-	m_myFile.close();
+		if (m_myFile.is_open())
+		{
+			m_myFile >> m_names[0];
+			m_myFile >> m_scores[0];
+			m_myFile >> m_names[1];
+			m_myFile >> m_scores[1];
+			m_myFile >> m_names[2];
+			m_myFile >> m_scores[2];
+
+			m_myFile.close();
+		}
+
+		return true;
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
 
 }
 
 void HighscoreClass::InputNameAndSetHighscore(float score)
 {
+
 	std::string hsText = "New High Score: " + std::to_string(score).erase(std::to_string(score).find_first_of('.') + 3, std::string::npos) + "\nEnter you name:";
 	m_text.SetText(hsText);
 	m_text.SetPosition((float)Backend::GetWindowWidth() / 2.f - 220.f, (float)Backend::GetWindowHeight() / 2.f - 200.f);
@@ -149,6 +158,10 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 		{
 			finalName.append("Q");
 		}
+		if (m_key.KeyReleased(DIK_R))
+		{
+			finalName.append("R");
+		}
 		if (m_key.KeyReleased(DIK_C))
 		{
 			finalName.append("R");
@@ -211,8 +224,12 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 
 		if (m_key.KeyDown(DIK_RETURN))
 		{
-			finalName.erase(+10, std::string::npos);
 			LoadFromFile();
+			if (finalName.size() > 10)
+			{
+				finalName.erase(+10, std::string::npos);
+			}
+
 			SetHighscore(score, finalName);
 
 			m_nameText.Shutdown();
@@ -225,23 +242,26 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 
 void HighscoreClass::SortScores()
 {
-
+	int min = 0;
 	int max = 0;
 
 	for (int i = 0; i < 2; i++)
 	{
-		max = i;
+		min = i;
 
 		for (int j = i + 1; j < 3; j++)
 		{
-			if (m_scores[j] > m_scores[max])
+			if (m_scores[j] > m_scores[min])
 			{
-				max = j;
+				min = j;
 			}
-			std::swap(m_scores[i], m_scores[max]);
-			std::swap(m_names[i], m_names[max]);
+
 		}
+
+		std::swap(m_scores[i], m_scores[min]);
+		std::swap(m_names[i], m_names[min]);
 	}
+
 }
 
 void HighscoreClass::RenderHighScoreText()
@@ -272,7 +292,7 @@ void HighscoreClass::AddRend()
 
 void HighscoreClass::HighScoreSetPos()
 {
-	m_screenRend.SetPosition(519.f, 307.f);
+	m_screenRend.SetPosition(470.f, 320.f);
 	m_screenRend.SetScale(0.5f, 0.5f);
 	m_screenRend.SetColour({ 0.2f ,0.8f ,0.33f , 0.2f });
 }
