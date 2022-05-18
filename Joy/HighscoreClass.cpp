@@ -7,6 +7,13 @@ HighscoreClass::HighscoreClass(UIRenderer& uiRenderer)
 
 }
 
+void HighscoreClass::Shutdown()
+{
+	m_screenRend.Shutdown();
+	m_nameText.Shutdown();
+	m_screenRend.Shutdown();
+}
+
 HighscoreClass::~HighscoreClass()
 {
 	Backend::Clear();

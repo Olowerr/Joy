@@ -33,7 +33,7 @@ VS_OUT main(VS_IN input)
 	output.pos = mul(float4(output.worldPos, 1.0f), viewProj);
 	output.normal = mul(float4(input.normal, 0.f), viewProj).xyz;
 	float3 Normal = normalize(output.normal);
-
+	output.uv = input.uv;
 	output.pos = output.pos + float4(mul(0.06, Normal),0);
 
 

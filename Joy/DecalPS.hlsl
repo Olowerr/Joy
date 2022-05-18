@@ -70,5 +70,6 @@ float4 main(PS_IN input) : SV_TARGET
 
     intensity = clamp(intensity * lightValue, 0.2f, 1.f);
 
+    //return float4(image.Sample(defaultSampler, input.uv).rgb * intensity, 0.f);
     return float4(image.Load(int3(input.uv * textureDims, 0)).rgb * intensity, 0.f);
 }

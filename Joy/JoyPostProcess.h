@@ -2,6 +2,9 @@
 #include "Backend.h"
 #include <DirectXMath.h>
 
+#include "imgui\imgui.h"
+#include "imgui\imgui_impl_win32.h"
+#include "imgui\imgui_impl_dx11.h"
 class JoyPostProcess
 {
 public:
@@ -10,8 +13,6 @@ public:
 
 	void ApplyGlow();
 
-	const UINT NumThreadX = 16;
-	const UINT NumThreadY = 9;
 
 private:
 	ID3D11ComputeShader* blurCS;
@@ -36,15 +37,20 @@ private:
 	ID3D11Buffer* blurSwitch;
 
 	// Down/Up sampling
-	ID3D11VertexShader* sampleVS;
-	ID3D11PixelShader* samplePS;
+	ID3D11VertexShader* screenQuadVS;
+	ID3D11PixelShader* downSamplePS;
 	ID3D11PixelShader* upSamplePS;
 	D3D11_VIEWPORT viewport;
 
 	ID3D11Buffer* quadBuffer;
 	const UINT VertexCount = 4;
-	UINT XGroups;
-	UINT YGroups;
+
+	const UINT NumThreadX;
+	const UINT NumThreadY;
+	const UINT SampleTexX;
+	const UINT SampleTexY;
+	const UINT XGroups;
+	const UINT YGroups;
 
 	void DownSample();
 	void UpSample();

@@ -3,22 +3,12 @@
 
 JoyPostProcess::JoyPostProcess()
 	:blurCS(nullptr), xBlurUAV(nullptr), sampleSRV(nullptr)
+	, NumThreadX(16), NumThreadY(9)
+	, SampleTexX(NumThreadX * 30), SampleTexY(NumThreadY * 30)
+	, XGroups(SampleTexX / NumThreadX), YGroups(SampleTexY / NumThreadY)
 {
 	bool succeeded = false;
 	HRESULT hr;
-
-	/*D3D11_TEXTURE2D_DESC texDesc{};
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	texDesc.Format = DXGI_FORMAT_R8_UNORM;
-	texDesc.ArraySize = 1;
-	texDesc.Width = Backend::GetWindowWidth();
-	texDesc.Height = Backend::GetWindowHeight();
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MipLevels = 1;
-	texDesc.MiscFlags = 0;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;*/
 
 	succeeded = LoadShaders();
 	assert(succeeded);
@@ -32,15 +22,13 @@ JoyPostProcess::JoyPostProcess()
 	hr = Backend::CreateVertexBuffer(&quadBuffer, pos, sizeof(pos));
 	assert(SUCCEEDED(hr));
 
+
 	D3D11_TEXTURE2D_DESC texDesc;
 	(*Backend::GetBackBuffer())->GetDesc(&texDesc);
 	texDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	texDesc.Format = DXGI_FORMAT_R8_UNORM;
-	texDesc.Width = texDesc.Width / 2;
-	texDesc.Height = texDesc.Height / 2;
-
-	XGroups = texDesc.Width / NumThreadX;
-	YGroups = texDesc.Height / NumThreadY;
+	texDesc.Width = SampleTexX;
+	texDesc.Height = SampleTexY;
 
 	ID3D11Texture2D* resource;
 	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
@@ -49,10 +37,6 @@ JoyPostProcess::JoyPostProcess()
 		assert(SUCCEEDED(hr));
 		return;
 	}
-
-	int data[4] = { 0, 0, 0, 0 };
-	Backend::CreateDynamicCBuffer(&blurSwitch, data, 16);
-
 
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &sampleSRV);
 	Backend::GetDevice()->CreateRenderTargetView(resource, nullptr, &sampleRTV);
@@ -74,12 +58,11 @@ JoyPostProcess::JoyPostProcess()
 		assert(SUCCEEDED(hr));
 		return;
 	}
-	Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
 	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &yBlurUAV);
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &yBlurSRV);
 	resource->Release();
 
-
+	Backend::CreateDynamicCBuffer(&blurSwitch, nullptr, 16);
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
@@ -93,8 +76,23 @@ void JoyPostProcess::Shutdown()
 {
 	blurCS->Release();
 
-	xBlurUAV->Release();
+	sampleRTV->Release();
 	sampleSRV->Release();
+
+	xBlurUAV->Release();
+	xBlurSRV->Release();
+
+	yBlurSRV->Release();
+	yBlurUAV->Release();
+
+	blurSwitch->Release();
+
+	screenQuadVS->Release();
+	downSamplePS->Release();
+
+	upSamplePS->Release();
+
+	quadBuffer->Release();
 }
 
 void JoyPostProcess::ApplyGlow()
@@ -104,19 +102,30 @@ void JoyPostProcess::ApplyGlow()
 	
 	DownSample();
 
-	std::chrono::time_point<std::chrono::system_clock> frameStart = std::chrono::system_clock::now();
+	auto frameStart = std::chrono::system_clock::now();
 
-	static ID3D11RenderTargetView* nullRTV{};
+	static ID3D11RenderTargetView* nullRTV[2]{};
 	static ID3D11UnorderedAccessView* nullUAV{};
 	static ID3D11ShaderResourceView* nullSRV[2]{};
+	static float data[2] = { 0.f, 1.f };
 
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	
 	// Unbind sampleRTV
-	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+	devContext->OMSetRenderTargets(2, nullRTV, nullptr);
 
-	int dir = 0;
-	Backend::UpdateBuffer(blurSwitch, &dir, 4);
+#ifdef _DEBUG
+	if (ImGui::Begin("Glow"))
+	{
+		data[1] = data[1] < 0.f ? 0.f : data[1];
+
+		ImGui::InputFloat("Glow Strength", &data[1], 0.1f);
+	}
+	ImGui::End();
+#endif // _DEBUG
+
+	data[0] = 0.f;
+	Backend::UpdateBuffer(blurSwitch, data, 8);
 
 	devContext->CSSetShader(blurCS, nullptr, 0);
 	devContext->CSSetConstantBuffers(0, 1, &blurSwitch);
@@ -128,8 +137,9 @@ void JoyPostProcess::ApplyGlow()
 
 
 	// Vertical Blur
-	dir = 1;
-	Backend::UpdateBuffer(blurSwitch, &dir, 4);
+	data[0] = 1.f;
+
+	Backend::UpdateBuffer(blurSwitch, data, 8);
 	devContext->CSSetUnorderedAccessViews(0, 1, &yBlurUAV, nullptr);
 	devContext->CSSetShaderResources(0, 1, &xBlurSRV);
 	devContext->Dispatch(XGroups, YGroups, 1);
@@ -160,10 +170,10 @@ void JoyPostProcess::DownSample()
 	devContext->IASetVertexBuffers(0, 1, &quadBuffer, &Stride, &Offset);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	devContext->VSSetShader(sampleVS, nullptr, 0);
+	devContext->VSSetShader(screenQuadVS, nullptr, 0);
 
-	devContext->PSSetShader(samplePS, nullptr, 0);
-	devContext->PSSetShaderResources(5, 1, Backend::GetMainSRV());
+	devContext->PSSetShader(downSamplePS, nullptr, 0);
+	devContext->PSSetShaderResources(5, 1, Backend::GetBlurSRV());
 
 	devContext->RSSetViewports(1, &viewport);
 
@@ -187,7 +197,7 @@ void JoyPostProcess::UpSample()
 	devContext->IASetVertexBuffers(0, 1, &quadBuffer, &Stride, &Offset);
 	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	devContext->VSSetShader(sampleVS, nullptr, 0);
+	devContext->VSSetShader(screenQuadVS, nullptr, 0);
 
 	devContext->PSSetShader(upSamplePS, nullptr, 0);
 	devContext->PSSetShaderResources(5, 1, Backend::GetMainSRV());
@@ -217,14 +227,14 @@ bool JoyPostProcess::LoadShaders()
 	if (!Backend::LoadShader(Backend::ShaderPath + "BlurVS.cso", &shaderData))
 		return false;
 
-	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &sampleVS)))
+	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &screenQuadVS)))
 		return false;
 
 
-	if (!Backend::LoadShader(Backend::ShaderPath + "BlurPS.cso", &shaderData))
+	if (!Backend::LoadShader(Backend::ShaderPath + "DownSamplePS.cso", &shaderData))
 		return false;
 
-	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &samplePS)))
+	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &downSamplePS)))
 		return false;
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "UpSamplePS.cso", &shaderData))

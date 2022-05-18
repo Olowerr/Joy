@@ -1,13 +1,14 @@
 RWTexture2D<unorm float> target : register(u0);
 Texture2D<unorm float> source : register(t0);
 
-#define Range 10
-#define Factor 2.f
+#define Range 5
+#define Factor 0.f
 
-cbuffer dirData : register(b0)
+cbuffer glowInfo : register(b0)
 {
-	int dir;
-	int3 pad;
+	float dir;
+	float factor;
+	int2 pad;
 }
 
 [numthreads(16, 9, 1)]
@@ -15,7 +16,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
 {
 	float glow = 0.f;
 
-	if (dir == 0)
+	if (dir == 0.f)
 	{
 		for (int x = -Range; x <= Range; x++)
 			glow += source.Load(int3(DTid.x + x, DTid.y, 0)) * ((Range - uint(abs(x))) / (float)Range);
@@ -27,5 +28,5 @@ void main( uint3 DTid : SV_DispatchThreadID )
 	}
 	
 	AllMemoryBarrier();
-	target[DTid.xy] = (glow / float(Range * 2 + 1)) * Factor;
+	target[DTid.xy] = (glow / float(Range * 2 + 1)) * factor;
 }

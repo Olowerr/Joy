@@ -14,6 +14,8 @@ Character::Character(Mesh* mesh)
 
 	arms.SetPosition(0.f, 1.2f, 0.f);
 
+	LoadGlowMap();
+
 	//Movement
 	//Slide
 	canSlide = true;
@@ -42,6 +44,15 @@ Character::Character(Mesh* mesh)
 
 Character::~Character()
 {
+}
+
+void Character::Shutdown()
+{
+	Object::Shutdown();
+	head.Shutdown();
+	arms.Shutdown();
+
+	glowMapSRV->Release();
 }
 
 void Character::Move()
@@ -414,6 +425,8 @@ void Character::DrawChildren()
 
 void Character::LoadGlowMap()
 {
+	HRESULT hr;
+
 	int width, height, channels;
 
 	unsigned char* imageData = stbi_load("../Resources/JOYFiles/JoyGlowMap.png", &width, &height, &channels, 1);
@@ -439,7 +452,10 @@ void Character::LoadGlowMap()
 	inData.SysMemSlicePitch = 0;
 
 	ID3D11Texture2D* resource;
-	if (FAILED(Backend::GetDevice()->CreateTexture2D(&desc, &inData, &resource)))
+	hr = Backend::GetDevice()->CreateTexture2D(&desc, &inData, &resource);
+
+	stbi_image_free(imageData);
+	if (FAILED(hr))
 		return;
 
 	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &glowMapSRV);

@@ -80,6 +80,7 @@ void EasyLevel::Shutdown()
     loadingScreen.Shutdown();
     pickUpUI.Shutdown();
     thomas.Shutdown();
+    m_highscore.Shutdown();
 }
 
 SceneState EasyLevel::Update()

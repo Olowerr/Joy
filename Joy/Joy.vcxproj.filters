@@ -61,16 +61,13 @@
     <FxCompile Include="ObjPsOutline.hlsl">
       <Filter>3D Rendering\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="BlurYCS.hlsl">
-      <Filter>PostProcess\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="BlurVS.hlsl">
+    <FxCompile Include="screenQuadVS.hlsl">
       <Filter>PostProcess\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="BlurCS.hlsl">
       <Filter>PostProcess\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="BlurPS.hlsl">
+    <FxCompile Include="DownSamplePS.hlsl">
       <Filter>PostProcess\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="UpSamplePS.hlsl">

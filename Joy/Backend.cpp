@@ -115,6 +115,20 @@ Backend& Backend::Create(HINSTANCE hInst, int showCmd, UINT width, UINT height)
     hr = system->device->CreateShaderResourceView(system->mainBuffer, nullptr, &system->mainSRV);
     assert(SUCCEEDED(hr));
 
+    
+    texDesc.Format = DXGI_FORMAT_R8_UNORM;
+    hr = system->device->CreateTexture2D(&texDesc, nullptr, &resource);
+    if (FAILED(hr))
+    {
+        assert(SUCCEEDED(hr));
+        return *system;
+    }
+    hr = system->device->CreateRenderTargetView(resource, nullptr, &system->blurRTV);
+    assert(SUCCEEDED(hr));
+    hr = system->device->CreateShaderResourceView(resource, nullptr, &system->blurSRV);
+    assert(SUCCEEDED(hr));
+    resource->Release();
+
 
     hr = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&system->DInput), NULL);
     assert(SUCCEEDED(hr));
@@ -146,6 +160,8 @@ void Backend::Destroy()
     if (!system)
         return;
 
+    system->blurRTV->Release();
+    system->blurSRV->Release();
     system->backBuffer->Release();
     system->bbUAV->Release();
     system->bbRTV->Release();
@@ -238,11 +254,23 @@ ID3D11ShaderResourceView* const* Backend::GetMainSRV()
     return &system->mainSRV;
 }
 
+ID3D11RenderTargetView* const* Backend::GetBlurRTV()
+{
+    return &system->blurRTV;
+}
+
+ID3D11ShaderResourceView* const* Backend::GetBlurSRV()
+{
+    return &system->blurSRV;
+}
+
 void Backend::Clear()
 {
     static const float clearColour[4] = { 0.2f, 0.2f, 0.2f, 0.f };
+    static const float clearColour2[4] = { 0.f, 0.f, 0.f, 0.f };
     system->deviceContext->ClearRenderTargetView(system->bbRTV, clearColour);
     system->deviceContext->ClearRenderTargetView(system->mainRTV, clearColour);
+    system->deviceContext->ClearRenderTargetView(system->blurRTV, clearColour2);
     system->deviceContext->ClearDepthStencilView(system->standardDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
 

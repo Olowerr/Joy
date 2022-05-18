@@ -56,7 +56,6 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     sky.init();
 
-
     highscore.AddRend();
     highscore.HighScoreSetPos();
     activeCamera->UpdateCam();
@@ -69,6 +68,7 @@ void MainMenu::Shutdown()
     sky.Shutdown();
     hLight.Shutdown();
 
+    highscore.Shutdown();
     objRender.Clear();
     meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
@@ -88,7 +88,7 @@ void MainMenu::Shutdown()
 
 SceneState MainMenu::Update()
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
@@ -107,6 +107,8 @@ SceneState MainMenu::Update()
 
     if (activeCamera == &freeCamera)
         activeCamera->UpdateCam();
+
+//#endif // DEBUG
 
     activeCamera->SetView();
 
@@ -147,7 +149,6 @@ SceneState MainMenu::Update()
     }
 
     return SceneState::Unchanged;
-#endif // DEBUG
 }
 
 void MainMenu::Render()

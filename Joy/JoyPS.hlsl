@@ -12,7 +12,13 @@ SamplerState defaultSampler : register(s0);
 
 static const float3 LightDir = normalize(float3(1.f, 1.f, -1.f));
 
-float4 main(PS_IN input) : SV_TARGET
+struct RTVS
+{
+	float4 mainBuffer : SV_TARGET0;
+	float4 blurBuffer : SV_TARGET1;
+};
+
+RTVS main(PS_IN input)
 {
 	uint2 textureDims;
 	image.GetDimensions(textureDims.x, textureDims.y);
@@ -31,9 +37,9 @@ float4 main(PS_IN input) : SV_TARGET
 	else
 		intensity = 0.2f;
 
-	float4 final;
-	final.rgb = image.Sample(defaultSampler, input.uv).rgb * intensity;
-	final.a = glow.Sample(defaultSampler, input.uv).r;
+	RTVS output;
+	output.mainBuffer = image.Sample(defaultSampler, input.uv) * intensity;
+	output.blurBuffer = glow.Sample(defaultSampler, input.uv);
 
-	return final;
+	return output;
 }
