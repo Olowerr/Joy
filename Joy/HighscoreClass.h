@@ -22,7 +22,6 @@ public:
 	void SortScores();
 	void RenderHighScoreText();
 	void AddRend();
-	void InputAndSetHighScore();
 	void HighScoreSetPos();
 private:
 	
