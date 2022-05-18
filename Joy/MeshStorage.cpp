@@ -7,6 +7,11 @@ TempMeshStorage::TempMeshStorage()
 	HRESULT hr;
 
 	StoredData::GetInstance().StoreAll("../Resources/JoyFiles/JoyModell.joy");
+	auto mat = StoredData::GetInstance().GetMaterial(StoredData::GetInstance().m_objectInfoVec.at(0));
+	std::string path = "../Resources/JoyFiles/";
+	path += mat->diffuseTexturePath.string;
+
+	Backend::CreateConstSRV(&joyDiff.textureSRV, path);
 
 	for (UINT i = 0; i < 3; i++)
 	{
@@ -24,23 +29,7 @@ TempMeshStorage::TempMeshStorage()
 
 		joy[i].indexCount = object.indices.size();
 
-		sameTexture = false;
-		for (size_t k = 0; k < diffTextures.size(); k++)
-		{
-			if (diffTextures[k].path == tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string)
-			{
-				joy[i].diffuseTextureSRV = diffTextures[k].textureSRV;
-				sameTexture = true;
-			}
-		}
-		if (!sameTexture)
-		{
-			diffTextures.emplace_back(tastPath + StoredData::GetInstance().GetMaterial(object)->diffuseTexturePath.string, joy[i].diffuseTextureSRV);
-			Backend::CreateConstSRV(&diffTextures.back().textureSRV, diffTextures.back().path);
-			joy[i].diffuseTextureSRV = diffTextures.back().textureSRV;
-			sameTexture = false;
-		}
-
+		joy[i].diffuseTextureSRV = joyDiff.textureSRV;
 		// bounding box for body only
 		if (i != 0)
 			continue;
@@ -112,15 +101,21 @@ void TempMeshStorage::UnloadObjMeshes()
 	}
 }
 
+void TempMeshStorage::UnloadJoy()
+{
+	joyDiff.textureSRV->Release();
+	for (int i = 0; i < 3; i++)
+	{
+		joy[i].Shutdown();
+	}
+}
+
 void TempMeshStorage::UnloadMeshes()
 {
 	for (Mesh* mesh : meshes)
 	{
 		// remove if-statements
-		if (mesh->vertexBuffer)
-			mesh->vertexBuffer->Release();
-		if (mesh->indexBuffer)
-			mesh->indexBuffer->Release();
+		mesh->Shutdown();
 
 		delete mesh;
 	}
@@ -463,6 +458,4 @@ void TempMeshStorage::import(const std::string& filePath)
 				meshes.at(i)->children.emplace_back(tempMesh);
 		}
 	}
-
-
 }

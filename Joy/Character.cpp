@@ -69,7 +69,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_W) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
 	{
-		if (GetRotation().y < 0.f)
+		if (GetRotation().y > -0.01 && GetRotation().y < 0.01)
+		{
+			SetRotation(GetRotation().x, 0.f, GetRotation().z);
+		}
+		else if (GetRotation().y < 0.f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -90,7 +94,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
 	{
-		if (GetRotation().y < 3.14f && GetRotation().y >= 0.f)
+		if (GetRotation().y > 3.139 && GetRotation().y < 3.141f)
+		{
+			SetRotation(GetRotation().x, 3.14f, GetRotation().z);
+		}
+		else if (GetRotation().y < 3.14f && GetRotation().y >= 0.f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -111,7 +119,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_W))
 	{
-		if (GetRotation().y < 0.785)
+		if (GetRotation().y > 0.784 && GetRotation().y < 0.786f)
+		{
+			SetRotation(GetRotation().x, 0.785f, GetRotation().z);
+		}
+		else if (GetRotation().y < 0.785)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -122,7 +134,11 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_S))
 	{
-		if (GetRotation().y < 2.35f)
+		if (GetRotation().y > 2.34 && GetRotation().y < 2.36f)
+		{
+			SetRotation(GetRotation().x, 2.35f, GetRotation().z);
+		}
+		else if (GetRotation().y < 2.35f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
@@ -150,6 +166,10 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_W))
 	{
+		if (GetRotation().y < -0.780 && GetRotation().y > -0.790f)
+		{
+			SetRotation(GetRotation().x, -0.785f, GetRotation().z);
+		}
 		if (GetRotation().y > -0.785f)
 		{
 			Rotate(0.f, -charRotation * dt, 0.f);
@@ -161,6 +181,10 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_S))
 	{
+		if (GetRotation().y < -2.34 && GetRotation().y > 2.36f)
+		{
+			SetRotation(GetRotation().x, -2.35f, GetRotation().z);
+		}
 		if (GetRotation().y > -2.35f)
 		{
 			Rotate(0.f, -charRotation * dt, 0.f);
@@ -231,6 +255,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		//GetBoundingBox(0)
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
 	{
@@ -351,13 +376,13 @@ void Character::Draw()
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
 
 	Mesh* mesh = GetMesh();
+	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 
 	dc->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
 	dc->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, Mesh::Offset);
 	//mesh->Bind();
 
 	dc->VSSetConstantBuffers(0, 1, GetTransformBuffer());
-	dc->PSSetShaderResources(0, 1, &mesh->diffuseTextureSRV);
 
 	if (mesh->indexBuffer)
 		dc->DrawIndexed(mesh->indexCount, 0, 0);

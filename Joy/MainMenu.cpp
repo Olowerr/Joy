@@ -12,8 +12,6 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
     SoundSystem::getInstance().StopSounds();
 
-    meshStorage.LoadAllObj();
-
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
@@ -32,7 +30,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
         }
     }
     meshStorage.UnloadDataBase();
-    sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3);
+    sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3f);
 
     collisions.reserve(110);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)
@@ -73,7 +71,6 @@ void MainMenu::Shutdown()
     hLight.Shutdown();
 
     objRender.Clear();
-    meshStorage.UnloadObjMeshes();
     meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
 
