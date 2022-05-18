@@ -25,7 +25,7 @@ public:
 	void InputAndSetHighScore();
 	void HighScoreSetPos();
 private:
-	
+
 	Keyboard& m_key;
 	UIRenderer* ui;
 	std::ifstream m_myFile;
@@ -33,7 +33,7 @@ private:
 	float m_scores[3];
 	std::string m_names[3];
 
-	float finScore;	
+	float finScore;
 	float highscore;
 	FILE* filePtr;
 	bool doInput;
@@ -42,4 +42,3 @@ private:
 	Text m_screenRend;
 
 };
-
