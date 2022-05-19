@@ -65,6 +65,7 @@ void EasyLevel::Shutdown()
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
     meshStorage.UnloadMeshes();
+    InstancedObject::DestroyInstancedObjects();
     Object::EmptyObjectLists();
 
     joy.Shutdown();
