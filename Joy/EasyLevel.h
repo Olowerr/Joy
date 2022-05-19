@@ -29,7 +29,8 @@ private:
 	CharacterCamera joyCamera;
 
 	Sprite loadingScreen;
-	Sprite pickUpUI;
+	Sprite barUI;
+	Sprite arrow;
 	Text thomas;
 	float time = 0.f;
 
