@@ -23,7 +23,8 @@ public:
 
 	void Draw() override;
 
-	
+	float GetFuel() const;
+
 private:
 
 	ID3D11ShaderResourceView* glowMapSRV;

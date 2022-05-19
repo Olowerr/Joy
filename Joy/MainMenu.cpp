@@ -72,6 +72,7 @@ void MainMenu::Shutdown()
     objRender.Clear();
     meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
+    InstancedObject::DestroyInstancedObjects();
 
     joy.Shutdown();
 
@@ -112,13 +113,13 @@ SceneState MainMenu::Update()
 
     activeCamera->SetView();
 
+    JoyPostProcess::CalcGlowAmount(joy.GetFuel());
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
 
     joy.Jump();
     joy.Move();
     joy.Respawn();
-
 
 
     //Collision
@@ -173,6 +174,6 @@ void MainMenu::Render()
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
 
     //ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+    //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }

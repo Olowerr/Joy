@@ -76,6 +76,7 @@ void EasyLevel::Shutdown()
     freeCamera.Shutdown();
     joyCamera.Shutdown();
 
+    InstancedObject::DestroyInstancedObjects();
     divider.Shutdown();
     uiRender.Clear();
     loadingScreen.Shutdown();
@@ -125,6 +126,7 @@ SceneState EasyLevel::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
+    JoyPostProcess::CalcGlowAmount(joy.GetFuel());
 
     //Camera functions
     activeCamera->UpdateCam();
@@ -179,7 +181,7 @@ void EasyLevel::Render()
     }
 #ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+    //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }
 

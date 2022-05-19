@@ -406,6 +406,11 @@ void Character::Draw()
 	DrawChildren();
 }
 
+float Character::GetFuel() const
+{
+	return fuel;
+}
+
 void Character::DrawChildren()
 {
 	const DirectX::XMMATRIX& matrix = GetWorldMatrixXM();

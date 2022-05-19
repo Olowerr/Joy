@@ -1,8 +1,14 @@
 Texture2D mainBuffer : register(t5);
 Texture2D<unorm float> blurData : register(t6);
+Texture2D<unorm float> orgiBlurData : register(t7);
 SamplerState defaultSampler : register(s0);
 
-static const float3 blurColour = float3(0.43137f, 0.96471f, 1.f);
+//static const float3 blurColour = float3(0.43137f, 0.96471f, 1.f);
+
+cbuffer glowInfo : register(b5)
+{
+	float4 blurColour;
+}
 
 float4 main(float4 pos : SV_POSITION, float2 uv : UV) : SV_TARGET
 {
@@ -12,10 +18,18 @@ float4 main(float4 pos : SV_POSITION, float2 uv : UV) : SV_TARGET
 	const float4 texelColour = mainBuffer.Load(int3(pos.xy, 0));
 	const float blurStrength = blurData.Sample(defaultSampler, uv);
 
+	if (orgiBlurData.Load(int3(pos.xy, 0)).r > 0.f)
+		return blurColour;
+	
+
 	float4 final = texelColour;
 	final.r += blurStrength * blurColour.r;
 	final.g += blurStrength * blurColour.g;
 	final.b += blurStrength * blurColour.b;
 
-	return final;
+	if (blurStrength > 0.f)
+		return final;
+
+	return texelColour;
+
 }
