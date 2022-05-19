@@ -358,7 +358,7 @@ void TempMeshStorage::import(const std::string& filePath)
 	size_t meshesFound = StoredData::GetInstance().m_objectInfoVec.size() - sizeBefore;
 	if (!meshesFound)
 		return;
-
+	StoredData& nagotnamn = StoredData::GetInstance();
 	const size_t meshSizeBefore = meshes.size();
 	meshes.reserve(meshesFound);
 	for (size_t i = 0; i < meshesFound; i++)
@@ -385,6 +385,9 @@ void TempMeshStorage::import(const std::string& filePath)
 			return;
 
 		meshes.back()->indexCount = object.indices.size();
+
+		if (i == 174)
+			int q = 0;
 
 		sameTexture = false;
 		for (size_t k = 0; k < diffTextures.size(); k++)

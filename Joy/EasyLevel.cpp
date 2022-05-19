@@ -24,7 +24,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
-    sceneObjects.reserve(200);
+    sceneObjects.reserve(250);
 
     meshStorage.LoadEasyObjects();
     for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
@@ -33,7 +33,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     }
     meshStorage.UnloadDataBase();
 
-    collisions.reserve(110);
+    collisions.reserve(250);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)
         collisions.emplace_back();
 

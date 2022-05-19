@@ -135,7 +135,7 @@ private:
 	{
 		// menu .joy files
 		"Portal.joy",
-		"Litet_Spel_Level.joy"
+		"Map_Textured.joy"
 	};
 
 	void import(UINT index);

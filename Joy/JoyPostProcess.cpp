@@ -223,7 +223,7 @@ bool JoyPostProcess::LoadShaders()
 		return false;
 		
 
-	if (!Backend::LoadShader(Backend::ShaderPath + "BlurVS.cso", &shaderData))
+	if (!Backend::LoadShader(Backend::ShaderPath + "screenQuadVS.cso", &shaderData))
 		return false;
 
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &screenQuadVS)))
