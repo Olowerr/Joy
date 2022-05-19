@@ -135,12 +135,8 @@ private:
 	{
 		// menu .joy files
 		"Portal.joy",
-<<<<<<< HEAD
 		"LevelInst3.joy",
 		"PMesh.joy"
-=======
-		"LevelInst3.joy"
->>>>>>> mapInstTest1
 	};
 
 	void import(UINT index);
