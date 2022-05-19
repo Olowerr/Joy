@@ -38,6 +38,7 @@ Character::Character(Mesh* mesh)
 	canBoost = false;
 
 	joy.bBox = mesh->bBox;
+	bBoxExtents = GetBoundingBox(0).Extents;
 }
 
 Character::~Character()
@@ -234,7 +235,7 @@ void Character::Move()
 		canSlide = false;
 		timer = 0;
 	}
-	if ((timer < 0.5f && isSliding == true) || (key.KeyReleased(DIK_LSHIFT) && isSliding == true))
+	if ((timer < 0.8f && isSliding == true) || (key.KeyReleased(DIK_LSHIFT) && isSliding == true))
 	{
 		slideSpeed += 1.7f;
 	}
@@ -255,7 +256,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
-		//GetBoundingBox(0)
+		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z + 0.023f }, { 0.5f, 0.5f, 1.1f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
 	{
@@ -263,6 +264,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z - 0.023f }, { 0.5f, 0.5f, 1.1f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
 	{
@@ -270,6 +272,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		SetBBox(0, { GetBoundingBox(0).Center.x - 0.023f, GetPosition().y + 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
 	{
@@ -277,13 +280,15 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		SetBBox(0, { GetBoundingBox(0).Center.x + 0.023f, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
 	}
 	//
 	// ROTATE BACK
-	if (isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
+	if (isRotating && timer > 1.f || isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
 	{
 		SetRotation(0.f, 0.f, 0.f);
 		isRotating = false;
+		SetBBox(0, { GetPosition().x, GetPosition().y + 1.f,GetPosition().z }, bBoxExtents);
 	}
 	//
 

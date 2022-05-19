@@ -165,9 +165,9 @@ void Object::SetBBox(int bBoxIndex, DirectX::XMFLOAT3 pos, FLOAT scale)
 		return;
 
 	bBox.at(bBoxIndex).Center = pos;
-	bBox.at(bBoxIndex).Extents.x *= scale;
-	bBox.at(bBoxIndex).Extents.y *= scale;
-	bBox.at(bBoxIndex).Extents.z *= scale;
+	bBox.at(bBoxIndex).Extents.x = scale;
+	bBox.at(bBoxIndex).Extents.y = scale;
+	bBox.at(bBoxIndex).Extents.z = scale;
 }
 
 void Object::RemoveBBox(int bBoxIndex)

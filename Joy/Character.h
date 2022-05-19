@@ -52,6 +52,7 @@ private:
 	float rotateVal;
 	float rotateBack;
 	float rotTimer;
+	DirectX::XMFLOAT3 bBoxExtents;
 
 	//jump
 	float jumpVelocity;
