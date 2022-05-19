@@ -30,9 +30,8 @@ Character::Character(Mesh* mesh)
 	jumpHeight = 6;
 	canJump = false;
 	gravity = 300;
-
-	maxSpeed = 15.0f;
-	speed = 0.2f;
+	maxSpeed = 10.0f;
+	speed = 0.1f;
 	counterForce = 0.01f;
 
 	//Boost
@@ -40,6 +39,7 @@ Character::Character(Mesh* mesh)
 	canBoost = false;
 
 	joy.bBox = mesh->bBox;
+	bBoxExtents = GetBoundingBox(0).Extents;
 }
 
 Character::~Character()
@@ -61,12 +61,8 @@ void Character::Move()
 
 	arms.Rotate(0.1f, 0.f, 0.f);
 
-	maxSpeed = 10.0f;
-	speed = 0.1f;
-	counterForce = 0.01f;
 	timer += dt;
 	rotTimer += dt;
-
 
 	bool wsPressed = false;
 	bool adPressed = false;
@@ -245,9 +241,9 @@ void Character::Move()
 		canSlide = false;
 		timer = 0;
 	}
-	if ((timer < 0.5f && isSliding == true) || (key.KeyReleased(DIK_LSHIFT) && isSliding == true))
+	if ((timer < 0.8f && isSliding == true) || (key.KeyReleased(DIK_LSHIFT) && isSliding == true))
 	{
-		slideSpeed += 1.7f;
+		slideSpeed += 1.4f;
 	}
 	else
 	{
@@ -266,7 +262,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
-		//GetBoundingBox(0)
+		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z + 0.023f }, { 0.5f, 0.5f, 1.1f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
 	{
@@ -274,6 +270,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z - 0.023f }, { 0.5f, 0.5f, 1.1f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
 	{
@@ -281,6 +278,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		SetBBox(0, { GetBoundingBox(0).Center.x - 0.023f, GetPosition().y + 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
 	{
@@ -288,13 +286,15 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
+		SetBBox(0, { GetBoundingBox(0).Center.x + 0.023f, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
 	}
 	//
 	// ROTATE BACK
-	if (isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
+	if (isRotating && timer > 1.f || isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
 	{
 		SetRotation(0.f, 0.f, 0.f);
 		isRotating = false;
+		SetBBox(0, { GetPosition().x, GetPosition().y + 1.f,GetPosition().z }, bBoxExtents);
 	}
 	//
 
@@ -306,12 +306,8 @@ void Character::Move()
 
 	if (isSliding)
 	{
-		fuel -= 1 * dt;
+		fuel -= 4.f * dt;
 	}
-
-
-
-
 
 	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
 
@@ -349,10 +345,10 @@ void Character::Jump()
 	}
 
 	//Boost
-	if (canBoost && key.KeyDown(DIK_SPACE))
+	if (canBoost && key.KeyDown(DIK_SPACE) && fuel > 0.f)
 	{
-		jumpVelocity += 325 * dt;
-		fuel -= 1 * dt;  // how much fuel used
+		jumpVelocity += 325.f * dt;
+		fuel -= 4.f * dt;  // how much fuel used
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
@@ -361,9 +357,9 @@ void Character::Jump()
 
 	fuel += 0.5f * dt; // how much increases
 
-	if (fuel > 10.f) // max fuel sett
+	if (fuel > 8.f) // max fuel sett
 	{
-		fuel = 10.f;
+		fuel = 8.f;
 	}
 
 	this->Translate(0, jumpVelocity * dt, 0);

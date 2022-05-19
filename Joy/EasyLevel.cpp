@@ -4,7 +4,8 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(&meshStorage.joy[0])
-    , pickUpUI("../Resources/Images/BoltForJoy.png", 10.f, (float)Backend::GetWindowHeight() - 173.f, 1.f, 1.f)
+    , barUI("../Resources/Images/progressBar.png", 10.f, (float)Backend::GetWindowHeight() - 220, 1.f, 1.f)
+    , arrow("../Resources/Images/arrow.png")
     , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
@@ -13,8 +14,8 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
  {
     SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
-
-    uiRender.Add(&pickUpUI);
+    uiRender.Add(&barUI);
+    uiRender.Add(&arrow);
     uiRender.Add(&thomas);
     thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
@@ -78,13 +79,20 @@ void EasyLevel::Shutdown()
     divider.Shutdown();
     uiRender.Clear();
     loadingScreen.Shutdown();
-    pickUpUI.Shutdown();
+    barUI.Shutdown();
+    arrow.Shutdown();
     thomas.Shutdown();
     m_highscore.Shutdown();
 }
 
 SceneState EasyLevel::Update()
 {
+    
+    //ProgressBar
+
+    float distanceTrav = 30.f + joy.GetPosition().z * 1.2f;
+    arrow.SetPosition(18.f, (float)Backend::GetWindowHeight() - distanceTrav);
+    Backend::Clear();
 
     time += Backend::GetDeltaTime();
 
