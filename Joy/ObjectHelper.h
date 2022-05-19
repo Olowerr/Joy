@@ -50,6 +50,34 @@ public:
 			DrawLines(pObject, currentBB);
 	}
 
+	void DrawBB(DirectX::BoundingBox bb)
+	{
+		Backend::UpdateBuffer(colourBuffer, (void*)LineColour, 16);
+
+		ID3D11DeviceContext* dc = Backend::GetDeviceContext();
+
+		dc->IASetVertexBuffers(0, 1, &aabbVertexBuffer, &LineStride, &Offset);
+		dc->IASetIndexBuffer(aabbIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		dc->IASetInputLayout(lineLayout);
+
+		dc->VSSetShader(lineVS, nullptr, 0);
+
+		dc->PSSetShader(colourPS, nullptr, 0);
+		dc->PSSetConstantBuffers(0, 1, &colourBuffer);
+
+		dc->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
+
+		DirectX::XMFLOAT3 corners[8];
+		bb.GetCorners(corners);
+
+		Backend::UpdateBuffer(aabbVertexBuffer, corners, sizeof(corners));
+		Backend::UpdateBuffer(colourBuffer, (void*)LineColour2, 16);
+
+		dc->DrawIndexed(numIndices, 0, 0);
+
+	}
+
 
 private:
 
