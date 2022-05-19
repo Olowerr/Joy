@@ -568,7 +568,7 @@ bool HLight::InitiateBuffers(MapDivider& sections)
 
 		XMStoreFloat4x4(&viewProject, XMMatrixTranspose(
 			XMMatrixLookToLH(SUNPOS, SUNDIR, XMVectorSet(0.f, 1.f, 0.f, 0.f)) * 
-			XMMatrixOrthographicLH(viewDimension, viewDimension, 0.1f, 100.f)));
+			XMMatrixOrthographicLH(viewDimension, viewDimension, 0.1f, 150.f)));
 
 		hr = Backend::CreateDynamicCBuffer(&lightViewProjectBuffer[i], &viewProject, sizeof(XMFLOAT4X4));
 		if (FAILED(hr))

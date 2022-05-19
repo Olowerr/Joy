@@ -42,7 +42,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
 
-    divider.CreateSections(2, 500.0f, 50.f, 50.f);
+    divider.CreateSections(4, 500.f, 50.f, 50.f, -20.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
 
@@ -110,9 +110,11 @@ SceneState EasyLevel::Update()
 
     activeCamera->UpdateCam();
     activeCamera->SetView();
+    divider.Update();
 
     if (activeCamera == &freeCamera)
         return SceneState::Unchanged;
+
 
     joy.Jump();
     joy.Move();
