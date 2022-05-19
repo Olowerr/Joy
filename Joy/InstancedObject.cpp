@@ -167,6 +167,8 @@ void InstancedObject::DestroyInstancedObjects()
 		inst->Shutdown();
 		delete inst;
 	}
+	levelInstanced.clear();
+	enviormentInstanced.clear();
 }
 
 bool InstancedObject::CreateInstancedObjects(TempMeshStorage& meshStorage, MapDivider& sections, HLight& hLight)
