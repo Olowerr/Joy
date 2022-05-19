@@ -35,4 +35,7 @@ private:
 
 	MapDivider divider;
 	Skybox sky;
+
+
+	void PlaceObjects();
 };

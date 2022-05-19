@@ -4,7 +4,7 @@ FreelookCamera::FreelookCamera()
 	:keyboard(Backend::GetKeyboard()), mouse(Backend::GetMouse())
 	, aspectRatio((float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight())
 	, rotMatrix(DirectX::XMMatrixIdentity())
-	, moveSpeed(8.f), turnSpeed(1.5f)
+	, moveSpeed(15.f), turnSpeed(1.5f)
 {
 
 	position = DirectX::XMVectorSet(0.f, 5.f, -5.f, 1.f);
