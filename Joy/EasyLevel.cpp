@@ -90,7 +90,7 @@ SceneState EasyLevel::Update()
     
     //ProgressBar
 
-    float distanceTrav = 30 + joy.GetPosition().z * 1.2;
+    float distanceTrav = 30.f + joy.GetPosition().z * 1.2f;
     arrow.SetPosition(18.f, (float)Backend::GetWindowHeight() - distanceTrav);
     Backend::Clear();
 
