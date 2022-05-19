@@ -1,6 +1,5 @@
 #pragma once
 #include "Character.h"
-#include "ObjectHelper.h"
 
 struct Section
 {

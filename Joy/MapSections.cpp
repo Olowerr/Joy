@@ -60,9 +60,6 @@ void MapDivider::CreateSections(UINT numSections, float mapLength, float mapWidt
 
 void MapDivider::Update()
 {
-	for (UINT i = 0; i < numSections; i++)
-		HObject::GetInstance().DrawBB(sections[i].sectionBB);
-		
 	activeSection = &nullSection;
 	return;
 
@@ -75,8 +72,6 @@ void MapDivider::Update()
 		}
 	}
 	activeSection = &nullSection;
-
-
 }
 
 UINT MapDivider::GetNumSections() const
