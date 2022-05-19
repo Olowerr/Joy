@@ -19,7 +19,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     meshStorage.LoadMenuObjects();
 
-    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(1.6f, 1.9f, 2.3));
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(1.6f, 1.9f, 2.3f));
     for (size_t i = 1; i < meshStorage.GetMeshCount(); i++)
     {
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true, F3()); 
