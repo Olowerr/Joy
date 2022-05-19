@@ -130,12 +130,13 @@ private:
 		//"MenuScene.joy"
 	};
 
-	static const UINT EasyCount = 2;
-	const std::string EasyFiles[MenuCount] =
+	static const UINT EasyCount = 3;
+	const std::string EasyFiles[EasyCount] =
 	{
 		// menu .joy files
 		"Portal.joy",
-		"LevelInst3.joy"
+		"LevelInst3.joy",
+		"PMesh.joy"
 	};
 
 	void import(UINT index);
