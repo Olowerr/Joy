@@ -76,6 +76,7 @@ void EasyLevel::Shutdown()
     freeCamera.Shutdown();
     joyCamera.Shutdown();
 
+    InstancedObject::DestroyInstancedObjects();
     divider.Shutdown();
     uiRender.Clear();
     loadingScreen.Shutdown();
