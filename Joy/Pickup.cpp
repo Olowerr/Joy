@@ -1,48 +1,32 @@
 #include "Pickup.h"
 
-Pickup::Pickup(TempMeshStorage& meshStorage, UINT points_in)
-	: pickupVS(nullptr), pickupPS(nullptr), pickupIL(nullptr), pickupTransSRV(nullptr),
-		pickupsRendered(0), charBB(DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))
+Pickup::Pickup(Character& joy)
+	: pickupVS(nullptr), pickupPS(nullptr), pickupTransSRV(nullptr), pickupsRendered(0), joy(joy)
 {
-	// Catch the pickup mesh and store it.
-	//meshStorage.LoadAllObj();
-	pickupMesh = meshStorage.GetMesh(0);
-	
-	// Reserve space.
 	pickupObjs.reserve(66);
-	itemsBB.reserve(66);  // NOTE: To replace.
 
-	// Loads VS & PS, Sets IA.
-	bool hasShaders = false;
-	hasShaders = LoadPickupShader();
+	// Loads VS & PS
+	bool hasShaders = LoadPickupShader();
 	assert(hasShaders);
-
-
-// TEMP : Camera will be fed from Camera Class.
-	float aspect = (float)Backend::GetWindowWidth() / (float)Backend::GetWindowHeight();
-	using namespace DirectX;
-	XMFLOAT4X4 matri;
-	XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(6.f, 3.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect, 0.1f, 100.f);
-	XMStoreFloat4x4(&matri, XMMatrixTranspose(view * proj));
-	Backend::CreateConstCBuffer(&pickupCam, &matri, 64);
 }
 
-void Pickup::isHit()
+bool Pickup::isHit()
 {
 	for (unsigned int i = 0; i < pickupsRendered; i++)
 	{
-		if (hitItem(charBB, itemsBB[i]))
+		if (joy.GetBoundingBox(0).Intersects(pickupObjs.at(i)->GetBoundingBox(0)))
 		{
 			std::swap(pickupObjs.at(i), pickupObjs.at(pickupsRendered - 1));
 			pickupsRendered--;
-		}	
+			return true;
+		}
 	}
+	return false;
 }
 
-UINT Pickup::getPoints()
+UINT Pickup::getPickupsCaught()
 {
-	return points;
+	return (pickupObjs.size() - pickupsRendered);
 }
 
 void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
@@ -51,41 +35,32 @@ void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 	Object::DropPtr(pickupObjs.back());
 
 	pickupObjs.back()->Translate(pX_in, pY_in, pZ_in);
-	itemsBB.emplace_back(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f)); // TODO : Add support for actual Boundign boxes.
 	pickupsRendered++;
+}
+
+void Pickup::FetchPickupMesh(TempMeshStorage& meshStorage_in)
+{
+	pickupMesh = meshStorage_in.GetMesh(0);
 }
 
 void Pickup::UpdateMatrices()
 {
 
 	for (unsigned int i = 0; i < pickupsRendered; i++)
-	{ 
+	{
 		pickupObjs.at(i)->Rotate(0.0f, 2.0f * Backend::GetDeltaTime(), 0.0f);
 		matrices[i] = pickupObjs[i]->GetWorldMatrix();
 	}
 
-	Backend::UpdateBuffer(matrixCBuffer, matrices, sizeof(DirectX::XMFLOAT4X4)*pickupObjs.size());
+	Backend::UpdateBuffer(matrixSBuffer, matrices, sizeof(DirectX::XMFLOAT4X4) * pickupObjs.size());
 }
 
-bool Pickup::CreateInputLayout(const std::string& shaderData)
-{
-	D3D11_INPUT_ELEMENT_DESC iLayout[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	HRESULT hr = Backend::GetDevice()->CreateInputLayout(iLayout, 3, shaderData.c_str(), shaderData.length(), &pickupIL);
-	return SUCCEEDED(hr);
-}
-
-bool Pickup::CreateSRV_CreateMatrixCB()
+bool Pickup::CreateSRV_CreateMatrixSB()
 {
 	HRESULT hr;
 	matrices = new DirectX::XMFLOAT4X4[pickupObjs.size()];
 
-/* ==TRANSFORM BUFFER======================================================= */
+	/* ==TRANSFORM_BUFFER======================================================= */
 	D3D11_BUFFER_DESC desc{};
 	desc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * pickupObjs.size();
 	desc.Usage = D3D11_USAGE_DYNAMIC;
@@ -98,12 +73,12 @@ bool Pickup::CreateSRV_CreateMatrixCB()
 	inData.pSysMem = &matrices;
 	inData.SysMemPitch = inData.SysMemSlicePitch = 0;
 
-	hr = Backend::GetDevice()->CreateBuffer(&desc, &inData, &matrixCBuffer);
+	hr = Backend::GetDevice()->CreateBuffer(&desc, &inData, &matrixSBuffer);
 
 	if (FAILED(hr))
 		return false;
 
-/* ==TRANSFORM_SHADER_RESOURCE_VIEW======================================================= */
+	/* ==TRANSFORM_SHADER_RESOURCE_VIEW======================================================= */
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
@@ -111,11 +86,10 @@ bool Pickup::CreateSRV_CreateMatrixCB()
 	srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.NumElements = pickupObjs.size();
 
-	hr = Backend::GetDevice()->CreateShaderResourceView(matrixCBuffer, &srvDesc, &pickupTransSRV);
+	hr = Backend::GetDevice()->CreateShaderResourceView(matrixSBuffer, &srvDesc, &pickupTransSRV);
 
 	if (FAILED(hr))
 		return false;
-
 
 	return true;
 }
@@ -128,9 +102,6 @@ bool Pickup::LoadPickupShader()
 	if (!Backend::LoadShader(Backend::ShaderPath + "PickupVS.cso", &shaderData))
 		return false;
 
-	if (!CreateInputLayout(shaderData))
-		return false;
-
 	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &pickupVS)))
 		return false;
 
@@ -139,56 +110,50 @@ bool Pickup::LoadPickupShader()
 
 	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &pickupPS)))
 		return false;
-	
+
 	return true;
 }
 
 void Pickup::ShutDown()
 {
 	delete[] this->matrices;
-	pickupIL->Release();
 	pickupVS->Release();
 	pickupPS->Release();
 
-	pickupCam->Release();
-	matrixCBuffer->Release();
-	
+	matrixSBuffer->Release();
 	pickupTransSRV->Release();
 
-
-	
 	for (unsigned int i = 0; i < pickupObjs.size(); i++)
 	{
 		pickupObjs.at(i)->Shutdown();
 		delete pickupObjs.at(i);
 	}
-
 	pickupObjs.clear();
-	itemsBB.clear();
 }
 
-void Pickup::DrawPickupInstances()
+void Pickup::DrawPickupInstances(Camera* cam_in)
 {
 	ID3D11DeviceContext* dc = Backend::GetDeviceContext();
-	
-	dc->IASetInputLayout(pickupIL);
+
+	dc->IASetInputLayout(Backend::GetShaderStorage().objectInputLayout);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	dc->IASetVertexBuffers(0, 1, &pickupMesh->vertexBuffer, &Mesh::Stirde, &Mesh::Offset);
-	
+	dc->IASetIndexBuffer(pickupMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0); // TODO : Add Index Buffer
+
 	dc->VSSetShader(pickupVS, nullptr, 0);
-	dc->VSSetConstantBuffers(0, 1, &pickupCam);
+	dc->VSSetConstantBuffers(1, 1, cam_in->GetMatrixBuffer());
 	dc->VSSetShaderResources(0, 1, &pickupTransSRV);
 
+	dc->PSSetShaderResources(0, 1, &pickupMesh->diffuseTextureSRV);
 	dc->PSSetShader(pickupPS, nullptr, 0);
 
 	dc->RSSetViewports(1, &Backend::GetDefaultViewport());
-	dc->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), nullptr);
+	dc->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
 
+	dc->DrawIndexedInstanced(pickupObjs.at(0)->GetMesh()->indexCount, pickupsRendered, 0, 0, 0);
 
+	HObject::GetInstance().Draw(pickupObjs.at(0), cam_in, false, true, 0);
 
-	dc->DrawInstanced(pickupObjs[0]->GetMesh()->indexCount, pickupsRendered, 0, 0);	
-	
 	dc = nullptr;
 }
-
