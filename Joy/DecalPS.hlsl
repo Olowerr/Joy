@@ -60,7 +60,7 @@ float4 main(PS_IN input) : SV_TARGET
     float intensity = dot(normalize(LightDir), Normal);
 
     if (intensity > 0.5)
-        intensity = 1.0f;
+        intensity = 0.8f;
     else if (intensity > 0.4)
         intensity = 0.7f;
     else if (intensity > 0.3)
@@ -68,7 +68,7 @@ float4 main(PS_IN input) : SV_TARGET
     else
         intensity = 0.2f;
 
-    intensity = clamp(intensity * lightValue, 0.2f, 1.f);
+    intensity = clamp(intensity * lightValue, 0.2f, 0.8f);
 
     //return float4(image.Sample(defaultSampler, input.uv).rgb * intensity, 0.f);
     return float4(image.Load(int3(input.uv * textureDims, 0)).rgb * intensity, 0.f);

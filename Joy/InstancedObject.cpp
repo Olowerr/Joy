@@ -24,10 +24,7 @@ void InstancedObject::Shutdown()
 
 void InstancedObject::AddObject(Object* pObject)
 {
-	if (instanceCount >= 10)
-		return;
-
-	else if (instanceCount == 0)
+	if (instanceCount == 0)
 		mesh = pObject->GetMesh();
 
 	else if (mesh != pObject->GetMesh())
@@ -133,13 +130,16 @@ void InstancedObject::Generate(TempMeshStorage& meshStorage, const std::vector<O
 {
 	std::vector<Object*> tempObjects;
 	tempObjects.reserve(10);
-	for (size_t i = 0; i < meshStorage.GetObjMeshCount(); ++i)
+	for (size_t i = 0; i < meshStorage.GetMeshCount(); ++i)
 	{
 		tempObjects.clear();
 
+		if (meshStorage.GetMesh(i)->name == "Grass_garden_platform3")
+			int q = 0;
+
 		for (size_t k = 0; k < objects.size(); ++k)
 		{
-			if (objects[k]->GetMesh() == meshStorage.GetObjMesh(i) && objects[k]->GetIsImmutable())
+			if (objects[k]->GetMesh() == meshStorage.GetMesh(i) && objects[k]->GetIsImmutable())
 				tempObjects.emplace_back(objects[k]);
 		}
 
