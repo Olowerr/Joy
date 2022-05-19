@@ -74,7 +74,7 @@ void ImGuiModifyTransform(std::vector<Object*> object, Camera* camera)
 		ImGui::Checkbox("Show BB", &lines);
 		if (ImGui::Button("Add BB"))
 		{
-			object[imguiObjCounter]->AddBBox();
+			object[imguiObjCounter]->AddBBox(object[imguiObjCounter]->GetPosition(), { 1.f, 1.f, 1.f });
 			currentBB = object[imguiObjCounter]->GetNumBboxes();
 		}
 

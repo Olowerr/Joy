@@ -34,9 +34,34 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     PlaceObjects();
     meshStorage.UnloadDataBase();
 
+    sceneObjects.at(9).SetBBox(0, F3(-5.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(9).AddBBox(F3(-13.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(9).AddBBox(F3(-9.476f, 2.657f, 352.319f), F3(3.500f, 0.500f, 0.200f));
+    sceneObjects.at(10).SetBBox(0, F3(5.432f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(10).AddBBox(F3(13.432f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(10).AddBBox(F3(9.432f, 2.657f, 352.319f), F3(3.400f, 0.500f, 0.200f));
+    sceneObjects.at(11).SetBBox(0, F3(-4.000f, 2.157f, 382.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(11).AddBBox(F3(4.000f, 2.157f, 382.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(11).AddBBox(F3(0.000f, 2.657f, 382.000f), F3(3.400f, 0.500f, 0.200f));
+    sceneObjects.at(12).SetBBox(0, F3(-4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(12).AddBBox(F3(4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(12).AddBBox(F3(0.000f, 2.657f, 424.000f), F3(3.500f, 0.500f, 0.200f));
+    sceneObjects.at(57).AddBBox(F3(8.398f, 1.474f, 3.420f), F3(1.420f, 1.261f, 4.469f));
+    sceneObjects.at(57).SetBBox(1, F3(6.998f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.400f));
+    sceneObjects.at(58).SetBBox(0, F3(4.728f, 1.274f, 3.420f), F3(1.320f, 1.161f, 4.469f));
+    sceneObjects.at(58).AddBBox(F3(6.228f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.500f));
+    sceneObjects.at(156).SetBBox(0, F3(9.566f, 15.013f, 49.239f), F3(5.264f, 1.593f, 1.549f));
+    sceneObjects.at(156).AddBBox(F3(3.566f, 11.513f, 49.539f), F3(1.500f, 3.500f, 1.300f));
+    sceneObjects.at(169).SetBBox(0, F3(-10.035f, 5.227f, 3.386f), F3(1.247f, 3.882f, 1.275f));
+    sceneObjects.at(169).AddBBox(F3(-9.335f, 11.727f, 4.986f), F3(3.500f, 2.100f, 3.600f));
+    sceneObjects.at(169).AddBBox(F3(-11.535f, 9.427f, 0.186f), F3(1.600f, 1.000f, 1.400f));
     collisions.reserve(sceneObjects.size());
-    for (size_t i = 0; i < (int)sceneObjects.size(); i++)
-        collisions.emplace_back();
+
+    for (size_t i = 1; i < (int)sceneObjects.size(); i++)
+    {
+        for (size_t k = 0; k < (int)sceneObjects[i].GetNumBboxes(); k++)
+            collisions.emplace_back();
+    }
 
     joy.SetPosition(0.0f, 5.0f, 0.0f);
 
@@ -143,12 +168,12 @@ SceneState EasyLevel::Update()
         else
             joy.SetCanJump(false);
     }
-
-    for (size_t i = 1; i < (int)collisions.size(); i++)
+    int collCounter = 0;
+    for (size_t i = 1; i < (int)sceneObjects.size(); i++)
     {
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
-            collisions.at(i).collided(&joy, &sceneObjects.at(i), k);
+            collisions.at(collCounter++).collided(&joy, &sceneObjects.at(i), k);
         }
     }
 

@@ -21,11 +21,11 @@ private:
 
         soundEffect[0] = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/MenuLevelSound.wav");
         effect[0] = soundEffect[0]->CreateInstance();
-        effect[0]->SetVolume(0.2f);
+        effect[0]->SetVolume(0.0f);
 
         soundEffect[1] = std::make_unique<DirectX::SoundEffect>(audEngine.get(), L"../Resources/Sound/EasyLevelSound.wav");
         effect[1] = soundEffect[1]->CreateInstance();
-        effect[1]->SetVolume(0.2f);
+        effect[1]->SetVolume(0.0f);
     };
 
     std::unique_ptr<DirectX::AudioEngine> audEngine;
