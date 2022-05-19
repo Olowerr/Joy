@@ -314,10 +314,6 @@ void Character::Move()
 		fuel -= 1 * dt;
 	}
 
-
-
-
-
 	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
 
 }
