@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "HighscoreClass.h"
+#include "Pickup.h"
 
 class EasyLevel : public Scene
 {
@@ -23,6 +24,8 @@ private:
 	std::vector<Object> sceneObjects;
 	std::vector<Collision> collisions;
 
+	Pickup pickups;
+
 	HLight hLight;
 	Camera* activeCamera;
 	FreelookCamera freeCamera;
@@ -39,4 +42,5 @@ private:
 
 
 	void PlaceObjects();
+	void PlacePickups(TempMeshStorage &meshStorage);
 };
