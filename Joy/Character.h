@@ -40,10 +40,7 @@ private:
 	bool stopMovement;
 	bool collidedY;
 
-
 	DirectX::XMFLOAT2 velocity;
-
-
 
 	//slide
 	DX::XMFLOAT2 slideVel;
