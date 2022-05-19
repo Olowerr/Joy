@@ -349,6 +349,8 @@ void TempMeshStorage::import(const std::string& filePath)
 	bool succeeded = false;
 	HRESULT hr{};
 
+	StoredData& asd = StoredData::GetInstance();
+
 	const size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
 	
 	succeeded = StoredData::GetInstance().StoreAll(filePath);
@@ -367,6 +369,8 @@ void TempMeshStorage::import(const std::string& filePath)
 
 		ObjectInfo& object = StoredData::GetInstance().m_objectInfoVec.at(sizeBefore + i);
 		meshes.back()->name = object.objHeader.meshName.string;
+		if (i == 33)
+			int q = 0;
 
 		hr = Backend::CreateVertexBuffer(&meshes.back()->vertexBuffer, object.vertex.data(), sizeof(JOY::Vertex) * object.vertex.size());
 		if (FAILED(hr))
