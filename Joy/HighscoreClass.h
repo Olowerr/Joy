@@ -13,6 +13,7 @@ class HighscoreClass
 public:
 
 	HighscoreClass(UIRenderer& uiRender);
+	void Shutdown();
 	~HighscoreClass();
 
 	void SetHighscore(float score, std::string name);

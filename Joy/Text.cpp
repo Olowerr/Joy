@@ -12,7 +12,11 @@ Text::Text(const std::string& text)
 
 void Text::Shutdown()
 {
-	delete sprite;
+	if (sprite)
+	{
+		delete sprite;
+		sprite = nullptr;
+	}
 }
 
 void Text::Initiate(DirectX::SpriteBatch* spriteBatch, const wchar_t* spriteFont)

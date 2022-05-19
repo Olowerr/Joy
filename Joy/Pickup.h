@@ -1,58 +1,56 @@
 #pragma once
 #include "MeshStorage.h"
 #include "Object.h"
-#include "Collision.h"
+#include "Character.h"
+#include "CameraBase.h"
+#include "ObjectHelper.h"
 
 #include <DirectXCollision.h>
 #include <vector>
 #include <algorithm>
 
-class Pickup : public Collision
+class Pickup
 {
 public:
-/* ==CONSTRUCTORS======================================================= */
-	Pickup(TempMeshStorage& meshStorage, UINT points_in);
+	/* ==CONSTRUCTORS_DESTRUCTOR_ETC======================================================= */
+	Pickup(Character& joy);
 
-/* ==PICKUPSPECIFIC_FUNCTIONS======================================================= */
-	void AddObject(float pX_in, float pY_in, float pZ_in);
-	void isHit(); // Collission Checks
-	UINT getPoints();
-	
-/* ==DXSPECIFIC_FUNCTIONS======================================================= */
-	bool CreateSRV_CreateMatrixCB();
-	void DrawPickupInstances();
-	void UpdateMatrices();
-	void ShutDown();
+	/* ==PICKUPSPECIFIC_FUNCTIONS======================================================= */
+	void AddObject(float pX_in, float pY_in, float pZ_in);	// Adds pickup at position specified.
+	void FetchPickupMesh(TempMeshStorage& meshStorage_in);	// Fetches the mesh meant to be the pickup.
+	bool isHit();											// Collision check and handling.
+	UINT getPickupsCaught();								// Returns amounts of pickups that has been collided with.
+
+	/* ==DXSPECIFIC_FUNCTIONS======================================================= */
+	bool CreateSRV_CreateMatrixSB();						// Creates SRV and Matrix Structured Buffer
+	void DrawPickupInstances(Camera* cam_in);				// Draws out the pickups
+	void UpdateMatrices();									// Updates Matrices (Rotates the pickup)
+	void ShutDown();										// Releases DX Specifics and clears vectors.
 
 private:
-/* ==DXSPECIFIC_MEMBERS======================================================= */
-	DirectX::XMFLOAT4X4 *matrices;
-	ID3D11Buffer* matrixCBuffer;
+	/* ==DXSPECIFIC_MEMBERS======================================================= */
+	DirectX::XMFLOAT4X4* matrices;							// Matrices
+	ID3D11Buffer* matrixSBuffer;							// Matrix Structure Buffer (For rotation)
 
-	ID3D11InputLayout* pickupIL;
+	ID3D11VertexShader* pickupVS;							// VertexShader
+	ID3D11PixelShader* pickupPS;							// Pixelshader
 
-	ID3D11VertexShader* pickupVS;
-	ID3D11PixelShader* pickupPS;
+	ID3D11ShaderResourceView* pickupTransSRV;				// Transform SRV
 
-	ID3D11ShaderResourceView* pickupTransSRV;
-	
-	// TEMP : Camera will be fed from Camera Class.
-	ID3D11Buffer* pickupCam;
+	/* ==PICKUPSPECIFIC_MEMBER======================================================= */
+	Mesh* pickupMesh;										// The mesh of which the pickups use.
+	Character& joy;											// Reference to the playable character, used for collision.
 
-/* ==PICKUPSPECIFIC_MEMBER======================================================= */	
-	UINT pickupsRendered;
-	UINT points;
+	UINT pickupsRendered;									// Amount of pickups that should be rendered.
+	std::vector<Object*> pickupObjs;						// All the pickups.
 
-	Mesh* pickupMesh;
+	/* ==DXSPECIFIC_FUNCTIONS======================================================= */
+	bool LoadPickupShader();								// Loads PS and VS.
 
-	std::vector<Object*> pickupObjs;
 
-	DirectX::BoundingBox charBB;
-	std::vector<DirectX::BoundingBox> itemsBB; // TODO : Connect with the new Boundign boxes from the importer.
-
-/* ==DXSPECIFIC_FUNCTIONS======================================================= */
-	bool CreateInputLayout(const std::string& shaderData);
-	bool LoadPickupShader();
-
+	// NOTES: Pickups are implemented by using
+	//		[ Load:		| "FetchPickupMesh" -> "AddObject" -> "CreateSRV_CreateMatrixSB"] 
+	//		[ Update:	| "Update Matrices" -> "isHit" ]
+	//		[ Render:	| "DrawPickupInstance" ]
+	//		[ Shutdown: | "Shutdown"]
 };
-

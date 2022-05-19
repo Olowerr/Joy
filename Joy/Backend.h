@@ -48,6 +48,9 @@ public:
 	static ID3D11RenderTargetView* const* GetMainRTV();
 	static ID3D11ShaderResourceView* const* GetMainSRV();
 
+	// BlurBuffer
+	static ID3D11RenderTargetView* const* GetBlurRTV();
+	static ID3D11ShaderResourceView* const* GetBlurSRV();
 
 	static FLOAT GetDeltaTime();
 	static void ResetDeltaTime();
@@ -103,6 +106,10 @@ private:
 	ID3D11Texture2D* mainBuffer;
 	ID3D11RenderTargetView* mainRTV;
 	ID3D11ShaderResourceView* mainSRV;
+
+	// Blur Views
+	ID3D11RenderTargetView* blurRTV;
+	ID3D11ShaderResourceView* blurSRV;
 
 	std::chrono::time_point<std::chrono::system_clock> frameStart;
 	std::chrono::duration<float> deltaTime;

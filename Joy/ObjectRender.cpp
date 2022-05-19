@@ -84,6 +84,8 @@ void ObjectRender::DrawAll()
 
 void ObjectRender::DrawCharacter(Character& character)
 {
+	static ID3D11RenderTargetView* rtvs[2]{};
+	
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 
 	devContext->IASetInputLayout(storage.objectInputLayout);
@@ -96,7 +98,10 @@ void ObjectRender::DrawCharacter(Character& character)
 
 	devContext->PSSetShader(storage.JoyPS, nullptr, 0);
 
-	devContext->OMSetRenderTargets(1, Backend::GetMainRTV(), *Backend::GetStandardDSV());
+	rtvs[0] = *Backend::GetMainRTV();
+	rtvs[1] = *Backend::GetBlurRTV();
+
+	devContext->OMSetRenderTargets(2, rtvs, *Backend::GetStandardDSV());
 
 
 	character.Draw();

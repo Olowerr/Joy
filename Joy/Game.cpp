@@ -20,6 +20,7 @@ void Game::Shutdown()
 {
 	HObject::GetInstance().Shutdown();
 
+	meshStorage.UnloadJoy();
 	loadingScreen.Shutdown();
 	smolpp.Shutdown();
 	uiRender.Shutdown();
@@ -36,7 +37,6 @@ void Game::Shutdown()
 
 void Game::Run()
 {
-
 	uiRender.Draw();
 	uiRender.Clear();
 	Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
@@ -80,12 +80,12 @@ void Game::Run()
 
 		activeState = activeScene->Update();
 		activeScene->Render();
+		smolpp.ApplyGlow();
 
 #ifdef _DEBUG
 		EndImGuiFrame();
 #endif // DEBUG
 
-		smolpp.ApplyGlow();
 		Backend::Display();
 
 		// temp --

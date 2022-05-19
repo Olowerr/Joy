@@ -18,19 +18,18 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     sceneObjects.reserve(110);
 
     meshStorage.LoadMenuObjects();
-    for (size_t i = 0; i < meshStorage.GetMeshCount(); i++)
+
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(1.6f, 1.9f, 2.3));
+    for (size_t i = 1; i < meshStorage.GetMeshCount(); i++)
     {
-        sceneObjects.emplace_back(meshStorage.GetMesh(i), true);
-        if (i == 1)
-        {
-            for (size_t i = 0; i < 2; i++)
-            {
-                sceneObjects.emplace_back(meshStorage.GetMesh(1), true);
-            }
-        }
+        sceneObjects.emplace_back(meshStorage.GetMesh(i), true, F3()); 
     }
+    sceneObjects.at(9).RemoveBBox(0);
+
     meshStorage.UnloadDataBase();
+
     sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3f);
+
 
     collisions.reserve(110);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)
@@ -57,7 +56,6 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     sky.init();
 
-
     highscore.AddRend();
     highscore.HighScoreSetPos();
     activeCamera->UpdateCam();
@@ -70,6 +68,7 @@ void MainMenu::Shutdown()
     sky.Shutdown();
     hLight.Shutdown();
 
+    highscore.Shutdown();
     objRender.Clear();
     meshStorage.UnloadMeshes();
     Object::EmptyObjectLists();
@@ -89,7 +88,7 @@ void MainMenu::Shutdown()
 
 SceneState MainMenu::Update()
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
@@ -105,6 +104,11 @@ SceneState MainMenu::Update()
         decalShadow.SetActiveCamera(activeCamera);
 
     }
+
+    if (activeCamera == &freeCamera)
+        activeCamera->UpdateCam();
+
+//#endif // DEBUG
 
     activeCamera->SetView();
 
@@ -145,7 +149,6 @@ SceneState MainMenu::Update()
     }
 
     return SceneState::Unchanged;
-#endif // DEBUG
 }
 
 void MainMenu::Render()
@@ -166,6 +169,9 @@ void MainMenu::Render()
         uiRender.Draw();
     }
 #ifdef _DEBUG
+
+    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+
     //ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
     HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG

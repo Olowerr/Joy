@@ -14,6 +14,8 @@ class Character: public Object
 public:
 	Character(Mesh* mesh);
 	~Character();
+	void Shutdown() override;
+
 	void Move();
 	void Jump();
 	void Respawn();
@@ -23,6 +25,9 @@ public:
 
 	
 private:
+
+	ID3D11ShaderResourceView* glowMapSRV;
+	void LoadGlowMap();
 
 	//movement
 	Keyboard& key;

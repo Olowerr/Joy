@@ -46,14 +46,12 @@ public:
 };
 
 /*
-
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
 	Most of this file is temporary, will change with .JOY lib
-
 */
 
 class TempMeshStorage
@@ -83,7 +81,7 @@ public:
 	DiffTextures joyDiff;
 
 private:
-	
+
 	std::vector<DiffTextures> diffTextures;
 	bool sameTexture;
 
@@ -132,12 +130,13 @@ private:
 		//"MenuScene.joy"
 	};
 
-	static const UINT EasyCount = 2;
-	const std::string EasyFiles[MenuCount] =
+	static const UINT EasyCount = 3;
+	const std::string EasyFiles[EasyCount] =
 	{
 		// menu .joy files
 		"Portal.joy",
-		"TestSceneUpdated.joy"
+		"LevelInst3.joy",
+		"PMesh.joy"
 	};
 
 	void import(UINT index);

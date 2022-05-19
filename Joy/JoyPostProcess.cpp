@@ -1,41 +1,34 @@
 #include "JoyPostProcess.h"
+#include <iostream>
 
 JoyPostProcess::JoyPostProcess()
-	:blurXCS(nullptr), blurYCS(nullptr), blurUAV(nullptr), blurSRV(nullptr)
+	:blurCS(nullptr), xBlurUAV(nullptr), sampleSRV(nullptr)
+	, NumThreadX(16), NumThreadY(9)
+	, SampleTexX(NumThreadX * 30), SampleTexY(NumThreadY * 30)
+	, XGroups(SampleTexX / NumThreadX), YGroups(SampleTexY / NumThreadY)
 {
 	bool succeeded = false;
 	HRESULT hr;
 
-	std::string shaderData;
-	succeeded = Backend::LoadShader(Backend::ShaderPath + "BlurXCS.cso", &shaderData);
+	succeeded = LoadShaders();
 	assert(succeeded);
 
-	hr = Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurXCS);
+	DirectX::XMFLOAT4 pos[4] = {
+		{-1.f, 1.f, 0.f, 1.f},
+		{1.f, 1.f, 0.f, 1.f},
+		{-1.f, -1.f, 0.f, 1.f},
+		{1.f, -1.f, 0.f, 1.f}
+	};
+	hr = Backend::CreateVertexBuffer(&quadBuffer, pos, sizeof(pos));
 	assert(SUCCEEDED(hr));
-	
-	succeeded = Backend::LoadShader(Backend::ShaderPath + "BlurYCS.cso", &shaderData);
-	assert(succeeded);
 
-	hr = Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurYCS);
-	assert(SUCCEEDED(hr));
-
-	/*D3D11_TEXTURE2D_DESC texDesc{};
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	texDesc.Format = DXGI_FORMAT_R8_UNORM;
-	texDesc.ArraySize = 1;
-	texDesc.Width = Backend::GetWindowWidth();
-	texDesc.Height = Backend::GetWindowHeight();
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MipLevels = 1;
-	texDesc.MiscFlags = 0;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;*/
 
 	D3D11_TEXTURE2D_DESC texDesc;
 	(*Backend::GetBackBuffer())->GetDesc(&texDesc);
-	texDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	texDesc.Format = DXGI_FORMAT_R8_UNORM;
+	texDesc.Width = SampleTexX;
+	texDesc.Height = SampleTexY;
 
 	ID3D11Texture2D* resource;
 	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
@@ -45,48 +38,209 @@ JoyPostProcess::JoyPostProcess()
 		return;
 	}
 
-	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &blurUAV);
-	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &blurSRV);
+	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &sampleSRV);
+	Backend::GetDevice()->CreateRenderTargetView(resource, nullptr, &sampleRTV);
 	resource->Release();
+
+	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+	{
+		assert(SUCCEEDED(hr));
+		return;
+	}
+	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &xBlurUAV);
+	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &xBlurSRV);
+	resource->Release();
+
+	hr = Backend::GetDevice()->CreateTexture2D(&texDesc, nullptr, &resource);
+	if (FAILED(hr))
+	{
+		assert(SUCCEEDED(hr));
+		return;
+	}
+	Backend::GetDevice()->CreateUnorderedAccessView(resource, nullptr, &yBlurUAV);
+	Backend::GetDevice()->CreateShaderResourceView(resource, nullptr, &yBlurSRV);
+	resource->Release();
+
+	Backend::CreateDynamicCBuffer(&blurSwitch, nullptr, 16);
+
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = (float)texDesc.Width;
+	viewport.Height = (float)texDesc.Height;
+	viewport.MinDepth = 0;
+	viewport.MaxDepth = 1;
 }
 
 void JoyPostProcess::Shutdown()
 {
-	blurXCS->Release();
-	blurYCS->Release();
+	blurCS->Release();
 
-	blurUAV->Release();
-	blurSRV->Release();
+	sampleRTV->Release();
+	sampleSRV->Release();
+
+	xBlurUAV->Release();
+	xBlurSRV->Release();
+
+	yBlurSRV->Release();
+	yBlurUAV->Release();
+
+	blurSwitch->Release();
+
+	screenQuadVS->Release();
+	downSamplePS->Release();
+
+	upSamplePS->Release();
+
+	quadBuffer->Release();
 }
 
 void JoyPostProcess::ApplyGlow()
 {
-	Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
-	return;
+	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
+	//return;
 
-	static ID3D11RenderTargetView* nullRTV{};
+	auto frameStart = std::chrono::system_clock::now();
+	
+	DownSample();
+
+	static ID3D11RenderTargetView* nullRTV[2]{};
 	static ID3D11UnorderedAccessView* nullUAV{};
 	static ID3D11ShaderResourceView* nullSRV[2]{};
+	static float data[2] = { 0.f, 2.f };
 
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	
-	// Unbind MainRTV
-	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+	// Unbind sampleRTV
+	devContext->OMSetRenderTargets(2, nullRTV, nullptr);
+
+#ifdef _DEBUG
+	if (ImGui::Begin("Glow"))
+	{
+		ImGui::InputFloat("Glow Strength", &data[1], 0.1f);
+		data[1] = data[1] < 0.f ? 0.f : data[1];
+	}
+	ImGui::End();
+#endif // _DEBUG
+
+	data[0] = 0.f;
+	Backend::UpdateBuffer(blurSwitch, data, 8);
+
+	devContext->CSSetShader(blurCS, nullptr, 0);
+	devContext->CSSetConstantBuffers(0, 1, &blurSwitch);
 
 	// Horisontal Blur
-	devContext->CSSetShader(blurXCS, nullptr, 0);
-	devContext->CSSetUnorderedAccessViews(0, 1, &blurUAV, nullptr);
-	devContext->CSSetShaderResources(0, 1, Backend::GetMainSRV());
-	devContext->Dispatch(Backend::GetWindowWidth() / NumThreadX, Backend::GetWindowHeight() / NumThreadY, 1);
+	devContext->CSSetUnorderedAccessViews(0, 1, &xBlurUAV, nullptr);
+	devContext->CSSetShaderResources(0, 1, &sampleSRV);
+	devContext->Dispatch(XGroups, YGroups, 1);
+
 
 	// Vertical Blur
-	devContext->CSSetShader(blurYCS, nullptr, 0);
-	devContext->CSSetUnorderedAccessViews(0, 1, Backend::GetBackBufferUAV(), nullptr);
-	devContext->CSSetShaderResources(1, 1, &blurSRV);
-	devContext->Dispatch(Backend::GetWindowWidth() / NumThreadX, Backend::GetWindowHeight() / NumThreadY, 1);
+	data[0] = 1.f;
+
+	Backend::UpdateBuffer(blurSwitch, data, 8);
+	devContext->CSSetUnorderedAccessViews(0, 1, &yBlurUAV, nullptr);
+	devContext->CSSetShaderResources(0, 1, &xBlurSRV);
+	devContext->Dispatch(XGroups, YGroups, 1);
 
 	// Unbind
 	devContext->CSSetShaderResources(0, 2, nullSRV);
 	devContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
+	devContext->PSSetShaderResources(6, 1, nullSRV);
 
+	UpSample();
+
+	std::chrono::duration<float> time = std::chrono::system_clock::now() - frameStart;
+	//std::cout << time.count() << "\n";
+
+}
+
+void JoyPostProcess::DownSample()
+{
+	static const UINT Stride = sizeof(DirectX::XMFLOAT4), Offset = 0;
+	static ID3D11RenderTargetView* nullRTV{};
+	static ID3D11ShaderResourceView* nullSRV{};
+
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+
+	devContext->IASetInputLayout(Backend::GetShaderStorage().posOnlyInputLayout);
+	devContext->IASetVertexBuffers(0, 1, &quadBuffer, &Stride, &Offset);
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	devContext->VSSetShader(screenQuadVS, nullptr, 0);
+
+	devContext->PSSetShader(downSamplePS, nullptr, 0);
+	devContext->PSSetShaderResources(5, 1, Backend::GetBlurSRV());
+
+	devContext->RSSetViewports(1, &viewport);
+
+	devContext->OMSetRenderTargets(1, &sampleRTV, nullptr);
+
+	devContext->Draw(4, 0);
+
+	devContext->PSSetShaderResources(5, 1, &nullSRV);
+}
+
+void JoyPostProcess::UpSample()
+{
+	static const UINT Stride = sizeof(DirectX::XMFLOAT4), Offset = 0;
+	static ID3D11RenderTargetView* nullRTV{};
+	static ID3D11ShaderResourceView* nullSRV{};
+
+	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
+
+	devContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+
+	devContext->IASetVertexBuffers(0, 1, &quadBuffer, &Stride, &Offset);
+	devContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	devContext->VSSetShader(screenQuadVS, nullptr, 0);
+
+	devContext->PSSetShader(upSamplePS, nullptr, 0);
+	devContext->PSSetShaderResources(5, 1, Backend::GetMainSRV());
+	devContext->PSSetShaderResources(6, 1, &yBlurSRV);
+
+	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
+
+	devContext->OMSetRenderTargets(1, Backend::GetBackBufferRTV(), nullptr);
+
+	devContext->Draw(4, 0);
+
+	devContext->PSSetShaderResources(5, 1, &nullSRV);
+	devContext->PSSetShaderResources(6, 1, &nullSRV);
+}
+
+bool JoyPostProcess::LoadShaders()
+{
+	std::string shaderData;
+	
+	if (!Backend::LoadShader(Backend::ShaderPath + "BlurCS.cso", &shaderData))
+		return false;
+
+	if (FAILED(Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurCS)))
+		return false;
+		
+
+	if (!Backend::LoadShader(Backend::ShaderPath + "screenQuadVS.cso", &shaderData))
+		return false;
+
+	if (FAILED(Backend::GetDevice()->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &screenQuadVS)))
+		return false;
+
+
+	if (!Backend::LoadShader(Backend::ShaderPath + "DownSamplePS.cso", &shaderData))
+		return false;
+
+	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &downSamplePS)))
+		return false;
+
+	if (!Backend::LoadShader(Backend::ShaderPath + "UpSamplePS.cso", &shaderData))
+		return false;
+
+	if (FAILED(Backend::GetDevice()->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &upSamplePS)))
+		return false;
+
+	return true;
 }

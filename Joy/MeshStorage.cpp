@@ -349,6 +349,8 @@ void TempMeshStorage::import(const std::string& filePath)
 	bool succeeded = false;
 	HRESULT hr{};
 
+	StoredData& asd = StoredData::GetInstance();
+
 	const size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
 	
 	succeeded = StoredData::GetInstance().StoreAll(filePath);
@@ -358,7 +360,7 @@ void TempMeshStorage::import(const std::string& filePath)
 	size_t meshesFound = StoredData::GetInstance().m_objectInfoVec.size() - sizeBefore;
 	if (!meshesFound)
 		return;
-
+	StoredData& nagotnamn = StoredData::GetInstance();
 	const size_t meshSizeBefore = meshes.size();
 	meshes.reserve(meshesFound);
 	for (size_t i = 0; i < meshesFound; i++)
@@ -367,6 +369,8 @@ void TempMeshStorage::import(const std::string& filePath)
 
 		ObjectInfo& object = StoredData::GetInstance().m_objectInfoVec.at(sizeBefore + i);
 		meshes.back()->name = object.objHeader.meshName.string;
+		if (i == 33)
+			int q = 0;
 
 		hr = Backend::CreateVertexBuffer(&meshes.back()->vertexBuffer, object.vertex.data(), sizeof(JOY::Vertex) * object.vertex.size());
 		if (FAILED(hr))
@@ -385,6 +389,9 @@ void TempMeshStorage::import(const std::string& filePath)
 			return;
 
 		meshes.back()->indexCount = object.indices.size();
+
+		if (i == 174)
+			int q = 0;
 
 		sameTexture = false;
 		for (size_t k = 0; k < diffTextures.size(); k++)
