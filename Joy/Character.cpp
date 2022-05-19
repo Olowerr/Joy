@@ -30,9 +30,8 @@ Character::Character(Mesh* mesh)
 	jumpHeight = 6;
 	canJump = false;
 	gravity = 300;
-
-	maxSpeed = 15.0f;
-	speed = 0.2f;
+	maxSpeed = 10.0f;
+	speed = 0.1f;
 	counterForce = 0.01f;
 
 	//Boost
@@ -62,12 +61,8 @@ void Character::Move()
 
 	arms.Rotate(0.1f, 0.f, 0.f);
 
-	maxSpeed = 10.0f;
-	speed = 0.1f;
-	counterForce = 0.01f;
 	timer += dt;
 	rotTimer += dt;
-
 
 	bool wsPressed = false;
 	bool adPressed = false;
@@ -248,7 +243,7 @@ void Character::Move()
 	}
 	if ((timer < 0.8f && isSliding == true) || (key.KeyReleased(DIK_LSHIFT) && isSliding == true))
 	{
-		slideSpeed += 1.7f;
+		slideSpeed += 1.4f;
 	}
 	else
 	{
@@ -311,7 +306,7 @@ void Character::Move()
 
 	if (isSliding)
 	{
-		fuel -= 1 * dt;
+		fuel -= 4.f * dt;
 	}
 
 	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
@@ -350,10 +345,10 @@ void Character::Jump()
 	}
 
 	//Boost
-	if (canBoost && key.KeyDown(DIK_SPACE))
+	if (canBoost && key.KeyDown(DIK_SPACE) && fuel > 0.f)
 	{
-		jumpVelocity += 325 * dt;
-		fuel -= 1 * dt;  // how much fuel used
+		jumpVelocity += 325.f * dt;
+		fuel -= 4.f * dt;  // how much fuel used
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
@@ -362,9 +357,9 @@ void Character::Jump()
 
 	fuel += 0.5f * dt; // how much increases
 
-	if (fuel > 10.f) // max fuel sett
+	if (fuel > 8.f) // max fuel sett
 	{
-		fuel = 10.f;
+		fuel = 8.f;
 	}
 
 	this->Translate(0, jumpVelocity * dt, 0);
