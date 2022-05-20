@@ -18,13 +18,13 @@ public:
 
 	void Move();
 	void Jump();
-	void Respawn();
+	bool Respawn();
 	bool SetCanJump(bool canJump);
 
 	void Draw() override;
 
 	float GetFuel() const;
-
+	void SetFuel(float amount);
 private:
 
 	ID3D11ShaderResourceView* glowMapSRV;

@@ -59,7 +59,7 @@ void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
 
-	arms.Rotate(0.1f, 0.f, 0.f);
+	arms.Rotate(1.0f * dt, 0.f, 0.f);
 
 	timer += dt;
 	rotTimer += dt;
@@ -367,11 +367,16 @@ void Character::Jump()
 	//std::cout << fuel << std::endl;
 }
 
-void Character::Respawn()
+bool Character::Respawn()
 {
 	//Checks if the player has fallen too far off the map and sets the position back to start
 	if (GetPosition().y < -40.0f)
-		SetPosition(0.0f, 0.0f, 0.0f);
+	{
+		SetPosition(0.0f, 20.0f, 0.0f);
+		return true;
+	}
+
+	return false;
 }
 
 bool Character::SetCanJump(bool canJump)
@@ -409,6 +414,11 @@ void Character::Draw()
 float Character::GetFuel() const
 {
 	return fuel;
+}
+
+void Character::SetFuel(float amount)
+{
+	fuel = amount;
 }
 
 void Character::DrawChildren()

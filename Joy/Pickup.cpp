@@ -153,7 +153,11 @@ void Pickup::DrawPickupInstances(Camera* cam_in)
 
 	dc->DrawIndexedInstanced(pickupObjs.at(0)->GetMesh()->indexCount, pickupsRendered, 0, 0, 0);
 
+#ifdef  _DEBUG
+
 	HObject::GetInstance().Draw(pickupObjs.at(0), cam_in, false, true, 0);
+#endif //  _DEBUG
+
 
 	dc = nullptr;
 }
