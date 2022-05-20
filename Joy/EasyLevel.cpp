@@ -31,7 +31,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     meshStorage.LoadEasyObjects();
 
     sceneObjects.reserve(200);
-
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(-9.2F, -1.4f, 448.7f));
     PlaceObjects();
     PlacePickups(meshStorage);
     meshStorage.UnloadDataBase();
