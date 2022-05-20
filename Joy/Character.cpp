@@ -420,7 +420,7 @@ void Character::Jump()
 	if (canBoost && key.KeyDown(DIK_SPACE) && fuel > 0.f)
 	{
 		jumpVelocity += 350.f * dt;
-		fuel -= 6.f * dt;  // how much fuel used
+		fuel -= 7.f * dt;  // how much fuel used
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
