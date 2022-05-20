@@ -303,3 +303,4 @@ void HighscoreClass::HighScoreSetPos()
 	m_screenRend.SetScale(0.5f, 0.5f);
 	m_screenRend.SetColour({ 0.2f ,0.8f ,0.33f , 0.2f });
 }
+
