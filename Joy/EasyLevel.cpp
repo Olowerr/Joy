@@ -211,10 +211,10 @@ SceneState EasyLevel::Update()
     if (pickups.isHit()) // Collision checks, TODO: handle time (score).
     {
         time -= 5;
-        timeReduction.SetPosition(Backend::GetWindowWidth() / 2, 250.f);
+        timeReduction.SetPosition((float)Backend::GetWindowWidth() / 2.f, 250.f);
         timeReducMover = 250;
     }  
-    timeReduction.SetPosition(Backend::GetWindowWidth() / 2, timeReducMover);
+    timeReduction.SetPosition((float)Backend::GetWindowWidth() / 2.f, timeReducMover);
     if (timeReducMover > -30.f)
     {
 
