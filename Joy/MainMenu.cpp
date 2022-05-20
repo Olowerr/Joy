@@ -73,6 +73,8 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
 void MainMenu::Shutdown()
 {
+    delete compi;
+
     sky.Shutdown();
     hLight.Shutdown();
 
