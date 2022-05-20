@@ -129,12 +129,11 @@ SceneState EasyLevel::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
-<<<<<<< HEAD
+
     pickups.UpdateMatrices();
     pickups.isHit(); // Collision checks, TODO: handle score.
-=======
+
     JoyPostProcess::CalcGlowAmount(joy.GetFuel());
->>>>>>> fuel-glow
 
     //Camera functions
     activeCamera->UpdateCam();
