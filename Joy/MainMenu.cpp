@@ -30,6 +30,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     sceneObjects.at(0).SetPosition(1.6f, 1.9f, 2.3f);
 
+    std::cout << "0\n";
 
     collisions.reserve(110);
     for (size_t i = 0; i < (int)sceneObjects.size(); i++)
@@ -46,8 +47,10 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     divider.CreateSections(1, 20.f, 15.f, 10.f, -10.f);
     objRender.SetMapDivier(&divider);
     decalShadow.SetMapDivider(&divider);
+    std::cout << "1\n";
 
     hLight.InitiateTools(divider);
+    std::cout << "2\n";
 
     InstancedObject::CreateInstancedObjects(meshStorage, divider, hLight);
     hLight.GenerateLightMaps(divider);
@@ -55,10 +58,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     hLight.ShutdownTools();
 
     sky.init();
+    std::cout << "3\n";
 
     highscore.AddRend();
     highscore.HighScoreSetPos();
     activeCamera->UpdateCam();
+    std::cout << "4\n";
 
     SoundSystem::getInstance().GetEffect(0)->Play(true);
 }

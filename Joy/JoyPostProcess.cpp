@@ -170,11 +170,15 @@ void JoyPostProcess::CalcGlowAmount(float fuel)
 	const float MaxFuel = 10.f;
 	//static float fuel = MaxFuel;
 
+#ifdef  _DEBUG
 	if (ImGui::Begin("asd"))
 	{
 		ImGui::InputFloat("smolpp", &fuel, 0.1f);
 		ImGui::End();
 	}
+
+#endif //  _DEBUG
+
 	fuel = fuel < 0.f ? 0.f : fuel > MaxFuel ? MaxFuel : fuel;
 
 	float Factor = fuel / MaxFuel;

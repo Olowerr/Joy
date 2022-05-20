@@ -31,8 +31,8 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     meshStorage.LoadEasyObjects();
 
     sceneObjects.reserve(200);
-    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(-9.2F, -1.4f, 448.7f));
     PlaceObjects();
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(-9.2F, -1.4f, 448.7f));
     PlacePickups(meshStorage);
     meshStorage.UnloadDataBase();
 
@@ -96,7 +96,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
             collisions.emplace_back();
     }
 
-    joy.SetPosition(0.0f, 5.0f, 0.0f);
+    joy.SetPosition(0.0f, 30.0f, 0.0f);
 
     objRender.SetActiveCamera(activeCamera);
     decalShadow.SetActiveCamera(activeCamera);
@@ -184,7 +184,12 @@ SceneState EasyLevel::Update()
 
     joy.Jump();
     joy.Move();
-    joy.Respawn();
+    
+    if (joy.Respawn())
+    {
+        time = 0.f;
+        joy.SetFuel(10.f);
+    }
 
     pickups.UpdateMatrices();
     pickups.isHit(); // Collision checks, TODO: handle score.
@@ -207,8 +212,8 @@ SceneState EasyLevel::Update()
         else
             joy.SetCanJump(false);
     }
-    int collCounter = 0;
-    for (size_t i = 1; i < (int)sceneObjects.size(); i++)
+
+    for (size_t i = 0; i < (int)collisions.size() - 1; i++)
     {
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
@@ -216,7 +221,7 @@ SceneState EasyLevel::Update()
         }
     }
 
-    if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    if (joy.GetBoundingBox(0).Intersects(sceneObjects.back().GetBoundingBox(0)))
     {
         m_highscore.InputNameAndSetHighscore(time); // send in the final score here
         uiRender.Clear();
@@ -230,7 +235,7 @@ SceneState EasyLevel::Update()
 
 void EasyLevel::Render()
 {
-    if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
+    if (!joy.GetBoundingBox(0).Intersects(sceneObjects.back().GetBoundingBox(0)))
     {
         objRender.DrawAll();
         pickups.DrawPickupInstances(activeCamera);

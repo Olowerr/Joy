@@ -61,5 +61,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance
     
 	game.Shutdown();
 
+    (void)getchar();
+    (void)getchar();
+    (void)getchar();
+    (void)getchar();
+    (void)getchar();
+
 	return 0;
 }
