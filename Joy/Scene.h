@@ -18,7 +18,7 @@
 
 #include "JoyPostProcess.h"
 
-enum struct SceneState { Unchanged, MainMenu, Easy, Test, Highscore/*, Medium, Hard*/ };
+enum struct SceneState { Unchanged, MainMenu, Easy, Test, Highscore, Quit/*, Medium, Hard*/ };
 
 __declspec(align(16))
 class Scene

@@ -200,7 +200,12 @@ void Backend::Process()
     if (!system->window.IsActive())
     {
         system->mouse.Lock(false);
-        //ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
+        ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
+    }
+    else
+    {
+        system->swapChain->SetFullscreenState(true, nullptr);
+        system->mouse.Lock(true);
     }
 }
 

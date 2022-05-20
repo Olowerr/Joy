@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "HighscoreClass.h"
 #include "Computer.h"
+#include "PausMenu.h"
 
 class MainMenu : public Scene
 {
@@ -28,6 +29,7 @@ private:
 
 	HighscoreClass highscore;
 
+	PausMenu pausMenu;
 	MapDivider divider;
 	Skybox sky;
 

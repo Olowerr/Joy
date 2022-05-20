@@ -8,10 +8,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , divider(joy)
     , activeCamera(&joyCamera)
     , highscore(uiRender)
+    , pausMenu(uiRender)
 {
     Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
     SoundSystem::getInstance().StopSounds();
 
+    pausMenu.AddRend();
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
@@ -83,6 +85,7 @@ void MainMenu::Shutdown()
 
     sky.Shutdown();
     hLight.Shutdown();
+    pausMenu.Shutdown();
 
     highscore.Shutdown();
     objRender.Clear();
@@ -167,7 +170,20 @@ SceneState MainMenu::Update()
         return SceneState::Easy;
     }
 
-    return SceneState::Unchanged;
+    pausMenu.Paus(SceneState::MainMenu);
+    if (pausMenu.isPaused)
+    {
+        if (pausMenu.GetSceneState() == SceneState::MainMenu)
+        {
+            uiRender.Clear();
+            uiRender.Add(&loadingScreen);
+        }
+        return pausMenu.GetSceneState();
+    }
+    else
+    {
+        return SceneState::Unchanged;
+    }
 }
 
 void MainMenu::Render()
