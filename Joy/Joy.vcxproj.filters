@@ -1,82 +1,119 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="ObjInstanceVS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjPS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjVS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="JoyPS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="DecalPS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PosOnlyVS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="SkyBoxVS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="SkyBoxPS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PickupVS.hlsl">
-      <Filter>Pickups</Filter>
-    </FxCompile>
-    <FxCompile Include="PickupPS.hlsl">
-      <Filter>Pickups</Filter>
-    </FxCompile>
-    <FxCompile Include="LightMapVS.hlsl">
-      <Filter>Lights</Filter>
-    </FxCompile>
-    <FxCompile Include="LightMapCS.hlsl">
-      <Filter>Lights</Filter>
-    </FxCompile>
-    <FxCompile Include="LightMapPS.hlsl">
-      <Filter>Lights</Filter>
-    </FxCompile>
-    <FxCompile Include="UI_PS.hlsl">
-      <Filter>UI</Filter>
-    </FxCompile>
-    <FxCompile Include="UI_VS.hlsl">
-      <Filter>UI</Filter>
-    </FxCompile>
-    <FxCompile Include="PosOnlyInstanceVS.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="LineVS.hlsl">
-      <Filter>System\HObject</Filter>
+    <FxCompile Include="ObjPS.hlsl" />
+    <FxCompile Include="ObjVS.hlsl" />
+    <FxCompile Include="BlurCS.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="ColourPS.hlsl">
-      <Filter>System\HObject</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjVsOutline.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ObjPsOutline.hlsl">
-      <Filter>3D Rendering\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="screenQuadVS.hlsl">
-      <Filter>PostProcess\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="BlurCS.hlsl">
-      <Filter>PostProcess\Shaders</Filter>
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="DownSamplePS.hlsl">
-      <Filter>PostProcess\Shaders</Filter>
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapCS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LineVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjInstanceVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjPsOutline.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjVsOutline.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PickupPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PickupVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PosOnlyInstanceVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PosOnlyVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="screenQuadVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyBoxPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyBoxVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="UI_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="UI_VS.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="UpSamplePS.hlsl">
-      <Filter>PostProcess\Shaders</Filter>
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DecalPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="JoyPS.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DecalShadow.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HighscoreClass.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="LightHandler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MapSections.cpp" />
+    <ClCompile Include="MeshStorage.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjectRender.cpp" />
+    <ClCompile Include="PausMenu.cpp" />
+    <ClCompile Include="Pickup.cpp" />
+    <ClCompile Include="JoyPostProcess.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="UIRender.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Backend.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraBase.cpp">
+      <Filter>Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterCamera.cpp">
+      <Filter>Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Computer.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="EasyLevel.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="FreelookCamera.cpp">
+      <Filter>Cameras</Filter>
+    </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
@@ -101,92 +138,64 @@
     <ClCompile Include="ImguiSetup.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="CameraBase.cpp">
-      <Filter>Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterCamera.cpp">
-      <Filter>Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="FreelookCamera.cpp">
-      <Filter>Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectRender.cpp">
-      <Filter>3D Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="DecalShadow.cpp">
-      <Filter>3D Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Object stuff</Filter>
-    </ClCompile>
     <ClCompile Include="InstancedObject.cpp">
-      <Filter>Object stuff</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Object stuff</Filter>
-    </ClCompile>
-    <ClCompile Include="UIRender.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Playground.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="EasyLevel.cpp">
-      <Filter>Scenes</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="MainMenu.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Object stuff</Filter>
+    <ClCompile Include="Playground.cpp">
+      <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Pickup.cpp">
-      <Filter>Pickups</Filter>
-    </ClCompile>
-    <ClCompile Include="LightHandler.cpp">
-      <Filter>Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>System\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>System\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Backend.cpp">
-      <Filter>System\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>System\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="MapSections.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshStorage.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="HighscoreClass.cpp" />
-    <ClCompile Include="JoyPostProcess.cpp">
-      <Filter>PostProcess</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="Computer.cpp" />
-=======
-    <ClCompile Include="PausMenu.cpp" />
->>>>>>> PausMenu
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DecalShadow.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="stb_image.h">
+    <ClInclude Include="HighscoreClass.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="LightHandler.h" />
+    <ClInclude Include="MapSections.h" />
+    <ClInclude Include="MeshStorage.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectHelper.h" />
+    <ClInclude Include="ObjectRender.h" />
+    <ClInclude Include="PausMenu.h" />
+    <ClInclude Include="Pickup.h" />
+    <ClInclude Include="JoyPostProcess.h" />
+    <ClInclude Include="ShaderStorage.h" />
+    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SoundSystem.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UIRender.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Backend.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraBase.h">
+      <Filter>Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterCamera.h">
+      <Filter>Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Computer.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyLevel.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FreelookCamera.h">
+      <Filter>Cameras</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Imgui</Filter>
@@ -215,149 +224,40 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="CameraBase.h">
-      <Filter>Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterCamera.h">
-      <Filter>Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="FreelookCamera.h">
-      <Filter>Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectRender.h">
-      <Filter>3D Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="DecalShadow.h">
-      <Filter>3D Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Object stuff</Filter>
-    </ClInclude>
     <ClInclude Include="InstancedObject.h">
-      <Filter>Object stuff</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Object stuff</Filter>
-    </ClInclude>
-    <ClInclude Include="UIRender.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIElement.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Playground.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="EasyLevel.h">
-      <Filter>Scenes</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="MainMenu.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Skybox.h">
-      <Filter>3D Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Object stuff</Filter>
-    </ClInclude>
-    <ClInclude Include="Pickup.h">
-      <Filter>Pickups</Filter>
-    </ClInclude>
-    <ClInclude Include="LightHandler.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderStorage.h">
-      <Filter>System\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>System\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>System\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Backend.h">
-      <Filter>System\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>System\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="MapSections.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshStorage.h">
-      <Filter>System</Filter>
+    <ClInclude Include="Playground.h">
+      <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="HighscoreClass.h" />
-    <ClInclude Include="JoyPostProcess.h">
-      <Filter>PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectHelper.h">
-      <Filter>System\HObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundSystem.h" />
-<<<<<<< HEAD
-    <ClInclude Include="Computer.h" />
-=======
-    <ClInclude Include="PausMenu.h" />
->>>>>>> PausMenu
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="System">
-      <UniqueIdentifier>{1ded883a-5ac2-447f-8e72-9c8ff7c397dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Imgui">
-      <UniqueIdentifier>{add15214-9672-4837-b9cc-a8e158d59a36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Cameras">
-      <UniqueIdentifier>{7a3fb425-6667-4c7d-8564-c6357887f055}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object stuff">
-      <UniqueIdentifier>{7f5e65b9-e95b-429c-b44f-3f36c8cdaa89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI">
-      <UniqueIdentifier>{d09ef028-afb4-422e-96ba-9d7f1a0a733e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="3D Rendering">
-      <UniqueIdentifier>{7b94568a-2ebc-4ff8-9a65-4544fc236b66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scenes">
-      <UniqueIdentifier>{8b35d042-33c3-40ee-aeb3-a9820accb493}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="3D Rendering\Shaders">
-      <UniqueIdentifier>{94b6b6c4-2b0c-4d41-bf79-381c3bbd445a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickups">
-      <UniqueIdentifier>{a254288f-2c35-4181-9dbc-587a319484ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lights">
-      <UniqueIdentifier>{aaa8b9ab-be90-4822-805a-c08e3d404a9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\Backend">
-      <UniqueIdentifier>{ec43fe4e-b6af-496e-9e3c-83eb8b919ab5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PostProcess">
-      <UniqueIdentifier>{8dd173c8-c6bb-4e7a-8c22-3400483df0cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System\HObject">
-      <UniqueIdentifier>{5eaaa1b0-4834-4e32-806d-1ce636f61c93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PostProcess\Shaders">
-      <UniqueIdentifier>{939aa8d9-1d17-4b6c-af32-533a5def99d8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{e8e208a4-9974-48a8-a098-bae0122745b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{0b587515-77c0-4767-9511-29bcfddda481}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{26c25a80-1fae-4fc0-9e9b-246776888745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{c2793faf-c8bc-4554-83c5-b91cd2a46cde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cameras">
+      <UniqueIdentifier>{910d2fa6-769b-4f85-8080-74f4170e650d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui">
+      <UniqueIdentifier>{11749311-341e-4747-be9f-37101fecbf38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
