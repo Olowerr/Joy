@@ -11,7 +11,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 {
     Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
     SoundSystem::getInstance().StopSounds();
-    //hej
+
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
