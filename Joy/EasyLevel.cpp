@@ -213,7 +213,7 @@ SceneState EasyLevel::Update()
             joy.SetCanJump(false);
     }
     int collCounter = 0;
-    for (size_t i = 1; i < (int)sceneObjects.size(); i++)
+    for (size_t i = 0; i < (int)sceneObjects.size() - 1; i++)
     {
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
