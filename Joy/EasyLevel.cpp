@@ -4,7 +4,7 @@
 EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
 	:Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(&meshStorage.joy[0])
-    , barUI("../Resources/Images/progressBar.png", 10.f, (float)Backend::GetWindowHeight() - 220, 1.f, 1.f)
+    , barUI("../Resources/Images/progressBar.png", 1850.f, 0.f, 1.f, 1.f)
     , arrow("../Resources/Images/arrow.png")
     , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
     , joyCamera(joy)
@@ -157,8 +157,8 @@ SceneState EasyLevel::Update()
     
     //ProgressBar
 
-    float distanceTrav = 30.f + joy.GetPosition().z * 0.35f;
-    arrow.SetPosition(18.f, (float)Backend::GetWindowHeight() - distanceTrav);
+    float distanceTrav = 30.f + joy.GetPosition().z * 0.38f;
+    arrow.SetPosition(1858.f, 225.f - distanceTrav);
     Backend::Clear();
 
     time += Backend::GetDeltaTime();
