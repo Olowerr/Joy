@@ -23,6 +23,7 @@ public:
 	void RenderHighScoreText();
 	void AddRend();
 	void HighScoreSetPos();
+
 private:
 
 	Keyboard& m_key;

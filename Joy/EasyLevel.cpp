@@ -12,17 +12,21 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
     , pickups(joy)
+    , dt()
  {
     SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
     uiRender.Add(&barUI);
     uiRender.Add(&arrow);
     uiRender.Add(&thomas);
+    uiRender.Add(&timeReduction);
     thomas.SetPosition(10.f, 10.f);
     thomas.SetColour(DirectX::Colors::BlueViolet);
-    
     thomas.SetText("THOMAS");
     thomas.SetScale(1.5f, 1.5f);
+    timeReduction.SetColour({ 0.f,0.8f,0.f,1.f });
+    timeReduction.SetText("-5");
+    timeReduction.SetPosition(-100.0f, -100.0f);
 
     joy.CheckBB();
 
@@ -149,6 +153,7 @@ void EasyLevel::Shutdown()
     barUI.Shutdown();
     arrow.Shutdown();
     thomas.Shutdown();
+    timeReduction.Shutdown();
     m_highscore.Shutdown();
 }
 
@@ -162,11 +167,7 @@ SceneState EasyLevel::Update()
     Backend::Clear();
 
     time += Backend::GetDeltaTime();
-
-    auto asd = std::to_string(time);
-    asd.erase(asd.find_first_of('.') + 3, std::string::npos);
-    
-    thomas.SetText(asd);
+    dt += Backend::GetDeltaTime();
 
 #ifdef _DEBUG
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
@@ -199,8 +200,20 @@ SceneState EasyLevel::Update()
     }
 
     pickups.UpdateMatrices();
-    pickups.isHit(); // Collision checks, TODO: handle score.
-    
+    if (pickups.isHit()) // Collision checks, TODO: handle time (score).
+    {
+        time -= 5;
+        timeReduction.SetPosition(Backend::GetWindowWidth() / 2, 250.f);
+        timeReducMover = 250;
+    }  
+    timeReduction.SetPosition(Backend::GetWindowWidth() / 2, timeReducMover);
+    if (timeReducMover > -30.f)
+    {
+
+
+        timeReducMover -= 1.f;
+
+    }
     JoyPostProcess::CalcGlowAmount(joy.GetFuel());
 
     //Camera functions
@@ -237,6 +250,10 @@ SceneState EasyLevel::Update()
         return SceneState::MainMenu;
     }
 
+    auto asd = std::to_string(time); 
+    asd.erase(asd.find_first_of('.') + 3, std::string::npos);
+    thomas.SetText(asd);
+    
     return SceneState::Unchanged;
 }
 

@@ -19,6 +19,7 @@ public:
 private:
 
 	HighscoreClass m_highscore;
+	float time = 0.f;
 
 	Character joy;
 	std::vector<Object> sceneObjects;
@@ -35,7 +36,11 @@ private:
 	Sprite barUI;
 	Sprite arrow;
 	Text thomas;
-	float time = 0.f;
+	Text timeReduction;
+	float timeReducMover;
+	float timeRedSpeedUpp;
+	float dt;
+	
 
 	MapDivider divider;
 	Skybox sky;
