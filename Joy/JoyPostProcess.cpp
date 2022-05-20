@@ -9,6 +9,7 @@ JoyPostProcess::JoyPostProcess()
 	, SampleTexX(NumThreadX * 30), SampleTexY(NumThreadY * 30)
 	, XGroups(SampleTexX / NumThreadX), YGroups(SampleTexY / NumThreadY)
 	, glowColour{0.f, 0.f, 1.f, 0.f}
+	, active(true)
 {
 	me = this;
 
@@ -104,8 +105,11 @@ void JoyPostProcess::Shutdown()
 
 void JoyPostProcess::ApplyGlow()
 {
-	//Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
-	//return;
+	if (!active)
+	{
+		Backend::GetDeviceContext()->CopyResource(*Backend::GetBackBuffer(), *Backend::GetMainBuffer());
+		return;
+	}
 
 	auto frameStart = std::chrono::system_clock::now();
 	
@@ -211,6 +215,11 @@ void JoyPostProcess::CalcGlowAmount(float fuel)
 
 	//printf("%.3f, %.3f, %.3f\n", me->glowColour[0], me->glowColour[1], me->glowColour[2]);
 
+}
+
+void JoyPostProcess::SetActive(bool active)
+{
+	me->active = active;
 }
 
 void JoyPostProcess::DownSample()
