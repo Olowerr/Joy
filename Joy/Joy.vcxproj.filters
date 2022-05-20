@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="ObjPS.hlsl" />
-    <FxCompile Include="ObjVS.hlsl" />
     <FxCompile Include="BlurCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -69,27 +67,16 @@
     <FxCompile Include="JoyPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="ObjPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ObjVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DecalShadow.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HighscoreClass.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="LightHandler.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MapSections.cpp" />
-    <ClCompile Include="MeshStorage.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjectRender.cpp" />
-    <ClCompile Include="PausMenu.cpp" />
-    <ClCompile Include="Pickup.cpp" />
-    <ClCompile Include="JoyPostProcess.cpp" />
-    <ClCompile Include="Text.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="UIRender.cpp" />
-    <ClCompile Include="Window.cpp" />
     <ClCompile Include="Backend.cpp">
       <Filter>System</Filter>
     </ClCompile>
@@ -147,32 +134,60 @@
     <ClCompile Include="Playground.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHandler.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="JoyPostProcess.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="MapSections.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshStorage.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="DecalShadow.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="HighscoreClass.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectRender.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="PausMenu.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRender.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DecalShadow.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="HighscoreClass.h" />
-    <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="LightHandler.h" />
-    <ClInclude Include="MapSections.h" />
-    <ClInclude Include="MeshStorage.h" />
-    <ClInclude Include="Mouse.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="ObjectHelper.h" />
-    <ClInclude Include="ObjectRender.h" />
-    <ClInclude Include="PausMenu.h" />
-    <ClInclude Include="Pickup.h" />
-    <ClInclude Include="JoyPostProcess.h" />
-    <ClInclude Include="ShaderStorage.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="SoundSystem.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Text.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="UIElement.h" />
-    <ClInclude Include="UIRender.h" />
-    <ClInclude Include="Window.h" />
     <ClInclude Include="Backend.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -235,6 +250,75 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHandler.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="JoyPostProcess.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="MapSections.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshStorage.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="DecalShadow.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="HighscoreClass.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectHelper.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRender.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="PausMenu.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStorage.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRender.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
