@@ -73,7 +73,7 @@ void Character::Move()
 	{
 		velocity.y += speed;
 		wsPressed = true;
-		if (!key.KeyDown(DIK_LSHIFT))
+		if (!key.KeyDown(DIK_LSHIFT) && !isSliding)
 		{
 			SetRotation(0.3f, GetRotation().y, GetRotation().z);
 			arms.SetRotation(0.8f, 0.f, 0.f);
@@ -108,7 +108,7 @@ void Character::Move()
 	{
 		velocity.y -= speed;
 		wsPressed = true;
-		if (!key.KeyDown(DIK_LSHIFT))
+		if (!key.KeyDown(DIK_LSHIFT) && !isSliding)
 		{
 			SetRotation(0.3f, GetRotation().y, GetRotation().z);
 			arms.SetRotation(0.8f, 0.f, 0.f);
@@ -143,7 +143,7 @@ void Character::Move()
 	{
 		velocity.x += speed;
 		adPressed = true;
-		if (!key.KeyDown(DIK_LSHIFT))
+		if (!key.KeyDown(DIK_LSHIFT) && !isSliding)
 		{
 			SetRotation(0.3f, GetRotation().y, GetRotation().z);
 			arms.SetRotation(0.8f, 0.f, 0.f);
@@ -208,7 +208,7 @@ void Character::Move()
 	{
 		adPressed = true;
 		velocity.x -= speed;
-		if (!key.KeyDown(DIK_LSHIFT))
+		if (!key.KeyDown(DIK_LSHIFT) && !isSliding)
 		{
 			SetRotation(0.3f, GetRotation().y, GetRotation().z);
 			arms.SetRotation(0.8f, 0.f, 0.f);
@@ -236,7 +236,7 @@ void Character::Move()
 	}
 	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_S))
 	{
-		if (GetRotation().y < -2.34 && GetRotation().y > 2.36f)
+		if (GetRotation().y < -2.34 && GetRotation().y > -2.36f)
 		{
 			SetRotation(GetRotation().x, -2.35f, GetRotation().z);
 		}
@@ -291,7 +291,7 @@ void Character::Move()
 	}
 
 	//SLIDE
-	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f)
+	if (key.KeyDown(DIK_LSHIFT) && fuel > 0 && isSliding == false && timer > 2.5f && fuel > 2.f)
 	{
 		isSliding = true;
 		canSlide = false;
@@ -312,7 +312,7 @@ void Character::Move()
 	{
 		rotTimer = 0.f;
 	}
-	if (key.KeyDown(DIK_LSHIFT) && GetRotation().x < 1.3 && key.KeyDown(DIK_W) && rotTimer < 0.25f)
+	if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_W) && rotTimer < 0.5f)
 	{
 		rotateVal *= dt;
 		Rotate(rotateVal, 0.f, 0.f);
@@ -346,9 +346,25 @@ void Character::Move()
 	}
 	//
 	// ROTATE BACK
-	if (isRotating && timer > 1.f || isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
+	if (!isSliding && isRotating && timer > 1.f || isRotating && (key.KeyReleased(DIK_W) || key.KeyReleased(DIK_S) || key.KeyReleased(DIK_A) || key.KeyReleased(DIK_D)))
 	{
-		SetRotation(0.f, 0.f, 0.f);
+		if (GetRotation().y > -0.1f && GetRotation().y < 0.1f)
+		{
+			SetRotation(0.f, 0.f, 0.f);
+		}
+		if (GetRotation().y > 3.13 && GetRotation().y < 3.15f)
+		{
+			SetRotation(GetRotation().x, 3.14f, GetRotation().z);
+		}
+		if (GetRotation().y < 1.58f && GetRotation().y > 1.56f)
+		{
+			SetRotation(GetRotation().x, 1.57f, GetRotation().z);
+		}
+		if (GetRotation().y > -1.58f && GetRotation().y < -1.56f)
+		{
+			SetRotation(GetRotation().x, -1.57f, GetRotation().z);
+		}
+
 		isRotating = false;
 		SetBBox(0, { GetPosition().x, GetPosition().y + 1.f,GetPosition().z }, bBoxExtents);
 	}

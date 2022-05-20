@@ -180,6 +180,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectRender.cpp" />
+    <ClCompile Include="PausMenu.cpp" />
     <ClCompile Include="Pickup.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -222,6 +223,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectHelper.h" />
     <ClInclude Include="ObjectRender.h" />
+    <ClInclude Include="PausMenu.h" />
     <ClInclude Include="Pickup.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>

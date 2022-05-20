@@ -177,7 +177,11 @@
     <ClCompile Include="JoyPostProcess.cpp">
       <Filter>PostProcess</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Computer.cpp" />
+=======
+    <ClCompile Include="PausMenu.cpp" />
+>>>>>>> PausMenu
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -303,7 +307,11 @@
       <Filter>System\HObject</Filter>
     </ClInclude>
     <ClInclude Include="SoundSystem.h" />
+<<<<<<< HEAD
     <ClInclude Include="Computer.h" />
+=======
+    <ClInclude Include="PausMenu.h" />
+>>>>>>> PausMenu
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
