@@ -30,7 +30,9 @@ TempMeshStorage::TempMeshStorage()
 	desc.Usage = D3D11_USAGE_DEFAULT;
 
 	ID3D11Texture2D* resource;
-	Backend::GetDevice()->CreateTexture2D(&desc, nullptr, &resource);
+	hr = Backend::GetDevice()->CreateTexture2D(&desc, nullptr, &resource);
+	if (FAILED(hr))
+		return;
 
 	Backend::GetDeviceContext()->UpdateSubresource(resource, 0, nullptr, imageData, width * 4, 0);
 
@@ -41,7 +43,10 @@ TempMeshStorage::TempMeshStorage()
 	sDesc.Texture2D.MostDetailedMip = 0;
 
 
-	Backend::GetDevice()->CreateShaderResourceView(resource, &sDesc, &joyDiff.textureSRV);
+	hr = Backend::GetDevice()->CreateShaderResourceView(resource, &sDesc, &joyDiff.textureSRV);
+	if (FAILED(hr))
+		return;
+
 	Backend::GetDeviceContext()->GenerateMips(joyDiff.textureSRV);
 
 	resource->Release();
