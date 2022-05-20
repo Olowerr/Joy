@@ -19,7 +19,7 @@ public:
 		ID3D11Device* device = Backend::GetDevice();
 
 		int x, y, c;
-		unsigned char* imgData = stbi_load("../Resources/Images/sky.jpg", &x, &y, &c, 4);
+		unsigned char* imgData = stbi_load("../Resources/Images/SkyForJoy.png", &x, &y, &c, 4);
 		if (!imgData)
 			return;
 

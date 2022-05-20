@@ -26,7 +26,12 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     {
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true, F3()); 
     }
-    sceneObjects.at(9).RemoveBBox(0);
+    sceneObjects.at(1).RemoveBBox(0);
+    sceneObjects.at(1).SetPosition(0.6f, 1.0, 0.f);
+    sceneObjects.at(1).SetRotation(0.f, 1.2f, 0.f);
+    sceneObjects.at(1).SetScale(1.2f);
+
+    sceneObjects.at(10).RemoveBBox(0);
 
     meshStorage.UnloadDataBase();
 
