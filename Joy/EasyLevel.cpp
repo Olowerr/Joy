@@ -94,7 +94,7 @@ SceneState EasyLevel::Update()
     
     //ProgressBar
 
-    float distanceTrav = 30.f + joy.GetPosition().z * 1.2f;
+    float distanceTrav = 30.f + joy.GetPosition().z * 0.35f;
     arrow.SetPosition(18.f, (float)Backend::GetWindowHeight() - distanceTrav);
     Backend::Clear();
 
@@ -129,12 +129,11 @@ SceneState EasyLevel::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
-<<<<<<< HEAD
+
     pickups.UpdateMatrices();
     pickups.isHit(); // Collision checks, TODO: handle score.
-=======
+    
     JoyPostProcess::CalcGlowAmount(joy.GetFuel());
->>>>>>> fuel-glow
 
     //Camera functions
     activeCamera->UpdateCam();

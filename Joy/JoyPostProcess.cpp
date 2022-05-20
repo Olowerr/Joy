@@ -167,7 +167,7 @@ void JoyPostProcess::ApplyGlow()
 
 void JoyPostProcess::CalcGlowAmount(float fuel)
 {
-	const float MaxFuel = 8.f;
+	const float MaxFuel = 10.f;
 	//static float fuel = MaxFuel;
 
 	if (ImGui::Begin("asd"))
