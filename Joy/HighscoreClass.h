@@ -19,7 +19,6 @@ public:
 	void SetHighscore(float score, std::string name);
 	bool LoadFromFile();
 	void InputNameAndSetHighscore(float score);
-	void RenderHighScoreText(float score);
 	void SortScores();
 	void RenderHighScoreText();
 	void AddRend();

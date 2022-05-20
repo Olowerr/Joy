@@ -59,7 +59,7 @@ void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
 
-	arms.Rotate(8.0f * dt, 0.f, 0.f);
+	//arms.Rotate(8.0f * dt, 0.f, 0.f);
 
 	timer += dt;
 	rotTimer += dt;
@@ -73,6 +73,16 @@ void Character::Move()
 	{
 		velocity.y += speed;
 		wsPressed = true;
+		if (!key.KeyDown(DIK_LSHIFT))
+		{
+			SetRotation(0.3f, GetRotation().y, GetRotation().z);
+			arms.SetRotation(0.8f, 0.f, 0.f);
+		}
+	}
+	if (!key.KeyDown(DIK_W) && !key.KeyDown(DIK_A) && !key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_LSHIFT))
+	{
+		SetRotation(0.f, GetRotation().y, GetRotation().z);
+		arms.SetRotation(0.f, 0.f, 0.f);
 	}
 	if (key.KeyDown(DIK_W) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
 	{
@@ -98,6 +108,16 @@ void Character::Move()
 	{
 		velocity.y -= speed;
 		wsPressed = true;
+		if (!key.KeyDown(DIK_LSHIFT))
+		{
+			SetRotation(0.3f, GetRotation().y, GetRotation().z);
+			arms.SetRotation(0.8f, 0.f, 0.f);
+		}
+	}
+	if (!key.KeyDown(DIK_W) && !key.KeyDown(DIK_A) && !key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_LSHIFT))
+	{
+		SetRotation(0.f, GetRotation().y, GetRotation().z);
+		arms.SetRotation(0.f, 0.f, 0.f);
 	}
 	if (key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_A))
 	{
@@ -123,10 +143,20 @@ void Character::Move()
 	{
 		velocity.x += speed;
 		adPressed = true;
+		if (!key.KeyDown(DIK_LSHIFT))
+		{
+			SetRotation(0.3f, GetRotation().y, GetRotation().z);
+			arms.SetRotation(0.8f, 0.f, 0.f);
+		}
+	}
+	if (!key.KeyDown(DIK_W) && !key.KeyDown(DIK_A) && !key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_LSHIFT))
+	{
+		SetRotation(0.f, GetRotation().y, GetRotation().z);
+		arms.SetRotation(0.f, 0.f, 0.f);
 	}
 	if (key.KeyDown(DIK_D) && key.KeyDown(DIK_W))
 	{
-		if (GetRotation().y > 0.784 && GetRotation().y < 0.786f)
+		if (GetRotation().y > 0.78 && GetRotation().y < 0.79f)
 		{
 			SetRotation(GetRotation().x, 0.785f, GetRotation().z);
 		}
@@ -154,11 +184,19 @@ void Character::Move()
 			Rotate(0.f, -charRotation * dt, 0.f);
 		}
 	}
-	if (key.KeyDown(DIK_D) && !key.KeyDown(DIK_W))
+	if (key.KeyDown(DIK_D) && !key.KeyDown(DIK_W) && !key.KeyDown(DIK_S))
 	{
-		if (GetRotation().y < 1.57f)
+		if (GetRotation().y < 1.58f && GetRotation().y > 1.56f)
+		{
+			SetRotation(GetRotation().x, 1.57f, GetRotation().z);
+		}
+		else if (GetRotation().y < 1.57f)
 		{
 			Rotate(0.f, charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y > 1.57f)
+		{
+			Rotate(0.f, -charRotation * dt, 0.f);
 		}
 	}
 	else if (velocity.x > 0.f)
@@ -170,6 +208,16 @@ void Character::Move()
 	{
 		adPressed = true;
 		velocity.x -= speed;
+		if (!key.KeyDown(DIK_LSHIFT))
+		{
+			SetRotation(0.3f, GetRotation().y, GetRotation().z);
+			arms.SetRotation(0.8f, 0.f, 0.f);
+		}
+	}
+	if (!key.KeyDown(DIK_W) && !key.KeyDown(DIK_A) && !key.KeyDown(DIK_S) && !key.KeyDown(DIK_D) && !key.KeyDown(DIK_LSHIFT))
+	{
+		SetRotation(0.f, GetRotation().y, GetRotation().z);
+		arms.SetRotation(0.f, 0.f, 0.f);
 	}
 	if (key.KeyDown(DIK_A) && key.KeyDown(DIK_W))
 	{
@@ -201,11 +249,19 @@ void Character::Move()
 			Rotate(0.f, charRotation * dt, 0.f);
 		}
 	}
-	if (key.KeyDown(DIK_A) && !key.KeyDown(DIK_W))
+	if (key.KeyDown(DIK_A) && !key.KeyDown(DIK_W) && !key.KeyDown(DIK_S))
 	{
-		if (GetRotation().y > -1.57f)
+		if (GetRotation().y > -1.58f && GetRotation().y < -1.56f)
+		{
+			SetRotation(GetRotation().x, -1.57f, GetRotation().z);
+		}
+		else if (GetRotation().y > -1.57f)
 		{
 			Rotate(0.f, -charRotation * dt, 0.f);
+		}
+		else if (GetRotation().y < -1.57f)
+		{
+			Rotate(0.f, charRotation* dt, 0.f);
 		}
 	}
 	else if (velocity.x < 0.f)
