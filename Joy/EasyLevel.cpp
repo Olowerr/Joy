@@ -172,6 +172,11 @@ SceneState EasyLevel::Update()
     time += Backend::GetDeltaTime();
     dt += Backend::GetDeltaTime();
 
+    auto asd = std::to_string(time);
+    asd.erase(asd.find_first_of('.') + 3, std::string::npos);
+
+    thomas.SetText(asd);
+
 #ifdef _DEBUG
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
