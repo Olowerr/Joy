@@ -75,6 +75,9 @@ bool Sprite::Clicked()
 
 void Sprite::Draw()
 {
+	if (!active)
+		return;
+
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
 	
 	if (!immutable)

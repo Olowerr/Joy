@@ -101,6 +101,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 	FillDescriptions(&texDesc, &rtvDesc, &srvDesc, &uavDesc);
 	const std::vector<Object*>& levelObjs = Object::GetLevelObjects();
 	const std::vector<Object*>& enviormentObjs = Object::GetEnviormentObjects();
+
 	for (size_t i = 0; i < levelObjs.size(); i++)
 		texDesc.ArraySize += !levelObjs[i]->GetIsInstanced();
 	for (size_t i = 0; i < enviormentObjs.size(); i++)
@@ -150,7 +151,7 @@ bool HLight::GenerateLightMaps(MapDivider& sections)
 
 		for (UINT k = 0; k < enviormentObjects.size(); k++)
 		{
-			if (enviormentObjects[k]->GetIsInstanced())
+			if (enviormentObjects[k]->GetIsInstanced() || (*enviormentObjects[k]->GetLightMapSRV()))
 				continue;
 
 			srvDesc.Texture2DArray.FirstArraySlice = textureIndex;

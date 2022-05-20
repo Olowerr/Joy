@@ -120,11 +120,12 @@ private:
 
 	std::vector<Mesh*> meshes;
 	const std::string tastPath = "../Resources/JoyFiles/"; //  /MenuStuff
-	static const UINT MenuCount = 2;
+	static const UINT MenuCount = 3;
 	const std::string MenuFiles[MenuCount] =
 	{
 		//"Blockout_Test.joy" // 4 meshes
 		"Portal.joy",
+		"Arrow.joy",
 		//"TestSceneUpdated.joy"
 		"MainMenuFix.joy"
 		//"MenuScene.joy"

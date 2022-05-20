@@ -44,5 +44,6 @@ void Text::SetScale(FLOAT X, FLOAT Y)
 
 void Text::Draw()
 {
-	sprite->DrawString(spriteBatch, text.c_str(), position, colour, 0.f, DirectX::XMFLOAT2(), scale);
+	if (active)
+		sprite->DrawString(spriteBatch, text.c_str(), position, colour, 0.f, DirectX::XMFLOAT2(), scale);
 }
