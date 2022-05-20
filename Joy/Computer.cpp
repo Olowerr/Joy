@@ -35,6 +35,7 @@ bool HelpComputer::Check()
 	auto& pos = GetPosition();
 	SetPosition(pos.x, pos.y + std::sin(timePassed) * 0.001f, pos.z);
 
+#ifdef _DEBUG
 	if (ImGui::Begin("dora"))
 	{
 		ImGui::InputFloat("CX", &trigger.Center.x, 0.1f);
@@ -49,6 +50,7 @@ bool HelpComputer::Check()
 	}
 
 	HObject::GetInstance().DrawBB(trigger);
+#endif
 
 	if (joy.GetBoundingBox(0).Intersects(trigger) && Backend::GetKeyboard().KeyReleased(DIK_E))
 	{
