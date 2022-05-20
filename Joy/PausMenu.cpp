@@ -1,7 +1,7 @@
 #include "PausMenu.h"
 
 PausMenu::PausMenu(UIRenderer& uiRender)
-	:m_key(Backend::GetKeyboard()), m_selection(), doInput(true)
+	:m_key(Backend::GetKeyboard()), m_selection(), doInput(true), isPaused(false), state(SceneState::Unchanged)
 {
 	ui = &uiRender;
 
@@ -32,12 +32,12 @@ void PausMenu::AddRend()
 	ui->Add(&m_arrow);
 }
 
-void PausMenu::Paus()
+void PausMenu::Paus(SceneState currentState)
 {
 
-	if (m_key.KeyDown(DIK_P))
+	if (m_key.KeyReleased(DIK_P))
 	{
-
+		isPaused = true;
 
 		while (doInput)
 		{
@@ -81,8 +81,11 @@ void PausMenu::Paus()
 			if (m_key.KeyDown(DIK_RETURN))
 			{
 				doInput = false;
-				m_arrow.Shutdown();
-				m_pausText.Shutdown();
+				if (state != SceneState::Unchanged)
+				{
+					m_arrow.Shutdown();
+					m_pausText.Shutdown();
+				}
 			}
 
 
@@ -94,24 +97,41 @@ void PausMenu::Paus()
 
 		//where should we go? 0 = continue, 1 = restart ( if in main just restart or do nothing idk), 2 = main menu, 3 = quit to desktop
 
-		if (m_selection == 0)
+		if (doInput == false)
 		{
-
-		}
-		if (m_selection == 1)
-		{
-
-		}
-		if (m_selection == 2)
-		{
-
-		}
-		if (m_selection == 3)
-		{
-
+			if (m_selection == 0)
+			{
+				state = SceneState::Unchanged;
+			}
+			if (m_selection == 1)
+			{
+				state = SceneState::MainMenu;
+			}
+			if (m_selection == 2)
+			{
+				if (currentState == SceneState::MainMenu)
+				{
+					state = SceneState::MainMenu;
+				}
+				if (currentState == SceneState::Easy)
+				{
+					state = SceneState::Easy;
+				}
+			}
+			if (m_selection == 3)
+			{
+				state = SceneState::Quit;
+			}
+			doInput = true;
 		}
 	}
 
 
+}
+
+SceneState& PausMenu::GetSceneState()
+{
+	isPaused = false;
+	return state;
 }
 

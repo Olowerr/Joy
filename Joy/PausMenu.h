@@ -3,6 +3,7 @@
 #include <Keyboard.h>
 #include "Text.h"
 #include "UIRender.h"
+#include "Scene.h"
 
 class PausMenu
 {
@@ -11,8 +12,9 @@ public:
 	~PausMenu();
 	void Shutdown();
 	void AddRend();
-	void Paus();
-
+	void Paus(SceneState currentState);
+	SceneState& GetSceneState();
+	bool isPaused;
 
 private:
 	Keyboard& m_key;
@@ -21,6 +23,7 @@ private:
 	Text m_pausText;
 	Text m_arrow;
 	bool doInput;
+	SceneState state;
 
 };
 

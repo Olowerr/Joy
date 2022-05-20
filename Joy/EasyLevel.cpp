@@ -12,6 +12,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
     , pickups(joy)
+    , pausMenu(uiRender)
  {
     SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
@@ -24,6 +25,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     thomas.SetText("THOMAS");
     thomas.SetScale(1.5f, 1.5f);
 
+    pausMenu.AddRend();
     joy.CheckBB();
 
     typedef DirectX::XMFLOAT3 F3;
@@ -127,6 +129,7 @@ void EasyLevel::Shutdown()
 {
     sky.Shutdown();
     hLight.Shutdown();
+    pausMenu.Shutdown();
 
     objRender.Clear();
     meshStorage.UnloadObjMeshes();
@@ -237,7 +240,20 @@ SceneState EasyLevel::Update()
         return SceneState::MainMenu;
     }
 
-    return SceneState::Unchanged;
+    pausMenu.Paus(SceneState::Easy);
+    if (pausMenu.isPaused)
+    {
+        if (pausMenu.GetSceneState() == SceneState::Easy)
+        {
+            uiRender.Clear();
+            uiRender.Add(&loadingScreen);
+        }
+        return pausMenu.GetSceneState();
+    }
+    else
+    {
+        return SceneState::Unchanged;
+    }
 }
 
 void EasyLevel::Render()

@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "HighscoreClass.h"
 #include "Pickup.h"
+#include "PausMenu.h"
 
 class EasyLevel : public Scene
 {
@@ -37,6 +38,7 @@ private:
 	Text thomas;
 	float time = 0.f;
 
+	PausMenu pausMenu;
 	MapDivider divider;
 	Skybox sky;
 

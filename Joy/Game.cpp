@@ -48,7 +48,7 @@ void Game::Run()
 	Scene* activeScene = new MainMenu(uiRender, objRender, decalShadow, meshStorage);
 	Backend::ResetDeltaTime();
 
-	while (window.IsOpen())
+	while (window.IsOpen() && activeState != SceneState::Quit)
 	{
 		switch (activeState)
 		{
