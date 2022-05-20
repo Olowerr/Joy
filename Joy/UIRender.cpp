@@ -129,3 +129,21 @@ void UIRenderer::Draw()
 	Backend::GetDeviceContext()->OMSetBlendState(nullptr, nullptr, 1);
 	Backend::GetDeviceContext()->OMSetDepthStencilState(nullptr, 0);
 }
+
+void UIRenderer::DisableAll()
+{
+	for (Sprite* element : sprites)
+		element->SetActive(false);
+
+	for (Text* text : texts)
+		text->SetActive(false);
+}
+
+void UIRenderer::EnableAll()
+{
+	for (Sprite* element : sprites)
+		element->SetActive(true);
+
+	for (Text* text : texts)
+		text->SetActive(true);
+}

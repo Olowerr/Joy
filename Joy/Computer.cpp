@@ -1,8 +1,12 @@
 #include "Computer.h"
 
-HelpComputer::HelpComputer(Mesh* mesh, const Character& joy)
-	:Object(mesh, true), joy(joy), timePassed(0.f)
+HelpComputer::HelpComputer(Mesh* mesh, const Character& joy, UIRenderer& uiRender)
+	:Object(mesh, true), joy(joy), timePassed(0.f), uiRender(uiRender)
+	, sprite("../Resources/Images/cat.png")
 {
+	sprite.SetPosition(10.f, 10.f);
+	uiRender.Add(&sprite);
+
 	trigger.Center.x = -10.f;
 	trigger.Center.y = 3.1f;
 	trigger.Center.z = 1.2f;
@@ -14,6 +18,14 @@ HelpComputer::HelpComputer(Mesh* mesh, const Character& joy)
 	SetPosition(trigger.Center.x - 1.8f, trigger.Center.y + 6.f, trigger.Center.z + 1.2f);
 	SetScale(0.5f);
 	SetRotation(0.f, 0.7f, 0.f);
+}
+
+void HelpComputer::Shutdown()
+{
+	Object::Shutdown();
+
+	sprite.SetActive(false);
+	sprite.Shutdown();
 }
 
 bool HelpComputer::Check()
@@ -38,7 +50,22 @@ bool HelpComputer::Check()
 
 	HObject::GetInstance().DrawBB(trigger);
 
-	return joy.GetBoundingBox(0).Intersects(trigger);
+	if (joy.GetBoundingBox(0).Intersects(trigger) && Backend::GetKeyboard().KeyReleased(DIK_E))
+	{
+		uiRender.DisableAll();
+		sprite.SetActive(true);
+		showing = true;
+		return true;
+	}
+	else if (showing && !joy.GetBoundingBox(0).Intersects(trigger))
+	{
+		uiRender.EnableAll();
+		sprite.SetActive(false);
+		showing = false;
+	}
+
+	
+	return false;
 }
 
 void HelpComputer::SetTrigger(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)

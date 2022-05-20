@@ -1,7 +1,7 @@
 #pragma once
 #include "UIElement.h"
 
-class Sprite : UIElement
+class Sprite : public UIElement
 {
 public:
 	Sprite(const std::string& imagePath, FLOAT xPos, FLOAT yPos, FLOAT xScale, FLOAT yScale);

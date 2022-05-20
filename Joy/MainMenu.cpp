@@ -20,7 +20,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     meshStorage.LoadMenuObjects();
 
     sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(1.6f, 1.9f, 2.3f));
-    compi = new HelpComputer(meshStorage.GetMesh(1), joy);
+    compi = new HelpComputer(meshStorage.GetMesh(1), joy, uiRender);
 
     for (size_t i = 2; i < meshStorage.GetMeshCount(); i++)
     {
@@ -73,6 +73,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
 void MainMenu::Shutdown()
 {
+    compi->Shutdown();
     delete compi;
 
     sky.Shutdown();

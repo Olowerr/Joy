@@ -14,6 +14,8 @@ public:
 	void Add(Sprite* sprite);
 	void Add(Text* text);
 	void Draw();
+	void DisableAll();
+	void EnableAll();
 
 	static const UINT NumVertices = 4;
 	

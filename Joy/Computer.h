@@ -1,11 +1,13 @@
 #pragma once
 #include "Character.h"
 #include "imguiSetup.h"
+#include "UIRender.h"
 
 class HelpComputer : public Object
 {
 public:
-	HelpComputer(Mesh* mesh, const Character& joy);
+	HelpComputer(Mesh* mesh, const Character& joy, UIRenderer& uiRender);
+	void Shutdown() override;
 
 	bool Check();
 
@@ -13,6 +15,11 @@ public:
 
 private:
 	const Character& joy;
+	UIRenderer& uiRender;
+
+	Sprite sprite;
+	bool showing;
+
 	DirectX::BoundingBox trigger;
 
 	float timePassed;
