@@ -12,6 +12,7 @@ public:
 	bool Check();
 
 	void SetTrigger(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
+	void SetActive(bool active);
 
 private:
 	const Character& joy;

@@ -9,8 +9,10 @@ PausMenu::PausMenu(UIRenderer& uiRender)
 
 	m_pausText.SetPosition(100.f, 100.f);
 	m_pausText.SetText(pausText);
+	m_pausText.SetActive(false);
 	m_arrow.SetText(">");
 	m_arrow.SetPosition(80.f, 100.f);
+	m_arrow.SetActive(false);
 
 
 }
@@ -38,6 +40,10 @@ void PausMenu::Paus(SceneState currentState)
 	if (m_key.KeyReleased(DIK_P))
 	{
 		isPaused = true;
+
+		ui->DisableAll();
+		m_pausText.SetActive(true);
+		m_arrow.SetActive(true);
 
 		while (doInput)
 		{
@@ -94,6 +100,9 @@ void PausMenu::Paus(SceneState currentState)
 
 		}
 
+		ui->EnableAll();
+		m_pausText.SetActive(false);
+		m_arrow.SetActive(false);
 
 		//where should we go? 0 = continue, 1 = restart ( if in main just restart or do nothing idk), 2 = main menu, 3 = quit to desktop
 
@@ -133,5 +142,11 @@ SceneState& PausMenu::GetSceneState()
 {
 	isPaused = false;
 	return state;
+}
+
+void PausMenu::SetActive(bool active)
+{
+	m_pausText.SetActive(active);
+	m_arrow.SetActive(active);
 }
 

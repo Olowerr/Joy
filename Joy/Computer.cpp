@@ -60,7 +60,7 @@ bool HelpComputer::Check()
 	}
 	else if ((showing && !joy.GetBoundingBox(0).Intersects(trigger)) || Backend::GetKeyboard().KeyReleased(DIK_E))
 	{
-		uiRender.EnableAll();
+		//uiRender.EnableAll();
 		sprite.SetActive(false);
 		showing = false;
 	}
@@ -73,4 +73,9 @@ void HelpComputer::SetTrigger(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extent
 {
 	trigger.Center = center;
 	trigger.Extents = extents;
+}
+
+void HelpComputer::SetActive(bool active)
+{
+	sprite.SetActive(active);
 }

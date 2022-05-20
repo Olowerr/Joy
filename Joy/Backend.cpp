@@ -202,11 +202,11 @@ void Backend::Process()
         system->mouse.Lock(false);
         ShowWindow(system->window.GetHWND(), SW_MINIMIZE);
     }
-    else
-    {
-        system->swapChain->SetFullscreenState(true, nullptr);
-        system->mouse.Lock(true);
-    }
+    //else
+    //{
+    //    system->swapChain->SetFullscreenState(true, nullptr);
+    //    system->mouse.Lock(true);
+    //}
 }
 
 ID3D11Device* Backend::GetDevice()

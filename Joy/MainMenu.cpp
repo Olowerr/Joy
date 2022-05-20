@@ -130,7 +130,17 @@ SceneState MainMenu::Update()
 
 //#endif // DEBUG
 
-    JoyPostProcess::SetActive(!compi->Check());
+    if (Backend::GetKeyboard().KeyReleased(DIK_E))
+        int q = 0;
+
+    if (compi->Check())
+    {
+        JoyPostProcess::SetActive(false);
+        pausMenu.SetActive(false);
+        return SceneState::Unchanged;
+    }
+    else
+        JoyPostProcess::SetActive(true);
 
     activeCamera->SetView();
 
@@ -173,6 +183,7 @@ SceneState MainMenu::Update()
     pausMenu.Paus(SceneState::MainMenu);
     if (pausMenu.isPaused)
     {
+        compi->SetActive(false);
         if (pausMenu.GetSceneState() == SceneState::MainMenu)
         {
             uiRender.Clear();

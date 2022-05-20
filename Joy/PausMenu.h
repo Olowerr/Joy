@@ -15,6 +15,7 @@ public:
 	void Paus(SceneState currentState);
 	SceneState& GetSceneState();
 	bool isPaused;
+	void SetActive(bool active);
 
 private:
 	Keyboard& m_key;
