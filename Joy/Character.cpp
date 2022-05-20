@@ -59,7 +59,7 @@ void Character::Move()
 {
 	float dt = Backend::GetDeltaTime();
 
-	arms.Rotate(1.0f * dt, 0.f, 0.f);
+	arms.Rotate(8.0f * dt, 0.f, 0.f);
 
 	timer += dt;
 	rotTimer += dt;
