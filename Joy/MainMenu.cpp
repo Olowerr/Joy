@@ -8,6 +8,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     , divider(joy)
     , activeCamera(&joyCamera)
     , highscore(uiRender)
+    , pausMenu(uiRender)
 {
     Backend::GetDeviceContext()->RSSetViewports(1, &Backend::GetDefaultViewport());
     SoundSystem::getInstance().StopSounds();
@@ -58,6 +59,10 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
 
     highscore.AddRend();
     highscore.HighScoreSetPos();
+
+    pausMenu.AddRend();
+
+
     activeCamera->UpdateCam();
 
     SoundSystem::getInstance().GetEffect(0)->Play(true);
@@ -67,7 +72,7 @@ void MainMenu::Shutdown()
 {
     sky.Shutdown();
     hLight.Shutdown();
-
+    pausMenu.Shutdown();
     highscore.Shutdown();
     objRender.Clear();
     meshStorage.UnloadMeshes();
@@ -85,12 +90,14 @@ void MainMenu::Shutdown()
     divider.Shutdown();
     uiRender.Clear();
     loadingScreen.Shutdown();
+
 }
 
 SceneState MainMenu::Update()
 {
 //#ifdef _DEBUG
 
+    pausMenu.Paus();
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
     {
