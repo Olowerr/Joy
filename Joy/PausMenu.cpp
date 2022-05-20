@@ -5,7 +5,7 @@ PausMenu::PausMenu(UIRenderer& uiRender)
 {
 	ui = &uiRender;
 
-	std::string pausText = ("CONTINUE \n\n MAIN MENU \n\n RESTART \n\n QUIT GAME");
+	std::string pausText = ("CONTINUE \n\nMAIN MENU \n\nRESTART \n\nQUIT GAME");
 
 	m_pausText.SetPosition(100.f, 100.f);
 	m_pausText.SetText(pausText);
@@ -59,15 +59,15 @@ void PausMenu::Paus()
 
 
 			if (m_selection == 1)
-				m_arrow.SetPosition(80.f, 120.f);
+				m_arrow.SetPosition(80.f, 192.f);
 
 
 			if (m_selection == 2)
-				m_arrow.SetPosition(80.f, 140.f);
+				m_arrow.SetPosition(80.f, 284.f);
 
 
 			if (m_selection == 3)
-				m_arrow.SetPosition(80.f, 160.f);
+				m_arrow.SetPosition(80.f, 376.f);
 
 
 			Backend::Process();
@@ -92,7 +92,24 @@ void PausMenu::Paus()
 		}
 
 
+		//where should we go? 0 = continue, 1 = restart ( if in main just restart or do nothing idk), 2 = main menu, 3 = quit to desktop
 
+		if (m_selection == 0)
+		{
+
+		}
+		if (m_selection == 1)
+		{
+
+		}
+		if (m_selection == 2)
+		{
+
+		}
+		if (m_selection == 3)
+		{
+
+		}
 	}
 
 
