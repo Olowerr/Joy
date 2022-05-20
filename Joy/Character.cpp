@@ -355,7 +355,7 @@ void Character::Jump()
 		jumpVelocity = fallSpeed;
 	}
 
-	fuel += 0.6f * dt; // how much increases
+	fuel += 1.f * dt; // how much increases
 
 	if (fuel > 10.f) // max fuel sett
 	{
