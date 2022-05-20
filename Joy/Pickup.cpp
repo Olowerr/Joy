@@ -40,7 +40,7 @@ void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 
 void Pickup::FetchPickupMesh(TempMeshStorage& meshStorage_in)
 {
-	pickupMesh = meshStorage_in.GetMeshByName("PMesh"); 
+	pickupMesh = meshStorage_in.GetMeshByName("PickupMesh"); 
 }
 
 void Pickup::UpdateMatrices()

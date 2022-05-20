@@ -11,6 +11,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , divider(joy)
     , activeCamera(&joyCamera)
     , m_highscore(uiRender)
+    , pickups(joy)
  {
     SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
@@ -30,8 +31,9 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     meshStorage.LoadEasyObjects();
 
     sceneObjects.reserve(200);
-
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(-9.2F, -1.4f, 448.7f));
     PlaceObjects();
+    PlacePickups(meshStorage);
     meshStorage.UnloadDataBase();
 
     sceneObjects.at(9).SetBBox(0, F3(-5.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
@@ -125,6 +127,7 @@ void EasyLevel::Shutdown()
     Object::EmptyObjectLists();
 
     joy.Shutdown();
+    pickups.ShutDown();
 
     for (Object& object : sceneObjects)
         object.Shutdown();
@@ -147,7 +150,7 @@ SceneState EasyLevel::Update()
     
     //ProgressBar
 
-    float distanceTrav = 30.f + joy.GetPosition().z * 1.2f;
+    float distanceTrav = 30.f + joy.GetPosition().z * 0.35f;
     arrow.SetPosition(18.f, (float)Backend::GetWindowHeight() - distanceTrav);
     Backend::Clear();
 
@@ -182,6 +185,11 @@ SceneState EasyLevel::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
+
+    pickups.UpdateMatrices();
+    pickups.isHit(); // Collision checks, TODO: handle score.
+    
+    JoyPostProcess::CalcGlowAmount(joy.GetFuel());
 
     //Camera functions
     activeCamera->UpdateCam();
@@ -225,6 +233,7 @@ void EasyLevel::Render()
     if (!joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
         objRender.DrawAll();
+        pickups.DrawPickupInstances(activeCamera);
         decalShadow.DrawAll(joy.GetPosition());
         objRender.DrawCharacter(joy);
         sky.Draw(activeCamera);
@@ -236,7 +245,7 @@ void EasyLevel::Render()
     }
 #ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+    //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }
 
@@ -416,4 +425,21 @@ void EasyLevel::PlaceObjects()
     sceneObjects.emplace_back(meshStorage.GetMeshByName("tree_a3"), true, F3(0.170f, 19.794f, 51.257f), F3(0.000f, 0.000f, 0.000f), 1.000f);
     sceneObjects.emplace_back(meshStorage.GetMeshByName("tree_b"), true, F3(-9.435f, 7.727f, 3.786f), F3(0.000f, 0.000f, 0.000f), 1.000f);
     sceneObjects.emplace_back(meshStorage.GetMeshByName("rock_b"), true, F3(0.045f, 1.575f, 302.546f), F3(0.000f, 0.000f, 0.000f), 1.000f);
+}
+
+void EasyLevel::PlacePickups(TempMeshStorage& meshStorage)
+{
+    pickups.FetchPickupMesh(meshStorage);
+
+    pickups.AddObject(-9.294f, 7.874f, 26.129f);    // [ 0 | Pickup above box at spawn ]
+    pickups.AddObject(10.518f, 10.709f, 52.211f);    // [ 1 | Pickup above fallen tree trunk at part one ]
+    pickups.AddObject(25.45f, 2.458f, 48.037f);    // [ 2 | Pickup one on the side of the map, part one ]
+    pickups.AddObject(18.128f, 8.457f, 78.214f);    // [ 3 | Pickup two on the side of the map, part one ]
+    pickups.AddObject(-5.397f, 8.170f, 135.484f);    // [ 4 | Pickup in the middle of the floating platforms ]
+    pickups.AddObject(5.019f, -8.352f, 222.524f);    // [ 5 | Pickup hidden behind boxes, part two ]
+    pickups.AddObject(8.488f, 3.447f, 292.317f);    // [ 6 | Pickup above round rocks, part two ]
+    pickups.AddObject(9.155f, 1.155f, 354.144f);    // [ 7 | Pickup above fence, part two ]
+    pickups.AddObject(-4.046f, 0.691f, 433.824f);    // [ 8 | Pickup high above fence, final part ]
+
+    pickups.CreateSRV_CreateMatrixSB();
 }

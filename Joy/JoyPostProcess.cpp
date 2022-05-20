@@ -1,12 +1,17 @@
 #include "JoyPostProcess.h"
 #include <iostream>
 
+JoyPostProcess* JoyPostProcess::me = nullptr;
+
 JoyPostProcess::JoyPostProcess()
 	:blurCS(nullptr), xBlurUAV(nullptr), sampleSRV(nullptr)
 	, NumThreadX(16), NumThreadY(9)
 	, SampleTexX(NumThreadX * 30), SampleTexY(NumThreadY * 30)
 	, XGroups(SampleTexX / NumThreadX), YGroups(SampleTexY / NumThreadY)
+	, glowColour{0.f, 0.f, 1.f, 0.f}
 {
+	me = this;
+
 	bool succeeded = false;
 	HRESULT hr;
 
@@ -63,6 +68,7 @@ JoyPostProcess::JoyPostProcess()
 	resource->Release();
 
 	Backend::CreateDynamicCBuffer(&blurSwitch, nullptr, 16);
+	Backend::CreateDynamicCBuffer(&glowColourBuffer, nullptr, 32);
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
@@ -86,6 +92,7 @@ void JoyPostProcess::Shutdown()
 	yBlurUAV->Release();
 
 	blurSwitch->Release();
+	glowColourBuffer->Release();
 
 	screenQuadVS->Release();
 	downSamplePS->Release();
@@ -119,12 +126,15 @@ void JoyPostProcess::ApplyGlow()
 	{
 		ImGui::InputFloat("Glow Strength", &data[1], 0.1f);
 		data[1] = data[1] < 0.f ? 0.f : data[1];
+
+		//ImGui::ColorEdit3("Glow Colour", glowColour);
 	}
 	ImGui::End();
 #endif // _DEBUG
 
 	data[0] = 0.f;
 	Backend::UpdateBuffer(blurSwitch, data, 8);
+	Backend::UpdateBuffer(glowColourBuffer, &glowColour, 32);
 
 	devContext->CSSetShader(blurCS, nullptr, 0);
 	devContext->CSSetConstantBuffers(0, 1, &blurSwitch);
@@ -152,6 +162,50 @@ void JoyPostProcess::ApplyGlow()
 
 	std::chrono::duration<float> time = std::chrono::system_clock::now() - frameStart;
 	//std::cout << time.count() << "\n";
+
+}
+
+void JoyPostProcess::CalcGlowAmount(float fuel)
+{
+	const float MaxFuel = 10.f;
+	//static float fuel = MaxFuel;
+
+	if (ImGui::Begin("asd"))
+	{
+		ImGui::InputFloat("smolpp", &fuel, 0.1f);
+		ImGui::End();
+	}
+	fuel = fuel < 0.f ? 0.f : fuel > MaxFuel ? MaxFuel : fuel;
+
+	float Factor = fuel / MaxFuel;
+
+	if (Factor >= 0.666f)
+	{
+		float factor2 = (Factor - 0.666f) / 0.333f;
+		me->glowColour[0] = (1.f - factor2) * me->FuelColour1[0] + factor2 * me->MaxFuelColour[0];
+		me->glowColour[1] = (1.f - factor2) * me->FuelColour1[1] + factor2 * me->MaxFuelColour[1];
+		me->glowColour[2] = (1.f - factor2) * me->FuelColour1[2] + factor2 * me->MaxFuelColour[2];
+	}
+
+	else if (Factor >= 0.333f)
+	{
+		float factor2 = (Factor - 0.333f) / 0.333f;
+		me->glowColour[0] = (1.f - factor2) * me->FuelColour2[0] + factor2 * me->FuelColour1[0];
+		me->glowColour[1] = (1.f - factor2) * me->FuelColour2[1] + factor2 * me->FuelColour1[1];
+		me->glowColour[2] = (1.f - factor2) * me->FuelColour2[2] + factor2 * me->FuelColour1[2];
+	}
+
+	else
+	{
+		float factor2 = Factor / 0.333f;
+		me->glowColour[0] = (1.f - factor2) * me->NoFuelColour[0] + factor2 * me->FuelColour2[0];
+		me->glowColour[1] = (1.f - factor2) * me->NoFuelColour[1] + factor2 * me->FuelColour2[1];
+		me->glowColour[2] = (1.f - factor2) * me->NoFuelColour[2] + factor2 * me->FuelColour2[2];
+
+	}
+
+
+	//printf("%.3f, %.3f, %.3f\n", me->glowColour[0], me->glowColour[1], me->glowColour[2]);
 
 }
 
@@ -201,6 +255,8 @@ void JoyPostProcess::UpSample()
 	devContext->PSSetShader(upSamplePS, nullptr, 0);
 	devContext->PSSetShaderResources(5, 1, Backend::GetMainSRV());
 	devContext->PSSetShaderResources(6, 1, &yBlurSRV);
+	devContext->PSSetShaderResources(7, 1, Backend::GetBlurSRV());
+	devContext->PSSetConstantBuffers(5, 1, &glowColourBuffer);
 
 	devContext->RSSetViewports(1, &Backend::GetDefaultViewport());
 
@@ -210,6 +266,7 @@ void JoyPostProcess::UpSample()
 
 	devContext->PSSetShaderResources(5, 1, &nullSRV);
 	devContext->PSSetShaderResources(6, 1, &nullSRV);
+	devContext->PSSetShaderResources(7, 1, &nullSRV);
 }
 
 bool JoyPostProcess::LoadShaders()

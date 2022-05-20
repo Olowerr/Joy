@@ -30,8 +30,8 @@ Character::Character(Mesh* mesh)
 	jumpHeight = 6;
 	canJump = false;
 	gravity = 300;
-	maxSpeed = 10.0f;
-	speed = 0.1f;
+	maxSpeed = 16.0f;
+	speed = 0.2f;
 	counterForce = 0.01f;
 
 	//Boost
@@ -306,7 +306,7 @@ void Character::Move()
 
 	if (isSliding)
 	{
-		fuel -= 4.f * dt;
+		fuel -= 5.f * dt;
 	}
 
 	Translate(velocity.x * slideSpeed * dt, 0.0f, velocity.y * slideSpeed * dt);
@@ -347,19 +347,19 @@ void Character::Jump()
 	//Boost
 	if (canBoost && key.KeyDown(DIK_SPACE) && fuel > 0.f)
 	{
-		jumpVelocity += 325.f * dt;
-		fuel -= 4.f * dt;  // how much fuel used
+		jumpVelocity += 350.f * dt;
+		fuel -= 6.f * dt;  // how much fuel used
 	}
 	else if (jumpVelocity < fallSpeed)
 	{
 		jumpVelocity = fallSpeed;
 	}
 
-	fuel += 0.5f * dt; // how much increases
+	fuel += 0.6f * dt; // how much increases
 
-	if (fuel > 8.f) // max fuel sett
+	if (fuel > 10.f) // max fuel sett
 	{
-		fuel = 8.f;
+		fuel = 10.f;
 	}
 
 	this->Translate(0, jumpVelocity * dt, 0);
@@ -370,7 +370,7 @@ void Character::Jump()
 void Character::Respawn()
 {
 	//Checks if the player has fallen too far off the map and sets the position back to start
-	if (GetPosition().y < -10.0f)
+	if (GetPosition().y < -40.0f)
 		SetPosition(0.0f, 0.0f, 0.0f);
 }
 
@@ -404,6 +404,11 @@ void Character::Draw()
 		dc->Draw(mesh->indexCount, 0);
 
 	DrawChildren();
+}
+
+float Character::GetFuel() const
+{
+	return fuel;
 }
 
 void Character::DrawChildren()
