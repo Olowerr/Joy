@@ -175,8 +175,8 @@ void MainMenu::Render()
         objRender.DrawAll();
         decalShadow.DrawAll(joy.GetPosition());
         objRender.DrawCharacter(joy);
-        uiRender.Draw();
         sky.Draw(activeCamera);
+        uiRender.Draw();
     }
     else
     {
