@@ -38,7 +38,6 @@ private:
 	Text thomas;
 	Text timeReduction;
 	float timeReducMover;
-	float timeRedSpeedUpp;
 	float dt;
 	
 
