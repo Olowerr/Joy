@@ -5,6 +5,7 @@ HelpComputer::HelpComputer(Mesh* mesh, const Character& joy, UIRenderer& uiRende
 	, sprite("../Resources/Images/cat.png")
 {
 	sprite.SetPosition(10.f, 10.f);
+	sprite.SetActive(false);
 	uiRender.Add(&sprite);
 
 	trigger.Center.x = -10.f;
@@ -52,14 +53,14 @@ bool HelpComputer::Check()
 	HObject::GetInstance().DrawBB(trigger);
 #endif
 
-	if (joy.GetBoundingBox(0).Intersects(trigger) && Backend::GetKeyboard().KeyReleased(DIK_E))
+	if ((!showing && joy.GetBoundingBox(0).Intersects(trigger)) && Backend::GetKeyboard().KeyReleased(DIK_E))
 	{
 		uiRender.DisableAll();
 		sprite.SetActive(true);
 		showing = true;
 		return true;
 	}
-	else if (showing && !joy.GetBoundingBox(0).Intersects(trigger))
+	else if ((showing && !joy.GetBoundingBox(0).Intersects(trigger)) || Backend::GetKeyboard().KeyReleased(DIK_E))
 	{
 		uiRender.EnableAll();
 		sprite.SetActive(false);
