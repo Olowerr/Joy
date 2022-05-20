@@ -129,8 +129,12 @@ SceneState EasyLevel::Update()
     joy.Jump();
     joy.Move();
     joy.Respawn();
+<<<<<<< HEAD
     pickups.UpdateMatrices();
     pickups.isHit(); // Collision checks, TODO: handle score.
+=======
+    JoyPostProcess::CalcGlowAmount(joy.GetFuel());
+>>>>>>> fuel-glow
 
     //Camera functions
     activeCamera->UpdateCam();
@@ -186,7 +190,7 @@ void EasyLevel::Render()
     }
 #ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+    //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
 }
 

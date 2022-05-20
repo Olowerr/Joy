@@ -11,7 +11,48 @@ TempMeshStorage::TempMeshStorage()
 	std::string path = "../Resources/JoyFiles/";
 	path += mat->diffuseTexturePath.string;
 
-	Backend::CreateConstSRV(&joyDiff.textureSRV, path);
+	int width, height, channels;
+	unsigned char* imageData = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+	if (!imageData)
+		return;
+
+	D3D11_TEXTURE2D_DESC desc{};
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.ArraySize = 1;
+	desc.MipLevels = 2;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	desc.CPUAccessFlags = 0;
+	desc.Height = width;
+	desc.Width = height;
+	desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+
+	ID3D11Texture2D* resource;
+	hr = Backend::GetDevice()->CreateTexture2D(&desc, nullptr, &resource);
+	if (FAILED(hr))
+		return;
+
+	Backend::GetDeviceContext()->UpdateSubresource(resource, 0, nullptr, imageData, width * 4, 0);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC sDesc;
+	sDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	sDesc.Format = desc.Format;
+	sDesc.Texture2D.MipLevels = -1;
+	sDesc.Texture2D.MostDetailedMip = 0;
+
+
+	hr = Backend::GetDevice()->CreateShaderResourceView(resource, &sDesc, &joyDiff.textureSRV);
+	if (FAILED(hr))
+		return;
+
+	Backend::GetDeviceContext()->GenerateMips(joyDiff.textureSRV);
+
+	resource->Release();
+	stbi_image_free(imageData);
+
+	//Backend::CreateConstSRV(&joyDiff.textureSRV, path);
 
 	for (UINT i = 0; i < 3; i++)
 	{

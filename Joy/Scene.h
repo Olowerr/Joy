@@ -16,7 +16,7 @@
 #include "imgui\imgui_impl_win32.h"
 #include "imgui\imgui_impl_dx11.h"
 
-
+#include "JoyPostProcess.h"
 
 enum struct SceneState { Unchanged, MainMenu, Easy, Test, Highscore/*, Medium, Hard*/ };
 
