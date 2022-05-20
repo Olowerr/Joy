@@ -2,9 +2,8 @@
 
 HelpComputer::HelpComputer(Mesh* mesh, const Character& joy, UIRenderer& uiRender)
 	:Object(mesh, true), joy(joy), timePassed(0.f), uiRender(uiRender)
-	, sprite("../Resources/Images/cat.png")
+	, sprite("../Resources/Images/HowToPlay.png", 0.f, -1.f, 1.f, 1.f)
 {
-	sprite.SetPosition(10.f, 10.f);
 	sprite.SetActive(false);
 	uiRender.Add(&sprite);
 
@@ -58,7 +57,6 @@ bool HelpComputer::Check()
 		uiRender.DisableAll();
 		sprite.SetActive(true);
 		showing = true;
-		return true;
 	}
 	else if ((showing && !joy.GetBoundingBox(0).Intersects(trigger)) || Backend::GetKeyboard().KeyReleased(DIK_E))
 	{
@@ -68,7 +66,7 @@ bool HelpComputer::Check()
 	}
 
 	
-	return false;
+	return showing;
 }
 
 void HelpComputer::SetTrigger(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)

@@ -15,9 +15,11 @@ public:
 	void ApplyGlow();
 
 	static void CalcGlowAmount(float joyFuel);
+	static void SetActive(bool active);
 
 private:
 	static JoyPostProcess* me;
+	bool active;
 
 	ID3D11ComputeShader* blurCS;
 

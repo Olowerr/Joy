@@ -122,7 +122,7 @@ SceneState MainMenu::Update()
 
 //#endif // DEBUG
 
-    compi->Check();
+    JoyPostProcess::SetActive(!compi->Check());
 
     activeCamera->SetView();
 
