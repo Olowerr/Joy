@@ -92,6 +92,7 @@ void JoyPostProcess::Shutdown()
 	yBlurUAV->Release();
 
 	blurSwitch->Release();
+	glowColourBuffer->Release();
 
 	screenQuadVS->Release();
 	downSamplePS->Release();
