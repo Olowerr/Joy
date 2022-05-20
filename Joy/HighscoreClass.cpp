@@ -21,7 +21,7 @@ HighscoreClass::~HighscoreClass()
 
 void HighscoreClass::SetHighscore(float score, std::string user)
 {
-	float finalScore = 1000 - score;
+	float finalScore = 1000 - score * 3;
 
 	if (finalScore > m_scores[0])
 	{
@@ -299,7 +299,7 @@ void HighscoreClass::AddRend()
 
 void HighscoreClass::HighScoreSetPos()
 {
-	m_screenRend.SetPosition(470.f, 320.f);
+	m_screenRend.SetPosition(600.f, 400.f);
 	m_screenRend.SetScale(0.5f, 0.5f);
 	m_screenRend.SetColour({ 0.2f ,0.8f ,0.33f , 0.2f });
 }

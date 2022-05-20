@@ -48,6 +48,9 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.at(12).SetBBox(0, F3(-4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
     sceneObjects.at(12).AddBBox(F3(4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
     sceneObjects.at(12).AddBBox(F3(0.000f, 2.657f, 424.000f), F3(3.500f, 0.500f, 0.200f));
+    sceneObjects.at(24).SetBBox(0, F3(10.469f, 33.600f, 86.000f), F3(4.500f, 23.256f, 0.500f));
+    sceneObjects.at(25).SetBBox(0, F3(5.000f, 33.600f, 94.000f), F3(4.500f, 23.256f, 0.500f));
+    sceneObjects.at(26).SetBBox(0, F3(10.469f, 33.600f, 102.000f), F3(4.500f, 23.256f, 0.500f));
     sceneObjects.at(43).RemoveBBox(0);
     sceneObjects.at(57).SetBBox(0, F3(6.998f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.400f));
     sceneObjects.at(57).AddBBox(F3(8.398f, 1.474f, 3.420f), F3(1.420f, 1.261f, 4.469f));
@@ -81,6 +84,10 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.at(124).AddBBox(F3(-11.593f, 15.556f, 270.079f), F3(4.480f, 7.303f, 3.460f));
     sceneObjects.at(125).SetBBox(0, F3(12.343f, 4.456f, 269.565f), F3(0.680f, 2.703f, 0.660f));
     sceneObjects.at(125).AddBBox(F3(12.343f, 15.556f, 269.565f), F3(3.880f, 7.803f, 3.660f));
+    sceneObjects.at(134).SetBBox(0, F3(-0.716f, 37.143f, 63.172f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(135).SetBBox(0, F3(-0.716f, 37.143f, 79.505f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(136).SetBBox(0, F3(-0.716f, 37.143f, 95.943f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(137).SetBBox(0, F3(-0.716f, 37.143f, 112.335f), F3(1.468f, 26.540f, 8.306f));
     sceneObjects.at(156).SetBBox(0, F3(9.566f, 15.013f, 49.239f), F3(5.264f, 1.793f, 1.549f));
     sceneObjects.at(156).AddBBox(F3(3.566f, 11.513f, 49.539f), F3(1.500f, 3.500f, 1.300f));
     sceneObjects.at(168).SetBBox(0, F3(0.470f, 15.794f, 51.257f), F3(1.166f, 5.436f, 1.197f));
@@ -90,9 +97,9 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     sceneObjects.at(169).AddBBox(F3(-11.535f, 9.427f, 0.186f), F3(1.600f, 1.000f, 1.400f));
     collisions.reserve(sceneObjects.size());
 
-    for (size_t i = 1; i < (int)sceneObjects.size(); i++)
+    for (int i = 1; i < (int)sceneObjects.size(); i++)
     {
-        for (size_t k = 0; k < (int)sceneObjects[i].GetNumBboxes(); k++)
+        for (int k = 0; k < (int)sceneObjects[i].GetNumBboxes(); k++)
             collisions.emplace_back();
     }
 
@@ -202,7 +209,7 @@ SceneState EasyLevel::Update()
 
     //Collision
 
-    for (size_t i = 0; i < (int)collisions.size(); i++)
+    for (int i = 0; i < (int)collisions.size(); i++)
     {
         if (collisions.at(i).getCollidedY())
         {
@@ -213,7 +220,7 @@ SceneState EasyLevel::Update()
             joy.SetCanJump(false);
     }
     int collCounter = 0;
-    for (size_t i = 0; i < (int)sceneObjects.size() - 1; i++)
+    for (int i = 0; i < (int)sceneObjects.size() - 1; i++)
     {
         for (int k = 0; k < sceneObjects.at(i).GetNumBboxes(); k++)
         {
