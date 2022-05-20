@@ -6,7 +6,7 @@ class UIElement abstract
 {
 public:
 	UIElement()
-		:position()
+		:position(), active(true)
 	{
 	}
 	virtual void Shutdown() { };
@@ -18,7 +18,13 @@ public:
 	}
 	
 	virtual void Draw() = 0;
+	
+	void SetActive(bool active)
+	{
+		this->active = active;
+	}
 
 protected:
 	DirectX::XMFLOAT2 position;
+	bool active;
 };

@@ -20,7 +20,9 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     meshStorage.LoadMenuObjects();
 
     sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(1.6f, 1.9f, 2.3f));
-    for (size_t i = 1; i < meshStorage.GetMeshCount(); i++)
+    compi = new HelpComputer(meshStorage.GetMesh(1), joy);
+
+    for (size_t i = 2; i < meshStorage.GetMeshCount(); i++)
     {
         sceneObjects.emplace_back(meshStorage.GetMesh(i), true, F3()); 
     }
@@ -63,6 +65,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     highscore.AddRend();
     highscore.HighScoreSetPos();
     activeCamera->UpdateCam();
+    //activeCamera->SetView();
     std::cout << "4\n";
 
     SoundSystem::getInstance().GetEffect(0)->Play(true);
@@ -115,6 +118,8 @@ SceneState MainMenu::Update()
         activeCamera->UpdateCam();
 
 //#endif // DEBUG
+
+    compi->Check();
 
     activeCamera->SetView();
 

@@ -18,10 +18,10 @@ public:
 	virtual void Draw();
 	void DrawGeometry();
 
-	void Translate(const DirectX::XMVECTOR& movement) override;
-	void Translate(FLOAT X, FLOAT Y, FLOAT Z) override;
-	void SetPosition(const DirectX::XMVECTOR& position) override;
-	void SetPosition(FLOAT X, FLOAT Y, FLOAT Z) override;
+	virtual void Translate(const DirectX::XMVECTOR& movement) override;
+	virtual void Translate(FLOAT X, FLOAT Y, FLOAT Z) override;
+	virtual void SetPosition(const DirectX::XMVECTOR& position) override;
+	virtual void SetPosition(FLOAT X, FLOAT Y, FLOAT Z) override;
 
 	void AddBBox();
 	void AddBBox(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);

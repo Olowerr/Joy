@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "HighscoreClass.h"
+#include "Computer.h"
 
 class MainMenu : public Scene
 {
@@ -29,4 +30,6 @@ private:
 
 	MapDivider divider;
 	Skybox sky;
+
+	HelpComputer* compi;
 };
