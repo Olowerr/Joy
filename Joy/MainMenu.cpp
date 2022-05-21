@@ -134,9 +134,6 @@ SceneState MainMenu::Update()
 
 #endif // DEBUG
 
-    if (Backend::GetKeyboard().KeyReleased(DIK_E))
-        int q = 0;
-
     if (compi->Check())
     {
         JoyPostProcess::SetActive(false);
