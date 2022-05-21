@@ -8,7 +8,7 @@ JoyPostProcess::JoyPostProcess()
 	, NumThreadX(16), NumThreadY(9)
 	, SampleTexX(NumThreadX * 30), SampleTexY(NumThreadY * 30)
 	, XGroups(SampleTexX / NumThreadX), YGroups(SampleTexY / NumThreadY)
-	, glowColour{0.f, 0.f, 1.f, 0.f}
+	, glowColour{ 0.f, 0.f, 1.f, 0.f }
 	, active(true)
 {
 	me = this;
@@ -112,7 +112,7 @@ void JoyPostProcess::ApplyGlow()
 	}
 
 	auto frameStart = std::chrono::system_clock::now();
-	
+
 	DownSample();
 
 	static ID3D11RenderTargetView* nullRTV[2]{};
@@ -121,7 +121,7 @@ void JoyPostProcess::ApplyGlow()
 	static float data[2] = { 0.f, 2.f };
 
 	ID3D11DeviceContext* devContext = Backend::GetDeviceContext();
-	
+
 	// Unbind sampleRTV
 	devContext->OMSetRenderTargets(2, nullRTV, nullptr);
 
@@ -212,7 +212,6 @@ void JoyPostProcess::CalcGlowAmount(float fuel)
 
 	}
 
-
 	//printf("%.3f, %.3f, %.3f\n", me->glowColour[0], me->glowColour[1], me->glowColour[2]);
 
 }
@@ -285,13 +284,13 @@ void JoyPostProcess::UpSample()
 bool JoyPostProcess::LoadShaders()
 {
 	std::string shaderData;
-	
+
 	if (!Backend::LoadShader(Backend::ShaderPath + "BlurCS.cso", &shaderData))
 		return false;
 
 	if (FAILED(Backend::GetDevice()->CreateComputeShader(shaderData.c_str(), shaderData.length(), nullptr, &blurCS)))
 		return false;
-		
+
 
 	if (!Backend::LoadShader(Backend::ShaderPath + "screenQuadVS.cso", &shaderData))
 		return false;

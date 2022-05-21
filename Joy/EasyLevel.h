@@ -48,5 +48,6 @@ private:
 
 
 	void PlaceObjects();
+	void UpdateBBs();
 	void PlacePickups(TempMeshStorage &meshStorage);
 };

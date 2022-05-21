@@ -78,3 +78,11 @@ void CharacterCamera::SetView()
 	Backend::UpdateBuffer(camMatrixBuffer, &viewProjMatrix, 64);
 
 }
+
+void CharacterCamera::SetPosition(float x, float y, float z)
+{
+	Camera::SetPosition(x, y, z);
+	positionFloat3.x = x;
+	positionFloat3.y = y;
+	positionFloat3.z = z;
+}

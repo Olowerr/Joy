@@ -18,7 +18,17 @@ HelpComputer::HelpComputer(Mesh* mesh, const Character& joy, UIRenderer& uiRende
 	SetPosition(trigger.Center.x - 1.8f, trigger.Center.y + 6.f, trigger.Center.z + 1.2f);
 	SetScale(0.5f);
 	SetRotation(0.f, 0.7f, 0.f);
+
+	startPos = GetPosition();
 }
+
+/*
+
+can fall through ground when sliding
+pick-up text veri fast
+
+
+*/
 
 void HelpComputer::Shutdown()
 {
@@ -30,10 +40,8 @@ void HelpComputer::Shutdown()
 
 bool HelpComputer::Check()
 {
-	timePassed += Backend::GetDeltaTime() * 1.01f;
-
-	auto& pos = GetPosition();
-	SetPosition(pos.x, pos.y + std::sin(timePassed) * 0.001f, pos.z);
+	timePassed += Backend::GetDeltaTime();
+	SetPosition(startPos.x, startPos.y + std::sin(timePassed) * 0.5f, startPos.z);
 
 #ifdef _DEBUG
 	if (ImGui::Begin("dora"))

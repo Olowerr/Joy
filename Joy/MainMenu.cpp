@@ -108,7 +108,7 @@ void MainMenu::Shutdown()
 
 SceneState MainMenu::Update()
 {
-//#ifdef _DEBUG
+#ifdef _DEBUG
 
 
     if (Backend::GetKeyboard().KeyReleased(DIK_R))
@@ -126,9 +126,13 @@ SceneState MainMenu::Update()
     }
 
     if (activeCamera == &freeCamera)
+    {
         activeCamera->UpdateCam();
+        activeCamera->SetView();
+        return SceneState::Unchanged;
+    }
 
-//#endif // DEBUG
+#endif // DEBUG
 
     if (Backend::GetKeyboard().KeyReleased(DIK_E))
         int q = 0;
@@ -145,8 +149,6 @@ SceneState MainMenu::Update()
     activeCamera->SetView();
 
     JoyPostProcess::CalcGlowAmount(joy.GetFuel());
-    if (activeCamera == &freeCamera)
-        return SceneState::Unchanged;
 
     joy.Jump();
     joy.Move();

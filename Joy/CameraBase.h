@@ -17,6 +17,8 @@ public:
 	ID3D11Buffer* const* GetMatrixBuffer() const;
 	DirectX::XMVECTOR GetPosition();
 
+	virtual void SetPosition(float x, float y, float z);
+
 protected:
 	DirectX::XMFLOAT4X4 viewProjMatrix;
 	DirectX::XMVECTOR position;

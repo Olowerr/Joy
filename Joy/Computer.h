@@ -23,5 +23,7 @@ private:
 
 	DirectX::BoundingBox trigger;
 
+	DirectX::XMFLOAT3 startPos;
+
 	float timePassed;
 };

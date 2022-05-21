@@ -23,3 +23,8 @@ DirectX::XMVECTOR Camera::GetPosition()
 {
     return position;
 }
+
+void Camera::SetPosition(float x, float y, float z)
+{
+    position = DirectX::XMVectorSet(x, y, z, 1.f);
+}

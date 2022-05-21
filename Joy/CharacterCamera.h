@@ -16,6 +16,7 @@ public:
 	virtual void UpdateCam() override;
 	virtual void SetView();
 
+	void SetPosition(float x, float y, float z) override;
 	
 
 private:

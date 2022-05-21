@@ -37,70 +37,16 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     meshStorage.LoadEasyObjects();
 
     sceneObjects.reserve(200);
+    
     PlaceObjects();
-    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(-9.2F, -1.4f, 448.7f));
+    UpdateBBs();
     PlacePickups(meshStorage);
+
+    sceneObjects.emplace_back(meshStorage.GetMesh(0), true, F3(-9.2F, -1.4f, 448.7f));
+
     meshStorage.UnloadDataBase();
 
-    sceneObjects.at(9).SetBBox(0, F3(-5.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(9).AddBBox(F3(-13.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(9).AddBBox(F3(-9.476f, 2.657f, 352.319f), F3(3.500f, 0.500f, 0.200f));
-    sceneObjects.at(10).SetBBox(0, F3(5.432f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(10).AddBBox(F3(13.432f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(10).AddBBox(F3(9.432f, 2.657f, 352.319f), F3(3.400f, 0.500f, 0.200f));
-    sceneObjects.at(11).SetBBox(0, F3(-4.000f, 2.157f, 382.000f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(11).AddBBox(F3(4.000f, 2.157f, 382.000f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(11).AddBBox(F3(0.000f, 2.657f, 382.000f), F3(3.400f, 0.500f, 0.200f));
-    sceneObjects.at(12).SetBBox(0, F3(-4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(12).AddBBox(F3(4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
-    sceneObjects.at(12).AddBBox(F3(0.000f, 2.657f, 424.000f), F3(3.500f, 0.500f, 0.200f));
-    sceneObjects.at(24).SetBBox(0, F3(10.469f, 33.600f, 86.000f), F3(4.500f, 23.256f, 0.500f));
-    sceneObjects.at(25).SetBBox(0, F3(5.000f, 33.600f, 94.000f), F3(4.500f, 23.256f, 0.500f));
-    sceneObjects.at(26).SetBBox(0, F3(10.469f, 33.600f, 102.000f), F3(4.500f, 23.256f, 0.500f));
-    sceneObjects.at(43).RemoveBBox(0);
-    sceneObjects.at(57).SetBBox(0, F3(6.998f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.400f));
-    sceneObjects.at(57).AddBBox(F3(8.398f, 1.474f, 3.420f), F3(1.420f, 1.261f, 4.469f));
-    sceneObjects.at(58).SetBBox(0, F3(4.728f, 1.474f, 3.420f), F3(1.400f, 1.200f, 4.500f));
-    sceneObjects.at(58).AddBBox(F3(6.228f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.500f));
-    sceneObjects.at(59).SetBBox(0, F3(-9.809f, 1.631f, 3.612f), F3(5.189f, 1.184f, 5.178f));
-    sceneObjects.at(60).SetBBox(0, F3(-11.246f, 1.631f, 270.351f), F3(5.189f, 1.484f, 5.178f));
-    sceneObjects.at(61).SetBBox(0, F3(11.270f, 1.631f, 270.351f), F3(5.189f, 1.484f, 5.178f));
-    sceneObjects.at(62).SetBBox(0, F3(0.000f, 13.184f, 54.606f), F3(0.980f, 4.482f, 1.025f));
-    sceneObjects.at(62).AddBBox(F3(0.000f, 21.384f, 54.606f), F3(2.780f, 4.082f, 2.725f));
-    sceneObjects.at(63).SetBBox(0, F3(2.625f, 13.506f, 43.947f), F3(0.880f, 3.582f, 0.925f));
-    sceneObjects.at(63).AddBBox(F3(2.325f, 21.106f, 43.947f), F3(3.780f, 3.782f, 3.625f));
-    sceneObjects.at(64).SetBBox(0, F3(0.886f, 13.545f, 46.379f), F3(0.980f, 3.982f, 1.125f));
-    sceneObjects.at(64).AddBBox(F3(0.586f, 21.745f, 46.379f), F3(2.380f, 3.982f, 2.225f));
-    sceneObjects.at(65).SetBBox(0, F3(-0.884f, 12.498f, 48.923f), F3(0.980f, 4.382f, 1.025f));
-    sceneObjects.at(65).AddBBox(F3(-0.884f, 20.798f, 48.923f), F3(2.180f, 3.782f, 3.025f));
-    sceneObjects.at(99).RemoveBBox(0);
-    sceneObjects.at(100).RemoveBBox(0);
-    sceneObjects.at(101).RemoveBBox(0);
-    sceneObjects.at(102).RemoveBBox(0);
-    sceneObjects.at(103).RemoveBBox(0);
-    sceneObjects.at(104).RemoveBBox(0);
-    sceneObjects.at(105).RemoveBBox(0);
-    sceneObjects.at(106).RemoveBBox(0);
-    sceneObjects.at(107).RemoveBBox(0);
-    sceneObjects.at(108).RemoveBBox(0);
-    sceneObjects.at(109).RemoveBBox(0);
-    sceneObjects.at(110).RemoveBBox(0);
-    sceneObjects.at(111).RemoveBBox(0);
-    sceneObjects.at(124).SetBBox(0, F3(-11.593f, 4.356f, 270.079f), F3(0.580f, 2.903f, 0.660f));
-    sceneObjects.at(124).AddBBox(F3(-11.593f, 15.556f, 270.079f), F3(4.480f, 7.303f, 3.460f));
-    sceneObjects.at(125).SetBBox(0, F3(12.343f, 4.456f, 269.565f), F3(0.680f, 2.703f, 0.660f));
-    sceneObjects.at(125).AddBBox(F3(12.343f, 15.556f, 269.565f), F3(3.880f, 7.803f, 3.660f));
-    sceneObjects.at(134).SetBBox(0, F3(-0.716f, 37.143f, 63.172f), F3(1.468f, 26.540f, 8.306f));
-    sceneObjects.at(135).SetBBox(0, F3(-0.716f, 37.143f, 79.505f), F3(1.468f, 26.540f, 8.306f));
-    sceneObjects.at(136).SetBBox(0, F3(-0.716f, 37.143f, 95.943f), F3(1.468f, 26.540f, 8.306f));
-    sceneObjects.at(137).SetBBox(0, F3(-0.716f, 37.143f, 112.335f), F3(1.468f, 26.540f, 8.306f));
-    sceneObjects.at(156).SetBBox(0, F3(9.566f, 15.013f, 49.239f), F3(5.264f, 1.793f, 1.549f));
-    sceneObjects.at(156).AddBBox(F3(3.566f, 11.513f, 49.539f), F3(1.500f, 3.500f, 1.300f));
-    sceneObjects.at(168).SetBBox(0, F3(0.470f, 15.794f, 51.257f), F3(1.166f, 5.436f, 1.197f));
-    sceneObjects.at(168).AddBBox(F3(0.470f, 24.994f, 51.257f), F3(2.266f, 4.336f, 2.097f));
-    sceneObjects.at(169).SetBBox(0, F3(-10.035f, 5.227f, 3.386f), F3(1.247f, 3.882f, 1.275f));
-    sceneObjects.at(169).AddBBox(F3(-9.335f, 11.727f, 4.986f), F3(3.500f, 2.100f, 3.600f));
-    sceneObjects.at(169).AddBBox(F3(-11.535f, 9.427f, 0.186f), F3(1.600f, 1.000f, 1.400f));
+
     collisions.reserve(sceneObjects.size());
 
     for (int i = 1; i < (int)sceneObjects.size(); i++)
@@ -167,7 +113,6 @@ SceneState EasyLevel::Update()
 
     float distanceTrav = 30.f + joy.GetPosition().z * 0.38f;
     arrow.SetPosition(1858.f, 225.f - distanceTrav);
-    Backend::Clear();
 
     time += Backend::GetDeltaTime();
     dt += Backend::GetDeltaTime();
@@ -205,6 +150,8 @@ SceneState EasyLevel::Update()
     {
         time = 0.f;
         joy.SetFuel(10.f);
+        joyCamera.SetPosition(0.0f, 10.0f, -38.0f);
+        joyCamera.SetView();
     }
 
     pickups.UpdateMatrices();
@@ -215,11 +162,11 @@ SceneState EasyLevel::Update()
         timeReducMover = 250;
     }  
     timeReduction.SetPosition((float)Backend::GetWindowWidth() / 2.f, timeReducMover);
-    if (timeReducMover > -30.f)
+    if (timeReducMover > -100.f)
     {
 
 
-        timeReducMover -= 1.f;
+        timeReducMover -= 200.f * Backend::GetDeltaTime();
 
     }
     JoyPostProcess::CalcGlowAmount(joy.GetFuel());
@@ -471,6 +418,71 @@ void EasyLevel::PlaceObjects()
     sceneObjects.emplace_back(meshStorage.GetMeshByName("tree_a3"), true, F3(0.170f, 19.794f, 51.257f), F3(0.000f, 0.000f, 0.000f), 1.000f);
     sceneObjects.emplace_back(meshStorage.GetMeshByName("tree_b"), true, F3(-9.435f, 7.727f, 3.786f), F3(0.000f, 0.000f, 0.000f), 1.000f);
     sceneObjects.emplace_back(meshStorage.GetMeshByName("rock_b"), true, F3(0.045f, 1.575f, 302.546f), F3(0.000f, 0.000f, 0.000f), 1.000f);
+}
+
+void EasyLevel::UpdateBBs()
+{
+    typedef DirectX::XMFLOAT3 F3;
+
+    sceneObjects.at(9).SetBBox(0, F3(-5.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(9).AddBBox(F3(-13.476f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(9).AddBBox(F3(-9.476f, 2.657f, 352.319f), F3(3.500f, 0.500f, 0.200f));
+    sceneObjects.at(10).SetBBox(0, F3(5.432f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(10).AddBBox(F3(13.432f, 2.157f, 352.319f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(10).AddBBox(F3(9.432f, 2.657f, 352.319f), F3(3.400f, 0.500f, 0.200f));
+    sceneObjects.at(11).SetBBox(0, F3(-4.000f, 2.157f, 382.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(11).AddBBox(F3(4.000f, 2.157f, 382.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(11).AddBBox(F3(0.000f, 2.657f, 382.000f), F3(3.400f, 0.500f, 0.200f));
+    sceneObjects.at(12).SetBBox(0, F3(-4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(12).AddBBox(F3(4.000f, 2.157f, 424.000f), F3(0.500f, 1.656f, 0.500f));
+    sceneObjects.at(12).AddBBox(F3(0.000f, 2.657f, 424.000f), F3(3.500f, 0.500f, 0.200f));
+    sceneObjects.at(24).SetBBox(0, F3(10.469f, 33.600f, 86.000f), F3(4.500f, 23.256f, 0.500f));
+    sceneObjects.at(25).SetBBox(0, F3(5.000f, 33.600f, 94.000f), F3(4.500f, 23.256f, 0.500f));
+    sceneObjects.at(26).SetBBox(0, F3(10.469f, 33.600f, 102.000f), F3(4.500f, 23.256f, 0.500f));
+    sceneObjects.at(43).RemoveBBox(0);
+    sceneObjects.at(57).SetBBox(0, F3(6.998f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.400f));
+    sceneObjects.at(57).AddBBox(F3(8.398f, 1.474f, 3.420f), F3(1.420f, 1.261f, 4.469f));
+    sceneObjects.at(58).SetBBox(0, F3(4.728f, 1.474f, 3.420f), F3(1.400f, 1.200f, 4.500f));
+    sceneObjects.at(58).AddBBox(F3(6.228f, 3.974f, 3.420f), F3(0.300f, 1.400f, 4.500f));
+    sceneObjects.at(59).SetBBox(0, F3(-9.809f, 1.631f, 3.612f), F3(5.189f, 1.184f, 5.178f));
+    sceneObjects.at(60).SetBBox(0, F3(-11.246f, 1.631f, 270.351f), F3(5.189f, 1.484f, 5.178f));
+    sceneObjects.at(61).SetBBox(0, F3(11.270f, 1.631f, 270.351f), F3(5.189f, 1.484f, 5.178f));
+    sceneObjects.at(62).SetBBox(0, F3(0.000f, 13.184f, 54.606f), F3(0.980f, 4.482f, 1.025f));
+    sceneObjects.at(62).AddBBox(F3(0.000f, 21.384f, 54.606f), F3(2.780f, 4.082f, 2.725f));
+    sceneObjects.at(63).SetBBox(0, F3(2.625f, 13.506f, 43.947f), F3(0.880f, 3.582f, 0.925f));
+    sceneObjects.at(63).AddBBox(F3(2.325f, 21.106f, 43.947f), F3(3.780f, 3.782f, 3.625f));
+    sceneObjects.at(64).SetBBox(0, F3(0.886f, 13.545f, 46.379f), F3(0.980f, 3.982f, 1.125f));
+    sceneObjects.at(64).AddBBox(F3(0.586f, 21.745f, 46.379f), F3(2.380f, 3.982f, 2.225f));
+    sceneObjects.at(65).SetBBox(0, F3(-0.884f, 12.498f, 48.923f), F3(0.980f, 4.382f, 1.025f));
+    sceneObjects.at(65).AddBBox(F3(-0.884f, 20.798f, 48.923f), F3(2.180f, 3.782f, 3.025f));
+    sceneObjects.at(99).RemoveBBox(0);
+    sceneObjects.at(100).RemoveBBox(0);
+    sceneObjects.at(101).RemoveBBox(0);
+    sceneObjects.at(102).RemoveBBox(0);
+    sceneObjects.at(103).RemoveBBox(0);
+    sceneObjects.at(104).RemoveBBox(0);
+    sceneObjects.at(105).RemoveBBox(0);
+    sceneObjects.at(106).RemoveBBox(0);
+    sceneObjects.at(107).RemoveBBox(0);
+    sceneObjects.at(108).RemoveBBox(0);
+    sceneObjects.at(109).RemoveBBox(0);
+    sceneObjects.at(110).RemoveBBox(0);
+    sceneObjects.at(111).RemoveBBox(0);
+    sceneObjects.at(124).SetBBox(0, F3(-11.593f, 4.356f, 270.079f), F3(0.580f, 2.903f, 0.660f));
+    sceneObjects.at(124).AddBBox(F3(-11.593f, 15.556f, 270.079f), F3(4.480f, 7.303f, 3.460f));
+    sceneObjects.at(125).SetBBox(0, F3(12.343f, 4.456f, 269.565f), F3(0.680f, 2.703f, 0.660f));
+    sceneObjects.at(125).AddBBox(F3(12.343f, 15.556f, 269.565f), F3(3.880f, 7.803f, 3.660f));
+    sceneObjects.at(134).SetBBox(0, F3(-0.716f, 37.143f, 63.172f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(135).SetBBox(0, F3(-0.716f, 37.143f, 79.505f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(136).SetBBox(0, F3(-0.716f, 37.143f, 95.943f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(137).SetBBox(0, F3(-0.716f, 37.143f, 112.335f), F3(1.468f, 26.540f, 8.306f));
+    sceneObjects.at(156).SetBBox(0, F3(9.566f, 15.013f, 49.239f), F3(5.264f, 1.793f, 1.549f));
+    sceneObjects.at(156).AddBBox(F3(3.566f, 11.513f, 49.539f), F3(1.500f, 3.500f, 1.300f));
+    sceneObjects.at(168).SetBBox(0, F3(0.470f, 15.794f, 51.257f), F3(1.166f, 5.436f, 1.197f));
+    sceneObjects.at(168).AddBBox(F3(0.470f, 24.994f, 51.257f), F3(2.266f, 4.336f, 2.097f));
+    sceneObjects.at(169).SetBBox(0, F3(-10.035f, 5.227f, 3.386f), F3(1.247f, 3.882f, 1.275f));
+    sceneObjects.at(169).AddBBox(F3(-9.335f, 11.727f, 4.986f), F3(3.500f, 2.100f, 3.600f));
+    sceneObjects.at(169).AddBBox(F3(-11.535f, 9.427f, 0.186f), F3(1.600f, 1.000f, 1.400f));
 }
 
 void EasyLevel::PlacePickups(TempMeshStorage& meshStorage)
