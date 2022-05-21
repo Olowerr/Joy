@@ -137,11 +137,15 @@ SceneState MainMenu::Update()
     if (compi->Check())
     {
         JoyPostProcess::SetActive(false);
-        pausMenu.SetActive(false);
         return SceneState::Unchanged;
     }
     else
+    {
+        uiRender.EnableAll();
+        compi->SetActive(false);
+        pausMenu.SetActive(false);
         JoyPostProcess::SetActive(true);
+    }
 
     activeCamera->SetView();
 
