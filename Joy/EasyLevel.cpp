@@ -238,8 +238,8 @@ void EasyLevel::Render()
     }
 #ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-#endif // DEBUG
     HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+#endif // DEBUG
 }
 
 void EasyLevel::PlaceObjects()
