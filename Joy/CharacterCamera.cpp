@@ -68,13 +68,34 @@ void CharacterCamera::UpdateCam()
 
 void CharacterCamera::SetView()
 {
-
 	//	camFront = DirectX::XMVectorSet( object.GetPosition().x, object.GetPosition().y, object.GetPosition().z, 1);
-	
 	//	DirectX::XMVECTOR direction = DirectX::XMVector3Rotate(DirectX::XMVectorSet(0, 0, 1, 0), DirectX::XMLoadFloat4(&rotation));
-	DirectX::XMMATRIX viewAndProj = DirectX::XMMatrixLookToLH(position, camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
-	XMStoreFloat4x4(&viewProjMatrix, XMMatrixTranspose(viewAndProj));
 
+	DirectX::XMMATRIX viewAndProj;
+
+	// for cinematic
+	/*
+	static bool go = false;
+
+	if (Backend::GetKeyboard().KeyReleased(DIK_Z))
+		go = true;
+	
+	else if (Backend::GetKeyboard().KeyReleased(DIK_X))
+		go = false;
+	
+	if (go)
+	{
+		position = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&object.GetPosition()), DirectX::XMVectorSet(-10.f, 30.f, 20.f, 0.f));
+		viewAndProj = DirectX::XMMatrixLookAtLH(position, DirectX::XMLoadFloat3(&object.GetPosition()), DirectX::XMVectorSet(0.f, 1.f, 0.f, 0.f)) *
+			DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.f, 0.1f, 500.f);
+	}
+	else
+		viewAndProj = DirectX::XMMatrixLookToLH(position, camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
+	*/
+	
+	viewAndProj = DirectX::XMMatrixLookToLH(position, camFront, camUpDir) * DirectX::XMMatrixPerspectiveFovLH(0.5f, 2.0f, 0.1f, 500.0f);
+
+	XMStoreFloat4x4(&viewProjMatrix, XMMatrixTranspose(viewAndProj));
 	Backend::UpdateBuffer(camMatrixBuffer, &viewProjMatrix, 64);
 
 }

@@ -46,6 +46,7 @@ private:
 	MapDivider divider;
 	Skybox sky;
 
+	//Sprite sky2;
 
 	void PlaceObjects();
 	void UpdateBBs();

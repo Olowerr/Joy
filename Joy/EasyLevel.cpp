@@ -14,6 +14,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , pickups(joy)
     , pausMenu(uiRender)
     , dt()
+    //, sky2("../Resources/Images/SkyForJoy.png", 0.f, 0.f, 1.f, 1.f)
  {
     SoundSystem::getInstance().StopSounds();
     meshStorage.LoadAllObj();
@@ -73,6 +74,9 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
     sky.init();
     SoundSystem::getInstance().GetEffect(1)->Play(true);
+
+    //uiRender.Clear();
+    //uiRender.Add(&sky2);
 }
 
 void EasyLevel::Shutdown()
@@ -136,6 +140,8 @@ SceneState EasyLevel::Update()
         decalShadow.SetActiveCamera(activeCamera);
     }
 #endif // _DEBUG
+    //if (Backend::GetKeyboard().KeyReleased(DIK_C))
+    //    pickups.pickupsRendered = 9;
 
     activeCamera->UpdateCam();
     activeCamera->SetView();
@@ -225,6 +231,8 @@ void EasyLevel::Render()
 {
     if (!joy.GetBoundingBox(0).Intersects(sceneObjects.back().GetBoundingBox(0)))
     {
+        //uiRender.Draw();
+
         objRender.DrawAll();
         pickups.DrawPickupInstances(activeCamera);
         decalShadow.DrawAll(joy.GetPosition());
@@ -236,6 +244,7 @@ void EasyLevel::Render()
     {
         uiRender.Draw();
     }
+
 #ifdef _DEBUG
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
     HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
