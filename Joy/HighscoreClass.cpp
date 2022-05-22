@@ -169,10 +169,6 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 		{
 			finalName.append("R");
 		}
-		if (m_key.KeyReleased(DIK_C))
-		{
-			finalName.append("R");
-		}
 		if (m_key.KeyReleased(DIK_S))
 		{
 			finalName.append("S");
@@ -188,6 +184,10 @@ void HighscoreClass::InputNameAndSetHighscore(float score)
 		if (m_key.KeyReleased(DIK_V))
 		{
 			finalName.append("V");
+		}
+		if (m_key.KeyReleased(DIK_W))
+		{
+			finalName.append("W");
 		}
 		if (m_key.KeyReleased(DIK_X))
 		{

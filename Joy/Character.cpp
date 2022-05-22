@@ -318,7 +318,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
-		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z + 0.023f }, { 0.5f, 0.5f, 1.1f });
+		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z + 0.023f * dt }, { 0.5f, 0.5f, 1.1f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_S) && rotTimer < 0.25f)
 	{
@@ -326,7 +326,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
-		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z - 0.023f }, { 0.5f, 0.5f, 1.1f });
+		SetBBox(0, { GetBoundingBox(0).Center.x, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z - 0.023f * dt }, { 0.5f, 0.5f, 1.1f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_A) && rotTimer < 0.25f)
 	{
@@ -334,7 +334,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
-		SetBBox(0, { GetBoundingBox(0).Center.x - 0.023f, GetPosition().y + 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
+		SetBBox(0, { GetBoundingBox(0).Center.x - 0.023f * dt, GetPosition().y + 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
 	}
 	else if (isSliding && GetRotation().x < 1.3 && key.KeyDown(DIK_D) && rotTimer < 0.25f)
 	{
@@ -342,7 +342,7 @@ void Character::Move()
 		Rotate(rotateVal, 0.f, 0.f);
 		isRotating = true;
 		rotateBack += rotateVal;
-		SetBBox(0, { GetBoundingBox(0).Center.x + 0.023f, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
+		SetBBox(0, { GetBoundingBox(0).Center.x + 0.023f * dt, GetPosition().y - 0.1f, GetBoundingBox(0).Center.z }, { 1.1f, 0.5f, 0.5f });
 	}
 	//
 	// ROTATE BACK

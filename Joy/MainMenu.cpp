@@ -221,7 +221,9 @@ void MainMenu::Render()
 
     ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
 
-    //ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
-    //HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+    ImGuiModifyTransform(Object::GetLevelObjects(), activeCamera);
+    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
 #endif // DEBUG
+    HObject::GetInstance().Draw(&joy, activeCamera, false, true, 0);
+
 }
