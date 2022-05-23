@@ -542,7 +542,7 @@ bool StoredData::StoreAll(const std::string& fileName)
 
             for (size_t q = 0; q < toho.jointInfo.numFrames; q++)
             {
-                std::cout << "Rotation X: ";
+                std::cout << "Rotation \nX: ";
                 for (size_t l = 0; l < 3; l++)
                     std::cout << toho.keyFrames.at(q).rotate[l] << ", ";
                 std::cout << "\n";
@@ -558,7 +558,7 @@ bool StoredData::StoreAll(const std::string& fileName)
 
 
 
-                std::cout << "Translate X: ";
+                std::cout << "Translate \nX: ";
                 for (size_t l = 0; l < 3; l++)
                     std::cout << toho.keyFrames.at(q).translate[l] << ", ";
                 std::cout << "\n";
@@ -573,7 +573,7 @@ bool StoredData::StoreAll(const std::string& fileName)
 
 
 
-                std::cout << "Scale X: ";
+                std::cout << "Scale\nX: ";
                 for (size_t l = 0; l < 3; l++)
                     std::cout << toho.keyFrames.at(q).scale[l] << ", ";
                 std::cout << "\n";
