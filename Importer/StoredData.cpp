@@ -540,52 +540,57 @@ bool StoredData::StoreAll(const std::string& fileName)
 
 
 
-
-            std::cout << "Rotation X: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).rotate[l]<<", ";
-            std::cout << "\n";
-            std::cout << "Y: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).rotate[l]<<", ";
-            std::cout << "\n";
-            std::cout << "Z: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).rotate[l]<<", ";
-            std::cout << "\n\n";
-
-
-
-
-            std::cout << "Translate X: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).translate[l] << ", ";
-            std::cout << "\n";
-            std::cout << "Y: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).translate[l] << ", ";
-            std::cout << "\n";
-            std::cout << "Z: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).translate[l] << ", ";
-            std::cout << "\n\n";
+            for (size_t q = 0; q < toho.jointInfo.numFrames; q++)
+            {
+                std::cout << "Rotation X: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).rotate[l] << ", ";
+                std::cout << "\n";
+                std::cout << "Y: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).rotate[l] << ", ";
+                std::cout << "\n";
+                std::cout << "Z: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).rotate[l] << ", ";
+                std::cout << "\n\n";
 
 
 
-            std::cout << "Scale X: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).scale[l] << ", ";
-            std::cout << "\n";
-            std::cout << "Y: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).scale[l] << ", ";
-            std::cout << "\n";
-            std::cout << "Z: ";
-            for (size_t l = 0; l < 3; l++)
-                std::cout << toho.keyFrames.at(k).scale[l] << ", ";
-            std::cout << "\n\n";
 
-            std::cout<< toho.keyFrames.at(k).timeStamp << "\n\n";
+                std::cout << "Translate X: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).translate[l] << ", ";
+                std::cout << "\n";
+                std::cout << "Y: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).translate[l] << ", ";
+                std::cout << "\n";
+                std::cout << "Z: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).translate[l] << ", ";
+                std::cout << "\n\n";
+
+
+
+                std::cout << "Scale X: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).scale[l] << ", ";
+                std::cout << "\n";
+                std::cout << "Y: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).scale[l] << ", ";
+                std::cout << "\n";
+                std::cout << "Z: ";
+                for (size_t l = 0; l < 3; l++)
+                    std::cout << toho.keyFrames.at(q).scale[l] << ", ";
+                std::cout << "\n\n";
+
+                std::cout << toho.keyFrames.at(q).timeStamp << "\n\n";
+            }
+            
+
+            
         }
 
         for (size_t l = 0; l < m_objectInfoVec.at(i).objHeader.numIdx; l++)
