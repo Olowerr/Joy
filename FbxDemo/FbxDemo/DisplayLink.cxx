@@ -18,11 +18,6 @@
 
 void DisplayLink(FbxGeometry* pGeometry)
 {
-    //Display cluster now
-
-    //int i, lLinkCount;
-    //FbxCluster* lLink;
-
     int i, j;
     int lSkinCount=0;
     int lClusterCount=0;
@@ -35,7 +30,7 @@ void DisplayLink(FbxGeometry* pGeometry)
     if (lSkinCount)
         Writer::CreateWeightVtx(pGeometry->GetNode());
 
-    for(i=0; i!=lSkinCount; ++i) // I guess we can assume 1 skin per mesh?
+    for(i=0; i!=lSkinCount; ++i)
     {
         lClusterCount = ((FbxSkin *) pGeometry->GetDeformer(i, FbxDeformer::eSkin))->GetClusterCount();
         for (j = 0; j != lClusterCount; ++j)

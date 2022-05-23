@@ -13,18 +13,6 @@
 typedef const std::string& cStringR;
 typedef unsigned int UINT;
 
-struct VerticeIdx
-{
-	VerticeIdx(int vtx1, int vtx2, int vtx3)
-		:vtx1(vtx1), vtx2(vtx2), vtx3(vtx3)
-	{
-	}
-
-	int vtx1;
-	int vtx2;
-	int vtx3;
-};
-
 struct NamedKeyframes
 {
 	NamedKeyframes() = default;
@@ -68,13 +56,13 @@ struct MeshData
 	std::vector<Vertex> verts;
 	std::vector<BiNormals> biNorms;
 
-	std::vector<int> idx; // maybe just generate in WriteFile()
+	std::vector<int> idx;
 
 	std::vector<JoyString> jointNames;
 
-	std::vector<int> weightVtxCounter;	// ska göra kaos med han (verkar funkar men scuffed)
-	std::vector<WeightVTX> weightVtx;	// ska göra kaos med han (verkar funkar men scuffed)
-	std::vector<int> vtxCPIdx;			// ska göra kaos med han (verkar funkar men scuffed)
+	std::vector<int> weightVtxCounter;	
+	std::vector<WeightVTX> weightVtx;	
+	std::vector<int> vtxCPIdx;			
 	
 	std::vector<MeshDeformer*> deformers;
 	
@@ -112,7 +100,6 @@ public:
 	static void AddProp(cStringR meshName, FbxProperty& prop);
 
 	static void WriteFile(cStringR filePath);
-	static void ReadFile(cStringR filePath); // TEST ONLY
 
 	static void AddMesh(FbxNode* pNode)
 	{
@@ -127,23 +114,16 @@ public:
 		}
 
 	}
-	static std::vector<MeshData> meshes;
-
-	static void CreateWeightVtx(FbxNode* pNode);
-
-	static void AddJoint(cStringR meshName, cStringR name);
-	static void SetWeight(cStringR meshname, int boneIdx, int idxC, int* pIdx, double* pWeights);
-	static void NormalizeWeights(cStringR meshName);
 
 	// Vertex Data
-	static void AddVertex(cStringR meshName, int idx);						// Add str meshName parameter					// Add str meshName parameter
-	static void SetVertexPosition(cStringR meshName, FbxVector4 vector);		// Add str meshName parameter
-	static void SetVertexUV(cStringR meshName, FbxVector2 vector);			// Add str meshName parameter
-	static void SetVertexNormal(cStringR meshName, FbxVector4 vector);		// Add str meshName parameter
-																		// Add str meshName parameter
-	static void AddVertexBiNormals(cStringR meshName);						// Add str meshName parameter
-	static void SetVertexTangent(cStringR meshName, FbxVector4 vector);		// Add str meshName parameter
-	static void SetVertexBiTangent(cStringR meshName, FbxVector4 vector);	// Add str meshName parameter
+	static void AddVertex(cStringR meshName, int idx);						
+	static void SetVertexPosition(cStringR meshName, FbxVector4 vector);	
+	static void SetVertexUV(cStringR meshName, FbxVector2 vector);			
+	static void SetVertexNormal(cStringR meshName, FbxVector4 vector);		
+																			
+	static void AddVertexBiNormals(cStringR meshName);						
+	static void SetVertexTangent(cStringR meshName, FbxVector4 vector);		
+	static void SetVertexBiTangent(cStringR meshName, FbxVector4 vector);	
 
 	// Material Data
 	static void AddMaterial(cStringR name);
@@ -167,11 +147,9 @@ public:
 	static void SetNearPlane(float nearPlane);
 	static void SetFarPlane(float farPlane);
 
-	
+	// Morph Data
 	static void SetMorphFrames(cStringR meshName, FbxAnimCurve* pCurve, const char* shapeName);
-	//static void SetMorphControlPoints(FbxGeometry* pGeometry);
 	static void SetMorphVTX(FbxGeometry* pGeometry, FbxShape* shape, const char* shapeName);
-
 
 	// Light Data
 	static void AddLight();
@@ -184,10 +162,15 @@ public:
 	static void KeyframeTrue();
 	static bool isKeyframeTrue();
 
-	// BindPose Data
+	// Joint Data
 	static void AddBindPose(cStringR name, FbxNode* pNode);
 	static void SetBindPose(float rowValue1, float rowValue2, float rowValue3, float rowValue4, int idx, cStringR name);
 	static void CalcNumFrames();
+
+	static void AddJoint(cStringR meshName, cStringR name);
+	static void SetWeight(cStringR meshname, int boneIdx, int idxC, int* pIdx, double* pWeights);
+	static void NormalizeWeights(cStringR meshName);
+	static void CreateWeightVtx(FbxNode* pNode);
 
 	// Group Data
 	static void AddGroup(cStringR name);
@@ -199,13 +182,9 @@ public:
 	// Animation Time Data
 	static void SetAnimationTime(float frameRate, int start, int end);
 
-	static void sortMaterial();
-
 private:
 	
-
-	static std::vector<Vertex> vertices;
-	static std::vector<VerticeIdx> polygons;
+	static std::vector<MeshData> meshes;
 	static std::vector<Material> materials;
 	static std::vector<int> matIdx;
 	static std::vector<Camera> cameras;
@@ -216,10 +195,8 @@ private:
 	static bool isGroup;
 	static int bindPoseIdx;
 	static bool isKeyframe;
-	static bool hasBi;
 	static int posIdx;
 	static int dirIdx;
-	static int keyframeCounter;
 	static int instCounter;
 
 };

@@ -178,8 +178,8 @@ void JoyPostProcess::CalcGlowAmount(float fuel)
 	if (ImGui::Begin("asd"))
 	{
 		ImGui::InputFloat("smolpp", &fuel, 0.1f);
-		ImGui::End();
 	}
+	ImGui::End();
 
 #endif //  _DEBUG
 

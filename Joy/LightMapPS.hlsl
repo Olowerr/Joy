@@ -50,6 +50,7 @@ float4 main(PS_IN input) : SV_TARGET
 
 	const float2 uvs = float2(posLightSpace.x * 0.5f + 0.5f, posLightSpace.y * -0.5f + 0.5f);
 
+	int vamos = dot(input.normal, lightDirection) > 0.f;
 	//return float4(shadowMap.Sample(defaultSampler, uvs).r + 0.0001f > posLightSpace.z ? 1.f : 0.2, 0.f, 0.f, 0.f);
-	return float4(clamp(GetLightLevel(uvs, posLightSpace.z), 0.2f, 1.f), 0.f, 0.f, 0.f);
+	return float4(clamp(GetLightLevel(uvs, posLightSpace.z) * vamos, 0.2f, 1.f), 0.f, 0.f, 0.f);
 }

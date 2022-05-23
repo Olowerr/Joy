@@ -54,8 +54,8 @@ bool HelpComputer::Check()
 		ImGui::InputFloat("EY", &trigger.Extents.y, 0.1f);
 		ImGui::InputFloat("EZ", &trigger.Extents.z, 0.1f);
 
-		ImGui::End();
 	}
+	ImGui::End();
 
 	HObject::GetInstance().DrawBB(trigger);
 #endif
