@@ -88,7 +88,7 @@ void Game::Run()
 
 		Backend::Display();
 
-		// temp --
+#ifdef _DEBUG
 		if (Backend::GetKeyboard().KeyReleased(DIK_DELETE))
 			break;
 		
@@ -109,7 +109,7 @@ void Game::Run()
 
 		else if (Backend::GetKeyboard().KeyReleased(DIK_N))
 			Backend::GetMouse().Lock(false);
-		// --
+#endif
 	}
 	Backend::GetSwapChain()->SetFullscreenState(FALSE, nullptr);
 

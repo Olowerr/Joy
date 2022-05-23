@@ -9,7 +9,7 @@
 #include <iostream>
 
 
-#define CONSOLE_ENABLE
+//#define CONSOLE_ENABLE
 
 #ifdef CONSOLE_ENABLE
 void RedirectIOToConsole() {
