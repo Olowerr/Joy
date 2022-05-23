@@ -21,7 +21,7 @@ HighscoreClass::~HighscoreClass()
 
 void HighscoreClass::SetHighscore(float score, std::string user)
 {
-	float finalScore = 1000 - score * 3;
+	float finalScore = score;
 
 	if (finalScore > m_scores[0])
 	{
