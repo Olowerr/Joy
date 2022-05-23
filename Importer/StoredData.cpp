@@ -12,6 +12,10 @@ StoredData::~StoredData()
 
 bool StoredData::StoreAll(const std::string& fileName)
 {
+    // Function that reads all the data from an fbx file. Only needs the filename of the fbx.
+    // Returns true if succeded
+
+
     std::vector<JOY::PropertyBase> propertiesInfoVec;
     JOY::PropertyBase* properties{};
 
@@ -666,6 +670,9 @@ bool StoredData::StoreAll(const std::string& fileName)
 
 void StoredData::UnloadAll()
 {
+
+    //Clear all vectors that have been used to store the data.
+
     for (ObjectInfo& object : m_objectInfoVec)
     {
         for (JOY::PropertyBase* property : object.properties)
@@ -713,6 +720,8 @@ void StoredData::UnloadAll()
 
 JOY::Material const * StoredData::GetMaterial(ObjectInfo& object)
 {
+    //Send in a object and return its material info
+
     for (JOY::Material& material : m_materialInfo.material)
     {
         if (object.objHeader.materialName == material.matName)
@@ -723,6 +732,8 @@ JOY::Material const * StoredData::GetMaterial(ObjectInfo& object)
 
 ObjectInfo* StoredData::GetChild(ObjectInfo& parent, size_t index)
 {
+
+    //Send in parent of object and index. Return child object
     if (index >= parent.children.size())
         return nullptr;
     
@@ -739,6 +750,8 @@ ObjectInfo* StoredData::GetChild(ObjectInfo& parent, size_t index)
 
 ObjectInfo* StoredData::GetObjectByName(const std::string& name)
 {
+    //Send in name of obect to return that object
+
     for (ObjectInfo& object : m_objectInfoVec)
     {
         if (object.objHeader.meshName == name)
