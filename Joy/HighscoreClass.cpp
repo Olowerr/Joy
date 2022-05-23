@@ -25,11 +25,21 @@ void HighscoreClass::SetHighscore(float score, std::string user)
 
 	if (score < m_scores[0])
 	{
+		m_scores[2] = m_scores[1];
+		m_names[2] = m_names[1];
+		m_scores[1] = m_scores[0];
+		m_names[1] = m_names[0];
+
+
 		m_scores[0] = score;
 		m_names[0] = user;
+
 	}
 	else if (score < m_scores[1])
 	{
+		m_scores[2] = m_scores[1];
+		m_names[2] = m_names[1];
+
 		m_scores[1] = score;
 		m_names[1] = user;
 	}

@@ -27,7 +27,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     thomas.SetText("THOMAS");
     thomas.SetScale(1.5f, 1.5f);
     timeReduction.SetColour({ 0.f,0.8f,0.f,1.f });
-    timeReduction.SetText("-5");
+    timeReduction.SetText("-2");
     timeReduction.SetPosition(-100.0f, -100.0f);
 
     pausMenu.AddRend();
