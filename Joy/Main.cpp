@@ -61,6 +61,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevHInstance
     
 	game.Shutdown();
 
+    //StoredData prints;
+    //prints.StoreAll("big3newnew.joy");
+    //prints.UnloadAll();
+
+
+
     (void)getchar();
     (void)getchar();
     (void)getchar();

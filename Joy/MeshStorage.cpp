@@ -367,7 +367,7 @@ void TempMeshStorage::import(UINT index)
 
 	if (!mtlFound)
 		return;
-
+	
 	mtlInfo = meshPath + mtlInfo;
 	int x, y, c;
 	unsigned char* imgData = stbi_load(mtlInfo.c_str(), &x, &y, &c, 4);
@@ -392,6 +392,7 @@ void TempMeshStorage::import(const std::string& filePath)
 
 	StoredData& asd = StoredData::GetInstance();
 
+	
 	const size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
 	
 	succeeded = StoredData::GetInstance().StoreAll(filePath);

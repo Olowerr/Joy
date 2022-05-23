@@ -12,7 +12,6 @@ StoredData::~StoredData()
 
 bool StoredData::StoreAll(const std::string& fileName)
 {
-
     std::vector<JOY::PropertyBase> propertiesInfoVec;
     JOY::PropertyBase* properties{};
 
@@ -134,7 +133,6 @@ bool StoredData::StoreAll(const std::string& fileName)
 
             m_objectInfoVec.emplace_back();
             ObjectHeader& objHeader = m_objectInfoVec.back().objHeader;
-
             char* ptr = (char*)&objHeader;
             ptr += sizeof(Header);
 
@@ -389,6 +387,271 @@ bool StoredData::StoreAll(const std::string& fileName)
         }
 
         }
+        //Prints
+
+
+    }
+    for (size_t i = 0; i < m_cameraInfo.cameras.size(); i++)
+    {
+        std::cout << "Camera  " << i << " info" << "\n";
+        std::cout << "Far Plane: " << m_cameraInfo.cameras.at(i).farPlane << "\n";
+        std::cout << "FOV: " << m_cameraInfo.cameras.at(i).fov << "\n";
+        std::cout << "Forward vector X: " << m_cameraInfo.cameras.at(i).fwVec[0] << "\n";
+        std::cout << "Forward vector Y: " << m_cameraInfo.cameras.at(i).fwVec[1] << "\n";
+        std::cout << "Forward vector Z: " << m_cameraInfo.cameras.at(i).fwVec[2] << "\n";
+        std::cout << "Near plane: " << m_cameraInfo.cameras.at(i).nearPlane << "\n";
+        std::cout << "Pos X: " << m_cameraInfo.cameras.at(i).pos[0] << "\n";
+        std::cout << "Pos Y: " << m_cameraInfo.cameras.at(i).pos[1] << "\n";
+        std::cout << "Pos Z: " << m_cameraInfo.cameras.at(i).pos[2] << "\n";
+        std::cout << "Up vector: " << m_cameraInfo.cameras.at(i).upVec[0] << "\n";
+        std::cout << "Up vector: " << m_cameraInfo.cameras.at(i).upVec[1] << "\n";
+        std::cout << "Up vector: " << m_cameraInfo.cameras.at(i).upVec[2] << "\n\n\n";
+    }
+
+    for (size_t i = 0; i < m_groupInfo.groups.size(); i++)
+    {
+        std::cout << "Group name: " << m_groupInfo.groups.at(i).name.string << "\n";
+        std::cout << "Rotation X: " << m_groupInfo.groups.at(i).rotation[0] << "\n";
+        std::cout << "Rotation Y: " << m_groupInfo.groups.at(i).rotation[1] << "\n";
+        std::cout << "Rotation Z: " << m_groupInfo.groups.at(i).rotation[2] << "\n";
+        std::cout << "Scale X: " << m_groupInfo.groups.at(i).scale[0] << "\n";
+        std::cout << "Scale Y: " << m_groupInfo.groups.at(i).scale[1] << "\n";
+        std::cout << "Scale Z: " << m_groupInfo.groups.at(i).scale[2] << "\n";
+        std::cout << "Translate X: " << m_groupInfo.groups.at(i).translate[0] << "\n";
+        std::cout << "Translate Y: " << m_groupInfo.groups.at(i).translate[1] << "\n";
+        std::cout << "Translate Z: " << m_groupInfo.groups.at(i).translate[2] << "\n\n\n";
+    }
+
+    for (size_t i = 0; i < m_lightInfo.lights.size(); i++)
+    {
+        std::cout << "Light " << i << " info\n";
+        std::cout << "Color R: " << m_lightInfo.lights.at(i).color[0] << "\n";
+        std::cout << "Color G: " << m_lightInfo.lights.at(i).color[1] << "\n";
+        std::cout << "Color B: " << m_lightInfo.lights.at(i).color[2] << "\n";
+        std::cout << "Direction X: " << m_lightInfo.lights.at(i).dir[0] << "\n";
+        std::cout << "Direction Y: " << m_lightInfo.lights.at(i).dir[1] << "\n";
+        std::cout << "Direction Z: " << m_lightInfo.lights.at(i).dir[2] << "\n";
+        std::cout << "Light Position X: " << m_lightInfo.lights.at(i).pos[0] << "\n";
+        std::cout << "Light Position Y: " << m_lightInfo.lights.at(i).pos[1] << "\n";
+        std::cout << "Light Position Z: " << m_lightInfo.lights.at(i).pos[2] << "\n\n\n";
+    }
+    
+    for (size_t i = 0; i < m_materialInfo.material.size(); i++)
+    {
+        std::cout << "Material " << i << " info\n";
+        std::cout << "Mat Name: " << m_materialInfo.material.at(i).matName.string << "\n";
+        std::cout << "Diffuse Texture Path: " << m_materialInfo.material.at(i).diffuseTexturePath.string << "\n";
+        std::cout << "Ambient R: " << m_materialInfo.material.at(i).ambient[0] << "\n";
+        std::cout << "Ambient G: " << m_materialInfo.material.at(i).ambient[1] << "\n";
+        std::cout << "Ambient B: " << m_materialInfo.material.at(i).ambient[2] << "\n";
+        std::cout << "Diffuse R: " << m_materialInfo.material.at(i).diffuse[0] << "\n";
+        std::cout << "Diffuse G: " << m_materialInfo.material.at(i).diffuse[1] << "\n";
+        std::cout << "Diffuse B: " << m_materialInfo.material.at(i).diffuse[2] << "\n";
+        std::cout << "Specular R: " << m_materialInfo.material.at(i).specular[0] << "\n";
+        std::cout << "Specular G: " << m_materialInfo.material.at(i).specular[1] << "\n";
+        std::cout << "Specular B: " << m_materialInfo.material.at(i).specular[2] << "\n\n\n";
+    }
+
+    for (size_t i = 0; i < m_objectInfoVec.size(); i++)
+    {   
+        std::cout << "=====================================================================================\n";
+        std::cout << "Mesh Name: " << m_objectInfoVec.at(i).objHeader.meshName.string << "\n";
+        std::cout << "Parent Name: " << m_objectInfoVec.at(i).objHeader.parentName.string << "\n";
+        std::cout << "Material Name: " << m_objectInfoVec.at(i).objHeader.materialName.string << "\n";
+        std::cout << "No. of Verts: " << m_objectInfoVec.at(i).objHeader.numVerts << "\n";
+        std::cout << "No. of Index: " << m_objectInfoVec.at(i).objHeader.numIdx << "\n";
+        std::cout << "Has bi-normals: " << m_objectInfoVec.at(i).objHeader.hasBi << "\n";
+        std::cout << "Skeleton Index: " << m_objectInfoVec.at(i).objHeader.skeletonIdx << "\n";
+        std::cout << "Morph Index: " << m_objectInfoVec.at(i).objHeader.morphIdx << "\n";
+        std::cout << "Property ID: " << m_objectInfoVec.at(i).objHeader.propertyId << "\n";
+        std::cout << "No. of Children: " << m_objectInfoVec.at(i).objHeader.numChildren << "\n\n";
+
+        for (size_t j = 0; j < m_objectInfoVec.at(i).objHeader.numChildren; j++)
+        {
+            std::cout << "Child " << j << " : " << m_objectInfoVec.at(i).children.at(j).string << "\n\n";
+        }
+
+        for (size_t k = 0; k < m_objectInfoVec.at(i).objHeader.numVerts; k++)
+        {
+            std::cout <<  i << " | vx: " << m_objectInfoVec.at(i).vertex.at(k).pos[0]
+                << " vy: " << m_objectInfoVec.at(i).vertex.at(k).pos[1]
+                << " vz: " << m_objectInfoVec.at(i).vertex.at(k).pos[2] << "\n";
+
+            std::cout << i << " | nx: " << m_objectInfoVec.at(i).vertex.at(k).normal[0]
+                << ", ny: " << m_objectInfoVec.at(i).vertex.at(k).normal[1]
+                << ", nz: " << m_objectInfoVec.at(i).vertex.at(k).normal[2] << "\n";
+
+            std::cout << i << " | u: " << m_objectInfoVec.at(i).vertex.at(k).uv[0]
+                << " v: " << m_objectInfoVec.at(i).vertex.at(k).uv[1] << "\n\n";
+
+            if (m_objectInfoVec.at(i).objHeader.hasBi)
+            {
+                std::cout << i << " | biTanx: " << m_objectInfoVec.at(i).biNormal.at(k).biTan[0]
+                    << " biTany: " << m_objectInfoVec.at(i).biNormal.at(k).biTan[1]
+                    << " biTanz: " << m_objectInfoVec.at(i).biNormal.at(k).biTan[2] << "\n";
+
+                std::cout << i << " | Tanx: " << m_objectInfoVec.at(i).biNormal.at(k).tangent[0]
+                    << " Tany: " << m_objectInfoVec.at(i).biNormal.at(k).tangent[1]
+                    << " Tanz: " << m_objectInfoVec.at(i).biNormal.at(k).tangent[2] << "\n\n";
+            }
+
+            if (m_objectInfoVec.at(i).objHeader.skeletonIdx != -1)
+            {
+                std::cout << i << " | vtWeightx: " << m_objectInfoVec.at(i).weights.at(k).weight[0]
+                    << ", vtWeighty: " << m_objectInfoVec.at(i).weights.at(k).weight[1]
+                    << ", vtWeightz: " << m_objectInfoVec.at(i).weights.at(k).weight[2]
+                    << ", vtWeightw: " << m_objectInfoVec.at(i).weights.at(k).weight[3] << "\n";
+
+                std::cout << i << " | Bone Index x: " << m_objectInfoVec.at(i).weights.at(k).boneIdx[0]
+                    << ", Bone Index y: " << m_objectInfoVec.at(i).weights.at(k).boneIdx[1]
+                    << ", Bone Index z: " << m_objectInfoVec.at(i).weights.at(k).boneIdx[2]
+                    << ", Bone Index w: " << m_objectInfoVec.at(i).weights.at(k).boneIdx[3] << "\n";
+
+            }
+        }
+        std::cout << "\n\n";
+
+        for (size_t k = 0; k < m_objectInfoVec.at(i).joints.size(); k++)
+        {
+            ObjectJointToho& toho = m_objectInfoVec.at(i).joints.at(k);
+            std::cout << "Joint name: " << toho.jointInfo.name.string<<"\n";
+            std::cout << "Num of frames: " << toho.jointInfo.numFrames<< "\n";
+            std::cout << "Parent index: " << toho.jointInfo.parentIdx<<"\n";
+
+            std::cout << "Row 1: ";
+            for (size_t l = 0; l < 4; l++)
+                std::cout<< toho.jointInfo.row1[l]<<", ";
+            std::cout << "\n";
+
+            std::cout << "Row 2: ";
+            for (size_t l = 0; l < 4; l++)
+                std::cout << toho.jointInfo.row2[l]<<", ";
+
+            std::cout << "\n";
+            std::cout << "Row 3: ";
+            for (size_t l = 0; l < 4; l++)
+                std::cout << toho.jointInfo.row3[l]<<", ";
+
+            std::cout << "\n";
+            std::cout << "Row 4: ";
+            for (size_t l = 0; l < 4; l++)
+                std::cout << toho.jointInfo.row4[l]<<", ";
+            std::cout << "\n\n";
+
+
+
+
+            std::cout << "Rotation X: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).rotate[l]<<", ";
+            std::cout << "\n";
+            std::cout << "Y: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).rotate[l]<<", ";
+            std::cout << "\n";
+            std::cout << "Z: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).rotate[l]<<", ";
+            std::cout << "\n\n";
+
+
+
+
+            std::cout << "Translate X: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).translate[l] << ", ";
+            std::cout << "\n";
+            std::cout << "Y: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).translate[l] << ", ";
+            std::cout << "\n";
+            std::cout << "Z: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).translate[l] << ", ";
+            std::cout << "\n\n";
+
+
+
+            std::cout << "Scale X: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).scale[l] << ", ";
+            std::cout << "\n";
+            std::cout << "Y: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).scale[l] << ", ";
+            std::cout << "\n";
+            std::cout << "Z: ";
+            for (size_t l = 0; l < 3; l++)
+                std::cout << toho.keyFrames.at(k).scale[l] << ", ";
+            std::cout << "\n\n";
+
+            std::cout<< toho.keyFrames.at(k).timeStamp << "\n\n";
+        }
+
+        for (size_t l = 0; l < m_objectInfoVec.at(i).objHeader.numIdx; l++)
+        {
+            std::cout << i << " | Index " << l << ": " << m_objectInfoVec.at(i).indices.at(l) << "\n"; // NOTE: Should probably be among the vertices.
+        }
+        std::cout << "\n\n";
+
+        if (m_objectInfoVec.at(i).objHeader.morphIdx != -1)
+        {
+            for (size_t m = 0; m < m_objectInfoVec.at(i).mInfo.size(); m++) // Prolly size. 
+            {
+                std::cout << i << "| Keyframe: " << m_objectInfoVec.at(i).mInfo.at(m).morphFrame.at(m).keyTime << "\n";
+                std::cout << i << "| Deformation value: " << m_objectInfoVec.at(i).mInfo.at(m).morphFrame.at(m).keyValue << "\n";
+                std::cout << i << "| Target Name: " << m_objectInfoVec.at(i).mInfo.at(m).morphTargetInfo.name.string << "\n";
+                std::cout << i << "| Number of frames: " << m_objectInfoVec.at(i).mInfo.at(m).morphTargetInfo.numFrames << "\n";
+
+
+                for (size_t k = 0; k < m_objectInfoVec.at(i).mInfo.at(m).morphVTX.size(); k++)
+                {
+                    std::cout << "Morph vtx position X: " << m_objectInfoVec.at(i).mInfo.at(m).morphVTX.at(k).pos[0]<<", ";
+                    std::cout << "Y: " << m_objectInfoVec.at(i).mInfo.at(m).morphVTX.at(k).pos[1]<<", ";
+                    std::cout << "Z: " << m_objectInfoVec.at(i).mInfo.at(m).morphVTX.at(k).pos[2]<<"\n";
+
+                    std::cout << "Morph vtx normal X: " << m_objectInfoVec.at(i).mInfo.at(m).morphVTX.at(k).normal[0]<<", ";
+                    std::cout << "Y: " << m_objectInfoVec.at(i).mInfo.at(m).morphVTX.at(k).normal[1]<<", ";
+                    std::cout << "Z: " << m_objectInfoVec.at(i).mInfo.at(m).morphVTX.at(k).normal[2]<<"\n\n";
+                }
+                
+
+            }
+        }
+        if (m_objectInfoVec.at(i).objHeader.propertyId != -1)
+        {
+            for (size_t n = 0; n < m_objectInfoVec.at(i).properties.size(); n++) // Prolly size.
+            {
+                switch (m_objectInfoVec.at(i).properties.at(n)->type)
+                {
+                case JOY::PropertyType::NONE:
+                    break;
+                case JOY::PropertyType::VECTOR:
+                    std::cout << "VECTOR\n";
+                    break;
+                case JOY::PropertyType::FLOAT:
+                    std::cout << "FLOAT\n";
+                    break;
+                case JOY::PropertyType::INT:
+                    std::cout << "INT\n";
+                    break;
+                case JOY::PropertyType::BOOL:
+                    std::cout << "BOOL\n";
+                    break;
+                case JOY::PropertyType::STRING:
+                    std::cout << "STRING\n";
+                    break;
+                case JOY::PropertyType::ENUM:
+                    std::cout << "ENUM\n";
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+       
+
+        
     }
     reader.close();
 
