@@ -163,7 +163,7 @@ SceneState EasyLevel::Update()
     pickups.UpdateMatrices();
     if (pickups.isHit()) // Collision checks, TODO: handle time (score).
     {
-        time -= 5;
+        time -= 2;
         timeReduction.SetPosition((float)Backend::GetWindowWidth() / 2.f, 250.f);
         timeReducMover = 250;
     }  
