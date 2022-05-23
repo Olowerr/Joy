@@ -29,6 +29,11 @@ UINT Pickup::getPickupsCaught()
 	return (pickupObjs.size() - pickupsRendered);
 }
 
+void Pickup::Reset()
+{
+	pickupsRendered = pickupObjs.size();
+}
+
 void Pickup::AddObject(float pX_in, float pY_in, float pZ_in)
 {
 	pickupObjs.emplace_back(new Object(pickupMesh, true));
