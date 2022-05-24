@@ -20,6 +20,7 @@ public:
 	void FetchPickupMesh(TempMeshStorage& meshStorage_in);	// Fetches the mesh meant to be the pickup.
 	bool isHit();											// Collision check and handling.
 	UINT getPickupsCaught();								// Returns amounts of pickups that has been collided with.
+	void Reset();
 
 	/* ==DXSPECIFIC_FUNCTIONS======================================================= */
 	bool CreateSRV_CreateMatrixSB();						// Creates SRV and Matrix Structured Buffer

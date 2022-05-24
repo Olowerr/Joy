@@ -6,7 +6,7 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
     , joy(&meshStorage.joy[0])
     , barUI("../Resources/Images/progressBar.png", 1850.f, 0.f, 1.f, 1.f)
     , arrow("../Resources/Images/arrow.png")
-    , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
+    , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, -1.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
@@ -77,6 +77,8 @@ EasyLevel::EasyLevel(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow&
 
     //uiRender.Clear();
     //uiRender.Add(&sky2);
+
+    JoyPostProcess::SetActive(true);
 }
 
 void EasyLevel::Shutdown()
@@ -139,9 +141,9 @@ SceneState EasyLevel::Update()
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
+    else if (Backend::GetKeyboard().KeyReleased(DIK_C))
+        pickups.pickupsRendered = 9;
 #endif // _DEBUG
-    //if (Backend::GetKeyboard().KeyReleased(DIK_C))
-    //    pickups.pickupsRendered = 9;
 
     activeCamera->UpdateCam();
     activeCamera->SetView();
@@ -158,6 +160,7 @@ SceneState EasyLevel::Update()
         joy.SetFuel(10.f);
         joyCamera.SetPosition(0.0f, 10.0f, -38.0f);
         joyCamera.SetView();
+        pickups.Reset();
     }
 
     pickups.UpdateMatrices();
@@ -205,6 +208,7 @@ SceneState EasyLevel::Update()
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.back().GetBoundingBox(0)))
     {
         m_highscore.InputNameAndSetHighscore(time); // send in the final score here
+        JoyPostProcess::SetActive(false);
         uiRender.Clear();
         uiRender.Add(&loadingScreen);
 
@@ -214,8 +218,9 @@ SceneState EasyLevel::Update()
     pausMenu.Paus(SceneState::Easy);
     if (pausMenu.isPaused)
     {
-        if (pausMenu.GetSceneState() == SceneState::Easy)
+        if (pausMenu.GetSceneState() == SceneState::Easy || pausMenu.GetSceneState() == SceneState::MainMenu)
         {
+            JoyPostProcess::SetActive(false);
             uiRender.Clear();
             uiRender.Add(&loadingScreen);
         }

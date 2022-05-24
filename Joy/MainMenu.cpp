@@ -3,7 +3,7 @@
 MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& decalShadow, TempMeshStorage& meshStorage)
     :Scene(uiRender, objRender, decalShadow, meshStorage)
     , joy(&meshStorage.joy[0])
-    , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, 0.0f, 1.f, 1.f)
+    , loadingScreen("../Resources/Images/LoadingScreen.png", 0.0f, -1.0f, 1.f, 1.f)
     , joyCamera(joy)
     , divider(joy)
     , activeCamera(&joyCamera)
@@ -76,6 +76,7 @@ MainMenu::MainMenu(UIRenderer& uiRender, ObjectRender& objRender, DecalShadow& d
     std::cout << "4\n";
 
     SoundSystem::getInstance().GetEffect(0)->Play(true);
+    JoyPostProcess::SetActive(true);
 }
 
 void MainMenu::Shutdown()
@@ -178,6 +179,7 @@ SceneState MainMenu::Update()
     }
     if (joy.GetBoundingBox(0).Intersects(sceneObjects.at(0).GetBoundingBox(0)))
     {
+        JoyPostProcess::SetActive(false);
         uiRender.Clear();
         uiRender.Add(&loadingScreen);
         return SceneState::Easy;
@@ -187,8 +189,9 @@ SceneState MainMenu::Update()
     if (pausMenu.isPaused)
     {
         compi->SetActive(false);
-        if (pausMenu.GetSceneState() == SceneState::MainMenu)
+        if (pausMenu.GetSceneState() == SceneState::MainMenu || pausMenu.GetSceneState() == SceneState::Easy)
         {
+            JoyPostProcess::SetActive(false);
             uiRender.Clear();
             uiRender.Add(&loadingScreen);
         }
