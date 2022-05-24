@@ -4,6 +4,12 @@
 #include <vector>
 #include <fstream>
 
+/*@brief
+* Use LoadAll to load .joy files, all info will be stored in vectors in StoredData
+* Get pointers to the info you request.
+* Use the data needed for your specific case
+* Unload all to clear vectors
+*/
 
 struct MorphInfo
 {
@@ -80,31 +86,64 @@ public:
 	StoredData();
 	~StoredData();
 
-	bool StoreAll(const std::string& fileName);
+	/**
+	*@brief Load all data from fbx file
+	*@param string with filepath to .joy file
+	*@return bool true if succeded
+	*/
+	bool LoadAll(const std::string& fileName);
+
+	/*
+	*@brief Clear all vectors that have been used in LoadAll function
+	*/
 	void UnloadAll();
 
-	//Getters
-
-	//SkeletonInfo& GetSkeletonInfo();
+	/*
+	*@return Returns light info
+	*/
 	LightInfo& GetLightInfo();
+
+	/*
+	*@return Returns camera info
+	*/
 	CameraInfo& GetCameraInfo();
+
+	/*
+	*@return Returns group info
+	*/
 	GroupInfo& GetGroupInfo();
+
+	/*
+	*@return Returns object info
+	*/
 	std::vector<ObjectInfo>& GetObjectInfo();
-	//TextureInfo& GetTextureInfo();
+
+	/*
+	*@return Returns object info
+	*/
 	MaterialInfo& GetMaterialInfo();
 
-//	SkeletonInfo m_skeletonInfo;
-	std::vector<ObjectInfo> m_objectInfoVec;
+	/*
+	*@param Object you want material info for
+	*@return pointer to material info for object
+	*/
+	JOY::Material const* GetMaterial(ObjectInfo& object);
 
+	/*
+	*@return Send in object and its index in array. Returns pointer to its child
+	*/
+	ObjectInfo* GetChild(ObjectInfo& parent, size_t index);
+
+	/*
+	*@return Returns object info
+	*/
+	ObjectInfo* GetObjectByName(const std::string& name);
+
+
+	std::vector<ObjectInfo> m_objectInfoVec;
 	LightInfo m_lightInfo;
 	CameraInfo m_cameraInfo;
 	GroupInfo m_groupInfo;
-	//TextureInfo m_textureInfo;
 	MaterialInfo m_materialInfo;
 
-
-	JOY::Material const * GetMaterial(ObjectInfo& object);
-
-	ObjectInfo* GetChild(ObjectInfo& parent, size_t index);
-	ObjectInfo* GetObjectByName(const std::string& name);
 };

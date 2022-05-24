@@ -10,7 +10,7 @@ StoredData::~StoredData()
 {
 }
 
-bool StoredData::StoreAll(const std::string& fileName)
+bool StoredData::LoadAll(const std::string& fileName)
 {
 
     std::vector<JOY::PropertyBase> propertiesInfoVec;

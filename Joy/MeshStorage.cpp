@@ -6,7 +6,7 @@ TempMeshStorage::TempMeshStorage()
 {
 	HRESULT hr;
 
-	StoredData::GetInstance().StoreAll("../Resources/JoyFiles/JoyModell.joy");
+	StoredData::GetInstance().LoadAll("../Resources/JoyFiles/JoyModell.joy");
 	auto mat = StoredData::GetInstance().GetMaterial(StoredData::GetInstance().m_objectInfoVec.at(0));
 	std::string path = "../Resources/JoyFiles/";
 	path += mat->diffuseTexturePath.string;
@@ -394,7 +394,7 @@ void TempMeshStorage::import(const std::string& filePath)
 
 	const size_t sizeBefore = StoredData::GetInstance().m_objectInfoVec.size();
 	
-	succeeded = StoredData::GetInstance().StoreAll(filePath);
+	succeeded = StoredData::GetInstance().LoadAll(filePath);
 	if (!succeeded)
 		return; // fix better error handling
 
