@@ -141,8 +141,8 @@ SceneState EasyLevel::Update()
         objRender.SetActiveCamera(activeCamera);
         decalShadow.SetActiveCamera(activeCamera);
     }
-    else if (Backend::GetKeyboard().KeyReleased(DIK_C))
-        pickups.pickupsRendered = 9;
+    /*else if (Backend::GetKeyboard().KeyReleased(DIK_C))
+        pickups.pickupsRendered = 9;*/
 #endif // _DEBUG
 
     activeCamera->UpdateCam();
