@@ -5,7 +5,8 @@
 Joy is a 3D platformer about the robot Joy trying to impress her creator and wants show the world how smart he is.
 The goal is to traverse a course as fast as possible while collecting bolts and managing your fuel.
 The game is time based, where a shorter time results in a better score. Colleting bolts reduces your time, thus increasing your final score.
-<br>It was developed as a course at Blekinge Institute of Technology.
+
+Joy was developed as a course at Blekinge Institute of Technology.
 
 # Details
 * DirectX 11
@@ -15,14 +16,15 @@ The game is time based, where a shorter time results in a better score. Colletin
 * Toon Shader
 * Glow
 * Decal
+* Instanced Rendering
 
 # . JOY
 Joy uses its own binary fileformat for importing data. <br>
 A .FBX file is converted into a .JOY offline, which is loaded and interpreted at runtime.
 
 It contains:
-  * Meshdata
-  * Materials
+  * Mesh data
+  * Material data
   * Cameras
   * Morph-Animation
   * Skeletal-Animation
