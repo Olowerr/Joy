@@ -1,4 +1,4 @@
-<img src="Pics/joychill.png">
+<img src="Pics/Joychill.png" width=700>
 
 # joy:)
 
@@ -32,13 +32,13 @@ It contains:
   * Custom attributes from Maya
 
 # Creators
-* Björn Emilio Håkanssoon
-* Oliver Klingspor
-* Alexandra Lindberg
-* Rasmus Lisander
-* Adam Åkesson
+* Björn Emilio Håkanssoon ([slowstone42](https://github.com/slowstone42))
+* Oliver Klingspor ([Olowerr](https://github.com/Olowerr))
+* Alexandra Lindberg ([alexandra-lindberg](https://github.com/alexandra-lindberg))
+* Rasmus Lisander ([savie17](https://github.com/savie17))
+* Adam Åkesson ([Simadra](https://github.com/Simadra))
 
 # Images
-<img src="joyIngame.png">
-<img src="joyIngame2.png">
-<img src="joyRed.png">
+<img src="Pics/joyIngame.PNG" width=500>
+<img src="Pics/joyIngame2.PNG" width=500>
+<img src="Pics/joyRed.png" width=500>
