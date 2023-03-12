@@ -9,7 +9,7 @@ Transform::Transform()
 }
 
 Transform::Transform(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, FLOAT scale)
-    :immutable(false), position(pos), rotation(rot), scale(scale), update(false)
+    :immutable(true), position(pos), rotation(rot), scale(scale), update(false)
 {
     UpdateMatrix();
     Backend::CreateDynamicCBuffer(&worldMatrixBuffer, &matrix4x4, sizeof(DirectX::XMFLOAT4X4));////////////////////
